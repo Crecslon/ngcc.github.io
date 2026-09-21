@@ -24,8 +24,10 @@ SRC = Path(sys.argv[1] if len(sys.argv) > 1 else ROOT.parent / "ngcc1").resolve(
 # Nothing is listed here until it has been cleared for publication.
 # ngcc1-relative source -> content-relative destination, e.g. "RESULTS.md": "results.md"
 TOP = {}
-# per-candidate file -> destination inside content/candidates/<id>/, e.g. "pseudocode.md": "pseudocode.md"
-PER_CANDIDATE = {}
+# per-candidate file -> content-relative destination template ({id} = candidate id)
+PER_CANDIDATE = {
+    "report.md": "reports/{id}.md",
+}
 # data files copied verbatim into content/data/, e.g. "sign.csv"
 DATA = []
 
@@ -52,7 +54,7 @@ def main():
     for cid in candidates:
         for src, dst in PER_CANDIDATE.items():
             if (SRC / cid / src).is_file():
-                site_of[f"{cid}/{src}"] = f"candidates/{cid}/{dst}"
+                site_of[f"{cid}/{src}"] = dst.format(id=cid)
 
     # NICCS candidate pages, used as the target for specification links.
     page_url = {}
@@ -99,21 +101,23 @@ def main():
             copy_md(src_rel, dst_rel); n += 1
         else:
             print(f"sync: missing {src_rel}", file=sys.stderr)
+    expected = set(site_of.values())
     for cid in candidates:
         for src, dst in PER_CANDIDATE.items():
             if (SRC / cid / src).is_file():
-                copy_md(f"{cid}/{src}", f"candidates/{cid}/{dst}"); n += 1
-            elif (CONTENT / "candidates" / cid / dst).is_file():
-                (CONTENT / "candidates" / cid / dst).unlink()
-                print(f"sync: removed stale candidates/{cid}/{dst}")
+                copy_md(f"{cid}/{src}", dst.format(id=cid)); n += 1
 
-    # drop candidate directories that no longer exist upstream
-    cdir = CONTENT / "candidates"
-    cdir.mkdir(parents=True, exist_ok=True)
-    for d in cdir.iterdir():
-        if d.is_dir() and CAND_RE.match(d.name) and d.name not in candidates:
-            shutil.rmtree(d)
-            print(f"sync: removed stale {d.relative_to(ROOT)}")
+    # drop previously synced per-candidate files whose source is gone upstream
+    for dst in PER_CANDIDATE.values():
+        pattern = dst.replace("{id}", "*")
+        for f in CONTENT.glob(pattern):
+            rel = f.relative_to(CONTENT).as_posix()
+            if rel not in expected and re.search(r"(?:sign|kem|kex|hash)-\d\d", rel):
+                f.unlink()
+                print(f"sync: removed stale {rel}")
+    for d in (CONTENT / "candidates").glob("*") if (CONTENT / "candidates").is_dir() else []:
+        if d.is_dir() and CAND_RE.match(d.name) and not any(d.iterdir()):
+            d.rmdir()
 
     (CONTENT / "data").mkdir(parents=True, exist_ok=True)
     for name in DATA:

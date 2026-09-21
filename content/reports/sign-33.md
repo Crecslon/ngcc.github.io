@@ -1,0 +1,23 @@
+<!-- synced from ngcc1/sign-33/report.md -->
+Candidate: VDOO
+Scope: Reference implementation, all three parameter sets
+Archive: orig/sign-33/orig.zip (SHA-256: `4b7bb0f15388b395b9308ae480f25622105a734f0ab4a6bd16398438c4b9752a`)
+Severity: Critical
+Discovery: Trivial
+Exploitation: Trivial
+Credit: Markku-Juhani O. Saarinen <markku-juhani.saarinen@tuni.fi>, with AI assistance
+Date: 2026-09-21
+
+## Publicly reproducible signing keys
+
+The implementation declares the API-provided `drng_algorithm` but never reads it. Key generation instead uses a second file-local global DRNG object that is never initialized by the shared-library wrapper and therefore starts from zero-initialized process memory.
+
+Independent fresh-process tests with different API seeds generated identical VDOO public and secret keys. The result was directly reproduced against the built VDOO-256 library and the same RNG wiring is used by all submitted levels.
+
+An attacker recovers the victim's secret signing key by starting a fresh process and invoking key generation once. No multivariate cryptanalysis is required.
+
+All key-generation randomness must be derived from the initialized API DRNG; the uninitialized private generator must be removed or explicitly and securely seeded.
+
+## Reproduction
+
+`python3 security/run_low_hanging.py --wave all --candidate sign-33 --check sig-fresh-keygen --workers 1 --timeout 60`

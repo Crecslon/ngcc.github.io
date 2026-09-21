@@ -1,0 +1,25 @@
+<!-- synced from ngcc1/kex-03/report.md -->
+Candidate: CreTAKE
+Scope: Reference implementation, 23 source files including all six S2S instances
+Archive: orig/kex-03/orig.zip (SHA-256: `0b356074741bc20fa82132719e1678e001083b9746f5c4c582425b727b511741`)
+Severity: Critical
+Discovery: Trivial
+Exploitation: 2^64 offline
+Credit: Markku-Juhani O. Saarinen <markku-juhani.saarinen@tuni.fi>, with AI assistance
+Date: 2026-09-21
+
+## Bits-versus-bytes error reduces the ephemeral secret to 64 bits
+
+The responder requests 64 bytes (512 bits) of fresh randomness:
+
+`get_random_number(&drng_algorithm, buf, SEED_BYTES * 8ULL)`
+
+It then expands that value with:
+
+`pseudoXOF((MSG_LEN_BYTES + SEED_BYTES) * 8, buf, SEED_BYTES, buf2)`
+
+The third `pseudoXOF` argument is a bit count, but `SEED_BYTES` is 64. Only the first eight bytes of the 64-byte buffer are absorbed. The correct `SEED_BYTES * 8` form appears commented out immediately above related call sites. The erroneous pattern occurs in 23 reference source files and is preserved by every submitted test vector.
+
+In the six S2S instances, this 64-bit value is the only secret input to the session-key computation. A passive eavesdropper enumerates the `2^64` possible inputs, regenerates the deterministic encryption coins and candidate plaintext, and matches the observed ciphertext. This recovers the session key offline at every claimed 128-, 256-, and 512-bit level.
+
+The same defect reduces the claimed weak forward secrecy of K2S and S2K instances to `2^64` after compromise of the complementary long-term KEM key. This is an implementation error, not a cryptanalytic attack on the specified primitives.

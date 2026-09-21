@@ -1,0 +1,17 @@
+<!-- synced from ngcc1/kex-07/report.md -->
+Candidate: NEV-AKE
+Scope: Uniform-API reference wrappers, all nine parameter sets
+Archive: orig/kex-07/orig.zip (SHA-256: `da75005b4060167f25125cbd1a769ed872c8b6fcb770fe0827a599e44536e8e6`)
+Severity: High
+Discovery: Trivial
+Exploitation: Integration-dependent; no complete UKS attack demonstrated
+Credit: Markku-Juhani O. Saarinen <markku-juhani.saarinen@tuni.fi>, with AI assistance
+Date: 2026-09-21
+
+## Both party identities are hard-wired to zero
+
+Every submitted `kat_test/KEX_AlgorithmInstance.c` allocates the initiator and responder identities as all-zero `SEED_BYTES` arrays. The wrappers pass those constants into responder processing and initiator key derivation for all nine profiles.
+
+The core `ake.c` code hashes both identities into the session-key computations, and the specification's CK+ model distinguishes the session holder and peer identities `i` and `j`. The wrapper therefore collapses every deployment and every pair of parties onto one fixed identity pair instead of instantiating the protocol's modeled identity binding.
+
+This is a confirmed integration security defect. The transcript still contains cryptographic public keys, and no complete unknown-key-share or impersonation attack was demonstrated through the fixed API, so this report does not claim a proved AKE break beyond the missing identity binding.

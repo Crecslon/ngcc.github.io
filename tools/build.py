@@ -7,8 +7,10 @@
 Every content/**/*.md becomes docs/**/*.html. A page's title is its first H1
 (or one derived from its path). Placeholders of the form <!-- table:NAME -->
 are expanded before Markdown conversion, where NAME is one of
-summary | sign | kem | kex | hash | all. All links are relative, so the site
-works at any base URL.
+summary | sign | kem | kex | hash | all, and <!-- reports --> expands to the
+issue list built from content/reports/<id>.md. A report is a "Field: value"
+header block followed by one "## " section per issue ("## Reproduction" is
+not an issue). All links are relative, so the site works at any base URL.
 """
 import csv
 import datetime
@@ -28,9 +30,11 @@ SITE = "ngcc.dev"
 REPO = "https://github.com/ngcc-dev/ngcc.github.io"
 CATS = [("sign", "Signatures"), ("kem", "KEMs"), ("kex", "Key exchange"), ("hash", "Hash functions")]
 
-NAV = [("Home", "index.html"), ("Candidates", "candidates/index.html"),
+NAV = [("Home", "index.html"), ("Reports", "reports/index.html"), ("Candidates", "candidates/index.html"),
        ("KAT results", "results.html"), ("Security survey", "security-survey.html"),
        ("Attack matrix", "attack-matrix.html"), ("Audit", "audit.html")]
+
+SEVERITIES = ["critical", "high", "medium", "low", "info"]   # index order = sort order
 
 STATUS_CLASS = {
     "PASS": "ok", "FINDING": "bad", "MISMATCH": "bad", "CRYPTOFAIL": "bad", "OVERFLOW": "bad",
@@ -108,6 +112,8 @@ def candidate_pages(cid):
     for name, label in (("index.md", "findings"), ("report.md", "report"), ("pseudocode.md", "pseudocode")):
         if (d / name).is_file():
             out.append((label, f"candidates/{cid}/{name[:-3]}.html"))
+    if (CONTENT / "reports" / f"{cid}.md").is_file():
+        out.append(("report", f"reports/{cid}.html"))
     return out
 
 
@@ -120,7 +126,7 @@ def kat_cell(c):
 
 def table_html(cands, cat, prefix):
     rows = sorted((c for c in cands.values() if c["cat"] == cat), key=lambda c: c["no"])
-    h = ["<div class=\"table-wrap\"><table class=\"cands\">",
+    h = ["<table class=\"cands\">",
          "<thead><tr><th>id</th><th>algorithm</th><th>submitters</th><th>KAT</th><th>pages</th><th>NICCS</th></tr></thead><tbody>"]
     for c in rows:
         pages = " · ".join(f"<a href=\"{prefix}{href}\">{lab}</a>" for lab, href in candidate_pages(c["id"]))
@@ -128,7 +134,7 @@ def table_html(cands, cat, prefix):
         h.append(f"<tr><td><code>{c['id']}</code></td><td>{html.escape(c['algorithm'])}</td>"
                  f"<td class=\"submitters\">{html.escape(c['submitters'])}</td>{kat_cell(c)}"
                  f"<td class=\"links\">{pages or '—'}</td><td class=\"links\">{ext or '—'}</td></tr>")
-    h.append("</tbody></table></div>")
+    h.append("</tbody></table>")
     return "\n".join(h)
 
 
@@ -145,7 +151,86 @@ def summary_html(cands, prefix):
     return "\n".join(h)
 
 
-def expand_placeholders(text, cands, prefix):
+REPORT_ID_RE = re.compile(r"^(sign|kem|kex|hash)-\d\d$")
+
+
+def parse_report(text):
+    """Split a report into (meta dict, body markdown, [issue titles])."""
+    lines = text.splitlines()
+    i = 0
+    while i < len(lines) and (not lines[i].strip() or lines[i].startswith("<!--")):
+        i += 1
+    meta = {}
+    while i < len(lines):
+        m = re.match(r"^([A-Z][A-Za-z -]*):\s+(.*\S)\s*$", lines[i])
+        if not m:
+            break
+        meta[m.group(1)] = m.group(2)
+        i += 1
+    body = "\n".join(lines[i:])
+    issues = [h.strip() for h in re.findall(r"^##\s+(.+?)\s*$", body, re.M)
+              if h.strip().lower() != "reproduction"]
+    return meta, body, issues
+
+
+def load_reports():
+    """id -> {meta, body, issues, cid, severity, date}"""
+    from markdown.extensions.toc import slugify
+    reports = {}
+    rdir = CONTENT / "reports"
+    if not rdir.is_dir():
+        return reports
+    for p in sorted(rdir.glob("*.md")):
+        if not REPORT_ID_RE.match(p.stem):
+            continue
+        meta, body, issues = parse_report(p.read_text(encoding="utf-8"))
+        sev = meta.get("Severity", "").strip().lower()
+        reports[p.stem] = {"cid": p.stem, "meta": meta, "body": body, "date": meta.get("Date", ""),
+                           "severity": sev if sev in SEVERITIES else "info",
+                           "issues": [(t, slugify(t, "-")) for t in issues]}
+    return reports
+
+
+def sev_badge(sev):
+    return f'<span class="sev sev-{sev}">{html.escape(sev.capitalize())}</span>'
+
+
+def reports_html(reports, prefix):
+    rows = []
+    for r in reports.values():
+        for title, anchor in r["issues"]:
+            rows.append((r["date"], SEVERITIES.index(r["severity"]), r["cid"], title, anchor, r))
+    rows.sort(key=lambda x: (x[1], x[2]))              # severity, then candidate id ...
+    rows.sort(key=lambda x: x[0], reverse=True)        # ... within newest date first (stable sort)
+    h = ['<table class="reports">',
+         "<thead><tr><th>date</th><th>severity</th><th>candidate</th><th>issue</th></tr></thead><tbody>"]
+    for date, _, cid, title, anchor, r in rows:
+        name = html.escape(r["meta"].get("Candidate", ""))
+        h.append(f'<tr><td class="date">{html.escape(date)}</td><td class="st">{sev_badge(r["severity"])}</td>'
+                 f'<td><a href="{prefix}reports/{cid}.html">{name}</a> <code>{cid}</code></td>'
+                 f'<td><a href="{prefix}reports/{cid}.html#{anchor}">{html.escape(title)}</a></td></tr>')
+    h.append("</tbody></table>")
+    return "\n".join(h)
+
+
+def report_page(r, prefix):
+    """Markdown for a report page: H1, metadata table, then the original body."""
+    m = r["meta"]
+    order = ["Candidate", "Scope", "Severity", "Discovery", "Exploitation", "Date", "Credit", "Archive"]
+    keys = [k for k in order if k in m] + [k for k in m if k not in order]
+    rows = []
+    for k in keys:
+        v = sev_badge(r["severity"]) if k == "Severity" else markdown.markdown(m[k])[3:-4]
+        rows.append(f"<tr><th>{html.escape(k)}</th><td>{v}</td></tr>")
+    meta_table = '<table class="meta">\n' + "\n".join(rows) + "\n</table>"
+    title = f"{m.get('Candidate', r['cid'])} ({r['cid']})"
+    crumb = f'<p class="crumb"><a href="{prefix}reports/index.html">Reports</a> › <code>{r["cid"]}</code></p>'
+    return f"{crumb}\n\n# {title}\n\n{meta_table}\n\n{r['body']}", title
+
+
+def expand_placeholders(text, cands, prefix, reports):
+    text = re.sub(r"<!--\s*reports\s*-->", lambda m: reports_html(reports, prefix), text)
+
     def repl(m):
         name = m.group(1)
         if name == "summary":
@@ -190,12 +275,14 @@ def page_title(text, rel):
     return rel.stem.replace("-", " ")
 
 
-def render(rel, cands):
+def render(rel, cands, reports):
     text = (CONTENT / rel).read_text(encoding="utf-8")
     depth = len(rel.parts) - 1
     prefix = "../" * depth
     title = page_title(text, rel)
-    text = expand_placeholders(text, cands, prefix)
+    if rel.parts[0] == "reports" and rel.stem in reports:
+        text, title = report_page(reports[rel.stem], prefix)
+    text = expand_placeholders(text, cands, prefix, reports)
     # candidate pages without an H1 get one, plus a breadcrumb back to the index
     if rel.parts[0] == "candidates" and len(rel.parts) == 3:
         cid = rel.parts[1]
@@ -210,7 +297,7 @@ def render(rel, cands):
     body = markdown.markdown(text, extensions=["tables", "fenced_code", "toc", "sane_lists"],
                              extension_configs={"toc": {"permalink": False}})
     body = md_links_to_html(status_classes(body))
-    body = re.sub(r"<table>", '<div class="table-wrap"><table>', body).replace("</table>", "</table></div>")
+    body = re.sub(r"<table\b", '<div class="table-wrap"><table', body).replace("</table>", "</table></div>")
     nav = "".join(f'<a href="{prefix}{href}">{lab}</a>' for lab, href in NAV
                   if (CONTENT / href).with_suffix(".md").is_file())
     out = DOCS / rel.with_suffix(".html")
@@ -237,10 +324,12 @@ def main():
     if (CONTENT / "data").is_dir():
         shutil.copytree(CONTENT / "data", DOCS / "data")
     cands = load_candidates()
+    reports = load_reports()
     pages = sorted(p.relative_to(CONTENT) for p in CONTENT.rglob("*.md"))
     for rel in pages:
-        render(rel, cands)
-    print(f"build: {len(pages)} pages, {len(cands)} candidates -> {DOCS.relative_to(ROOT)}/")
+        render(rel, cands, reports)
+    n_issues = sum(len(r["issues"]) for r in reports.values())
+    print(f"build: {len(pages)} pages, {len(reports)} reports ({n_issues} issues), {len(cands)} candidates -> {DOCS.relative_to(ROOT)}/")
 
 
 if __name__ == "__main__":

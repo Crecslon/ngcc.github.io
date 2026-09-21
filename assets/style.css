@@ -52,3 +52,30 @@ table.summary td:not(:first-child) { text-align: right; }
   html { font-size: 15px; }
   h1 { font-size: 1.4rem; }
 }
+
+/* severity badges and report metadata */
+:root {
+  --sev-critical-bg: #c62828; --sev-critical-fg: #fff;
+  --sev-high-bg: #ef6c00; --sev-high-fg: #fff;
+  --sev-medium-bg: #f9c846; --sev-medium-fg: #1a1a1a;
+  --sev-low-bg: #6fa8dc; --sev-low-fg: #1a1a1a;
+  --sev-info-bg: #bdbdbd; --sev-info-fg: #1a1a1a;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --sev-critical-bg: #e53935; --sev-high-bg: #fb8c00; --sev-medium-bg: #ffd54f;
+    --sev-low-bg: #64b5f6; --sev-info-bg: #757575; --sev-info-fg: #fff;
+  }
+}
+.sev { display: inline-block; padding: 0.05em 0.55em; border-radius: 3px; font-size: 0.8rem;
+  font-weight: 600; letter-spacing: 0.02em; white-space: nowrap; }
+.sev-critical { background: var(--sev-critical-bg); color: var(--sev-critical-fg); }
+.sev-high { background: var(--sev-high-bg); color: var(--sev-high-fg); }
+.sev-medium { background: var(--sev-medium-bg); color: var(--sev-medium-fg); }
+.sev-low { background: var(--sev-low-bg); color: var(--sev-low-fg); }
+.sev-info { background: var(--sev-info-bg); color: var(--sev-info-fg); }
+table.reports td.date { white-space: nowrap; font-variant-numeric: tabular-nums; }
+table.reports td:last-child { min-width: 22rem; }
+table.meta { margin: 1rem 0; font-size: 0.9rem; }
+table.meta th { width: 8rem; background: var(--head); font-weight: 600; white-space: nowrap; }
+table.meta td { word-break: break-word; }

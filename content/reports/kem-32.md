@@ -1,0 +1,17 @@
+<!-- synced from ngcc1/kem-32/report.md -->
+Candidate: QCTM
+Scope: Reference implementation, all three parameter sets when tracing is enabled
+Archive: orig/kem-32/orig.zip (SHA-256: `24a3986a4fbb852a677267a6443756328eae3642af770e767fe38f8291f294db`)
+Severity: High
+Discovery: Trivial
+Exploitation: Requires stderr visibility or local/in-process memory access
+Credit: Markku-Juhani O. Saarinen <markku-juhani.saarinen@tuni.fi>, with AI assistance
+Date: 2026-09-21
+
+## Debug path retains the secret error vector
+
+When the `LOCALLY_QUASI_CYCLIC_TWISTED_MCELIECE_TRACE_DEC` environment variable is present, encapsulation copies the fixed-weight secret error positions into file-static process-global storage. The same opt-in trace path prints decoder stages, syndrome-difference counts, decoded weight, and failure-location diagnostics to standard error.
+
+The logic is present in the compiled QCTM128, QCTM256, and QCTM512 reference sources. The retained error positions are secret per-encapsulation material and should be erased after ciphertext construction, not persisted for a later decoder trace.
+
+The static buffer has no exported accessor, so merely setting the environment variable does not reveal its contents to a remote KEM caller. Exploitation additionally requires stderr visibility, local/in-process memory access, or another disclosure primitive. This is a confirmed implementation-security and secret-lifetime defect, not a demonstrated remote key-recovery attack.
