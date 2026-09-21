@@ -28,8 +28,9 @@ ROOT = Path(__file__).resolve().parent.parent
 CONTENT, DOCS, ASSETS = ROOT / "content", ROOT / "docs", ROOT / "assets"
 KEEP = {"CNAME", ".nojekyll"}          # never removed from docs/
 SITE = "ngcc.dev"
-REPO = "https://github.com/ngcc-dev/ngcc.github.io"
 HARNESS = "https://github.com/ngcc-dev/ngcc-harness"
+MAINTAINER = "markku-juhani.saarinen@tuni.fi"
+UPDATED_UTC = datetime.datetime.now(datetime.UTC).replace(microsecond=0).strftime("%Y-%m-%d %H:%M:%S UTC")
 CATS = [("sign", "Signatures"), ("kem", "KEMs"), ("kex", "Key exchange"), ("hash", "Hash functions")]
 
 NAV = [("Home", "index.html"), ("Reports", "reports/index.html"), ("Candidates", "candidates/index.html"),
@@ -71,7 +72,7 @@ TEMPLATE = """<!DOCTYPE html>
 {body}
 </main>
 <footer class="site-footer">
-<p>Built {date} · <a href="{repo}">source</a></p>
+<p>Updated {updated} · Maintained by: <a href="mailto:{maintainer}">{maintainer}</a></p>
 </footer>
 </body>
 </html>
@@ -406,7 +407,7 @@ def render(rel, cands, reports):
     out.parent.mkdir(parents=True, exist_ok=True)
     head_title = SITE if title == SITE else f"{title} · {SITE}"
     out.write_text(TEMPLATE.format(head_title=html.escape(head_title), site=SITE, css_ver=CSS_VER, prefix=prefix, nav=nav, body=body,
-                                   date=datetime.date.today().isoformat(), repo=REPO), encoding="utf-8")
+                                   updated=UPDATED_UTC, maintainer=MAINTAINER), encoding="utf-8")
 
 
 def clean():
