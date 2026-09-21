@@ -189,6 +189,7 @@ def load_reports():
     """id -> {meta, body, issues, cid, severity, date}"""
     from markdown.extensions.toc import slugify
     reports = {}
+    scopes = {row["ID"]: row["Scope"].strip().lower() for row in read_csv("report-scopes.csv")}
     rdir = CONTENT / "reports"
     if not rdir.is_dir():
         return reports
@@ -197,14 +198,20 @@ def load_reports():
             continue
         meta, body, issues = parse_report(p.read_text(encoding="utf-8"))
         sev = meta.get("Severity", "").strip().lower()
+        if p.stem not in scopes:
+            raise ValueError(f"missing design/implementation classification for {p.stem}")
+        if scopes[p.stem] not in {"design", "implementation"}:
+            raise ValueError(f"invalid report classification for {p.stem}: {scopes[p.stem]}")
         reports[p.stem] = {"cid": p.stem, "meta": meta, "body": body, "date": meta.get("Date", ""),
                            "severity": sev if sev in SEVERITIES else "info",
+                           "finding_scope": scopes[p.stem],
                            "issues": [(t, slugify(t, "-")) for t in issues]}
     return reports
 
 
-def sev_badge(sev):
-    return f'<span class="sev sev-{sev}">{html.escape(sev.capitalize())}</span>'
+def sev_badge(sev, finding_scope=""):
+    label = sev.capitalize() + (f" / {finding_scope}" if finding_scope else "")
+    return f'<span class="sev sev-{sev}">{html.escape(label)}</span>'
 
 
 def reports_html(reports, cands, prefix):
@@ -227,7 +234,7 @@ def reports_html(reports, cands, prefix):
                 issue_href = f'{prefix}reports/{cid}.html' + (f'#{anchor}' if anchor else '')
                 candidate = (f'<a href="{prefix}reports/{cid}.html">'
                              f'{html.escape(r["meta"].get("Candidate", c["algorithm"]))}</a> <code>{cid}</code>')
-                h.append(f'<tr><td>{c["no"] if i == 0 else ""}</td><td class="st">{sev_badge(r["severity"])}</td>'
+                h.append(f'<tr><td>{c["no"] if i == 0 else ""}</td><td class="st">{sev_badge(r["severity"], r["finding_scope"])}</td>'
                          f'<td>{candidate}</td><td class="family">{html.escape(family)}</td>'
                          f'<td><a href="{issue_href}">{html.escape(title)}</a></td></tr>')
         h.append("</tbody></table>")
