@@ -3,11 +3,12 @@ Candidate: MOZI
 Family: Symmetric (sponge)
 Archive: [Mozi.zip](https://www.niccs.org.cn/niccs/Proposal/Cryptographic%20Hash%20Algorithms/Round%201%20candidates/Mozi.zip) (SHA-256: `f68c6b73ff4ac064e6bb8a9b74c4bd8a929594c3c48c89e1a65941e03676ea30`)
 
-## hash-20-1: The 384-bit digest is a prefix of the 512-bit digest
+## hash-20-1: For short messages, the 384-bit digest is a prefix of the 512-bit digest
 
-Severity: High
+Severity: Medium
+Status: Confirmed
 Layer: Design
-Affected: Reference implementation, MOZI-384 and MOZI-512
+Affected: Specified construction and reference implementation, MOZI digest and XOF profiles
 Discovery: Trivial
 Exploitation: Trivial
 Credit: Markku-Juhani O. Saarinen <markku-juhani.saarinen@tuni.fi>, with AI assistance
@@ -24,6 +25,8 @@ MOZI-512 returns that exact 48-byte value followed by:
 For every message shorter than 1024 bits, both variants initialize the same zero state, inject identical padded bytes at the same offset, and apply the same 20-round permutation. The digest length or variant identifier is never absorbed; only the amount returned to the caller differs.
 
 The two functions therefore lack cross-variant domain separation and cannot be treated as independent hashes. No explicit specification claim of cross-profile independence was located, so this is reported as a confirmed composition defect rather than a collision-resistance claim violation.
+
+The same missing domain separation affects the XOF profiles. On the audited short messages, the 384- and 512-profile 256-bit XOF outputs are equal, while shorter outputs are prefixes of the longer XOF streams. This follows from the normative zero initialization, common padding and permutation, and `MSB_l` output rule; it is not only a wrapper artifact.
 
 ### Reproducing
 

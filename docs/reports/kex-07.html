@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>NEV-AKE (kex-07) · ngcc.dev</title>
-<link rel="stylesheet" href="../assets/style.css?v=9eeb984b">
+<link rel="stylesheet" href="../assets/style.css?v=27c401c5">
 </head>
 <body>
 <header class="site-header">
@@ -24,7 +24,8 @@
 <h2 class="issue-heading issue-heading-first" id="kex-07-1-both-party-identities-are-hard-wired-to-zero">kex-07-1: Both party identities are hard-wired to zero</h2>
 
 <div class="table-wrap"><table class="meta issue-meta">
-<tr><th>Classification</th><td><span class="sev sev-high">High / implementation</span></td></tr>
+<tr><th>Classification</th><td><span class="sev sev-medium">Medium / implementation</span></td></tr>
+<tr><th>Status</th><td><span class="issue-status status-confirmed">Confirmed</span></td></tr>
 <tr><th>Affected</th><td>Uniform-API reference wrappers, all nine parameter sets</td></tr>
 <tr><th>Discovery</th><td>Trivial</td></tr>
 <tr><th>Exploitation</th><td>Integration-dependent; no complete UKS attack demonstrated</td></tr>
@@ -33,6 +34,7 @@
 </table></div>
 
 <p>Every submitted <code>kat_test/KEX_AlgorithmInstance.c</code> allocates the initiator and responder identities as all-zero <code>SEED_BYTES</code> arrays. The wrappers pass those constants into responder processing and initiator key derivation for all nine profiles.</p>
+<p>The official <code>KEX_AlgorithmInstance.h</code> API exposes no identity argument, so the wrapper had no channel through which an application could supply the modeled identities. A sound integration could instead derive stable identities from the parties' public keys; hard-wiring both to zero removes the binding entirely.</p>
 <p>The core <code>ake.c</code> code hashes both identities into the session-key computations, and the specification's CK+ model distinguishes the session holder and peer identities <code>i</code> and <code>j</code>. The wrapper therefore collapses every deployment and every pair of parties onto one fixed identity pair instead of instantiating the protocol's modeled identity binding.</p>
 <p>This is a confirmed integration security defect. The transcript still contains cryptographic public keys, and no complete unknown-key-share or impersonation attack was demonstrated through the fixed API, so this report does not claim a proved AKE break beyond the missing identity binding.</p>
 </main>

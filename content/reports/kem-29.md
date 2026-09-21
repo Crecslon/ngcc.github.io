@@ -6,6 +6,7 @@ Archive: [Polar-KEM.zip](https://www.niccs.org.cn/niccs/Proposal/Public-Key%20Cr
 ## kem-29-1: The submission ships a complete public-key-only break
 
 Severity: Critical
+Status: Confirmed
 Layer: Implementation
 Affected: Reference implementation, all three parameter sets
 Discovery: Trivial

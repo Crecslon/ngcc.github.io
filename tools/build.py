@@ -37,6 +37,8 @@ NAV = [("Home", "index.html"), ("Reports", "reports/index.html"), ("Candidates",
        ("Attack matrix", "attack-matrix.html"), ("Audit", "audit.html")]
 
 SEVERITIES = ["critical", "high", "medium", "low", "info"]   # index order = sort order
+# Status records how far the individual finding has been substantiated.
+STATUSES = ["confirmed", "probable", "lead", "proof gap"]
 
 STATUS_CLASS = {
     "PASS": "ok", "FINDING": "bad", "MISMATCH": "bad", "CRYPTOFAIL": "bad", "OVERFLOW": "bad",
@@ -165,7 +167,7 @@ def summary_html(cands, prefix):
 
 REPORT_ID_RE = re.compile(r"^(sign|kem|kex|hash)-\d\d$")
 ISSUE_ID_RE = re.compile(r"^((?:sign|kem|kex|hash)-\d\d-([1-9]\d*)):\s+(.+)$")
-ISSUE_FIELDS = ("Severity", "Layer", "Affected", "Discovery", "Exploitation", "Credit", "Date")
+ISSUE_FIELDS = ("Severity", "Status", "Layer", "Affected", "Discovery", "Exploitation", "Credit", "Date")
 
 
 def parse_report(text):
@@ -226,16 +228,19 @@ def load_reports():
                 if not issue_meta[field]:
                     raise ValueError(f"empty {field} metadata for {issue_id}")
             severity = issue_meta["Severity"].lower()
+            status = issue_meta["Status"].lower()
             layer = issue_meta["Layer"].lower()
             if severity not in SEVERITIES:
                 raise ValueError(f"invalid severity for {issue_id}: {issue_meta['Severity']}")
+            if status not in STATUSES:
+                raise ValueError(f"invalid status for {issue_id}: {issue_meta['Status']}")
             if layer not in {"design", "implementation"}:
                 raise ValueError(f"invalid layer for {issue_id}: {issue_meta['Layer']}")
             seen_issues.add(issue_id)
             numbers.append(number)
             parsed_issues.append({"id": issue_id, "title": title,
                                   "anchor": slugify(heading, "-"), "severity": severity,
-                                  "layer": layer, "meta": issue_meta})
+                                  "status": status, "layer": layer, "meta": issue_meta})
         if numbers != list(range(1, len(numbers) + 1)):
             raise ValueError(f"non-sequential report IDs in {p.name}: {numbers}")
         reports[p.stem] = {"cid": p.stem, "meta": meta, "body": body, "issues": parsed_issues}
@@ -245,6 +250,11 @@ def load_reports():
 def sev_badge(sev, layer=""):
     label = sev.capitalize() + (f" / {layer}" if layer else "")
     return f'<span class="sev sev-{sev}">{html.escape(label)}</span>'
+
+
+def status_badge(status):
+    css = status.replace(" ", "-")
+    return f'<span class="issue-status status-{css}">{html.escape(status.capitalize())}</span>'
 
 
 def reports_html(reports, cands, prefix):
@@ -267,17 +277,18 @@ def reports_html(reports, cands, prefix):
                 issue_href = f'{prefix}reports/{cid}.html#{issue["anchor"]}'
                 candidate = (f'<a href="{prefix}reports/{cid}.html">'
                              f'{html.escape(r["meta"].get("Candidate", c["algorithm"]))}</a> <code>{cid}</code>')
-                status = f'<td class="st">{sev_badge(issue["severity"], issue["layer"])}</td>'
-                issue_cell = (f'<td><a href="{issue_href}"><code>{issue["id"]}</code> '
+                classification = f'<td class="st">{sev_badge(issue["severity"], issue["layer"])}</td>'
+                issue_cell = (f'<td>{status_badge(issue["status"])} '
+                              f'<a href="{issue_href}"><code>{issue["id"]}</code> '
                               f'{html.escape(issue["title"])}</a></td>')
                 if i == 0:
                     span = len(r["issues"])
                     h.append(f'<tr><td rowspan="{span}">{c["no"]}</td>'
                              f'<td rowspan="{span}">{candidate}</td>'
                              f'<td rowspan="{span}" class="family">{html.escape(family)}</td>'
-                             f'{status}{issue_cell}</tr>')
+                             f'{classification}{issue_cell}</tr>')
                 else:
-                    h.append(f'<tr>{status}{issue_cell}</tr>')
+                    h.append(f'<tr>{classification}{issue_cell}</tr>')
         h.append("</tbody></table>")
     return "\n".join(h)
 
@@ -305,8 +316,9 @@ def report_page(r, prefix):
             f'{html.escape(issue["id"])}: {html.escape(issue["title"])}</h2>'
         )
         source_meta = "\n".join(f'{field}: {issue["meta"][field]}' for field in ISSUE_FIELDS)
-        rows = [f'<tr><th>Classification</th><td>{sev_badge(issue["severity"], issue["layer"])}</td></tr>']
-        for field in ISSUE_FIELDS[2:]:
+        rows = [f'<tr><th>Classification</th><td>{sev_badge(issue["severity"], issue["layer"])}</td></tr>',
+                f'<tr><th>Status</th><td>{status_badge(issue["status"])}</td></tr>']
+        for field in ISSUE_FIELDS[3:]:
             value = markdown.markdown(issue["meta"][field])[3:-4]
             rows.append(f'<tr><th>{html.escape(field)}</th><td>{value}</td></tr>')
         issue_table = '<table class="meta issue-meta">\n' + "\n".join(rows) + "\n</table>"

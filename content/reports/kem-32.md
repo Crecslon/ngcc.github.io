@@ -5,7 +5,8 @@ Archive: [QCTM.zip](https://www.niccs.org.cn/niccs/Proposal/Public-Key%20Cryptog
 
 ## kem-32-1: Debug path retains the secret error vector
 
-Severity: High
+Severity: Low
+Status: Confirmed
 Layer: Implementation
 Affected: Reference implementation, all three parameter sets when tracing is enabled
 Discovery: Trivial

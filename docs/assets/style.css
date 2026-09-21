@@ -77,6 +77,11 @@ table.summary td:not(:first-child) { text-align: right; }
 .sev-low { background: var(--sev-low-bg); color: var(--sev-low-fg); }
 .sev-info { background: var(--sev-info-bg); color: var(--sev-info-fg); }
 .sev-none { background: var(--sev-none-bg); color: var(--sev-none-fg); }
+.issue-status { display: inline-block; margin-right: 0.25rem; padding: 0.05em 0.45em;
+  border: 1px solid var(--line); border-radius: 3px; background: var(--head);
+  color: var(--fg); font-size: 0.78rem; font-weight: 600; white-space: nowrap; }
+.status-probable, .status-lead { background: var(--warn-bg); color: var(--warn-fg); }
+.status-proof-gap { background: var(--muted-bg); color: var(--muted); }
 table.reports td.date { white-space: nowrap; font-variant-numeric: tabular-nums; }
 table.reports td:last-child { min-width: 18rem; }
 table.meta { margin: 1rem 0; font-size: 0.9rem; }

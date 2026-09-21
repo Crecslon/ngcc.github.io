@@ -3,11 +3,12 @@ Candidate: MEGASCON
 Family: Symmetric (sponge)
 Archive: [Megascon.zip](https://www.niccs.org.cn/niccs/Proposal/Cryptographic%20Hash%20Algorithms/Round%201%20candidates/Megascon.zip) (SHA-256: `70d0796942e60a1ddd25ad2332dbfe2755052825c301e9585167c90c1fa09d3d`)
 
-## hash-18-1: The 384-bit digest is a prefix of the 512-bit digest
+## hash-18-1: For short messages, the 384-bit digest is a prefix of the 512-bit digest
 
-Severity: High
+Severity: Medium
+Status: Confirmed
 Layer: Design
-Affected: Reference implementation, MEGASCON-384 and MEGASCON-512
+Affected: Specified construction and reference implementation, MEGASCON digest and XOF profiles
 Discovery: Trivial
 Exploitation: Trivial
 Credit: Markku-Juhani O. Saarinen <markku-juhani.saarinen@tuni.fi>, with AI assistance
@@ -24,6 +25,8 @@ MEGASCON-512 returns that exact 48-byte value followed by:
 For every message shorter than 1024 bits, both variants initialize the same zero state, inject identical padded bytes at the same offset, and apply the same 15-round permutation. The digest length or variant identifier is never absorbed; only the amount returned to the caller differs.
 
 The two functions therefore lack cross-variant domain separation and cannot be treated as independent hashes. No explicit specification claim of cross-profile independence was located, so this is reported as a confirmed composition defect rather than a collision-resistance claim violation.
+
+The same missing domain separation affects the XOF profiles. On the audited short messages, the 384- and 512-profile 256-bit XOF outputs are equal, while shorter outputs are prefixes of the longer XOF streams. This follows from the normative zero initialization, common padding and permutation, and `MSB_l` output rule; it is not only a wrapper artifact.
 
 ### Reproducing
 

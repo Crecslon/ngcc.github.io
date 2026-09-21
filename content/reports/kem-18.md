@@ -6,6 +6,7 @@ Archive: [LoongKEM.zip](https://www.niccs.org.cn/niccs/Proposal/Public-Key%20Cry
 ## kem-18-1: Partial rejection mask leaks the candidate shared secret
 
 Severity: Critical
+Status: Confirmed
 Layer: Implementation
 Affected: Reference implementation, all four parameter sets
 Discovery: Trivial

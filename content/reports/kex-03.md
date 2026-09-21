@@ -6,6 +6,7 @@ Archive: [CreTAKE.zip](https://www.niccs.org.cn/niccs/Proposal/Public-Key%20Cryp
 ## kex-03-1: Bits-versus-bytes error reduces the ephemeral secret to 64 bits
 
 Severity: Critical
+Status: Confirmed
 Layer: Implementation
 Affected: Reference implementation, 23 source files including all six S2S instances
 Discovery: Trivial
@@ -26,3 +27,5 @@ The third `pseudoXOF` argument is a bit count, but `SEED_BYTES` is 64. Only the 
 In the six S2S instances, this 64-bit value is the only secret input to the session-key computation. A passive eavesdropper enumerates the `2^64` possible inputs, regenerates the deterministic encryption coins and candidate plaintext, and matches the observed ciphertext. This recovers the session key offline at every claimed 128-, 256-, and 512-bit level.
 
 The same defect reduces the claimed weak forward secrecy of K2S and S2K instances to `2^64` after compromise of the complementary long-term KEM key. This is an implementation error, not a cryptanalytic attack on the specified primitives.
+
+A related initiator-side call passes `SEED_BYTES * 8` as the requested output length but only `SEED_BYTES + SKI_LEN` as the `pseudohash` input bit count. In those instances `SKI_LEN/8 > 56`, so all 64 random bytes are still absorbed and this second units error does not reduce entropy further. It confirms that the bits-versus-bytes confusion is systematic.

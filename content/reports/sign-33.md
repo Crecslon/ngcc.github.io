@@ -6,6 +6,7 @@ Archive: [VDOO.zip](https://www.niccs.org.cn/niccs/Proposal/Public-Key%20Cryptog
 ## sign-33-1: Publicly reproducible signing keys
 
 Severity: Critical
+Status: Confirmed
 Layer: Implementation
 Affected: Reference implementation, all three parameter sets
 Discovery: Trivial
@@ -37,14 +38,15 @@ witnesses and their controls. See `tools/README.md`.
 ## sign-33-2: A 256-bit implementation prehash limits forgery security to 128 bits
 
 Severity: Critical
+Status: Confirmed
 Layer: Implementation
-Affected: VDOO-512 reference wrapper and specification
+Affected: VDOO-256 and VDOO-512 reference wrappers; specification leaves the wrapper prehash undefined
 Discovery: Trivial
 Exploitation: Approximately 2^128 hash evaluations
 Credit: Markku-Juhani O. Saarinen <markku-juhani.saarinen@tuni.fi>, with AI assistance
 Date: 2026-09-21
 
-The VDOO-512 wrapper first hashes every arbitrary-length message to a 32-byte digest and passes only that digest to the specified signing transform. Two messages with the same inner digest therefore produce the same signing input. A generic birthday search costs about `2^128` hash evaluations; after obtaining a signature on one colliding message, the attacker transfers it unchanged to the other.
+The VDOO-256 and VDOO-512 wrappers first hash every arbitrary-length message to a 32-byte digest and pass only that digest to the specified signing transform. Two messages with the same inner digest therefore produce the same signing input. A generic birthday search costs about `2^128` hash evaluations; after obtaining a signature on one colliding message, the attacker transfers it unchanged to the other. This is below both the 256- and 512-bit classical claims.
 
 The specification types its message hash as mapping directly to the MQ target space and does not clearly require this 32-byte truncation. This finding is therefore an implementation/specification conformance break, not a clean property of the normative VDOO design.
 
@@ -54,21 +56,22 @@ The specification types its message hash as mapping directly to the MQ target sp
 python3 security/design_parameter_audit.py
 ```
 
-The `sign-33-2` check traces the 32-byte wrapper prehash in the Level-5 source.
+The `sign-33-2` check traces the 32-byte wrapper prehash in the VDOO-256 and VDOO-512 sources.
 
-## sign-33-3: The Level-5 proof contains a 128-bit salt term
+## sign-33-3: The VDOO-256 and -512 proof bound contains a 128-bit salt term
 
-Severity: High
+Severity: Medium
+Status: Proof gap
 Layer: Design
-Affected: VDOO Level-5 specification and proof
+Affected: VDOO-256 and VDOO-512 specification and proof
 Discovery: Trivial
 Exploitation: Proof gap; not by itself a concrete forgery
 Credit: Markku-Juhani O. Saarinen <markku-juhani.saarinen@tuni.fi>, with AI assistance
 Date: 2026-09-21
 
-The VDOO specification fixes the salt at 16 bytes for Level 5. Its own EUF-CMA bound contains the term `(q_s+q_h)q_s 2^-128`: it is already `2^-127` for one signing and one hash query and becomes order one around `2^64` signing queries.
+The VDOO specification fixes the salt at 16 bytes for both VDOO-256 and VDOO-512. Its own EUF-CMA bound contains the term `(q_s+q_h)q_s 2^-128`: it is already `2^-127` for one signing and one hash query and becomes order one around `2^64` signing queries.
 
-This is a specification-level parameter and proof gap: the stated reduction cannot substantiate 512-bit EUF-CMA security. It is not, by itself, a concrete forgery and is reported separately from `sign-33-2`.
+This is a specification-level parameter and proof gap: the stated reduction cannot substantiate either the 256- or 512-bit EUF-CMA claim. It is not, by itself, a concrete forgery and is reported separately from `sign-33-2`.
 
 ### Reproducing
 
@@ -78,3 +81,30 @@ python3 security/design_parameter_audit.py
 
 The `sign-33-3` check verifies the normative salt length and the corresponding
 term in the submitted EUF-CMA bound.
+
+## sign-33-4: Signing reuses a publicly predictable randomness stream
+
+Severity: Critical
+Status: Confirmed
+Layer: Implementation
+Affected: Reference implementation, all three parameter sets
+Discovery: Trivial
+Exploitation: Repeated-vinegar UOV key-recovery vector
+Credit: Markku-Juhani O. Saarinen <markku-juhani.saarinen@tuni.fi>, with AI assistance
+Date: 2026-09-21
+
+Signing uses the same never-initialized file-local generator identified in `sign-33-1` for the salt, free vinegar variables, and random diagonal solutions. A fresh process therefore restarts a publicly predictable signing-randomness stream. The defect remains even if KeyGen is repaired without also changing signing.
+
+In a UOV-family construction, reuse of vinegar values for different message targets exposes relations in the central equations and is a key-recovery vector. Predictable salts also defeat the proof's assumption that each signing query receives fresh randomness. This finding tracks the signing failure separately from the immediately reproducible signing-key failure in `sign-33-1`.
+
+Signing must initialize a per-operation generator from the API DRNG and domain-separate the randomness used for its salt, vinegar variables, and diagonal solving.
+
+### Reproducing
+
+The three `vdoo_sign.c` implementations obtain salt, vinegar, and diagonal randomness through `get_randombytes` backed by the uninitialized private generator. The permanent witness changes both the API seed and message between fresh processes:
+
+```sh
+tools/reproduce.sh sign-33
+```
+
+It reports identical signing-key and encoded-salt digests. Source inspection shows that the continued same generator stream supplies the vinegar and diagonal randomness as well.

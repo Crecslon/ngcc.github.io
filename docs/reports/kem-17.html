@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>HEP-QC (kem-17) · ngcc.dev</title>
-<link rel="stylesheet" href="../assets/style.css?v=9eeb984b">
+<link rel="stylesheet" href="../assets/style.css?v=27c401c5">
 </head>
 <body>
 <header class="site-header">
@@ -25,6 +25,7 @@
 
 <div class="table-wrap"><table class="meta issue-meta">
 <tr><th>Classification</th><td><span class="sev sev-critical">Critical / implementation</span></td></tr>
+<tr><th>Status</th><td><span class="issue-status status-confirmed">Confirmed</span></td></tr>
 <tr><th>Affected</th><td>Reference implementation, all four parameter sets</td></tr>
 <tr><th>Discovery</th><td>Trivial</td></tr>
 <tr><th>Exploitation</th><td>Trivial</td></tr>
@@ -44,10 +45,11 @@ tools/ngcc_attack keygen-fresh kem-17/lib/libhep-qc-1.so 0x01   # repeat with a 
 </code></pre>
 <p><code>tools/reproduce.sh</code> runs this together with the other supported runtime
 witnesses and their controls. See <code>tools/README.md</code>.</p>
-<h2 class="issue-heading" id="kem-17-2-the-level-5-key-space-has-at-most-256-bits-of-support">kem-17-2: The Level-5 key space has at most 256 bits of support</h2>
+<h2 class="issue-heading" id="kem-17-2-hep-qc-7-has-at-most-256-bits-of-key-generation-support">kem-17-2: HEP-QC-7 has at most 256 bits of key-generation support</h2>
 
 <div class="table-wrap"><table class="meta issue-meta">
 <tr><th>Classification</th><td><span class="sev sev-high">High / design</span></td></tr>
+<tr><th>Status</th><td><span class="issue-status status-confirmed">Confirmed</span></td></tr>
 <tr><th>Affected</th><td>HEP-QC-7 specification</td></tr>
 <tr><th>Discovery</th><td>Trivial</td></tr>
 <tr><th>Exploitation</th><td>Approximately 2^256 key-generation trials</td></tr>
@@ -63,6 +65,27 @@ witnesses and their controls. See <code>tools/README.md</code>.</p>
 <p>Specification evidence is on physical PDF pages 12–14. Run:</p>
 <pre><code class="language-sh">python3 security/design_parameter_audit.py
 </code></pre>
+<h2 class="issue-heading" id="kem-17-3-first-encapsulation-in-each-process-is-publicly-reproducible">kem-17-3: First encapsulation in each process is publicly reproducible</h2>
+
+<div class="table-wrap"><table class="meta issue-meta">
+<tr><th>Classification</th><td><span class="sev sev-critical">Critical / implementation</span></td></tr>
+<tr><th>Status</th><td><span class="issue-status status-confirmed">Confirmed</span></td></tr>
+<tr><th>Affected</th><td>Reference implementation, all four parameter sets</td></tr>
+<tr><th>Discovery</th><td>Trivial</td></tr>
+<tr><th>Exploitation</th><td>Trivial for the first encapsulation in a fresh process</td></tr>
+<tr><th>Credit</th><td>Markku-Juhani O. Saarinen <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#109;&#97;&#114;&#107;&#107;&#117;&#45;&#106;&#117;&#104;&#97;&#110;&#105;&#46;&#115;&#97;&#97;&#114;&#105;&#110;&#101;&#110;&#64;&#116;&#117;&#110;&#105;&#46;&#102;&#105;">&#109;&#97;&#114;&#107;&#107;&#117;&#45;&#106;&#117;&#104;&#97;&#110;&#105;&#46;&#115;&#97;&#97;&#114;&#105;&#110;&#101;&#110;&#64;&#116;&#117;&#110;&#105;&#46;&#102;&#105;</a>, with AI assistance</td></tr>
+<tr><th>Date</th><td>2026-09-21</td></tr>
+</table></div>
+
+<p><code>kem_enc</code> draws both its message <code>m</code> and salt consecutively from the same file-scope SHAKE-256 PRNG context described in <code>kem-17-1</code>. The wrapper never initializes that context from the API-provided DRNG, so it begins in the same zero-initialized state in every fresh process.</p>
+<p>For a fixed public key, the first encapsulation in each fresh process consequently repeats both the ciphertext and shared secret. An attacker can run the public encapsulation algorithm in a fresh process with the recipient's public key and recover the exact first session key produced by another fresh process. Fixing key generation alone does not repair this independent KEM confidentiality failure.</p>
+<p>Every encapsulation operation must obtain fresh entropy from the API DRNG or initialize a per-operation generator from it. Message and salt generation must not use predictable global state.</p>
+<h3 id="reproducing_2">Reproducing</h3>
+<p>Commands below run in a checkout of the <a href="https://github.com/ngcc-dev/ngcc-harness">ngcc-harness repository</a> with the candidate built (see its README).</p>
+<p>In all four parameter sets, <code>kem_enc</code> calls <code>prng_get_bytes(m, ...)</code> and then <code>prng_get_bytes(salt, ...)</code>; the wrapper declares the initialized API DRNG but never uses it. The permanent witness compares fresh processes with different API seeds:</p>
+<pre><code class="language-sh">tools/reproduce.sh kem-17
+</code></pre>
+<p>It reports identical first public-key, ciphertext, and shared-secret digests for HEP-QC. The Aigis-Enc+ control differs across the two seeds.</p>
 </main>
 <footer class="site-footer">
 <p>Built 2026-09-21 · <a href="https://github.com/ngcc-dev/ngcc.github.io">source</a></p>

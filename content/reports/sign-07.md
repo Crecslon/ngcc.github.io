@@ -6,6 +6,7 @@ Archive: [CS.zip](https://www.niccs.org.cn/niccs/Proposal/Public-Key%20Cryptogra
 ## sign-07-1: Trivial signature malleability violates SUF-CMA
 
 Severity: High
+Status: Confirmed
 Layer: Implementation
 Affected: Reference implementation, all three parameter sets
 Discovery: Trivial

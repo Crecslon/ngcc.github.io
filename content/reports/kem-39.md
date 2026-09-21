@@ -5,7 +5,8 @@ Archive: [Weaver.zip](https://www.niccs.org.cn/niccs/Proposal/Public-Key%20Crypt
 
 ## kem-39-1: PRF substream reuse violates the IND-CPA proof's independence premise
 
-Severity: High
+Severity: Medium
+Status: Probable
 Layer: Implementation
 Affected: Reference implementation, all three parameter sets
 Discovery: Non-trivial

@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>CTL (kem-12) · ngcc.dev</title>
-<link rel="stylesheet" href="../assets/style.css?v=9eeb984b">
+<link rel="stylesheet" href="../assets/style.css?v=27c401c5">
 </head>
 <body>
 <header class="site-header">
@@ -25,6 +25,7 @@
 
 <div class="table-wrap"><table class="meta issue-meta">
 <tr><th>Classification</th><td><span class="sev sev-high">High / design</span></td></tr>
+<tr><th>Status</th><td><span class="issue-status status-confirmed">Confirmed</span></td></tr>
 <tr><th>Affected</th><td>CTL-512 specification and reference implementation</td></tr>
 <tr><th>Discovery</th><td>Trivial</td></tr>
 <tr><th>Exploitation</th><td>Approximately 2^256 key-generation trials</td></tr>
@@ -40,10 +41,11 @@
 </code></pre>
 <p>The <code>kem-12-1</code> check verifies the short-key algorithms on physical PDF pages
 24 and 28–36 and the corresponding reference constants.</p>
-<h2 class="issue-heading" id="kem-12-2-the-level-5-implementation-returns-only-384-shared-secret-bits">kem-12-2: The Level-5 implementation returns only 384 shared-secret bits</h2>
+<h2 class="issue-heading" id="kem-12-2-ctl-512-returns-only-384-shared-secret-bits">kem-12-2: CTL-512 returns only 384 shared-secret bits</h2>
 
 <div class="table-wrap"><table class="meta issue-meta">
 <tr><th>Classification</th><td><span class="sev sev-high">High / implementation</span></td></tr>
+<tr><th>Status</th><td><span class="issue-status status-confirmed">Confirmed</span></td></tr>
 <tr><th>Affected</th><td>CTL-512 reference adapter and specification</td></tr>
 <tr><th>Discovery</th><td>Trivial</td></tr>
 <tr><th>Exploitation</th><td>Capacity/conformance defect; no IND-CCA attack demonstrated</td></tr>
@@ -51,13 +53,13 @@
 <tr><th>Date</th><td>2026-09-21</td></tr>
 </table></div>
 
-<p>The CTL-512 adapter returns a 48-byte shared secret and instantiates the ciphertext hash component <code>c2</code> at 48 bytes. The specification assigns 64 bytes to Level-5 <code>c2</code>.</p>
+<p>The CTL-512 adapter returns a 48-byte shared secret and instantiates the ciphertext hash component <code>c2</code> at 48 bytes. The specification assigns 64 bytes to CTL-512 <code>c2</code>.</p>
 <p>The returned key therefore has at most 384 bits of delivered-key capacity and the ciphertext format contradicts the PDF. Output length alone is not an IND-CCA attack, so this second issue is classified as an implementation/specification conformance break rather than a complete KEM confidentiality attack.</p>
 <h3 id="reproducing_1">Reproducing</h3>
 <p>Commands below run in a checkout of the <a href="https://github.com/ngcc-dev/ngcc-harness">ngcc-harness repository</a> with the candidate built (see its README).</p>
 <pre><code class="language-sh">python3 security/design_parameter_audit.py
 </code></pre>
-<p>The <code>kem-12-2</code> check verifies the Level-5 output table and the corresponding
+<p>The <code>kem-12-2</code> check verifies the CTL-512 output table and the corresponding
 reference constants.</p>
 </main>
 <footer class="site-footer">

@@ -5,7 +5,8 @@ Archive: [CHAMP.zip](https://www.niccs.org.cn/niccs/Proposal/Cryptographic%20Has
 
 ## hash-04-1: Fixed-length outputs occupy only one determinant fiber
 
-Severity: High
+Severity: Medium
+Status: Confirmed
 Layer: Design
 Affected: CHAMP-512 and CHAMP-1024 construction and reference implementation
 Discovery: Non-trivial
@@ -19,7 +20,8 @@ An invertible output encoding cannot enlarge that image. The nominal 512- and 10
 
 ## hash-04-2: Projective positive-word collision lead for CHAMP-512
 
-Severity: High
+Severity: Low
+Status: Lead
 Layer: Design
 Affected: CHAMP-512 construction
 Discovery: Non-trivial

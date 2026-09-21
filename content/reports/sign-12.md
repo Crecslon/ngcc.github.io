@@ -6,6 +6,7 @@ Archive: [Galas Signature.zip](https://www.niccs.org.cn/niccs/Proposal/Public-Ke
 ## sign-12-1: Publicly reproducible signing keys
 
 Severity: Critical
+Status: Confirmed
 Layer: Implementation
 Affected: Reference implementation, all submitted parameter sets
 Discovery: Trivial

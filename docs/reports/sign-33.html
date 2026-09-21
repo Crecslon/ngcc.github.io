@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>VDOO (sign-33) · ngcc.dev</title>
-<link rel="stylesheet" href="../assets/style.css?v=9eeb984b">
+<link rel="stylesheet" href="../assets/style.css?v=27c401c5">
 </head>
 <body>
 <header class="site-header">
@@ -25,6 +25,7 @@
 
 <div class="table-wrap"><table class="meta issue-meta">
 <tr><th>Classification</th><td><span class="sev sev-critical">Critical / implementation</span></td></tr>
+<tr><th>Status</th><td><span class="issue-status status-confirmed">Confirmed</span></td></tr>
 <tr><th>Affected</th><td>Reference implementation, all three parameter sets</td></tr>
 <tr><th>Discovery</th><td>Trivial</td></tr>
 <tr><th>Exploitation</th><td>Trivial</td></tr>
@@ -49,39 +50,62 @@ witnesses and their controls. See <code>tools/README.md</code>.</p>
 
 <div class="table-wrap"><table class="meta issue-meta">
 <tr><th>Classification</th><td><span class="sev sev-critical">Critical / implementation</span></td></tr>
-<tr><th>Affected</th><td>VDOO-512 reference wrapper and specification</td></tr>
+<tr><th>Status</th><td><span class="issue-status status-confirmed">Confirmed</span></td></tr>
+<tr><th>Affected</th><td>VDOO-256 and VDOO-512 reference wrappers; specification leaves the wrapper prehash undefined</td></tr>
 <tr><th>Discovery</th><td>Trivial</td></tr>
 <tr><th>Exploitation</th><td>Approximately 2^128 hash evaluations</td></tr>
 <tr><th>Credit</th><td>Markku-Juhani O. Saarinen <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#109;&#97;&#114;&#107;&#107;&#117;&#45;&#106;&#117;&#104;&#97;&#110;&#105;&#46;&#115;&#97;&#97;&#114;&#105;&#110;&#101;&#110;&#64;&#116;&#117;&#110;&#105;&#46;&#102;&#105;">&#109;&#97;&#114;&#107;&#107;&#117;&#45;&#106;&#117;&#104;&#97;&#110;&#105;&#46;&#115;&#97;&#97;&#114;&#105;&#110;&#101;&#110;&#64;&#116;&#117;&#110;&#105;&#46;&#102;&#105;</a>, with AI assistance</td></tr>
 <tr><th>Date</th><td>2026-09-21</td></tr>
 </table></div>
 
-<p>The VDOO-512 wrapper first hashes every arbitrary-length message to a 32-byte digest and passes only that digest to the specified signing transform. Two messages with the same inner digest therefore produce the same signing input. A generic birthday search costs about <code>2^128</code> hash evaluations; after obtaining a signature on one colliding message, the attacker transfers it unchanged to the other.</p>
+<p>The VDOO-256 and VDOO-512 wrappers first hash every arbitrary-length message to a 32-byte digest and pass only that digest to the specified signing transform. Two messages with the same inner digest therefore produce the same signing input. A generic birthday search costs about <code>2^128</code> hash evaluations; after obtaining a signature on one colliding message, the attacker transfers it unchanged to the other. This is below both the 256- and 512-bit classical claims.</p>
 <p>The specification types its message hash as mapping directly to the MQ target space and does not clearly require this 32-byte truncation. This finding is therefore an implementation/specification conformance break, not a clean property of the normative VDOO design.</p>
 <h3 id="reproducing_1">Reproducing</h3>
 <p>Commands below run in a checkout of the <a href="https://github.com/ngcc-dev/ngcc-harness">ngcc-harness repository</a> with the candidate built (see its README).</p>
 <pre><code class="language-sh">python3 security/design_parameter_audit.py
 </code></pre>
-<p>The <code>sign-33-2</code> check traces the 32-byte wrapper prehash in the Level-5 source.</p>
-<h2 class="issue-heading" id="sign-33-3-the-level-5-proof-contains-a-128-bit-salt-term">sign-33-3: The Level-5 proof contains a 128-bit salt term</h2>
+<p>The <code>sign-33-2</code> check traces the 32-byte wrapper prehash in the VDOO-256 and VDOO-512 sources.</p>
+<h2 class="issue-heading" id="sign-33-3-the-vdoo-256-and-512-proof-bound-contains-a-128-bit-salt-term">sign-33-3: The VDOO-256 and -512 proof bound contains a 128-bit salt term</h2>
 
 <div class="table-wrap"><table class="meta issue-meta">
-<tr><th>Classification</th><td><span class="sev sev-high">High / design</span></td></tr>
-<tr><th>Affected</th><td>VDOO Level-5 specification and proof</td></tr>
+<tr><th>Classification</th><td><span class="sev sev-medium">Medium / design</span></td></tr>
+<tr><th>Status</th><td><span class="issue-status status-proof-gap">Proof gap</span></td></tr>
+<tr><th>Affected</th><td>VDOO-256 and VDOO-512 specification and proof</td></tr>
 <tr><th>Discovery</th><td>Trivial</td></tr>
 <tr><th>Exploitation</th><td>Proof gap; not by itself a concrete forgery</td></tr>
 <tr><th>Credit</th><td>Markku-Juhani O. Saarinen <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#109;&#97;&#114;&#107;&#107;&#117;&#45;&#106;&#117;&#104;&#97;&#110;&#105;&#46;&#115;&#97;&#97;&#114;&#105;&#110;&#101;&#110;&#64;&#116;&#117;&#110;&#105;&#46;&#102;&#105;">&#109;&#97;&#114;&#107;&#107;&#117;&#45;&#106;&#117;&#104;&#97;&#110;&#105;&#46;&#115;&#97;&#97;&#114;&#105;&#110;&#101;&#110;&#64;&#116;&#117;&#110;&#105;&#46;&#102;&#105;</a>, with AI assistance</td></tr>
 <tr><th>Date</th><td>2026-09-21</td></tr>
 </table></div>
 
-<p>The VDOO specification fixes the salt at 16 bytes for Level 5. Its own EUF-CMA bound contains the term <code>(q_s+q_h)q_s 2^-128</code>: it is already <code>2^-127</code> for one signing and one hash query and becomes order one around <code>2^64</code> signing queries.</p>
-<p>This is a specification-level parameter and proof gap: the stated reduction cannot substantiate 512-bit EUF-CMA security. It is not, by itself, a concrete forgery and is reported separately from <code>sign-33-2</code>.</p>
+<p>The VDOO specification fixes the salt at 16 bytes for both VDOO-256 and VDOO-512. Its own EUF-CMA bound contains the term <code>(q_s+q_h)q_s 2^-128</code>: it is already <code>2^-127</code> for one signing and one hash query and becomes order one around <code>2^64</code> signing queries.</p>
+<p>This is a specification-level parameter and proof gap: the stated reduction cannot substantiate either the 256- or 512-bit EUF-CMA claim. It is not, by itself, a concrete forgery and is reported separately from <code>sign-33-2</code>.</p>
 <h3 id="reproducing_2">Reproducing</h3>
 <p>Commands below run in a checkout of the <a href="https://github.com/ngcc-dev/ngcc-harness">ngcc-harness repository</a> with the candidate built (see its README).</p>
 <pre><code class="language-sh">python3 security/design_parameter_audit.py
 </code></pre>
 <p>The <code>sign-33-3</code> check verifies the normative salt length and the corresponding
 term in the submitted EUF-CMA bound.</p>
+<h2 class="issue-heading" id="sign-33-4-signing-reuses-a-publicly-predictable-randomness-stream">sign-33-4: Signing reuses a publicly predictable randomness stream</h2>
+
+<div class="table-wrap"><table class="meta issue-meta">
+<tr><th>Classification</th><td><span class="sev sev-critical">Critical / implementation</span></td></tr>
+<tr><th>Status</th><td><span class="issue-status status-confirmed">Confirmed</span></td></tr>
+<tr><th>Affected</th><td>Reference implementation, all three parameter sets</td></tr>
+<tr><th>Discovery</th><td>Trivial</td></tr>
+<tr><th>Exploitation</th><td>Repeated-vinegar UOV key-recovery vector</td></tr>
+<tr><th>Credit</th><td>Markku-Juhani O. Saarinen <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#109;&#97;&#114;&#107;&#107;&#117;&#45;&#106;&#117;&#104;&#97;&#110;&#105;&#46;&#115;&#97;&#97;&#114;&#105;&#110;&#101;&#110;&#64;&#116;&#117;&#110;&#105;&#46;&#102;&#105;">&#109;&#97;&#114;&#107;&#107;&#117;&#45;&#106;&#117;&#104;&#97;&#110;&#105;&#46;&#115;&#97;&#97;&#114;&#105;&#110;&#101;&#110;&#64;&#116;&#117;&#110;&#105;&#46;&#102;&#105;</a>, with AI assistance</td></tr>
+<tr><th>Date</th><td>2026-09-21</td></tr>
+</table></div>
+
+<p>Signing uses the same never-initialized file-local generator identified in <code>sign-33-1</code> for the salt, free vinegar variables, and random diagonal solutions. A fresh process therefore restarts a publicly predictable signing-randomness stream. The defect remains even if KeyGen is repaired without also changing signing.</p>
+<p>In a UOV-family construction, reuse of vinegar values for different message targets exposes relations in the central equations and is a key-recovery vector. Predictable salts also defeat the proof's assumption that each signing query receives fresh randomness. This finding tracks the signing failure separately from the immediately reproducible signing-key failure in <code>sign-33-1</code>.</p>
+<p>Signing must initialize a per-operation generator from the API DRNG and domain-separate the randomness used for its salt, vinegar variables, and diagonal solving.</p>
+<h3 id="reproducing_3">Reproducing</h3>
+<p>Commands below run in a checkout of the <a href="https://github.com/ngcc-dev/ngcc-harness">ngcc-harness repository</a> with the candidate built (see its README).</p>
+<p>The three <code>vdoo_sign.c</code> implementations obtain salt, vinegar, and diagonal randomness through <code>get_randombytes</code> backed by the uninitialized private generator. The permanent witness changes both the API seed and message between fresh processes:</p>
+<pre><code class="language-sh">tools/reproduce.sh sign-33
+</code></pre>
+<p>It reports identical signing-key and encoded-salt digests. Source inspection shows that the continued same generator stream supplies the vinegar and diagonal randomness as well.</p>
 </main>
 <footer class="site-footer">
 <p>Built 2026-09-21 · <a href="https://github.com/ngcc-dev/ngcc.github.io">source</a></p>

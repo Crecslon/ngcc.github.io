@@ -6,6 +6,7 @@ Archive: [AFS-KEX.zip](https://www.niccs.org.cn/niccs/Proposal/Public-Key%20Cryp
 ## kex-02-1: The ephemeral key is generated once as long-term state
 
 Severity: Critical
+Status: Confirmed
 Layer: Implementation
 Affected: Uniform-API reference wrappers, all three parameter sets
 Discovery: Trivial

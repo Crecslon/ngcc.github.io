@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>CEDRUS+C (sign-03) · ngcc.dev</title>
-<link rel="stylesheet" href="../assets/style.css?v=9eeb984b">
+<link rel="stylesheet" href="../assets/style.css?v=27c401c5">
 </head>
 <body>
 <header class="site-header">
@@ -25,6 +25,7 @@
 
 <div class="table-wrap"><table class="meta issue-meta">
 <tr><th>Classification</th><td><span class="sev sev-critical">Critical / implementation</span></td></tr>
+<tr><th>Status</th><td><span class="issue-status status-confirmed">Confirmed</span></td></tr>
 <tr><th>Affected</th><td>Reference implementation, all eight parameter sets</td></tr>
 <tr><th>Discovery</th><td>Trivial</td></tr>
 <tr><th>Exploitation</th><td>Low-query adaptive signature accumulation</td></tr>
@@ -37,7 +38,7 @@
 <p>A same-key experiment with 100 CEDRUSC-160f signatures produced exactly four bottom authentication paths, with multiplicities 23, 25, 26, and 26. The specification models FORS-instance reuse with a probability near <code>1/2^h</code>; the implementation instead repeats few-time FORS and associated WOTS keys after only a handful of signatures.</p>
 <p>An end-to-end adaptive attack collected 1,000 signatures on distinct chosen messages, combined disclosed FORS leaves from different signatures, and found a covered digest for a new message after 2,046 <code>H_MSG</code> trials. Reusing the selected address's fixed hypertree suffix produced a signature accepted by the submitted verifier. The attack completed in about three CPU-minutes.</p>
 <p>This invalidates the submitted concrete-security analysis and enables low-query leaf accumulation and signature reuse attacks. The tree index must be decoded from the digest and every height macro must be parenthesized before use in masks.</p>
-<h3 id="reproduction">Reproduction</h3>
+<h3 id="reproducing">Reproducing</h3>
 <p>Commands below run in a checkout of the <a href="https://github.com/ngcc-dev/ngcc-harness">ngcc-harness repository</a> with the candidate built (see its README).</p>
 <pre><code class="language-sh">make -C sign-03 exploit
 sign-03/reproduce_forgery sign-03/lib/libCEDRUSC-160f.so

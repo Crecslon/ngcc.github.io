@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>UVW (sign-32) · ngcc.dev</title>
-<link rel="stylesheet" href="../assets/style.css?v=9eeb984b">
+<link rel="stylesheet" href="../assets/style.css?v=27c401c5">
 </head>
 <body>
 <header class="site-header">
@@ -25,6 +25,7 @@
 
 <div class="table-wrap"><table class="meta issue-meta">
 <tr><th>Classification</th><td><span class="sev sev-critical">Critical / implementation</span></td></tr>
+<tr><th>Status</th><td><span class="issue-status status-confirmed">Confirmed</span></td></tr>
 <tr><th>Affected</th><td>Reference implementation, all three parameter sets</td></tr>
 <tr><th>Discovery</th><td>Trivial</td></tr>
 <tr><th>Exploitation</th><td>Trivial</td></tr>
@@ -44,6 +45,26 @@ tools/ngcc_attack sig-accept-all sign-32/lib/libUVW-128.so
 </code></pre>
 <p><code>tools/reproduce.sh</code> runs this together with the other supported runtime
 witnesses and their controls. See <code>tools/README.md</code>.</p>
+<h2 class="issue-heading" id="sign-32-2-an-all-zero-signature-crashes-two-verifier-instances">sign-32-2: An all-zero signature crashes two verifier instances</h2>
+
+<div class="table-wrap"><table class="meta issue-meta">
+<tr><th>Classification</th><td><span class="sev sev-high">High / implementation</span></td></tr>
+<tr><th>Status</th><td><span class="issue-status status-confirmed">Confirmed</span></td></tr>
+<tr><th>Affected</th><td>UVW-128 and UVW-256 reference implementations</td></tr>
+<tr><th>Discovery</th><td>Trivial</td></tr>
+<tr><th>Exploitation</th><td>Unauthenticated denial of service</td></tr>
+<tr><th>Credit</th><td>Markku-Juhani O. Saarinen <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#109;&#97;&#114;&#107;&#107;&#117;&#45;&#106;&#117;&#104;&#97;&#110;&#105;&#46;&#115;&#97;&#97;&#114;&#105;&#110;&#101;&#110;&#64;&#116;&#117;&#110;&#105;&#46;&#102;&#105;">&#109;&#97;&#114;&#107;&#107;&#117;&#45;&#106;&#117;&#104;&#97;&#110;&#105;&#46;&#115;&#97;&#97;&#114;&#105;&#110;&#101;&#110;&#64;&#116;&#117;&#110;&#105;&#46;&#102;&#105;</a>, with AI assistance</td></tr>
+<tr><th>Date</th><td>2026-09-21</td></tr>
+</table></div>
+
+<p>Direct verifier calls with a correctly sized all-zero signature crash the UVW-128 and UVW-256 implementations while deserializing or processing the malformed response. Signature verification is normally exposed to unauthenticated input, so this is a remotely triggerable denial of service independent of the universal-forgery return-value error in <code>sign-32-1</code>.</p>
+<p>The unconditional-success wrapper hides ordinary nonzero verification results, but it cannot make a memory fault safe. Verification must validate every decoded length, index, and object before use and return rejection for malformed encodings.</p>
+<h3 id="reproducing_1">Reproducing</h3>
+<p>Commands below run in a checkout of the <a href="https://github.com/ngcc-dev/ngcc-harness">ngcc-harness repository</a> with the candidate built (see its README).</p>
+<p>Run either affected instance through the guarded verifier driver:</p>
+<pre><code class="language-sh">tools/ngcc_attack sig-accept-all sign-32/lib/libUVW-128.so
+</code></pre>
+<p>Its verdict records <code>all-zero signature CRASHED the verifier</code> instead of a normal rejection. UVW-512 did not reproduce this crash and is not included in this finding.</p>
 </main>
 <footer class="site-footer">
 <p>Built 2026-09-21 · <a href="https://github.com/ngcc-dev/ngcc.github.io">source</a></p>

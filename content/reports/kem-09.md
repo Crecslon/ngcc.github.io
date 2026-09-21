@@ -6,6 +6,7 @@ Archive: [CheetahKEM.zip](https://www.niccs.org.cn/niccs/Proposal/Public-Key%20C
 ## kem-09-1: Partial rejection mask leaks the candidate shared secret
 
 Severity: Critical
+Status: Confirmed
 Layer: Implementation
 Affected: Reference implementation, all four parameter sets
 Discovery: Trivial

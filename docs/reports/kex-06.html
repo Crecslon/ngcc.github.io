@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>MAMBA-NIKE (kex-06) · ngcc.dev</title>
-<link rel="stylesheet" href="../assets/style.css?v=9eeb984b">
+<link rel="stylesheet" href="../assets/style.css?v=27c401c5">
 </head>
 <body>
 <header class="site-header">
@@ -21,20 +21,21 @@
 <tr><th>Archive</th><td><a href="https://www.niccs.org.cn/niccs/Proposal/Public-Key%20Cryptographic%20Algorithms/Round%201%20candidates/MAMBA-NIKE.zip">MAMBA-NIKE.zip</a> (SHA-256: <code>79b53ff726121ccb1ce970003c06b605e973c4e4f452dbe780e70cd4c40ca018</code>)</td></tr>
 </table></div>
 
-<h2 class="issue-heading issue-heading-first" id="kex-06-1-the-level-5-static-secret-is-generated-from-only-256-secret-bits">kex-06-1: The Level-5 static secret is generated from only 256 secret bits</h2>
+<h2 class="issue-heading issue-heading-first" id="kex-06-1-mamba-nike-384-and-512-use-only-256-secret-seed-bits">kex-06-1: MAMBA-NIKE-384 and -512 use only 256 secret-seed bits</h2>
 
 <div class="table-wrap"><table class="meta issue-meta">
 <tr><th>Classification</th><td><span class="sev sev-high">High / implementation</span></td></tr>
-<tr><th>Affected</th><td>MAMBA-NIKE-512 reference implementation and specification</td></tr>
+<tr><th>Status</th><td><span class="issue-status status-confirmed">Confirmed</span></td></tr>
+<tr><th>Affected</th><td>MAMBA-NIKE-384 and MAMBA-NIKE-512 reference implementations</td></tr>
 <tr><th>Discovery</th><td>Trivial</td></tr>
 <tr><th>Exploitation</th><td>Approximately 2^256 secret-seed trials</td></tr>
 <tr><th>Credit</th><td>Markku-Juhani O. Saarinen <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#109;&#97;&#114;&#107;&#107;&#117;&#45;&#106;&#117;&#104;&#97;&#110;&#105;&#46;&#115;&#97;&#97;&#114;&#105;&#110;&#101;&#110;&#64;&#116;&#117;&#110;&#105;&#46;&#102;&#105;">&#109;&#97;&#114;&#107;&#107;&#117;&#45;&#106;&#117;&#104;&#97;&#110;&#105;&#46;&#115;&#97;&#97;&#114;&#105;&#110;&#101;&#110;&#64;&#116;&#117;&#110;&#105;&#46;&#102;&#105;</a>, with AI assistance</td></tr>
 <tr><th>Date</th><td>2026-09-21</td></tr>
 </table></div>
 
-<p>The MAMBA-NIKE-512 specification claims 512-bit passive key-exchange security and samples the static secret polynomial from the full centered-binomial distribution. The implementation instead derives that polynomial deterministically from one 32-byte <code>noiseseed</code>.</p>
+<p>The MAMBA-NIKE specification samples each static secret polynomial from the full centered-binomial distribution. The MAMBA-NIKE-384 and MAMBA-NIKE-512 implementations instead derive that polynomial deterministically from one 32-byte <code>noiseseed</code>.</p>
 <p>For the public <code>rho</code> stored with a target key, an attacker can enumerate all <code>2^256</code> noise seeds, regenerate the secret polynomial and public value <code>b</code>, and compare <code>b</code> with the target. A match recovers the static secret. The independent <code>rho</code> seed is public and does not increase the secret-search exponent.</p>
-<p>This is an implementation/specification conformance break, not a limitation of the normative secret distribution.</p>
+<p>This limits both implementations to at most <code>2^256</code> secret-seed trials, below their respective 384- and 512-bit classical claims. It is an implementation/specification conformance break, not a limitation of the normative secret distribution.</p>
 <h3 id="reproducing">Reproducing</h3>
 <p>Commands below run in a checkout of the <a href="https://github.com/ngcc-dev/ngcc-harness">ngcc-harness repository</a> with the candidate built (see its README).</p>
 <pre><code class="language-sh">python3 security/design_parameter_audit.py

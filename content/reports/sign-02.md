@@ -6,6 +6,7 @@ Archive: [BiT.zip](https://www.niccs.org.cn/niccs/Proposal/Public-Key%20Cryptogr
 ## sign-02-1: A 512-bit unsalted message representative caps forgery security at 256 bits
 
 Severity: High
+Status: Confirmed
 Layer: Design
 Affected: BiT-512 specification and reference implementation
 Discovery: Trivial
@@ -25,4 +26,4 @@ This is a specification-level design break of the advertised 512-bit classical E
 python3 security/design_parameter_audit.py
 ```
 
-The check verifies the normative construction and Level-5 parameter on physical PDF pages 18 and 33–34 and the 64-byte source constant.
+The check verifies the normative BiT-512 construction on physical PDF pages 18 and 33–34 and the 64-byte source constant.

@@ -6,6 +6,7 @@ Archive: [SQIsign2D2.zip](https://www.niccs.org.cn/niccs/Proposal/Public-Key%20C
 ## sign-25-1: Verifier verdict is decided by stale stack contents
 
 Severity: Critical
+Status: Confirmed
 Layer: Implementation
 Affected: Level2-eff uncompressed reference implementation
 Discovery: Trivial
@@ -27,11 +28,21 @@ reads whatever the previous call left on the stack. Two independent tests confir
 mechanism: overwriting the stack between calls, and rebuilding the instance with
 `-ftrivial-auto-var-init=zero`, each make both forgeries reject.
 
+`-DNDEBUG` is the candidate's own default release configuration: the shipped sqisign
+Makefiles set `BUILD ?= release` and `RELEASE_CFLAGS := -O2 -DNDEBUG`. The harness mirrors
+that default; it did not introduce the assert removal.
+
 A verifier normally processes signatures one after another, so the accepting state is
 the ordinary one: an attacker can submit an all-zero signature for a message of their
 choice without making any signing query. Acceptance depends on process state rather
 than on the attacker's input, which makes the behaviour unpredictable rather than safe.
 The compressed instance built from the same tree is unaffected.
+
+All eight uncompressed submitted instances were tested with the same primed-versus-
+scrubbed witness. Only Level2-eff uncompressed accepted the forged input; the other
+seven rejected it in both states, as did the compressed Level2-eff control. The unsafe
+assert-as-validation pattern is shared source, but demonstrated acceptance is therefore
+scoped to Level2-eff uncompressed.
 
 The verifier must initialise every value its decision reads, enforce the specified point,
 order and codomain conditions unconditionally rather than through `assert`, and reject
@@ -48,5 +59,5 @@ tools/ngcc_attack sig-uninit-verdict sign-25/lib/libSQISign2Dsquare-Level2-eff_u
 
 The check verifies one all-zero signature twice, once after a genuine verification and
 once after overwriting the stack, and reports the two verdicts. The compressed instance
-is run as a control and rejects both. `tools/reproduce.sh` runs this together with every
-other reported finding and its controls. See `tools/README.md`.
+is run as a control and rejects both. `tools/reproduce.sh` runs this together with the
+other supported runtime witnesses and their controls. See `tools/README.md`.

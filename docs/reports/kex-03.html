@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>CreTAKE (kex-03) · ngcc.dev</title>
-<link rel="stylesheet" href="../assets/style.css?v=9eeb984b">
+<link rel="stylesheet" href="../assets/style.css?v=27c401c5">
 </head>
 <body>
 <header class="site-header">
@@ -25,6 +25,7 @@
 
 <div class="table-wrap"><table class="meta issue-meta">
 <tr><th>Classification</th><td><span class="sev sev-critical">Critical / implementation</span></td></tr>
+<tr><th>Status</th><td><span class="issue-status status-confirmed">Confirmed</span></td></tr>
 <tr><th>Affected</th><td>Reference implementation, 23 source files including all six S2S instances</td></tr>
 <tr><th>Discovery</th><td>Trivial</td></tr>
 <tr><th>Exploitation</th><td>2^64 offline</td></tr>
@@ -39,6 +40,7 @@
 <p>The third <code>pseudoXOF</code> argument is a bit count, but <code>SEED_BYTES</code> is 64. Only the first eight bytes of the 64-byte buffer are absorbed. The correct <code>SEED_BYTES * 8</code> form appears commented out immediately above related call sites. The erroneous pattern occurs in 23 reference source files and is preserved by every submitted test vector.</p>
 <p>In the six S2S instances, this 64-bit value is the only secret input to the session-key computation. A passive eavesdropper enumerates the <code>2^64</code> possible inputs, regenerates the deterministic encryption coins and candidate plaintext, and matches the observed ciphertext. This recovers the session key offline at every claimed 128-, 256-, and 512-bit level.</p>
 <p>The same defect reduces the claimed weak forward secrecy of K2S and S2K instances to <code>2^64</code> after compromise of the complementary long-term KEM key. This is an implementation error, not a cryptanalytic attack on the specified primitives.</p>
+<p>A related initiator-side call passes <code>SEED_BYTES * 8</code> as the requested output length but only <code>SEED_BYTES + SKI_LEN</code> as the <code>pseudohash</code> input bit count. In those instances <code>SKI_LEN/8 &gt; 56</code>, so all 64 random bytes are still absorbed and this second units error does not reduce entropy further. It confirms that the bits-versus-bytes confusion is systematic.</p>
 </main>
 <footer class="site-footer">
 <p>Built 2026-09-21 · <a href="https://github.com/ngcc-dev/ngcc.github.io">source</a></p>

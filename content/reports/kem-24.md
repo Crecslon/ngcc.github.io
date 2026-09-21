@@ -5,7 +5,8 @@ Archive: [MORNING-Scabbard.zip](https://www.niccs.org.cn/niccs/Proposal/Public-K
 
 ## kem-24-1: Encryption omits the specified rounding constant
 
-Severity: High
+Severity: Medium
+Status: Probable
 Layer: Implementation
 Affected: Reference implementation, scabbard128 and scabbard256
 Discovery: Trivial

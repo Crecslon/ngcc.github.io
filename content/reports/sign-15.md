@@ -5,7 +5,8 @@ Archive: [MORNING-ATLAS.zip](https://www.niccs.org.cn/niccs/Proposal/Public-Key%
 
 ## sign-15-1: Returned-length error causes an out-of-bounds heap disclosure
 
-Severity: Critical
+Severity: High
+Status: Confirmed
 Layer: Implementation
 Affected: Reference API and supplied KAT, all four parameter sets
 Discovery: Trivial
@@ -17,11 +18,12 @@ Date: 2026-09-21
 
 The submitters' own KAT does exactly this. In its first records, the out-of-bounds `Sn` field contains allocator bytes followed by 41, 45, 40, and 41 bytes of the adjacent 64-byte KAT seed for the 128-, 192-, 256-, and 512-bit instances. From record 3 onward it includes all 64 seed bytes. That seed deterministically generates the KAT key material.
 
-The KAT format also prints `Seed` and `SK` as separate fields, so these published vectors do not newly expose an otherwise secret value. They nevertheless provide a concrete demonstration that trusting the candidate's returned length discloses adjacent heap data; in another caller the adjacent object may be private. This is a critical API/memory-disclosure defect, distinct from the cryptographic malleability below.
+The KAT format also prints `Seed` and `SK` as separate fields, so these published vectors do not newly expose an otherwise secret value. They nevertheless provide a concrete demonstration that trusting the candidate's returned length discloses adjacent heap data; in another caller the adjacent object may be private. This is a serious API/memory-disclosure defect, distinct from the cryptographic malleability below.
 
 ## sign-15-2: Trivial hint-padding malleability violates SUF-CMA
 
 Severity: High
+Status: Confirmed
 Layer: Implementation
 Affected: Reference implementation, all four parameter sets
 Discovery: Trivial
@@ -35,7 +37,7 @@ For each of `lwrdsa128`, `lwrdsa192`, `lwrdsa256`, and `lwrdsa512`, flipping the
 
 The attack needs only one ordinary valid signature. It does not forge a new message and therefore does not by itself violate EUF-CMA, but it directly violates the specification's SUF-CMA claim.
 
-Verification must reject any noncanonical unused hint slot and enforce all stated hint-weight and ordering constraints. The separate KAT heap over-read and ATLAS-192 parameter shortfall are documented in `security_findings.md` and are not needed for this attack.
+Verification must reject any noncanonical unused hint slot and enforce all stated hint-weight and ordering constraints. The separate heap over-read (`sign-15-1`) and ATLAS-192 parameter shortfall (`sign-15-3`) are reported on this page and are not needed for this attack.
 
 ### Reproducing
 
@@ -54,6 +56,7 @@ overwrites, and requires the byte-distinct signature to verify.
 ## sign-15-3: The ATLAS-192 challenge space is below 192 bits
 
 Severity: High
+Status: Confirmed
 Layer: Implementation
 Affected: ATLAS-192 reference implementation and specification
 Discovery: Trivial
@@ -66,6 +69,8 @@ The submitted ATLAS-192 implementation uses `n=128` and `kappa=64`. Its challeng
 `log2(binomial(128,64) * 2^64) = 188.17143`
 
 bits, below the advertised 192-bit level. The specification instead selects `kappa=69`, which gives about 192.61 bits. This is an implementation-only parameter mismatch, not a defect in the specified parameter set.
+
+The submitted source acknowledges the mismatch directly: `params.h` comments that “KAPPA should be 69 not 64” and attributes the temporary value to an implementation limitation.
 
 ### Reproducing
 

@@ -6,6 +6,7 @@ Archive: [Aigis-Enc+.zip](https://www.niccs.org.cn/niccs/Proposal/Public-Key%20C
 ## kem-01-1: Ineffective implicit rejection breaks IND-CCA security
 
 Severity: Critical
+Status: Confirmed
 Layer: Implementation
 Affected: Reference implementation, all three parameter sets
 Discovery: Trivial
@@ -30,3 +31,24 @@ tools/ngcc_attack kem-ct-flip kem-01/lib/libAigis-enc1.so
 
 `tools/reproduce.sh` runs this together with the other supported runtime
 witnesses and their controls. See `tools/README.md`.
+
+## kem-01-2: Rejection reads a secret before the secret-key object
+
+Severity: High
+Status: Confirmed
+Layer: Implementation
+Affected: Reference implementation, all three parameter sets
+Discovery: Trivial
+Exploitation: Malformed-ciphertext processing invokes an out-of-bounds read; security impact after repairing kem-01-1
+Credit: Markku-Juhani O. Saarinen <markku-juhani.saarinen@tuni.fi>, with AI assistance
+Date: 2026-09-21
+
+The rejection path reads its fallback secret from `sk - SEED_BYTES`, before the start of the caller's secret-key object. Key generation stores that value at `sk + SK_BYTES - SEED_BYTES`. All three submitted `kem.c` files contain the same pointer error.
+
+This is undefined behavior on every rejected ciphertext. In the submitted code, `kem-01-1` prevents the resulting fallback value from replacing the candidate shared secret. Correcting only that write target would expose this second defect: rejection would derive its output from unrelated memory rather than the secret value stored in the key, defeating the intended implicit-rejection construction and potentially faulting under memory-safety instrumentation.
+
+The implementation must read the final `SEED_BYTES` of the secret-key object and must validate the repair independently of `kem-01-1`.
+
+### Reproducing
+
+The defect is directly visible in each reference implementation's `kem.c`: `mkem_dec` passes `sk - SEED_BYTES` to `hash_g`, while `mkem_keygen` stores the rejection secret at `sk + SK_BYTES - SEED_BYTES`.

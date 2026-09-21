@@ -6,6 +6,7 @@ Archive: [MasterCube.zip](https://www.niccs.org.cn/niccs/Proposal/Cryptographic%
 ## hash-17-1: Trivial collisions at every rate boundary
 
 Severity: Critical
+Status: Confirmed
 Layer: Implementation
 Affected: Reference implementation, all three parameter sets
 Discovery: Trivial

@@ -6,6 +6,7 @@ Archive: [cedrus+c.zip](https://www.niccs.org.cn/niccs/Proposal/Public-Key%20Cry
 ## sign-03-1: Hypertree index collapse causes repeated few-time keys
 
 Severity: Critical
+Status: Confirmed
 Layer: Implementation
 Affected: Reference implementation, all eight parameter sets
 Discovery: Trivial
@@ -23,7 +24,7 @@ An end-to-end adaptive attack collected 1,000 signatures on distinct chosen mess
 
 This invalidates the submitted concrete-security analysis and enables low-query leaf accumulation and signature reuse attacks. The tree index must be decoded from the digest and every height macro must be parenthesized before use in masks.
 
-### Reproduction
+### Reproducing
 
 ```sh
 make -C sign-03 exploit

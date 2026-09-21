@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>COMPASS-SIG (sign-06) · ngcc.dev</title>
-<link rel="stylesheet" href="../assets/style.css?v=9eeb984b">
+<link rel="stylesheet" href="../assets/style.css?v=27c401c5">
 </head>
 <body>
 <header class="site-header">
@@ -21,44 +21,46 @@
 <tr><th>Archive</th><td><a href="https://www.niccs.org.cn/niccs/Proposal/Public-Key%20Cryptographic%20Algorithms/Round%201%20candidates/COMPASS-SIG.zip">COMPASS-SIG.zip</a> (SHA-256: <code>ce88066506fe9b58c300b3ca51462c7a8350484d88ad5b8a9c9f17b5152ca820</code>)</td></tr>
 </table></div>
 
-<h2 class="issue-heading issue-heading-first" id="sign-06-1-the-specified-message-representative-caps-forgery-security-at-256-bits">sign-06-1: The specified message representative caps forgery security at 256 bits</h2>
+<h2 class="issue-heading issue-heading-first" id="sign-06-1-the-implemented-message-representative-caps-forgery-security-at-256-bits">sign-06-1: The implemented message representative caps forgery security at 256 bits</h2>
 
 <div class="table-wrap"><table class="meta issue-meta">
-<tr><th>Classification</th><td><span class="sev sev-high">High / design</span></td></tr>
-<tr><th>Affected</th><td>COMPASS-SIG-512 specification and reference implementation</td></tr>
+<tr><th>Classification</th><td><span class="sev sev-high">High / implementation</span></td></tr>
+<tr><th>Status</th><td><span class="issue-status status-confirmed">Confirmed</span></td></tr>
+<tr><th>Affected</th><td>COMPASS-SIG-384 and COMPASS-SIG-512 reference implementations; specification leaves the hash length undefined</td></tr>
 <tr><th>Discovery</th><td>Trivial</td></tr>
 <tr><th>Exploitation</th><td>Approximately 2^256 hash evaluations</td></tr>
 <tr><th>Credit</th><td>Markku-Juhani O. Saarinen <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#109;&#97;&#114;&#107;&#107;&#117;&#45;&#106;&#117;&#104;&#97;&#110;&#105;&#46;&#115;&#97;&#97;&#114;&#105;&#110;&#101;&#110;&#64;&#116;&#117;&#110;&#105;&#46;&#102;&#105;">&#109;&#97;&#114;&#107;&#107;&#117;&#45;&#106;&#117;&#104;&#97;&#110;&#105;&#46;&#115;&#97;&#97;&#114;&#105;&#110;&#101;&#110;&#64;&#116;&#117;&#110;&#105;&#46;&#102;&#105;</a>, with AI assistance</td></tr>
 <tr><th>Date</th><td>2026-09-21</td></tr>
 </table></div>
 
-<p>COMPASS-SIG-512 claims 512-bit classical security and binds the message through the unsalted value <code>mu = H(pk || m)</code>, instantiated as 64 bytes. A generic collision in this fixed 512-bit representative costs about <code>2^256</code> evaluations.</p>
-<p>An attacker finds two messages that collide under the target public key, obtains a signature on one, and transfers it to the other. This specification-level construction therefore cannot provide 512-bit classical EUF-CMA security regardless of the lattice parameters.</p>
+<p>COMPASS-SIG binds the message through the unsalted value <code>mu = H(pk || m)</code>, but the PDF does not define <code>H</code>'s output length. The COMPASS-SIG-384 and COMPASS-SIG-512 implementations instantiate <code>mu</code> as 64 bytes. A generic collision in this fixed 512-bit representative costs about <code>2^256</code> evaluations.</p>
+<p>An attacker finds two messages that collide under the target public key, obtains a signature on one, and transfers it to the other. The source choice caps both implementations below their respective 384- and 512-bit classical EUF-CMA claims. Because the PDF leaves the hash length unspecified, this is classified as an implementation ceiling and specification omission rather than a clean design parameter.</p>
 <h3 id="reproducing">Reproducing</h3>
 <p>Commands below run in a checkout of the <a href="https://github.com/ngcc-dev/ngcc-harness">ngcc-harness repository</a> with the candidate built (see its README).</p>
 <pre><code class="language-sh">python3 security/design_parameter_audit.py
 </code></pre>
 <p>The <code>sign-06-1</code> check verifies the construction on physical PDF pages 5 and
-8–10 and the submitted Level-5 constants.</p>
+8–10 and the submitted 384- and 512-bit constants.</p>
 <h2 class="issue-heading" id="sign-06-2-the-implementation-expands-the-entire-key-pair-from-a-256-bit-root">sign-06-2: The implementation expands the entire key pair from a 256-bit root</h2>
 
 <div class="table-wrap"><table class="meta issue-meta">
 <tr><th>Classification</th><td><span class="sev sev-high">High / implementation</span></td></tr>
-<tr><th>Affected</th><td>COMPASS-SIG-512 reference implementation and specification</td></tr>
+<tr><th>Status</th><td><span class="issue-status status-confirmed">Confirmed</span></td></tr>
+<tr><th>Affected</th><td>COMPASS-SIG-384 and COMPASS-SIG-512 reference implementations and specification</td></tr>
 <tr><th>Discovery</th><td>Trivial</td></tr>
 <tr><th>Exploitation</th><td>Approximately 2^256 key-generation trials</td></tr>
 <tr><th>Credit</th><td>Markku-Juhani O. Saarinen <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#109;&#97;&#114;&#107;&#107;&#117;&#45;&#106;&#117;&#104;&#97;&#110;&#105;&#46;&#115;&#97;&#97;&#114;&#105;&#110;&#101;&#110;&#64;&#116;&#117;&#110;&#105;&#46;&#102;&#105;">&#109;&#97;&#114;&#107;&#107;&#117;&#45;&#106;&#117;&#104;&#97;&#110;&#105;&#46;&#115;&#97;&#97;&#114;&#105;&#110;&#101;&#110;&#64;&#116;&#117;&#110;&#105;&#46;&#102;&#105;</a>, with AI assistance</td></tr>
 <tr><th>Date</th><td>2026-09-21</td></tr>
 </table></div>
 
-<p>The COMPASS-SIG specification requires an <code>n</code>-bit KeyGen seed and sets <code>n=512</code> at Level 5. The implementation instead draws one 32-byte root and deterministically expands the complete key pair from it.</p>
-<p>The generated public-key support is at most <code>2^256</code>; exhaustive root enumeration and public-key matching recovers a target signing key in at most that many trials. This second issue is an implementation/specification conformance break.</p>
+<p>The COMPASS-SIG specification requires an <code>n</code>-bit KeyGen seed. The 384- and 512-bit implementations instead draw one 32-byte root and deterministically expand the complete key pair from it.</p>
+<p>The generated public-key support is at most <code>2^256</code>; exhaustive root enumeration and public-key matching recovers a target signing key in at most that many trials. This is below both implementations' classical claims and is an implementation/specification conformance break.</p>
 <h3 id="reproducing_1">Reproducing</h3>
 <p>Commands below run in a checkout of the <a href="https://github.com/ngcc-dev/ngcc-harness">ngcc-harness repository</a> with the candidate built (see its README).</p>
 <pre><code class="language-sh">python3 security/design_parameter_audit.py
 </code></pre>
 <p>The <code>sign-06-2</code> check verifies the KeyGen seed on physical PDF pages 7 and 13
-and the submitted Level-5 constants.</p>
+and the submitted 384- and 512-bit constants.</p>
 </main>
 <footer class="site-footer">
 <p>Built 2026-09-21 · <a href="https://github.com/ngcc-dev/ngcc.github.io">source</a></p>

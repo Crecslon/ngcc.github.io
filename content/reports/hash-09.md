@@ -6,6 +6,7 @@ Archive: [Eijen.zip](https://www.niccs.org.cn/niccs/Proposal/Cryptographic%20Has
 ## hash-09-1: Trivial collisions in all Eijen implementations
 
 Severity: Critical
+Status: Confirmed
 Layer: Implementation
 Affected: Reference implementation, all five parameter sets
 Discovery: Trivial
@@ -24,11 +25,11 @@ Both produce:
 
 The bit length is essential: hex `00` with length 8 bits is a different message.
 
-The collision is caused by an implementation bug, not by the specified construction. The specification requires injective `pad10*` padding, `M || 1 || 0^k`. Eijen processes message bits MSB-first, so the padding byte following a byte-aligned message must begin with `0x80`.
+The collision comes from mixing two bit-order conventions. For a byte-aligned message, the implementation writes `0x01`, following the specification's LSB-first worked example: physical PDF pages 24–25 encode padded `abc` as the bytes `61 62 63 01 ...`. The submitted KATs depend on this convention.
 
-Instead, the byte-aligned path writes `0x01`. The partial-byte path correctly computes `0x80 >> partial_bits`; after seven explicit zero bits, this also produces `0x01`. The two distinct messages therefore have identical padded representations.
+For a partial final byte, however, the implementation uses `0x80 >> partial_bits`, following the uniform API's MSB-first convention for significant bits. After seven explicit zero bits this path also writes `0x01`, so the distinct messages have identical padded representations.
 
-More generally, for every byte-aligned message `M`, `H(M) = H(M || 0^7)`. The defect affects all five submitted parameter sets. Replacing `0x01` with `0x80` in the byte-aligned padding path removes this collision. The implementation violates the specification's collision-resistance claims, but the defect is not inherent in the specified design.
+More generally, for every byte-aligned message `M`, `H(M) = H(M || 0^7)`. The defect affects all five submitted parameter sets. Simply replacing byte-aligned `0x01` with `0x80` would change every byte-aligned digest, contradict the specification's worked example, and break the KATs. Repair requires one consistent bit-order convention across the specification, API, implementation, and test vectors, with an injective encoding for every bit length.
 
 ### Reproducing
 

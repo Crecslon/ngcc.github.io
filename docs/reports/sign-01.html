@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Aigis-Sig+ (sign-01) · ngcc.dev</title>
-<link rel="stylesheet" href="../assets/style.css?v=9eeb984b">
+<link rel="stylesheet" href="../assets/style.css?v=27c401c5">
 </head>
 <body>
 <header class="site-header">
@@ -25,6 +25,7 @@
 
 <div class="table-wrap"><table class="meta issue-meta">
 <tr><th>Classification</th><td><span class="sev sev-high">High / implementation</span></td></tr>
+<tr><th>Status</th><td><span class="issue-status status-confirmed">Confirmed</span></td></tr>
 <tr><th>Affected</th><td>Reference implementation, all three parameter sets</td></tr>
 <tr><th>Discovery</th><td>Trivial</td></tr>
 <tr><th>Exploitation</th><td>Trivial</td></tr>
@@ -44,6 +45,27 @@ tools/ngcc_attack sig-malleable sign-01/lib/libAigis-sig1.so
 </code></pre>
 <p><code>tools/reproduce.sh</code> runs this together with the other supported runtime
 witnesses and their controls. See <code>tools/README.md</code>.</p>
+<h2 class="issue-heading" id="sign-01-2-malformed-hint-counts-cause-an-attacker-controlled-stack-write">sign-01-2: Malformed hint counts cause an attacker-controlled stack write</h2>
+
+<div class="table-wrap"><table class="meta issue-meta">
+<tr><th>Classification</th><td><span class="sev sev-critical">Critical / implementation</span></td></tr>
+<tr><th>Status</th><td><span class="issue-status status-confirmed">Confirmed</span></td></tr>
+<tr><th>Affected</th><td>Reference implementation, all three parameter sets</td></tr>
+<tr><th>Discovery</th><td>Trivial</td></tr>
+<tr><th>Exploitation</th><td>Unauthenticated denial of service; stronger memory-corruption impact is platform-dependent</td></tr>
+<tr><th>Credit</th><td>Markku-Juhani O. Saarinen <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#109;&#97;&#114;&#107;&#107;&#117;&#45;&#106;&#117;&#104;&#97;&#110;&#105;&#46;&#115;&#97;&#97;&#114;&#105;&#110;&#101;&#110;&#64;&#116;&#117;&#110;&#105;&#46;&#102;&#105;">&#109;&#97;&#114;&#107;&#107;&#117;&#45;&#106;&#117;&#104;&#97;&#110;&#105;&#46;&#115;&#97;&#97;&#114;&#105;&#110;&#101;&#110;&#64;&#116;&#117;&#110;&#105;&#46;&#102;&#105;</a>, with AI assistance</td></tr>
+<tr><th>Date</th><td>2026-09-21</td></tr>
+</table></div>
+
+<p><code>unpack_h</code> reads the first attacker-controlled hint byte into <code>max</code> and uses it without checking the fixed capacity of the stack array <code>t</code>. It then sums attacker-controlled decoded counts into <code>k</code>, calls <code>unpack6bits(pos, sm, k)</code> without checking the <code>OMEGA</code>-element stack array <code>pos</code>, and uses the decoded positions as coefficient indices.</p>
+<p>The exhaustive signature-bit reproducer reaches this field and triggers <code>*** stack smashing detected ***</code> during verification; for Aigis-sig1, signature bit 15617 is one confirmed crashing input. Because verification processes unauthenticated signatures, this is a remotely reachable stack-buffer overflow in the submitted API, distinct from the noncanonical-signature malleability in <code>sign-01-1</code>.</p>
+<p>The decoder must reject <code>max</code> beyond <code>PARAM_K * PARAM_N / SEC</code>, reject cumulative counts beyond <code>OMEGA</code>, validate every encoded position before indexing a polynomial, and validate the encoded input length before every read.</p>
+<h3 id="reproducing_1">Reproducing</h3>
+<p>Commands below run in a checkout of the <a href="https://github.com/ngcc-dev/ngcc-harness">ngcc-harness repository</a> with the candidate built (see its README).</p>
+<pre><code class="language-sh">make -C api harness &amp;&amp; make -C tools &amp;&amp; make -C sign-01
+tools/ngcc_attack sig-malleable sign-01/lib/libAigis-sig1.so
+</code></pre>
+<p>The command reports both the accepted noncanonical flips for <code>sign-01-1</code> and the number of flips that crash the verifier. The source defect is shared by the three submitted parameter sets.</p>
 </main>
 <footer class="site-footer">
 <p>Built 2026-09-21 · <a href="https://github.com/ngcc-dev/ngcc.github.io">source</a></p>

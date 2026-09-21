@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>TSUOV (sign-31) · ngcc.dev</title>
-<link rel="stylesheet" href="../assets/style.css?v=9eeb984b">
+<link rel="stylesheet" href="../assets/style.css?v=27c401c5">
 </head>
 <body>
 <header class="site-header">
@@ -25,6 +25,7 @@
 
 <div class="table-wrap"><table class="meta issue-meta">
 <tr><th>Classification</th><td><span class="sev sev-high">High / design</span></td></tr>
+<tr><th>Status</th><td><span class="issue-status status-confirmed">Confirmed</span></td></tr>
 <tr><th>Affected</th><td>TSUOV-512 specification and reference implementation</td></tr>
 <tr><th>Discovery</th><td>Trivial</td></tr>
 <tr><th>Exploitation</th><td>Approximately 2^256 hash evaluations</td></tr>
@@ -33,13 +34,13 @@
 </table></div>
 
 <p>TSUOV-512 claims 512-bit classical security and specifies <code>mu = Expand_mu(seed_pk || M)</code> as a 512-bit pseudohash. Only afterward does it hash <code>mu || salt</code> to the MQ target.</p>
-<p>A generic collision in <code>Expand_mu</code> costs about <code>2^256</code> evaluations. The two colliding messages have the same <code>mu</code>, so the later salt produces the same target for both and a requested signature transfers unchanged. The PDF's own EUF-CMA bound includes a digest-collision term but does not reconcile this birthday ceiling with its claimed Level-5 security.</p>
+<p>A generic collision in <code>Expand_mu</code> costs about <code>2^256</code> evaluations. The two colliding messages have the same <code>mu</code>, so the later salt produces the same target for both and a requested signature transfers unchanged. The PDF's own EUF-CMA bound includes a digest-collision term but does not reconcile this birthday ceiling with its claimed 512-bit classical security.</p>
 <p>This is a specification-level design break, not an implementation-only truncation.</p>
 <h3 id="reproducing">Reproducing</h3>
 <p>Commands below run in a checkout of the <a href="https://github.com/ngcc-dev/ngcc-harness">ngcc-harness repository</a> with the candidate built (see its README).</p>
 <pre><code class="language-sh">python3 security/design_parameter_audit.py
 </code></pre>
-<p>The check verifies the Level-5 construction on physical PDF pages 18–21 and 27–29 and the submitted 64-byte <code>mu</code> constant.</p>
+<p>The check verifies the TSUOV-512 construction on physical PDF pages 18–21 and 27–29 and the submitted 64-byte <code>mu</code> constant.</p>
 </main>
 <footer class="site-footer">
 <p>Built 2026-09-21 · <a href="https://github.com/ngcc-dev/ngcc.github.io">source</a></p>

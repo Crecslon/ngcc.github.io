@@ -5,7 +5,8 @@ Archive: [NEV-AKE.zip](https://www.niccs.org.cn/niccs/Proposal/Public-Key%20Cryp
 
 ## kex-07-1: Both party identities are hard-wired to zero
 
-Severity: High
+Severity: Medium
+Status: Confirmed
 Layer: Implementation
 Affected: Uniform-API reference wrappers, all nine parameter sets
 Discovery: Trivial
@@ -14,6 +15,8 @@ Credit: Markku-Juhani O. Saarinen <markku-juhani.saarinen@tuni.fi>, with AI assi
 Date: 2026-09-21
 
 Every submitted `kat_test/KEX_AlgorithmInstance.c` allocates the initiator and responder identities as all-zero `SEED_BYTES` arrays. The wrappers pass those constants into responder processing and initiator key derivation for all nine profiles.
+
+The official `KEX_AlgorithmInstance.h` API exposes no identity argument, so the wrapper had no channel through which an application could supply the modeled identities. A sound integration could instead derive stable identities from the parties' public keys; hard-wiring both to zero removes the binding entirely.
 
 The core `ake.c` code hashes both identities into the session-key computations, and the specification's CK+ model distinguishes the session holder and peer identities `i` and `j`. The wrapper therefore collapses every deployment and every pair of parties onto one fixed identity pair instead of instantiating the protocol's modeled identity binding.
 

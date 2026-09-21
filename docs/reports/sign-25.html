@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>SQIsign2D2 (sign-25) · ngcc.dev</title>
-<link rel="stylesheet" href="../assets/style.css?v=9eeb984b">
+<link rel="stylesheet" href="../assets/style.css?v=27c401c5">
 </head>
 <body>
 <header class="site-header">
@@ -25,6 +25,7 @@
 
 <div class="table-wrap"><table class="meta issue-meta">
 <tr><th>Classification</th><td><span class="sev sev-critical">Critical / implementation</span></td></tr>
+<tr><th>Status</th><td><span class="issue-status status-confirmed">Confirmed</span></td></tr>
 <tr><th>Affected</th><td>Level2-eff uncompressed reference implementation</td></tr>
 <tr><th>Discovery</th><td>Trivial</td></tr>
 <tr><th>Exploitation</th><td>Trivial</td></tr>
@@ -44,11 +45,19 @@ chain leaves its codomain partly unwritten, and the final j-invariant comparison
 reads whatever the previous call left on the stack. Two independent tests confirm the
 mechanism: overwriting the stack between calls, and rebuilding the instance with
 <code>-ftrivial-auto-var-init=zero</code>, each make both forgeries reject.</p>
+<p><code>-DNDEBUG</code> is the candidate's own default release configuration: the shipped sqisign
+Makefiles set <code>BUILD ?= release</code> and <code>RELEASE_CFLAGS := -O2 -DNDEBUG</code>. The harness mirrors
+that default; it did not introduce the assert removal.</p>
 <p>A verifier normally processes signatures one after another, so the accepting state is
 the ordinary one: an attacker can submit an all-zero signature for a message of their
 choice without making any signing query. Acceptance depends on process state rather
 than on the attacker's input, which makes the behaviour unpredictable rather than safe.
 The compressed instance built from the same tree is unaffected.</p>
+<p>All eight uncompressed submitted instances were tested with the same primed-versus-
+scrubbed witness. Only Level2-eff uncompressed accepted the forged input; the other
+seven rejected it in both states, as did the compressed Level2-eff control. The unsafe
+assert-as-validation pattern is shared source, but demonstrated acceptance is therefore
+scoped to Level2-eff uncompressed.</p>
 <p>The verifier must initialise every value its decision reads, enforce the specified point,
 order and codomain conditions unconditionally rather than through <code>assert</code>, and reject
 zero or malformed decoded responses before protocol verification.</p>
@@ -60,8 +69,8 @@ tools/ngcc_attack sig-uninit-verdict sign-25/lib/libSQISign2Dsquare-Level2-eff_u
 </code></pre>
 <p>The check verifies one all-zero signature twice, once after a genuine verification and
 once after overwriting the stack, and reports the two verdicts. The compressed instance
-is run as a control and rejects both. <code>tools/reproduce.sh</code> runs this together with every
-other reported finding and its controls. See <code>tools/README.md</code>.</p>
+is run as a control and rejects both. <code>tools/reproduce.sh</code> runs this together with the
+other supported runtime witnesses and their controls. See <code>tools/README.md</code>.</p>
 </main>
 <footer class="site-footer">
 <p>Built 2026-09-21 · <a href="https://github.com/ngcc-dev/ngcc.github.io">source</a></p>

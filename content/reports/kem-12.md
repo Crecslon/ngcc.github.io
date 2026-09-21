@@ -6,6 +6,7 @@ Archive: [CTL.zip](https://www.niccs.org.cn/niccs/Proposal/Public-Key%20Cryptogr
 ## kem-12-1: The specified CTL-512 public-key space has at most 256 bits of support
 
 Severity: High
+Status: Confirmed
 Layer: Design
 Affected: CTL-512 specification and reference implementation
 Discovery: Trivial
@@ -26,9 +27,10 @@ python3 security/design_parameter_audit.py
 The `kem-12-1` check verifies the short-key algorithms on physical PDF pages
 24 and 28–36 and the corresponding reference constants.
 
-## kem-12-2: The Level-5 implementation returns only 384 shared-secret bits
+## kem-12-2: CTL-512 returns only 384 shared-secret bits
 
 Severity: High
+Status: Confirmed
 Layer: Implementation
 Affected: CTL-512 reference adapter and specification
 Discovery: Trivial
@@ -36,7 +38,7 @@ Exploitation: Capacity/conformance defect; no IND-CCA attack demonstrated
 Credit: Markku-Juhani O. Saarinen <markku-juhani.saarinen@tuni.fi>, with AI assistance
 Date: 2026-09-21
 
-The CTL-512 adapter returns a 48-byte shared secret and instantiates the ciphertext hash component `c2` at 48 bytes. The specification assigns 64 bytes to Level-5 `c2`.
+The CTL-512 adapter returns a 48-byte shared secret and instantiates the ciphertext hash component `c2` at 48 bytes. The specification assigns 64 bytes to CTL-512 `c2`.
 
 The returned key therefore has at most 384 bits of delivered-key capacity and the ciphertext format contradicts the PDF. Output length alone is not an IND-CCA attack, so this second issue is classified as an implementation/specification conformance break rather than a complete KEM confidentiality attack.
 
@@ -46,5 +48,5 @@ The returned key therefore has at most 384 bits of delivered-key capacity and th
 python3 security/design_parameter_audit.py
 ```
 
-The `kem-12-2` check verifies the Level-5 output table and the corresponding
+The `kem-12-2` check verifies the CTL-512 output table and the corresponding
 reference constants.
