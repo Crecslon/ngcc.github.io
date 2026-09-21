@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AFS-KEX (kex-02) · ngcc.dev</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+<header class="site-header">
+<a class="brand" href="../index.html">ngcc.dev</a>
+<nav><a href="../index.html">Home</a><a href="../reports/index.html">Reports</a></nav>
+</header>
+<main>
+<p class="crumb"><a href="../reports/index.html">Reports</a> › <code>kex-02</code></p>
+
+<h1 id="afs-kex-kex-02">AFS-KEX (kex-02)</h1>
+<div class="table-wrap"><table class="meta">
+<tr><th>Candidate</th><td>AFS-KEX</td></tr>
+<tr><th>Scope</th><td>Uniform-API reference wrappers, all three parameter sets</td></tr>
+<tr><th>Severity</th><td><span class="sev sev-critical">Critical</span></td></tr>
+<tr><th>Discovery</th><td>Trivial</td></tr>
+<tr><th>Exploitation</th><td>Trivial after later long-term-key compromise</td></tr>
+<tr><th>Date</th><td>2026-09-21</td></tr>
+<tr><th>Credit</th><td>Markku-Juhani O. Saarinen <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#109;&#97;&#114;&#107;&#107;&#117;&#45;&#106;&#117;&#104;&#97;&#110;&#105;&#46;&#115;&#97;&#97;&#114;&#105;&#110;&#101;&#110;&#64;&#116;&#117;&#110;&#105;&#46;&#102;&#105;">&#109;&#97;&#114;&#107;&#107;&#117;&#45;&#106;&#117;&#104;&#97;&#110;&#105;&#46;&#115;&#97;&#97;&#114;&#105;&#110;&#101;&#110;&#64;&#116;&#117;&#110;&#105;&#46;&#102;&#105;</a>, with AI assistance</td></tr>
+<tr><th>Archive</th><td>orig/kex-02/orig.zip (SHA-256: <code>7d902107b74870e512c84da82c6bfb386633ca864ddc7df2f7b0b183511f983a</code>)</td></tr>
+</table></div>
+
+<h2 id="the-ephemeral-key-is-generated-once-as-long-term-state">The ephemeral key is generated once as long-term state</h2>
+<p>The specification requires fresh AFS ephemeral key material for each session and claims completed-session forward secrecy after later compromise of long-term keys.</p>
+<p>The uniform wrapper instead generates <code>seed_e</code> and calls the ephemeral key generator inside <code>kex_init_self</code>. It embeds the resulting <code>pk_e/sk_e</code> into the composite public and secret keys returned as the party's long-term material and stores <code>seed_e</code> in the persistent state. Later pass functions reuse that material and never generate a fresh per-session ephemeral key.</p>
+<p>Reusing an initialized party therefore reuses the contribution on which the forward-secrecy argument depends. A later compromise of the returned composite long-term secret also reveals the supposedly ephemeral secret used by earlier sessions, directly invalidating the submitted PFS claim.</p>
+<p>Ephemeral AFS keys must be generated for each protocol execution, kept outside long-term key serialization, and erased when the session completes.</p>
+</main>
+<footer class="site-footer">
+<p>Built 2026-09-21 · <a href="https://github.com/ngcc-dev/ngcc.github.io">source</a></p>
+</footer>
+</body>
+</html>

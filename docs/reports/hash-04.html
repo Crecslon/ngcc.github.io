@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CHAMP (hash-04) · ngcc.dev</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+<header class="site-header">
+<a class="brand" href="../index.html">ngcc.dev</a>
+<nav><a href="../index.html">Home</a><a href="../reports/index.html">Reports</a></nav>
+</header>
+<main>
+<p class="crumb"><a href="../reports/index.html">Reports</a> › <code>hash-04</code></p>
+
+<h1 id="champ-hash-04">CHAMP (hash-04)</h1>
+<div class="table-wrap"><table class="meta">
+<tr><th>Candidate</th><td>CHAMP</td></tr>
+<tr><th>Scope</th><td>Construction and reference implementation, CHAMP-512 and CHAMP-1024</td></tr>
+<tr><th>Severity</th><td><span class="sev sev-high">High</span></td></tr>
+<tr><th>Discovery</th><td>Non-trivial</td></tr>
+<tr><th>Exploitation</th><td>Approximately 2^64 for CHAMP-512 (heuristic, not yet instantiated)</td></tr>
+<tr><th>Date</th><td>2026-09-21</td></tr>
+<tr><th>Credit</th><td>Markku-Juhani O. Saarinen <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#109;&#97;&#114;&#107;&#107;&#117;&#45;&#106;&#117;&#104;&#97;&#110;&#105;&#46;&#115;&#97;&#97;&#114;&#105;&#110;&#101;&#110;&#64;&#116;&#117;&#110;&#105;&#46;&#102;&#105;">&#109;&#97;&#114;&#107;&#107;&#117;&#45;&#106;&#117;&#104;&#97;&#110;&#105;&#46;&#115;&#97;&#97;&#114;&#105;&#110;&#101;&#110;&#64;&#116;&#117;&#110;&#105;&#46;&#102;&#105;</a>, with AI assistance</td></tr>
+<tr><th>Archive</th><td>orig/hash-04/orig.zip (SHA-256: <code>8953f95618236d8d86191992b10e3580ae74520c28a36a715c2fc8bea2a9e8c1</code>)</td></tr>
+</table></div>
+
+<h2 id="fixed-length-outputs-occupy-only-one-determinant-fiber">Fixed-length outputs occupy only one determinant fiber</h2>
+<p>CHAMP hashes a bit string by multiplying two public <code>2 x 2</code> matrices. Both generators have determinant 2, so every message of a fixed bit length <code>n</code> has determinant <code>2^n</code>. All fixed-length outputs therefore lie in one determinant fiber of size exactly <code>p(p^2-1)</code>, approximately <code>p^3</code>, rather than the full approximately <code>p^4</code> matrix space.</p>
+<p>An invertible output encoding cannot enlarge that image. The nominal 512- and 1024-bit outputs consequently have at most approximately 384 and 768 bits of fixed-length image entropy, with generic birthday scales no greater than approximately <code>2^192</code> and <code>2^384</code> if the walk mixes. This does not contradict the specification's explicit unequal-length theorem, but it probably contradicts a natural 256/512-bit same-length collision-strength interpretation.</p>
+<h2 id="projective-positive-word-collision-lead-for-champ-512">Projective positive-word collision lead for CHAMP-512</h2>
+<p>Because <code>p = 7 mod 8</code>, 2 is a square. Scaling both generators by the inverse square root of 2 normalizes them into <code>SL2</code> without changing equal-length collisions. The exact generators satisfy <code>det(AB-BA)=2</code>, so they have no shared projective eigenline.</p>
+<p>The Mullan-Tsaban general-generator heuristic then suggests positive-word collisions in approximately <code>sqrt(p)</code> work, around <code>2^64</code> for CHAMP-512. Its proven special case does not directly apply because <code>det(A-B)=-5</code>, so this remains a probable attack lead rather than a demonstrated collision. It should not be described as confirmed until instantiated against the exact generators.</p>
+</main>
+<footer class="site-footer">
+<p>Built 2026-09-21 · <a href="https://github.com/ngcc-dev/ngcc.github.io">source</a></p>
+</footer>
+</body>
+</html>

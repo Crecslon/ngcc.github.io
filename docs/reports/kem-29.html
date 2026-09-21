@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Polar-KEM (kem-29) · ngcc.dev</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+<header class="site-header">
+<a class="brand" href="../index.html">ngcc.dev</a>
+<nav><a href="../index.html">Home</a><a href="../reports/index.html">Reports</a></nav>
+</header>
+<main>
+<p class="crumb"><a href="../reports/index.html">Reports</a> › <code>kem-29</code></p>
+
+<h1 id="polar-kem-kem-29">Polar-KEM (kem-29)</h1>
+<div class="table-wrap"><table class="meta">
+<tr><th>Candidate</th><td>Polar-KEM</td></tr>
+<tr><th>Scope</th><td>Reference implementation, all three parameter sets</td></tr>
+<tr><th>Severity</th><td><span class="sev sev-critical">Critical</span></td></tr>
+<tr><th>Discovery</th><td>Trivial</td></tr>
+<tr><th>Exploitation</th><td>Trivial</td></tr>
+<tr><th>Date</th><td>2026-09-21</td></tr>
+<tr><th>Credit</th><td>Markku-Juhani O. Saarinen <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#109;&#97;&#114;&#107;&#107;&#117;&#45;&#106;&#117;&#104;&#97;&#110;&#105;&#46;&#115;&#97;&#97;&#114;&#105;&#110;&#101;&#110;&#64;&#116;&#117;&#110;&#105;&#46;&#102;&#105;">&#109;&#97;&#114;&#107;&#107;&#117;&#45;&#106;&#117;&#104;&#97;&#110;&#105;&#46;&#115;&#97;&#97;&#114;&#105;&#110;&#101;&#110;&#64;&#116;&#117;&#110;&#105;&#46;&#102;&#105;</a>, with AI assistance</td></tr>
+<tr><th>Archive</th><td>orig/kem-29/orig.zip (SHA-256: <code>3ae9d4f1a717fb473e76447014d585cd5d14fe38728f02b1a044cc6a2d03e16d</code>)</td></tr>
+</table></div>
+
+<h2 id="the-submission-ships-a-complete-public-key-only-break">The submission ships a complete public-key-only break</h2>
+<p>The submission's own shipped functions provide the complete attack. <code>polarkem_recover_message(pk, ct, mu)</code> and <code>polarkem_derive_valid_secret(mu, ct, ss)</code> are declared in <code>polarkem_ct.h</code> and implemented in the submitted reference source. They recover the encapsulated message and derive the exact shared secret using only public inputs.</p>
+<p><code>polarkem_recover_message</code> expands the decoding permutation from the seed at <code>pk + POLARKEM_PK_SEED_OFFSET</code>. The object playing the role of the specification's secret isometry is therefore public by construction, not merely omitted from one call site. Secret-key material is consulted only to derive the fallback secret for invalid ciphertexts.</p>
+<p>Independent execution against the three built libraries called <code>polarkem_recover_message(pk, ct, mu)</code> followed by <code>polarkem_derive_valid_secret(mu, ct, ss)</code>. The result exactly matched the encapsulator's 16-, 32-, and 64-byte secrets for PolarKEM-128, PolarKEM-256, and PolarKEM-512 without supplying any secret-key bytes.</p>
+<p>Anyone observing a public key and ciphertext can therefore recover the session key by calling code shipped by the candidate. This is a total break of the submitted KEM, violating IND-CPA and consequently the claimed IND-CCA2 security at every level.</p>
+<h2 id="reproduction">Reproduction</h2>
+<p><code>python3 kem-29/reproduce_public_recovery.py</code></p>
+</main>
+<footer class="site-footer">
+<p>Built 2026-09-21 · <a href="https://github.com/ngcc-dev/ngcc.github.io">source</a></p>
+</footer>
+</body>
+</html>

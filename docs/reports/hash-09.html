@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Eijen (hash-09) · ngcc.dev</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+<header class="site-header">
+<a class="brand" href="../index.html">ngcc.dev</a>
+<nav><a href="../index.html">Home</a><a href="../reports/index.html">Reports</a></nav>
+</header>
+<main>
+<p class="crumb"><a href="../reports/index.html">Reports</a> › <code>hash-09</code></p>
+
+<h1 id="eijen-hash-09">Eijen (hash-09)</h1>
+<div class="table-wrap"><table class="meta">
+<tr><th>Candidate</th><td>Eijen</td></tr>
+<tr><th>Scope</th><td>Reference implementation, all five parameter sets</td></tr>
+<tr><th>Severity</th><td><span class="sev sev-critical">Critical</span></td></tr>
+<tr><th>Discovery</th><td>Trivial</td></tr>
+<tr><th>Exploitation</th><td>Trivial</td></tr>
+<tr><th>Date</th><td>2026-09-21</td></tr>
+<tr><th>Credit</th><td>Markku-Juhani O. Saarinen <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#109;&#97;&#114;&#107;&#107;&#117;&#45;&#106;&#117;&#104;&#97;&#110;&#105;&#46;&#115;&#97;&#97;&#114;&#105;&#110;&#101;&#110;&#64;&#116;&#117;&#110;&#105;&#46;&#102;&#105;">&#109;&#97;&#114;&#107;&#107;&#117;&#45;&#106;&#117;&#104;&#97;&#110;&#105;&#46;&#115;&#97;&#97;&#114;&#105;&#110;&#101;&#110;&#64;&#116;&#117;&#110;&#105;&#46;&#102;&#105;</a>, with AI assistance</td></tr>
+<tr><th>Archive</th><td>orig/hash-09/orig.zip (SHA-256: <code>5e2581d905b9a3d3a8c34c76ed73213c77da970a15cc6b3b26b2bb086b93e3f4</code>)</td></tr>
+</table></div>
+
+<h2 id="trivial-collisions-in-all-eijen-implementations">Trivial collisions in all Eijen implementations</h2>
+<p>The following collision was verified against Eijen-256:</p>
+<ul>
+<li>Input 1: empty string, length 0 bits</li>
+<li>Input 2: hex <code>00</code>, length 7 bits (seven zero bits)</li>
+</ul>
+<p>Both produce:</p>
+<p><code>6f13fcc5cb0edcc73d8129c78913b663b5c6040fa0e2e8c4819d16b0ffda051d</code></p>
+<p>The bit length is essential: hex <code>00</code> with length 8 bits is a different message.</p>
+<p>The collision is caused by an implementation bug, not by the specified construction. The specification requires injective <code>pad10*</code> padding, <code>M || 1 || 0^k</code>. Eijen processes message bits MSB-first, so the padding byte following a byte-aligned message must begin with <code>0x80</code>.</p>
+<p>Instead, the byte-aligned path writes <code>0x01</code>. The partial-byte path correctly computes <code>0x80 &gt;&gt; partial_bits</code>; after seven explicit zero bits, this also produces <code>0x01</code>. The two distinct messages therefore have identical padded representations.</p>
+<p>More generally, for every byte-aligned message <code>M</code>, <code>H(M) = H(M || 0^7)</code>. The defect affects all five submitted parameter sets. Replacing <code>0x01</code> with <code>0x80</code> in the byte-aligned padding path removes this collision. The implementation violates the specification's collision-resistance claims, but the defect is not inherent in the specified design.</p>
+<h2 id="reproduction">Reproduction</h2>
+<p><code>security/ngcc_security hash-09/lib/libEijen-256.so hash-zero-padding</code></p>
+</main>
+<footer class="site-footer">
+<p>Built 2026-09-21 · <a href="https://github.com/ngcc-dev/ngcc.github.io">source</a></p>
+</footer>
+</body>
+</html>

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MORNING-Scabbard (kem-24) · ngcc.dev</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+<header class="site-header">
+<a class="brand" href="../index.html">ngcc.dev</a>
+<nav><a href="../index.html">Home</a><a href="../reports/index.html">Reports</a></nav>
+</header>
+<main>
+<p class="crumb"><a href="../reports/index.html">Reports</a> › <code>kem-24</code></p>
+
+<h1 id="morning-scabbard-kem-24">MORNING-Scabbard (kem-24)</h1>
+<div class="table-wrap"><table class="meta">
+<tr><th>Candidate</th><td>MORNING-Scabbard</td></tr>
+<tr><th>Scope</th><td>Reference implementation, scabbard128 and scabbard256</td></tr>
+<tr><th>Severity</th><td><span class="sev sev-high">High</span></td></tr>
+<tr><th>Discovery</th><td>Trivial</td></tr>
+<tr><th>Exploitation</th><td>Not yet demonstrated</td></tr>
+<tr><th>Date</th><td>2026-09-21</td></tr>
+<tr><th>Credit</th><td>Markku-Juhani O. Saarinen <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#109;&#97;&#114;&#107;&#107;&#117;&#45;&#106;&#117;&#104;&#97;&#110;&#105;&#46;&#115;&#97;&#97;&#114;&#105;&#110;&#101;&#110;&#64;&#116;&#117;&#110;&#105;&#46;&#102;&#105;">&#109;&#97;&#114;&#107;&#107;&#117;&#45;&#106;&#117;&#104;&#97;&#110;&#105;&#46;&#115;&#97;&#97;&#114;&#105;&#110;&#101;&#110;&#64;&#116;&#117;&#110;&#105;&#46;&#102;&#105;</a>, with AI assistance</td></tr>
+<tr><th>Archive</th><td>orig/kem-24/orig.zip (SHA-256: <code>fdb6749116bddbb8a86074b9ab6f5f55d37540b92e3964906dede0b09c7faf4b</code>)</td></tr>
+</table></div>
+
+<h2 id="encryption-omits-the-specified-rounding-constant">Encryption omits the specified rounding constant</h2>
+<p>Algorithm 10 forms encryption component <code>u</code> by adding the constant <code>h</code> before the <code>q</code>-to-<code>p</code> right shift, implementing nearest rounding. The scabbard128 and scabbard256 reference implementations omit <code>+h</code> and truncate instead. The scabbard512 source contains the specified addition and provides a direct comparison.</p>
+<p>Re-encryption repeats the same altered operation, so functional KATs and the Fujisaki-Okamoto equality check remain internally consistent. Nevertheless, the ciphertext distribution and decryption-noise law differ from those used by the specification's correctness, decryption-failure, and IND-CPA analyses.</p>
+<p>This is a confirmed implementation/specification mismatch in two of three parameter sets. No concrete distinguisher or key-recovery attack has yet been derived from the changed distribution, so the report does not claim a complete confidentiality break.</p>
+</main>
+<footer class="site-footer">
+<p>Built 2026-09-21 · <a href="https://github.com/ngcc-dev/ngcc.github.io">source</a></p>
+</footer>
+</body>
+</html>

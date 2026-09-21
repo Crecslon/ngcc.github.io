@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Galas (sign-12) · ngcc.dev</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+<header class="site-header">
+<a class="brand" href="../index.html">ngcc.dev</a>
+<nav><a href="../index.html">Home</a><a href="../reports/index.html">Reports</a></nav>
+</header>
+<main>
+<p class="crumb"><a href="../reports/index.html">Reports</a> › <code>sign-12</code></p>
+
+<h1 id="galas-sign-12">Galas (sign-12)</h1>
+<div class="table-wrap"><table class="meta">
+<tr><th>Candidate</th><td>Galas</td></tr>
+<tr><th>Scope</th><td>Reference implementation, all submitted parameter sets</td></tr>
+<tr><th>Severity</th><td><span class="sev sev-critical">Critical</span></td></tr>
+<tr><th>Discovery</th><td>Trivial</td></tr>
+<tr><th>Exploitation</th><td>Trivial</td></tr>
+<tr><th>Date</th><td>2026-09-21</td></tr>
+<tr><th>Credit</th><td>Markku-Juhani O. Saarinen <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#109;&#97;&#114;&#107;&#107;&#117;&#45;&#106;&#117;&#104;&#97;&#110;&#105;&#46;&#115;&#97;&#97;&#114;&#105;&#110;&#101;&#110;&#64;&#116;&#117;&#110;&#105;&#46;&#102;&#105;">&#109;&#97;&#114;&#107;&#107;&#117;&#45;&#106;&#117;&#104;&#97;&#110;&#105;&#46;&#115;&#97;&#97;&#114;&#105;&#110;&#101;&#110;&#64;&#116;&#117;&#110;&#105;&#46;&#102;&#105;</a>, with AI assistance</td></tr>
+<tr><th>Archive</th><td>orig/sign-12/orig.zip (SHA-256: <code>98d57af868fa10d74b2c0656e565aa14a42ff902646d6fc440ffb7355b75342c</code>)</td></tr>
+</table></div>
+
+<h2 id="publicly-reproducible-signing-keys">Publicly reproducible signing keys</h2>
+<p>The signing wrapper constructs a private DRNG but does not seed it from the API-provided <code>drng_algorithm</code>. Unless a non-API test helper is called, it initializes that generator with 32 zero bytes.</p>
+<p>Independent fresh-process tests against Galas-160F generated identical public and secret keys in separate processes. The same implementation pattern is shared by the submitted Galas instances.</p>
+<p>An attacker recovers the signing key by running the public key-generation implementation from its initial state. The advertised hard relation is irrelevant because the victim and attacker deterministically generate the same secret key.</p>
+<p>Key generation must obtain its seed exclusively from the initialized API DRNG and must not provide a zero-seed production default.</p>
+<h2 id="reproduction">Reproduction</h2>
+<p><code>python3 security/run_low_hanging.py --wave all --candidate sign-12 --check sig-fresh-keygen --workers 1 --timeout 60</code></p>
+</main>
+<footer class="site-footer">
+<p>Built 2026-09-21 · <a href="https://github.com/ngcc-dev/ngcc.github.io">source</a></p>
+</footer>
+</body>
+</html>

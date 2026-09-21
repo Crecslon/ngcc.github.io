@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CreTAKE (kex-03) · ngcc.dev</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+<header class="site-header">
+<a class="brand" href="../index.html">ngcc.dev</a>
+<nav><a href="../index.html">Home</a><a href="../reports/index.html">Reports</a></nav>
+</header>
+<main>
+<p class="crumb"><a href="../reports/index.html">Reports</a> › <code>kex-03</code></p>
+
+<h1 id="cretake-kex-03">CreTAKE (kex-03)</h1>
+<div class="table-wrap"><table class="meta">
+<tr><th>Candidate</th><td>CreTAKE</td></tr>
+<tr><th>Scope</th><td>Reference implementation, 23 source files including all six S2S instances</td></tr>
+<tr><th>Severity</th><td><span class="sev sev-critical">Critical</span></td></tr>
+<tr><th>Discovery</th><td>Trivial</td></tr>
+<tr><th>Exploitation</th><td>2^64 offline</td></tr>
+<tr><th>Date</th><td>2026-09-21</td></tr>
+<tr><th>Credit</th><td>Markku-Juhani O. Saarinen <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#109;&#97;&#114;&#107;&#107;&#117;&#45;&#106;&#117;&#104;&#97;&#110;&#105;&#46;&#115;&#97;&#97;&#114;&#105;&#110;&#101;&#110;&#64;&#116;&#117;&#110;&#105;&#46;&#102;&#105;">&#109;&#97;&#114;&#107;&#107;&#117;&#45;&#106;&#117;&#104;&#97;&#110;&#105;&#46;&#115;&#97;&#97;&#114;&#105;&#110;&#101;&#110;&#64;&#116;&#117;&#110;&#105;&#46;&#102;&#105;</a>, with AI assistance</td></tr>
+<tr><th>Archive</th><td>orig/kex-03/orig.zip (SHA-256: <code>0b356074741bc20fa82132719e1678e001083b9746f5c4c582425b727b511741</code>)</td></tr>
+</table></div>
+
+<h2 id="bits-versus-bytes-error-reduces-the-ephemeral-secret-to-64-bits">Bits-versus-bytes error reduces the ephemeral secret to 64 bits</h2>
+<p>The responder requests 64 bytes (512 bits) of fresh randomness:</p>
+<p><code>get_random_number(&amp;drng_algorithm, buf, SEED_BYTES * 8ULL)</code></p>
+<p>It then expands that value with:</p>
+<p><code>pseudoXOF((MSG_LEN_BYTES + SEED_BYTES) * 8, buf, SEED_BYTES, buf2)</code></p>
+<p>The third <code>pseudoXOF</code> argument is a bit count, but <code>SEED_BYTES</code> is 64. Only the first eight bytes of the 64-byte buffer are absorbed. The correct <code>SEED_BYTES * 8</code> form appears commented out immediately above related call sites. The erroneous pattern occurs in 23 reference source files and is preserved by every submitted test vector.</p>
+<p>In the six S2S instances, this 64-bit value is the only secret input to the session-key computation. A passive eavesdropper enumerates the <code>2^64</code> possible inputs, regenerates the deterministic encryption coins and candidate plaintext, and matches the observed ciphertext. This recovers the session key offline at every claimed 128-, 256-, and 512-bit level.</p>
+<p>The same defect reduces the claimed weak forward secrecy of K2S and S2K instances to <code>2^64</code> after compromise of the complementary long-term KEM key. This is an implementation error, not a cryptanalytic attack on the specified primitives.</p>
+</main>
+<footer class="site-footer">
+<p>Built 2026-09-21 · <a href="https://github.com/ngcc-dev/ngcc.github.io">source</a></p>
+</footer>
+</body>
+</html>

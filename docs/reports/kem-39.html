@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>WeaverKEM (kem-39) · ngcc.dev</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+<header class="site-header">
+<a class="brand" href="../index.html">ngcc.dev</a>
+<nav><a href="../index.html">Home</a><a href="../reports/index.html">Reports</a></nav>
+</header>
+<main>
+<p class="crumb"><a href="../reports/index.html">Reports</a> › <code>kem-39</code></p>
+
+<h1 id="weaverkem-kem-39">WeaverKEM (kem-39)</h1>
+<div class="table-wrap"><table class="meta">
+<tr><th>Candidate</th><td>WeaverKEM</td></tr>
+<tr><th>Scope</th><td>Reference implementation, all three parameter sets</td></tr>
+<tr><th>Severity</th><td><span class="sev sev-high">High</span></td></tr>
+<tr><th>Discovery</th><td>Non-trivial</td></tr>
+<tr><th>Exploitation</th><td>Not yet demonstrated</td></tr>
+<tr><th>Date</th><td>2026-09-21</td></tr>
+<tr><th>Credit</th><td>Markku-Juhani O. Saarinen <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#109;&#97;&#114;&#107;&#107;&#117;&#45;&#106;&#117;&#104;&#97;&#110;&#105;&#46;&#115;&#97;&#97;&#114;&#105;&#110;&#101;&#110;&#64;&#116;&#117;&#110;&#105;&#46;&#102;&#105;">&#109;&#97;&#114;&#107;&#107;&#117;&#45;&#106;&#117;&#104;&#97;&#110;&#105;&#46;&#115;&#97;&#97;&#114;&#105;&#110;&#101;&#110;&#64;&#116;&#117;&#110;&#105;&#46;&#102;&#105;</a>, with AI assistance</td></tr>
+<tr><th>Archive</th><td>orig/kem-39/orig.zip (SHA-256: <code>9b0bad96e9bc836b0ff811492a70891066df5634ee47fda4d1518dccd4e09927</code>)</td></tr>
+</table></div>
+
+<h2 id="prf-substream-reuse-violates-the-ind-cpa-proofs-independence-premise">PRF substream reuse violates the IND-CPA proof's independence premise</h2>
+<p>The specification's encryption proof models randomized inverse-q lifting and the ephemeral secret <code>r</code> as independent PRF outputs obtained under distinct counters.</p>
+<p>In the implementation, <code>polyvec_invq</code> receives its nonce by value and consumes counter 0 and later substreams internally. Its caller observes only one increment and begins sampling <code>r</code> at counter 1. The CBD input for <code>r[0]</code> is therefore a prefix of the same <code>PRF(seed1, 1)</code> stream already consumed by inverse-q lifting, with additional overlap depending on rejection and vector consumption.</p>
+<p>The counter reuse is present in WeaverKEM-128, WeaverKEM-256, and WeaverKEM-512 and directly contradicts the independence premise used in Game 2 of the submitted proof. The correlation is confirmed, but it has not yet been converted into a concrete IND-CPA distinguisher or key-recovery algorithm. This is therefore a probable claim violation, not a claimed complete break.</p>
+<p>Each logical sampler must receive a disjoint domain or counter range, and the nonce consumed inside <code>polyvec_invq</code> must be returned to or advanced by its caller.</p>
+</main>
+<footer class="site-footer">
+<p>Built 2026-09-21 · <a href="https://github.com/ngcc-dev/ngcc.github.io">source</a></p>
+</footer>
+</body>
+</html>

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SQIsign2D2 (sign-25) · ngcc.dev</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+<header class="site-header">
+<a class="brand" href="../index.html">ngcc.dev</a>
+<nav><a href="../index.html">Home</a><a href="../reports/index.html">Reports</a></nav>
+</header>
+<main>
+<p class="crumb"><a href="../reports/index.html">Reports</a> › <code>sign-25</code></p>
+
+<h1 id="sqisign2d2-sign-25">SQIsign2D2 (sign-25)</h1>
+<div class="table-wrap"><table class="meta">
+<tr><th>Candidate</th><td>SQIsign2D2</td></tr>
+<tr><th>Scope</th><td>Level2-eff uncompressed reference implementation</td></tr>
+<tr><th>Severity</th><td><span class="sev sev-critical">Critical</span></td></tr>
+<tr><th>Discovery</th><td>Trivial</td></tr>
+<tr><th>Exploitation</th><td>Trivial</td></tr>
+<tr><th>Date</th><td>2026-09-21</td></tr>
+<tr><th>Credit</th><td>Markku-Juhani O. Saarinen <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#109;&#97;&#114;&#107;&#107;&#117;&#45;&#106;&#117;&#104;&#97;&#110;&#105;&#46;&#115;&#97;&#97;&#114;&#105;&#110;&#101;&#110;&#64;&#116;&#117;&#110;&#105;&#46;&#102;&#105;">&#109;&#97;&#114;&#107;&#107;&#117;&#45;&#106;&#117;&#104;&#97;&#110;&#105;&#46;&#115;&#97;&#97;&#114;&#105;&#110;&#101;&#110;&#64;&#116;&#117;&#110;&#105;&#46;&#102;&#105;</a>, with AI assistance</td></tr>
+<tr><th>Archive</th><td>orig/sign-25/orig.zip (SHA-256: <code>cf635de5eebbdeb7b2212e84f349da4ca878889e0a4a59b463d0c8cdfdb8eeab</code>)</td></tr>
+</table></div>
+
+<h2 id="verifier-accepts-modified-messages-and-an-all-zero-signature">Verifier accepts modified messages and an all-zero signature</h2>
+<p>The Level2-eff uncompressed verifier accepted a valid signature after the first message byte was changed. It also accepted a full-length all-zero signature. Both results were reproduced through the submitted shared-library API using the advertised key and signature lengths.</p>
+<p>The uncompressed verification path computes a message-dependent challenge but does not enforce all of the protocol's required point and response checks. Several stronger checks are absent or commented out, and the remaining codomain/nonzero tests are insufficient.</p>
+<p>An attacker can submit an all-zero signature for a message without making any signing query, or reuse a signature with a modified message. This is a direct universal-style forgery against the affected instance and violates the specification's EUF-CMA theorem.</p>
+<p>The verifier must implement every specified validation condition and reject zero or malformed decoded responses before performing protocol verification.</p>
+<h2 id="reproduction">Reproduction</h2>
+<p><code>security/ngcc_security sign-25/lib/libSQISign2Dsquare-Level2-eff_uncompressed.so sig-zero</code></p>
+</main>
+<footer class="site-footer">
+<p>Built 2026-09-21 · <a href="https://github.com/ngcc-dev/ngcc.github.io">source</a></p>
+</footer>
+</body>
+</html>
