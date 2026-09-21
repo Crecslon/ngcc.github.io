@@ -14,6 +14,7 @@ not an issue). All links are relative, so the site works at any base URL.
 """
 import csv
 import datetime
+import hashlib
 import html
 import posixpath
 import re
@@ -43,13 +44,20 @@ STATUS_CLASS = {
     "not_tested": "muted", "not_applicable": "muted", "inconclusive": "warn",
 }
 
+def _css_version():
+    p = ASSETS / "style.css"
+    return hashlib.sha256(p.read_bytes()).hexdigest()[:8] if p.is_file() else "0"
+
+
+CSS_VER = _css_version()
+
 TEMPLATE = """<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{head_title}</title>
-<link rel="stylesheet" href="{prefix}assets/style.css">
+<link rel="stylesheet" href="{prefix}assets/style.css?v={css_ver}">
 </head>
 <body>
 <header class="site-header">
@@ -303,7 +311,7 @@ def render(rel, cands, reports):
     out = DOCS / rel.with_suffix(".html")
     out.parent.mkdir(parents=True, exist_ok=True)
     head_title = SITE if title == SITE else f"{title} · {SITE}"
-    out.write_text(TEMPLATE.format(head_title=html.escape(head_title), site=SITE, prefix=prefix, nav=nav, body=body,
+    out.write_text(TEMPLATE.format(head_title=html.escape(head_title), site=SITE, css_ver=CSS_VER, prefix=prefix, nav=nav, body=body,
                                    date=datetime.date.today().isoformat(), repo=REPO), encoding="utf-8")
 
 
