@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Loom (kex-05) · ngcc.dev</title>
+<link rel="stylesheet" href="../assets/style.css?v=27c401c5">
+</head>
+<body>
+<header class="site-header">
+<a class="brand" href="../index.html">ngcc.dev</a>
+<nav><a href="../index.html">Home</a><a href="../reports/index.html">Reports</a></nav>
+</header>
+<main>
+<p class="crumb"><a href="../reports/index.html">Reports</a> › <code>kex-05</code></p>
+
+<h1 id="loom-kex-05">Loom (kex-05)</h1>
+<div class="table-wrap"><table class="meta">
+<tr><th>Candidate</th><td>Loom</td></tr>
+<tr><th>Family</th><td>Hybrid lattice KEM/signature AKE</td></tr>
+<tr><th>Archive</th><td><a href="https://www.niccs.org.cn/niccs/Proposal/Public-Key%20Cryptographic%20Algorithms/Round%201%20candidates/Loom.zip">Loom.zip</a> (SHA-256: <code>e9e7ff0fb453a371634797febeaeac7c1f081b5fd2438204787c763667482ec4</code>)</td></tr>
+</table></div>
+
+<h2 class="issue-heading issue-heading-first" id="kex-05-1-the-specified-decryption-failure-rate-causes-honest-session-aborts">kex-05-1: The specified decryption-failure rate causes honest-session aborts</h2>
+
+<div class="table-wrap"><table class="meta issue-meta">
+<tr><th>Classification</th><td><span class="sev sev-medium">Medium / design</span></td></tr>
+<tr><th>Status</th><td><span class="issue-status status-confirmed">Confirmed</span></td></tr>
+<tr><th>Affected</th><td>LoomKEX-256 construction and submitted reference implementation</td></tr>
+<tr><th>Discovery</th><td>Non-trivial</td></tr>
+<tr><th>Exploitation</th><td>Observable honest-session failure; this witness alone does not recover a key (see the separate state-rollback finding <code>kex-05-2</code>)</td></tr>
+<tr><th>Credit</th><td>Markku-Juhani O. Saarinen <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#109;&#97;&#114;&#107;&#107;&#117;&#45;&#106;&#117;&#104;&#97;&#110;&#105;&#46;&#115;&#97;&#97;&#114;&#105;&#110;&#101;&#110;&#64;&#116;&#117;&#110;&#105;&#46;&#102;&#105;">&#109;&#97;&#114;&#107;&#107;&#117;&#45;&#106;&#117;&#104;&#97;&#110;&#105;&#46;&#115;&#97;&#97;&#114;&#105;&#110;&#101;&#110;&#64;&#116;&#117;&#110;&#105;&#46;&#102;&#105;</a>, with AI assistance</td></tr>
+<tr><th>Date</th><td>2026-09-21</td></tr>
+</table></div>
+
+<p>The Loom specification reports a decryption-failure rate of <code>2^-18.9</code> for LoomKEX-256. Its four-pass AKE treats rigid KEM decapsulation failure as a protocol abort rather than recovering or retrying internally, so the stated rate predicts failures in complete honest exchanges.</p>
+<p>A deterministic whole-scheme search found such an exchange at global trial index <code>136129</code>. Both parties generate honest long-term keys, pass 1 produces 1,352 bytes, and pass 2 produces 1,384 bytes. The initiator's <code>kex_generate_pass3_msg_a</code> then returns <code>-3</code> because it cannot decapsulate the responder's honestly generated KEM ciphertext. Messages 3 and 4 remain absent and neither party produces a shared secret.</p>
+<p>The submitted scalar reference implementation reproduces the recorded seed, keys, states, pass-1/pass-2 messages, failure stage, and return code exactly. The separately submitted optimized implementation produces the same transcript and failure, but it is not required to reproduce this finding.</p>
+<p>This is a confirmed specification-level correctness and reliability defect with an observable failure surface. This honest-failure witness alone does not establish confidentiality loss, authentication failure, or key recovery. The separate <code>kex-05-2</code> finding demonstrates key recovery when the serialized pass-1 state can be rolled back.</p>
+<p>The complete witness is <code>security/loom256_failure_witness.txt</code>; its SHA-256 digest is <code>b957dac32f2b3dfd0e689c0ea47bf7281cdc1bebbf48303e491be052a9067168</code>.</p>
+<h3 id="reproducing">Reproducing</h3>
+<p>Commands below run in a checkout of the <a href="https://github.com/ngcc-dev/ngcc-harness">ngcc-harness repository</a> with the candidate built (see its README).</p>
+<p>Build the submitted scalar reference implementation and replay only the known witness index:</p>
+<pre><code class="language-sh">make -C kex-05 replay
+kex-05/reproduce_failure 136129 1 1 /tmp/loom-witness.txt 0
+sha256sum /tmp/loom-witness.txt
+</code></pre>
+<p>The replay reports <code>stage=pass3 code=-3</code>. The generated reference witness differs from the retained optimized witness only in its <code>implementation=</code> metadata line; all cryptographic and protocol fields are byte-identical. The longer deterministic search procedure and cross-check are documented in <code>security/LOOM_FAILURE_SEARCH.md</code>.</p>
+<h2 class="issue-heading" id="kex-05-2-resettable-pass-1-state-enables-ephemeral-key-recovery">kex-05-2: Resettable pass-1 state enables ephemeral-key recovery</h2>
+
+<div class="table-wrap"><table class="meta issue-meta">
+<tr><th>Classification</th><td><span class="sev sev-high">High / implementation</span></td></tr>
+<tr><th>Status</th><td><span class="issue-status status-confirmed">Confirmed</span></td></tr>
+<tr><th>Affected</th><td>LoomKEX-256 reference and optimized implementations when a pass-1 state can be snapshotted, rolled back, or evaluated concurrently</td></tr>
+<tr><th>Discovery</th><td>Non-trivial</td></tr>
+<tr><th>Exploitation</th><td>4,532 chosen pass-2 queries in the deterministic witness</td></tr>
+<tr><th>Credit</th><td>Markku-Juhani O. Saarinen <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#109;&#97;&#114;&#107;&#107;&#117;&#45;&#106;&#117;&#104;&#97;&#110;&#105;&#46;&#115;&#97;&#97;&#114;&#105;&#110;&#101;&#110;&#64;&#116;&#117;&#110;&#105;&#46;&#102;&#105;">&#109;&#97;&#114;&#107;&#107;&#117;&#45;&#106;&#117;&#104;&#97;&#110;&#105;&#46;&#115;&#97;&#97;&#114;&#105;&#110;&#101;&#110;&#64;&#116;&#117;&#110;&#105;&#46;&#102;&#105;</a>, with AI assistance</td></tr>
+<tr><th>Date</th><td>2026-09-21</td></tr>
+</table></div>
+
+<p>Loom's security argument says an attacker observes at most one failure bit for each ephemeral KEM key. The submitted API does not cryptographically enforce that condition: the complete ephemeral KEM secret is held in a caller-managed serialized state, and <code>kex_generate_pass3_msg_a</code> reconstructs its working context from that byte string on every call. A caller or deployment that snapshots the pass-1 byte string can therefore evaluate arbitrarily many chosen pass-2 messages under the same ephemeral secret.</p>
+<p>The exploit creates tagged Loom-KEM ciphertexts whose message is known and whose <code>u</code> component contains one sparse coefficient. It places one <code>v</code> coefficient exactly at the message-decoder boundary. Pass 3 emits a message precisely when the corresponding signed secret coefficient lies on the selected side of that boundary. Two probes identify whether each coefficient is positive, negative, or zero; three further threshold probes recover the magnitude of every nonzero CBD-8 coefficient in <code>{1,...,8}</code>. The remaining output coefficients are placed safely within the expected decoding region, so each answer isolates the intended coefficient.</p>
+<p>The deterministic run recovers all 1,024 coefficients of the four-polynomial ephemeral secret after 4,532 complete <code>kex_generate_pass3_msg_a</code> calls. The recovered key successfully decapsulates an independently generated honest pass-2 ciphertext. The exploit then completes honest passes 3 and 4 and derives both parties' shared secrets; independently applying Loom's KDF to the attacker-recovered KEM key produces the identical 32-byte AKE shared secret. The submitted scalar and AVX2 implementations reproduce the same recovered-key digest, query counts, transcript result, and shared secret.</p>
+<p>As a control against a seed-specific construction, the reference exploit was also run with <code>LOOM_ATTACK_SEED_TWEAK=0</code> through <code>7</code>. All eight independently generated ephemeral keys were recovered and all eight completed-session secrets matched; the query counts ranged from 4,481 to 4,592 according to the number of zero CBD coefficients.</p>
+<p>This is a concrete key-recovery attack under state rollback, snapshot restoration, or sufficiently concurrent evaluation of the same serialized pass-1 state. It does <strong>not</strong> establish that a strictly linear deployment which irreversibly commits the state after the first accepted pass-2 message is remotely exploitable: an accepted probe advances the live state, so the proof of concept restores its saved snapshot before every query. Deployments must therefore make the state non-clonable and anti-rollback, atomically consume it before decapsulation, and erase it on every success or failure. Merely wiping the temporary unpacked context is insufficient.</p>
+<h3 id="reproducing_1">Reproducing</h3>
+<p>Commands below run in a checkout of the <a href="https://github.com/ngcc-dev/ngcc-harness">ngcc-harness repository</a> with the candidate built (see its README).</p>
+<pre><code class="language-sh">make -C kex-05 exploit
+kex-05/reproduce_state_rollback_key_recovery
+</code></pre>
+<p>Set <code>LOOM_ATTACK_SEED_TWEAK</code> to a nonnegative integer to generate an independent deterministic key pair for additional trials.</p>
+<p>Expected output:</p>
+<pre><code class="language-text">ATTACK kex-05-2 LoomKEX-256 CONFIRMED rollback_queries=4532 accepts=1754 recovered_coefficients=1024 honest_passes=4 shared_secret_match=yes
+recovered_ephemeral_sk_digest=cac8fae173f31fe3063ac092df0acf7e90f71a4bc20ae5b6e03168f110cd8d1b
+shared_secret=2acee149b895cace5f7ebf94aa6ea9e2c504c7411b6e2e15edb4ad8e40b541f7
+</code></pre>
+<p>The reference run takes approximately 4.9 seconds on the development host. The submitted AVX2 tier independently completes in approximately 4.3 seconds:</p>
+<pre><code class="language-sh">cmake -S security/loom_optimized -B security/loom_optimized/build -DCMAKE_BUILD_TYPE=Release
+cmake --build security/loom_optimized/build --target loom_state_rollback_key_recovery_256 -j&quot;$(nproc)&quot;
+security/loom_optimized/build/bin/loom_state_rollback_key_recovery_256
+</code></pre>
+</main>
+<footer class="site-footer">
+<p>Built 2026-09-21 · <a href="https://github.com/ngcc-dev/ngcc.github.io">source</a></p>
+</footer>
+</body>
+</html>
