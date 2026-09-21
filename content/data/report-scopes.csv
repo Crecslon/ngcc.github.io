@@ -9,7 +9,7 @@ kem-09;implementation
 kem-17;implementation
 kem-18;implementation
 kem-24;implementation
-kem-29;design
+kem-29;implementation
 kem-32;implementation
 kem-39;implementation
 kex-02;implementation
