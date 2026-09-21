@@ -1,7 +1,8 @@
 <!-- synced from ngcc1/sign-03/report.md -->
 Candidate: CEDRUS+C
+Family: Hash-based (stateless)
 Scope: Reference implementation, all eight parameter sets
-Archive: orig/sign-03/orig.zip (SHA-256: `a31de849cf0a0703a4e57decbdf4d97b100d00dc74756feaded2c04a7593e110`)
+Archive: [cedrus+c.zip](https://www.niccs.org.cn/niccs/Proposal/Public-Key%20Cryptographic%20Algorithms/Round%201%20candidates/cedrus%2Bc.zip) (SHA-256: `a31de849cf0a0703a4e57decbdf4d97b100d00dc74756feaded2c04a7593e110`)
 Severity: Critical
 Discovery: Trivial
 Exploitation: Low-query adaptive signature accumulation

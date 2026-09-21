@@ -1,7 +1,8 @@
 <!-- synced from ngcc1/hash-04/report.md -->
 Candidate: CHAMP
+Family: Symmetric (Cayley graph / matrix products)
 Scope: Construction and reference implementation, CHAMP-512 and CHAMP-1024
-Archive: orig/hash-04/orig.zip (SHA-256: `8953f95618236d8d86191992b10e3580ae74520c28a36a715c2fc8bea2a9e8c1`)
+Archive: [CHAMP.zip](https://www.niccs.org.cn/niccs/Proposal/Cryptographic%20Hash%20Algorithms/Round%201%20candidates/CHAMP.zip) (SHA-256: `8953f95618236d8d86191992b10e3580ae74520c28a36a715c2fc8bea2a9e8c1`)
 Severity: High
 Discovery: Non-trivial
 Exploitation: Approximately 2^64 for CHAMP-512 (heuristic, not yet instantiated)

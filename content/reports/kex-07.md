@@ -1,7 +1,8 @@
 <!-- synced from ngcc1/kex-07/report.md -->
 Candidate: NEV-AKE
+Family: Lattice (NTRU/Ring-LWE AKE)
 Scope: Uniform-API reference wrappers, all nine parameter sets
-Archive: orig/kex-07/orig.zip (SHA-256: `da75005b4060167f25125cbd1a769ed872c8b6fcb770fe0827a599e44536e8e6`)
+Archive: [NEV-AKE.zip](https://www.niccs.org.cn/niccs/Proposal/Public-Key%20Cryptographic%20Algorithms/Round%201%20candidates/NEV-AKE.zip) (SHA-256: `da75005b4060167f25125cbd1a769ed872c8b6fcb770fe0827a599e44536e8e6`)
 Severity: High
 Discovery: Trivial
 Exploitation: Integration-dependent; no complete UKS attack demonstrated

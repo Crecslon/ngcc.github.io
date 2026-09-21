@@ -1,7 +1,8 @@
 <!-- synced from ngcc1/kem-32/report.md -->
 Candidate: QCTM
+Family: Code-based (quasi-cyclic twisted McEliece)
 Scope: Reference implementation, all three parameter sets when tracing is enabled
-Archive: orig/kem-32/orig.zip (SHA-256: `24a3986a4fbb852a677267a6443756328eae3642af770e767fe38f8291f294db`)
+Archive: [QCTM.zip](https://www.niccs.org.cn/niccs/Proposal/Public-Key%20Cryptographic%20Algorithms/Round%201%20candidates/QCTM.zip) (SHA-256: `24a3986a4fbb852a677267a6443756328eae3642af770e767fe38f8291f294db`)
 Severity: High
 Discovery: Trivial
 Exploitation: Requires stderr visibility or local/in-process memory access

@@ -1,7 +1,8 @@
 <!-- synced from ngcc1/sign-15/report.md -->
 Candidate: MORNING-ATLAS
+Family: Lattice (Module-LWR, Fiat-Shamir)
 Scope: Reference API and supplied KAT, all four parameter sets
-Archive: orig/sign-15/orig.zip (SHA-256: `c796b106a7d43b2b3d6110ec2be426aa321cc7336f39a2cc027b2d6e8b4cc8c1`)
+Archive: [MORNING-ATLAS.zip](https://www.niccs.org.cn/niccs/Proposal/Public-Key%20Cryptographic%20Algorithms/Round%201%20candidates/MORNING-ATLAS.zip) (SHA-256: `c796b106a7d43b2b3d6110ec2be426aa321cc7336f39a2cc027b2d6e8b4cc8c1`)
 Severity: Critical
 Discovery: Trivial
 Exploitation: Trivial

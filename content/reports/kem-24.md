@@ -1,7 +1,8 @@
 <!-- synced from ngcc1/kem-24/report.md -->
 Candidate: MORNING-Scabbard
+Family: Lattice (Module-LWR)
 Scope: Reference implementation, scabbard128 and scabbard256
-Archive: orig/kem-24/orig.zip (SHA-256: `fdb6749116bddbb8a86074b9ab6f5f55d37540b92e3964906dede0b09c7faf4b`)
+Archive: [MORNING-Scabbard.zip](https://www.niccs.org.cn/niccs/Proposal/Public-Key%20Cryptographic%20Algorithms/Round%201%20candidates/MORNING-Scabbard.zip) (SHA-256: `fdb6749116bddbb8a86074b9ab6f5f55d37540b92e3964906dede0b09c7faf4b`)
 Severity: High
 Discovery: Trivial
 Exploitation: Not yet demonstrated

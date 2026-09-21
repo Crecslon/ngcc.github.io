@@ -1,7 +1,8 @@
 <!-- synced from ngcc1/kem-09/report.md -->
 Candidate: CheetahKEM
+Family: Lattice (Ring/Module-LWE)
 Scope: Reference implementation, all four parameter sets
-Archive: orig/kem-09/orig.zip (SHA-256: `fc321e46bac9c387535e2053bed560eac3d3cd88ba9bebc154f5bf68dd47dcd1`)
+Archive: [CheetahKEM.zip](https://www.niccs.org.cn/niccs/Proposal/Public-Key%20Cryptographic%20Algorithms/Round%201%20candidates/CheetahKEM.zip) (SHA-256: `fc321e46bac9c387535e2053bed560eac3d3cd88ba9bebc154f5bf68dd47dcd1`)
 Severity: Critical
 Discovery: Trivial
 Exploitation: Trivial

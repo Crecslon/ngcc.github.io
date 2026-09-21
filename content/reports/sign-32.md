@@ -1,7 +1,8 @@
 <!-- synced from ngcc1/sign-32/report.md -->
 Candidate: UVW
+Family: Multivariate (F3)
 Scope: Reference implementation, all three parameter sets
-Archive: orig/sign-32/orig.zip (SHA-256: `bbfa8dad5ee57083578b50b9937e773e6158f72646e825da3d3265cc00cb1294`)
+Archive: [UVW signature.zip](https://www.niccs.org.cn/niccs/Proposal/Public-Key%20Cryptographic%20Algorithms/Round%201%20candidates/UVW%20signature.zip) (SHA-256: `bbfa8dad5ee57083578b50b9937e773e6158f72646e825da3d3265cc00cb1294`)
 Severity: Critical
 Discovery: Trivial
 Exploitation: Trivial

@@ -211,11 +211,12 @@ def reports_html(reports, prefix):
     rows.sort(key=lambda x: (x[1], x[2]))              # severity, then candidate id ...
     rows.sort(key=lambda x: x[0], reverse=True)        # ... within newest date first (stable sort)
     h = ['<table class="reports">',
-         "<thead><tr><th>date</th><th>severity</th><th>candidate</th><th>issue</th></tr></thead><tbody>"]
+         "<thead><tr><th>date</th><th>severity</th><th>candidate</th><th>family</th><th>issue</th></tr></thead><tbody>"]
     for date, _, cid, title, anchor, r in rows:
         name = html.escape(r["meta"].get("Candidate", ""))
         h.append(f'<tr><td class="date">{html.escape(date)}</td><td class="st">{sev_badge(r["severity"])}</td>'
                  f'<td><a href="{prefix}reports/{cid}.html">{name}</a> <code>{cid}</code></td>'
+                 f'<td class="family">{html.escape(r["meta"].get("Family", ""))}</td>'
                  f'<td><a href="{prefix}reports/{cid}.html#{anchor}">{html.escape(title)}</a></td></tr>')
     h.append("</tbody></table>")
     return "\n".join(h)
@@ -224,7 +225,7 @@ def reports_html(reports, prefix):
 def report_page(r, prefix):
     """Markdown for a report page: H1, metadata table, then the original body."""
     m = r["meta"]
-    order = ["Candidate", "Scope", "Severity", "Discovery", "Exploitation", "Date", "Credit", "Archive"]
+    order = ["Candidate", "Family", "Scope", "Severity", "Discovery", "Exploitation", "Date", "Credit", "Archive"]
     keys = [k for k in order if k in m] + [k for k in m if k not in order]
     rows = []
     for k in keys:

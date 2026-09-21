@@ -1,7 +1,8 @@
 <!-- synced from ngcc1/sign-07/report.md -->
 Candidate: CS
+Family: Lattice (Module-LWE, Fiat-Shamir)
 Scope: Reference implementation, all three parameter sets
-Archive: orig/sign-07/orig.zip (SHA-256: `c790d31cd4a288990f3d692381ed721a06641938a02dfc2e0435b7d323475cef`)
+Archive: [CS.zip](https://www.niccs.org.cn/niccs/Proposal/Public-Key%20Cryptographic%20Algorithms/Round%201%20candidates/CS.zip) (SHA-256: `c790d31cd4a288990f3d692381ed721a06641938a02dfc2e0435b7d323475cef`)
 Severity: High
 Discovery: Trivial
 Exploitation: Trivial

@@ -1,7 +1,8 @@
 <!-- synced from ngcc1/kem-39/report.md -->
 Candidate: WeaverKEM
+Family: Lattice (Module-LWR)
 Scope: Reference implementation, all three parameter sets
-Archive: orig/kem-39/orig.zip (SHA-256: `9b0bad96e9bc836b0ff811492a70891066df5634ee47fda4d1518dccd4e09927`)
+Archive: [Weaver.zip](https://www.niccs.org.cn/niccs/Proposal/Public-Key%20Cryptographic%20Algorithms/Round%201%20candidates/Weaver.zip) (SHA-256: `9b0bad96e9bc836b0ff811492a70891066df5634ee47fda4d1518dccd4e09927`)
 Severity: High
 Discovery: Non-trivial
 Exploitation: Not yet demonstrated

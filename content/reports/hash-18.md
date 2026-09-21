@@ -1,7 +1,8 @@
 <!-- synced from ngcc1/hash-18/report.md -->
 Candidate: MEGASCON
+Family: Symmetric (sponge)
 Scope: Reference implementation, MEGASCON-384 and MEGASCON-512
-Archive: orig/hash-18/orig.zip (SHA-256: `70d0796942e60a1ddd25ad2332dbfe2755052825c301e9585167c90c1fa09d3d`)
+Archive: [Megascon.zip](https://www.niccs.org.cn/niccs/Proposal/Cryptographic%20Hash%20Algorithms/Round%201%20candidates/Megascon.zip) (SHA-256: `70d0796942e60a1ddd25ad2332dbfe2755052825c301e9585167c90c1fa09d3d`)
 Severity: High
 Discovery: Trivial
 Exploitation: Trivial

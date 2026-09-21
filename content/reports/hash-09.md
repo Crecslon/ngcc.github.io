@@ -1,7 +1,8 @@
 <!-- synced from ngcc1/hash-09/report.md -->
 Candidate: Eijen
+Family: Symmetric (sponge, Sponge-F)
 Scope: Reference implementation, all five parameter sets
-Archive: orig/hash-09/orig.zip (SHA-256: `5e2581d905b9a3d3a8c34c76ed73213c77da970a15cc6b3b26b2bb086b93e3f4`)
+Archive: [Eijen.zip](https://www.niccs.org.cn/niccs/Proposal/Cryptographic%20Hash%20Algorithms/Round%201%20candidates/Eijen.zip) (SHA-256: `5e2581d905b9a3d3a8c34c76ed73213c77da970a15cc6b3b26b2bb086b93e3f4`)
 Severity: Critical
 Discovery: Trivial
 Exploitation: Trivial

@@ -79,3 +79,4 @@ table.reports td:last-child { min-width: 22rem; }
 table.meta { margin: 1rem 0; font-size: 0.9rem; }
 table.meta th { width: 8rem; background: var(--head); font-weight: 600; white-space: nowrap; }
 table.meta td { word-break: break-word; }
+table.reports td.family { color: var(--muted); font-size: 0.85rem; }

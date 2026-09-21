@@ -1,7 +1,8 @@
 <!-- synced from ngcc1/kem-17/report.md -->
 Candidate: HEP-QC
+Family: Code-based (quasi-cyclic)
 Scope: Reference implementation, all four parameter sets
-Archive: orig/kem-17/orig.zip (SHA-256: `3780991127f49b6397b4182d32b35ab7a6359bf825a707e90df0f809beeb3790`)
+Archive: [HEP-QC.zip](https://www.niccs.org.cn/niccs/Proposal/Public-Key%20Cryptographic%20Algorithms/Round%201%20candidates/HEP-QC.zip) (SHA-256: `3780991127f49b6397b4182d32b35ab7a6359bf825a707e90df0f809beeb3790`)
 Severity: Critical
 Discovery: Trivial
 Exploitation: Trivial

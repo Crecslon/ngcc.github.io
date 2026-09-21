@@ -1,7 +1,8 @@
 <!-- synced from ngcc1/kem-18/report.md -->
 Candidate: LoongKEM
+Family: Lattice (LWE)
 Scope: Reference implementation, all four parameter sets
-Archive: orig/kem-18/orig.zip (SHA-256: `a6e5070647a40e7de1bf6e5b085dc1d6423c003a409864fdb303d87f881cec0b`)
+Archive: [LoongKEM.zip](https://www.niccs.org.cn/niccs/Proposal/Public-Key%20Cryptographic%20Algorithms/Round%201%20candidates/LoongKEM.zip) (SHA-256: `a6e5070647a40e7de1bf6e5b085dc1d6423c003a409864fdb303d87f881cec0b`)
 Severity: Critical
 Discovery: Trivial
 Exploitation: Trivial

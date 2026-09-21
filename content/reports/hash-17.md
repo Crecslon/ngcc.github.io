@@ -1,7 +1,8 @@
 <!-- synced from ngcc1/hash-17/report.md -->
 Candidate: MasterCube
+Family: Symmetric (sponge, AndRX permutation)
 Scope: Reference implementation, all three parameter sets
-Archive: orig/hash-17/orig.zip (SHA-256: `1f9773b8ece90152a6a9adc632a7112c9afc670a5d28b7f1e9ac111e5eea8f13`)
+Archive: [MasterCube.zip](https://www.niccs.org.cn/niccs/Proposal/Cryptographic%20Hash%20Algorithms/Round%201%20candidates/MasterCube.zip) (SHA-256: `1f9773b8ece90152a6a9adc632a7112c9afc670a5d28b7f1e9ac111e5eea8f13`)
 Severity: Critical
 Discovery: Trivial
 Exploitation: Trivial

@@ -1,7 +1,8 @@
 <!-- synced from ngcc1/kex-03/report.md -->
 Candidate: CreTAKE
+Family: Lattice (composite AKE: KEM + signature)
 Scope: Reference implementation, 23 source files including all six S2S instances
-Archive: orig/kex-03/orig.zip (SHA-256: `0b356074741bc20fa82132719e1678e001083b9746f5c4c582425b727b511741`)
+Archive: [CreTAKE.zip](https://www.niccs.org.cn/niccs/Proposal/Public-Key%20Cryptographic%20Algorithms/Round%201%20candidates/CreTAKE.zip) (SHA-256: `0b356074741bc20fa82132719e1678e001083b9746f5c4c582425b727b511741`)
 Severity: Critical
 Discovery: Trivial
 Exploitation: 2^64 offline

@@ -1,7 +1,8 @@
 <!-- synced from ngcc1/hash-20/report.md -->
 Candidate: MOZI
+Family: Symmetric (sponge)
 Scope: Reference implementation, MOZI-384 and MOZI-512
-Archive: orig/hash-20/orig.zip (SHA-256: `f68c6b73ff4ac064e6bb8a9b74c4bd8a929594c3c48c89e1a65941e03676ea30`)
+Archive: [Mozi.zip](https://www.niccs.org.cn/niccs/Proposal/Cryptographic%20Hash%20Algorithms/Round%201%20candidates/Mozi.zip) (SHA-256: `f68c6b73ff4ac064e6bb8a9b74c4bd8a929594c3c48c89e1a65941e03676ea30`)
 Severity: High
 Discovery: Trivial
 Exploitation: Trivial
