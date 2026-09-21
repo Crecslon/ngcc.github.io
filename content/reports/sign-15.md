@@ -26,3 +26,17 @@ For each of `lwrdsa128`, `lwrdsa192`, `lwrdsa256`, and `lwrdsa512`, flipping the
 The attack needs only one ordinary valid signature. It does not forge a new message and therefore does not by itself violate EUF-CMA, but it directly violates the specification's SUF-CMA claim.
 
 Verification must reject any noncanonical unused hint slot and enforce all stated hint-weight and ordering constraints. The separate KAT heap over-read and ATLAS-192 parameter shortfall are documented in `security_findings.md` and are not needed for this attack.
+
+## Reproducing
+
+```sh
+make -C tools
+make -C sign-15
+for lib in sign-15/lib/*.so; do
+    tools/ngcc_attack sig-hint-padding "$lib"
+done
+```
+
+Each parameter set prints `CONFIRMED`: the driver changes bit 7 in an ignored
+hint slot, restores the message buffer that this verifier unexpectedly
+overwrites, and requires the byte-distinct signature to verify.

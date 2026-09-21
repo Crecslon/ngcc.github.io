@@ -60,11 +60,13 @@ table.summary td:not(:first-child) { text-align: right; }
   --sev-medium-bg: #f9c846; --sev-medium-fg: #1a1a1a;
   --sev-low-bg: #6fa8dc; --sev-low-fg: #1a1a1a;
   --sev-info-bg: #bdbdbd; --sev-info-fg: #1a1a1a;
+  --sev-none-bg: #2e7d32; --sev-none-fg: #fff;
 }
 @media (prefers-color-scheme: dark) {
   :root {
     --sev-critical-bg: #e53935; --sev-high-bg: #fb8c00; --sev-medium-bg: #ffd54f;
     --sev-low-bg: #64b5f6; --sev-info-bg: #757575; --sev-info-fg: #fff;
+    --sev-none-bg: #43a047;
   }
 }
 .sev { display: inline-block; padding: 0.05em 0.55em; border-radius: 3px; font-size: 0.8rem;
@@ -74,8 +76,9 @@ table.summary td:not(:first-child) { text-align: right; }
 .sev-medium { background: var(--sev-medium-bg); color: var(--sev-medium-fg); }
 .sev-low { background: var(--sev-low-bg); color: var(--sev-low-fg); }
 .sev-info { background: var(--sev-info-bg); color: var(--sev-info-fg); }
+.sev-none { background: var(--sev-none-bg); color: var(--sev-none-fg); }
 table.reports td.date { white-space: nowrap; font-variant-numeric: tabular-nums; }
-table.reports td:last-child { min-width: 22rem; }
+table.reports td:last-child { min-width: 18rem; }
 table.meta { margin: 1rem 0; font-size: 0.9rem; }
 table.meta th { width: 8rem; background: var(--head); font-weight: 600; white-space: nowrap; }
 table.meta td { word-break: break-word; }

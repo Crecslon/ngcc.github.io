@@ -98,6 +98,9 @@ def load_candidates():
                                          "algorithm": row["Algorithm"], "submitters": "", "kat_pass": 0,
                                          "kat_total": 0, "statuses": []})
         c.update(page=row.get("PageURL", ""), zip=row.get("DownloadURL", ""), forum=row.get("ForumThread", ""))
+    for row in read_csv("families.csv"):
+        if row.get("ID") in cands:
+            cands[row["ID"]]["family"] = row.get("Family", "")
     # per-instance statuses from the KAT results table
     res = CONTENT / "results.md"
     if res.is_file():
@@ -204,22 +207,30 @@ def sev_badge(sev):
     return f'<span class="sev sev-{sev}">{html.escape(sev.capitalize())}</span>'
 
 
-def reports_html(reports, prefix):
-    rows = []
-    for r in reports.values():
-        for title, anchor in r["issues"]:
-            rows.append((r["date"], SEVERITIES.index(r["severity"]), r["cid"], title, anchor, r))
-    rows.sort(key=lambda x: (x[1], x[2]))              # severity, then candidate id ...
-    rows.sort(key=lambda x: x[0], reverse=True)        # ... within newest date first (stable sort)
-    h = ['<table class="reports">',
-         "<thead><tr><th>date</th><th>severity</th><th>candidate</th><th>family</th><th>issue</th></tr></thead><tbody>"]
-    for date, _, cid, title, anchor, r in rows:
-        name = html.escape(r["meta"].get("Candidate", ""))
-        h.append(f'<tr><td class="date">{html.escape(date)}</td><td class="st">{sev_badge(r["severity"])}</td>'
-                 f'<td><a href="{prefix}reports/{cid}.html">{name}</a> <code>{cid}</code></td>'
-                 f'<td class="family">{html.escape(r["meta"].get("Family", ""))}</td>'
-                 f'<td><a href="{prefix}reports/{cid}.html#{anchor}">{html.escape(title)}</a></td></tr>')
-    h.append("</tbody></table>")
+def reports_html(reports, cands, prefix):
+    h = []
+    for cat, label in CATS:
+        h.extend([f'<h2 id="{cat}">{label}</h2>', '<table class="reports">',
+                  '<thead><tr><th>no.</th><th>status</th><th>candidate</th><th>family</th><th>issue</th></tr></thead><tbody>'])
+        for c in sorted((c for c in cands.values() if c["cat"] == cat), key=lambda c: c["no"]):
+            cid, r = c["id"], reports.get(c["id"])
+            family = (r["meta"].get("Family", "") if r else "") or c.get("family", "")
+            if not r:
+                name = html.escape(c["algorithm"])
+                href = html.escape(c.get("page", ""))
+                candidate = f'<a href="{href}">{name}</a>' if href else name
+                h.append(f'<tr><td>{c["no"]}</td><td class="st"><span class="sev sev-none">No report</span></td>'
+                         f'<td>{candidate} <code>{cid}</code></td><td class="family">{html.escape(family)}</td><td>—</td></tr>')
+                continue
+            issues = r["issues"] or [("Report", "")]
+            for i, (title, anchor) in enumerate(issues):
+                issue_href = f'{prefix}reports/{cid}.html' + (f'#{anchor}' if anchor else '')
+                candidate = (f'<a href="{prefix}reports/{cid}.html">'
+                             f'{html.escape(r["meta"].get("Candidate", c["algorithm"]))}</a> <code>{cid}</code>')
+                h.append(f'<tr><td>{c["no"] if i == 0 else ""}</td><td class="st">{sev_badge(r["severity"])}</td>'
+                         f'<td>{candidate}</td><td class="family">{html.escape(family)}</td>'
+                         f'<td><a href="{issue_href}">{html.escape(title)}</a></td></tr>')
+        h.append("</tbody></table>")
     return "\n".join(h)
 
 
@@ -246,7 +257,7 @@ def report_page(r, prefix):
 
 
 def expand_placeholders(text, cands, prefix, reports):
-    text = re.sub(r"<!--\s*reports\s*-->", lambda m: reports_html(reports, prefix), text)
+    text = re.sub(r"<!--\s*reports\s*-->", lambda m: reports_html(reports, cands, prefix), text)
 
     def repl(m):
         name = m.group(1)

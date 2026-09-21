@@ -1,0 +1,120 @@
+ID;Family
+sign-01;Lattice-based
+sign-02;Lattice-based
+sign-03;Hash-based
+sign-04;Hash-based
+sign-05;MPC/VOLE-in-the-head
+sign-06;Lattice-based
+sign-07;Lattice-based
+sign-08;Lattice-based
+sign-09;Multivariate
+sign-10;Multivariate
+sign-11;Hash-based
+sign-12;MPC/VOLE-in-the-head
+sign-13;MPC/VOLE-in-the-head
+sign-14;MPC/VOLE-in-the-head
+sign-15;Lattice-based
+sign-16;Lattice-based
+sign-17;Lattice-based
+sign-18;MPC-in-the-head
+sign-19;Hash-based
+sign-20;Code-based
+sign-21;Code-based / VOLE-in-the-head
+sign-22;Lattice-based
+sign-23;Lattice-based
+sign-24;VOLE-in-the-head
+sign-25;Isogeny-based
+sign-26;Isogeny-based
+sign-27;Isogeny-based
+sign-28;Code-based / MPC-in-the-head
+sign-29;Multivariate / MPC-in-the-head
+sign-30;Multivariate / MPC-in-the-head
+sign-31;Multivariate
+sign-32;Multivariate
+sign-33;Multivariate
+sign-34;Lattice-based
+kem-01;Lattice-based
+kem-02;Lattice-based
+kem-03;Code-based
+kem-04;Code-based
+kem-05;Code-based
+kem-06;Code-based
+kem-07;Code-based
+kem-08;Lattice-based
+kem-09;Lattice-based
+kem-10;Code-based
+kem-11;Lattice-based
+kem-12;Lattice-based
+kem-13;Lattice-based
+kem-14;Lattice-based
+kem-15;Lattice-based
+kem-16;Code-based
+kem-17;Code-based
+kem-18;Lattice-based
+kem-19;Lattice-based
+kem-20;Lattice-based
+kem-21;Lattice-based
+kem-22;Lattice-based
+kem-23;Code-based
+kem-24;Lattice-based
+kem-25;Lattice-based
+kem-26;Code-based
+kem-27;Lattice-based
+kem-28;Lattice-based
+kem-29;Lattice-based
+kem-30;Lattice-based
+kem-31;Isogeny-based
+kem-32;Code-based
+kem-33;Code-based
+kem-34;Lattice-based
+kem-35;Lattice-based
+kem-36;Code-based
+kem-37;Code-based
+kem-38;Multivariate
+kem-39;Lattice-based
+kem-40;Lattice-based
+kem-41;Lattice-based
+kex-01;Lattice-based AKE
+kex-02;Lattice-based AKE
+kex-03;Hybrid lattice-based AKE
+kex-04;Lattice-based AKE
+kex-05;Hybrid KEM/signature AKE
+kex-06;Lattice-based NIKE
+kex-07;Lattice-based AKE
+kex-08;Isogeny-based NIKE
+kex-09;Code-based AKE
+hash-01;Symmetric (sponge / block-cipher-based)
+hash-02;Symmetric (iterated hash)
+hash-03;Symmetric (compression-function-based)
+hash-04;Algebraic (matrix semigroup)
+hash-05;Symmetric (block-cipher-based)
+hash-06;Symmetric (block-cipher-based)
+hash-07;Symmetric (permutation-based)
+hash-08;Symmetric (sponge)
+hash-09;Symmetric (sponge)
+hash-10;Symmetric (compression-function-based)
+hash-11;Symmetric (sponge)
+hash-12;Symmetric (sponge)
+hash-13;Symmetric (sponge)
+hash-14;Symmetric (permutation-based)
+hash-15;Symmetric (sponge)
+hash-16;Symmetric (sponge)
+hash-17;Symmetric (sponge)
+hash-18;Symmetric (sponge)
+hash-19;Symmetric (block-cipher-based)
+hash-20;Symmetric (sponge)
+hash-21;Symmetric (PRNG-based)
+hash-22;Symmetric (sponge)
+hash-23;Symmetric (sponge)
+hash-24;Symmetric (tree / compression-function-based)
+hash-25;Symmetric (sponge)
+hash-26;Symmetric (sponge)
+hash-27;Symmetric (sponge)
+hash-28;Symmetric (sponge)
+hash-29;Symmetric (sponge)
+hash-30;Symmetric (sponge)
+hash-31;Symmetric (sponge)
+hash-32;Symmetric (sponge)
+hash-33;Symmetric (permutation-based)
+hash-34;Symmetric (wide-pipe iterated hash)
+hash-35;Symmetric (sponge)

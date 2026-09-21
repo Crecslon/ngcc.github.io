@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>MORNING-ATLAS (sign-15) · ngcc.dev</title>
-<link rel="stylesheet" href="../assets/style.css?v=50f91ff9">
+<link rel="stylesheet" href="../assets/style.css?v=c5cd3d67">
 </head>
 <body>
 <header class="site-header">
@@ -36,6 +36,17 @@
 <p>For each of <code>lwrdsa128</code>, <code>lwrdsa192</code>, <code>lwrdsa256</code>, and <code>lwrdsa512</code>, flipping the high bit of the final unused hint-index byte in a valid signature produced a different byte string that still verified for the same message and public key.</p>
 <p>The attack needs only one ordinary valid signature. It does not forge a new message and therefore does not by itself violate EUF-CMA, but it directly violates the specification's SUF-CMA claim.</p>
 <p>Verification must reject any noncanonical unused hint slot and enforce all stated hint-weight and ordering constraints. The separate KAT heap over-read and ATLAS-192 parameter shortfall are documented in <code>security_findings.md</code> and are not needed for this attack.</p>
+<h2 id="reproducing">Reproducing</h2>
+<p>Commands below run in a checkout of the <a href="https://github.com/ngcc-dev/ngcc-harness">ngcc-harness repository</a> with the candidate built (see its README).</p>
+<pre><code class="language-sh">make -C tools
+make -C sign-15
+for lib in sign-15/lib/*.so; do
+    tools/ngcc_attack sig-hint-padding &quot;$lib&quot;
+done
+</code></pre>
+<p>Each parameter set prints <code>CONFIRMED</code>: the driver changes bit 7 in an ignored
+hint slot, restores the message buffer that this verifier unexpectedly
+overwrites, and requires the byte-distinct signature to verify.</p>
 </main>
 <footer class="site-footer">
 <p>Built 2026-09-21 · <a href="https://github.com/ngcc-dev/ngcc.github.io">source</a></p>

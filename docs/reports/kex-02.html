@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>AFS-KEX (kex-02) · ngcc.dev</title>
-<link rel="stylesheet" href="../assets/style.css?v=50f91ff9">
+<link rel="stylesheet" href="../assets/style.css?v=c5cd3d67">
 </head>
 <body>
 <header class="site-header">
@@ -30,8 +30,20 @@
 <h2 id="the-ephemeral-key-is-generated-once-as-long-term-state">The ephemeral key is generated once as long-term state</h2>
 <p>The specification requires fresh AFS ephemeral key material for each session and claims completed-session forward secrecy after later compromise of long-term keys.</p>
 <p>The uniform wrapper instead generates <code>seed_e</code> and calls the ephemeral key generator inside <code>kex_init_self</code>. It embeds the resulting <code>pk_e/sk_e</code> into the composite public and secret keys returned as the party's long-term material and stores <code>seed_e</code> in the persistent state. Later pass functions reuse that material and never generate a fresh per-session ephemeral key.</p>
-<p>Reusing an initialized party therefore reuses the contribution on which the forward-secrecy argument depends. A later compromise of the returned composite long-term secret also reveals the supposedly ephemeral secret used by earlier sessions, directly invalidating the submitted PFS claim.</p>
+<p>This gives a direct completed-session key-recovery attack. A passive attacker records <code>m1 = ct_B</code> and the <code>ct_A</code> prefix of <code>m2</code>. After the session completes, compromise of the two API long-term secret keys exposes <code>csk_B</code> and <code>csk_A</code> in their first halves. The attacker decapsulates the recorded ciphertexts to recover <code>K_B</code> and <code>K_A</code>, then computes the public session KDF <code>XOF(K_B || K_A)</code>. The result is the exact erased session key. No cryptanalysis or search is required.</p>
 <p>Ephemeral AFS keys must be generated for each protocol execution, kept outside long-term key serialization, and erased when the session completes.</p>
+<h2 id="reproducing">Reproducing</h2>
+<p>Commands below run in a checkout of the <a href="https://github.com/ngcc-dev/ngcc-harness">ngcc-harness repository</a> with the candidate built (see its README).</p>
+<pre><code class="language-sh">make -C kex-02 exploit
+kex-02/reproduce_pfs_break
+kex-02/reproduce_pfs_break_c256
+kex-02/reproduce_pfs_break_c512
+</code></pre>
+<p>The three drivers complete honest C128, C256, and C512 exchanges, erase both session-state buffers, and recover each session key using only the recorded first two flights and the subsequently compromised API long-term keys. They also check that the true static-key halves alone do not recover the key.</p>
+<pre><code class="language-text">ATTACK kex-pfs-recovery AFS_KEX_C128 CONFIRMED recorded m1/m2 plus later API long-term-key compromise recovered erased session key 1218217aea48c0aee27983653641600a (static-only control differs)
+ATTACK kex-pfs-recovery AFS_KEX_C256 CONFIRMED recorded m1/m2 plus later API long-term-key compromise recovered erased session key 40076703841413297c9105f888a439d48f6015ab23774c9539b3ce6e19eeff5e (static-only control differs)
+ATTACK kex-pfs-recovery AFS_KEX_C512 CONFIRMED recorded m1/m2 plus later API long-term-key compromise recovered erased session key 12033302a024a20f0d4498daafdc87c3c91d7c9b7479be51280d1cacf286a0b9eab8d3593771c3260f60eaf02cdc4101b3828a0e4d9ebc3bbe742aee77830a1f (static-only control differs)
+</code></pre>
 </main>
 <footer class="site-footer">
 <p>Built 2026-09-21 · <a href="https://github.com/ngcc-dev/ngcc.github.io">source</a></p>
