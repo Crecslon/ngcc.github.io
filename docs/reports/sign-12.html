@@ -32,8 +32,14 @@
 <p>Independent fresh-process tests against Galas-160F generated identical public and secret keys in separate processes. The same implementation pattern is shared by the submitted Galas instances.</p>
 <p>An attacker recovers the signing key by running the public key-generation implementation from its initial state. The advertised hard relation is irrelevant because the victim and attacker deterministically generate the same secret key.</p>
 <p>Key generation must obtain its seed exclusively from the initialized API DRNG and must not provide a zero-seed production default.</p>
-<h2 id="reproduction">Reproduction</h2>
-<p><code>python3 security/run_low_hanging.py --wave all --candidate sign-12 --check sig-fresh-keygen --workers 1 --timeout 60</code></p>
+<h2 id="reproducing">Reproducing</h2>
+<p>Commands below run in a checkout of the <a href="https://github.com/ngcc-dev/ngcc-harness">ngcc-harness repository</a> with the candidate built (see its README).</p>
+<p>Build the candidate and the reproducer, then run:</p>
+<pre><code class="language-sh">make -C api harness &amp;&amp; make -C tools &amp;&amp; make -C sign-12
+tools/ngcc_attack keygen-determinism sign-12/lib/libGalas-160S.so
+</code></pre>
+<p><code>tools/reproduce.sh</code> runs this together with every other reported
+finding and its controls. See <code>tools/README.md</code>.</p>
 </main>
 <footer class="site-footer">
 <p>Built 2026-09-21 · <a href="https://github.com/ngcc-dev/ngcc.github.io">source</a></p>

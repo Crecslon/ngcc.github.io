@@ -18,3 +18,15 @@ Consequently, invalid signatures, modified messages, and arbitrary full-length s
 This permits universal forgery through the submitted API and directly violates the claimed EUF-CMA security.
 
 The wrapper must return the computed verification result rather than an unconditional success value. Tests must include invalid signatures and modified messages, not only valid KAT signatures.
+
+## Reproducing
+
+Build the candidate and the reproducer, then run:
+
+```sh
+make -C api harness && make -C tools && make -C sign-32
+tools/ngcc_attack sig-accept-all sign-32/lib/libUVW-128.so
+```
+
+`tools/reproduce.sh` runs this together with every other reported
+finding and its controls. See `tools/README.md`.

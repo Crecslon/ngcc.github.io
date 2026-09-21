@@ -22,3 +22,15 @@ MOZI-512 returns that exact 48-byte value followed by:
 For every message shorter than 1024 bits, both variants initialize the same zero state, inject identical padded bytes at the same offset, and apply the same 20-round permutation. The digest length or variant identifier is never absorbed; only the amount returned to the caller differs.
 
 The two functions therefore lack cross-variant domain separation and cannot be treated as independent hashes. No explicit specification claim of cross-profile independence was located, so this is reported as a confirmed composition defect rather than a collision-resistance claim violation.
+
+## Reproducing
+
+Build the candidate and the reproducer, then run:
+
+```sh
+make -C api harness && make -C tools && make -C hash-20
+tools/ngcc_attack hash-prefix hash-20/lib/libMOZI-384.so hash-20/lib/libMOZI-512.so
+```
+
+`tools/reproduce.sh` runs this together with every other reported
+finding and its controls. See `tools/README.md`.

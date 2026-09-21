@@ -9,16 +9,42 @@ Exploitation: Trivial
 Credit: Markku-Juhani O. Saarinen <markku-juhani.saarinen@tuni.fi>, with AI assistance
 Date: 2026-09-21
 
-## Verifier accepts modified messages and an all-zero signature
+## Verifier verdict is decided by stale stack contents
 
-The Level2-eff uncompressed verifier accepted a valid signature after the first message byte was changed. It also accepted a full-length all-zero signature. Both results were reproduced through the submitted shared-library API using the advertised key and signature lengths.
+The Level2-eff uncompressed verifier accepts a full-length all-zero signature, and
+accepts a valid signature after the message is changed, when either is verified after
+another verification in the same process. The same all-zero signature is rejected when
+the stack below the verifier is overwritten first. The verdict is therefore not a
+function of the signature.
 
-The uncompressed verification path computes a message-dependent challenge but does not enforce all of the protocol's required point and response checks. Several stronger checks are absent or commented out, and the remaining codomain/nonzero tests are insufficient.
+`protocols_verif_internal` is compiled with `-DNDEBUG`, which removes the point-order
+and codomain `assert`s that the verification path relies on, and several further checks
+are commented out in the shipped source. For a malformed signature the dim-2 isogeny
+chain leaves its codomain partly unwritten, and the final j-invariant comparison then
+reads whatever the previous call left on the stack. Two independent tests confirm the
+mechanism: overwriting the stack between calls, and rebuilding the instance with
+`-ftrivial-auto-var-init=zero`, each make both forgeries reject.
 
-An attacker can submit an all-zero signature for a message without making any signing query, or reuse a signature with a modified message. This is a direct universal-style forgery against the affected instance and violates the specification's EUF-CMA theorem.
+A verifier normally processes signatures one after another, so the accepting state is
+the ordinary one: an attacker can submit an all-zero signature for a message of their
+choice without making any signing query. Acceptance depends on process state rather
+than on the attacker's input, which makes the behaviour unpredictable rather than safe.
+The compressed instance built from the same tree is unaffected.
 
-The verifier must implement every specified validation condition and reject zero or malformed decoded responses before performing protocol verification.
+The verifier must initialise every value its decision reads, enforce the specified point,
+order and codomain conditions unconditionally rather than through `assert`, and reject
+zero or malformed decoded responses before protocol verification.
 
-## Reproduction
+## Reproducing
 
-`security/ngcc_security sign-25/lib/libSQISign2Dsquare-Level2-eff_uncompressed.so sig-zero`
+Build the candidate and the reproducer, then run:
+
+```sh
+make -C api harness && make -C tools && make -C sign-25
+tools/ngcc_attack sig-uninit-verdict sign-25/lib/libSQISign2Dsquare-Level2-eff_uncompressed.so
+```
+
+The check verifies one all-zero signature twice, once after a genuine verification and
+once after overwriting the stack, and reports the two verdicts. The compressed instance
+is run as a control and rejects both. `tools/reproduce.sh` runs this together with every
+other reported finding and its controls. See `tools/README.md`.

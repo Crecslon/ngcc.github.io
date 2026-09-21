@@ -19,6 +19,14 @@ An attacker recovers a victim's secret key by starting a fresh process and invok
 
 The wrapper must initialize its PRNG from the supplied DRNG for every independent key-generation operation and must not rely on zero-initialized global state.
 
-## Reproduction
+## Reproducing
 
-`python3 security/run_low_hanging.py --wave all --candidate kem-17 --check kem-fresh-keygen --workers 1 --timeout 60`
+Build the candidate and the reproducer, then run:
+
+```sh
+make -C api harness && make -C tools && make -C kem-17
+tools/ngcc_attack keygen-fresh kem-17/lib/libhep-qc-1.so 0x01   # repeat with a different seed
+```
+
+`tools/reproduce.sh` runs this together with every other reported
+finding and its controls. See `tools/README.md`.

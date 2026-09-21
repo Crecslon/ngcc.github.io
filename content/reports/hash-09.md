@@ -28,6 +28,14 @@ Instead, the byte-aligned path writes `0x01`. The partial-byte path correctly co
 
 More generally, for every byte-aligned message `M`, `H(M) = H(M || 0^7)`. The defect affects all five submitted parameter sets. Replacing `0x01` with `0x80` in the byte-aligned padding path removes this collision. The implementation violates the specification's collision-resistance claims, but the defect is not inherent in the specified design.
 
-## Reproduction
+## Reproducing
 
-`security/ngcc_security hash-09/lib/libEijen-256.so hash-zero-padding`
+Build the candidate and the reproducer, then run:
+
+```sh
+make -C api harness && make -C tools && make -C hash-09
+tools/ngcc_attack hash-collide-zeropad hash-09/lib/libEijen-256.so
+```
+
+`tools/reproduce.sh` runs this together with every other reported
+finding and its controls. See `tools/README.md`.

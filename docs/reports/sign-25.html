@@ -27,13 +27,37 @@
 <tr><th>Archive</th><td><a href="https://www.niccs.org.cn/niccs/Proposal/Public-Key%20Cryptographic%20Algorithms/Round%201%20candidates/SQIsign2D2.zip">SQIsign2D2.zip</a> (SHA-256: <code>cf635de5eebbdeb7b2212e84f349da4ca878889e0a4a59b463d0c8cdfdb8eeab</code>)</td></tr>
 </table></div>
 
-<h2 id="verifier-accepts-modified-messages-and-an-all-zero-signature">Verifier accepts modified messages and an all-zero signature</h2>
-<p>The Level2-eff uncompressed verifier accepted a valid signature after the first message byte was changed. It also accepted a full-length all-zero signature. Both results were reproduced through the submitted shared-library API using the advertised key and signature lengths.</p>
-<p>The uncompressed verification path computes a message-dependent challenge but does not enforce all of the protocol's required point and response checks. Several stronger checks are absent or commented out, and the remaining codomain/nonzero tests are insufficient.</p>
-<p>An attacker can submit an all-zero signature for a message without making any signing query, or reuse a signature with a modified message. This is a direct universal-style forgery against the affected instance and violates the specification's EUF-CMA theorem.</p>
-<p>The verifier must implement every specified validation condition and reject zero or malformed decoded responses before performing protocol verification.</p>
-<h2 id="reproduction">Reproduction</h2>
-<p><code>security/ngcc_security sign-25/lib/libSQISign2Dsquare-Level2-eff_uncompressed.so sig-zero</code></p>
+<h2 id="verifier-verdict-is-decided-by-stale-stack-contents">Verifier verdict is decided by stale stack contents</h2>
+<p>The Level2-eff uncompressed verifier accepts a full-length all-zero signature, and
+accepts a valid signature after the message is changed, when either is verified after
+another verification in the same process. The same all-zero signature is rejected when
+the stack below the verifier is overwritten first. The verdict is therefore not a
+function of the signature.</p>
+<p><code>protocols_verif_internal</code> is compiled with <code>-DNDEBUG</code>, which removes the point-order
+and codomain <code>assert</code>s that the verification path relies on, and several further checks
+are commented out in the shipped source. For a malformed signature the dim-2 isogeny
+chain leaves its codomain partly unwritten, and the final j-invariant comparison then
+reads whatever the previous call left on the stack. Two independent tests confirm the
+mechanism: overwriting the stack between calls, and rebuilding the instance with
+<code>-ftrivial-auto-var-init=zero</code>, each make both forgeries reject.</p>
+<p>A verifier normally processes signatures one after another, so the accepting state is
+the ordinary one: an attacker can submit an all-zero signature for a message of their
+choice without making any signing query. Acceptance depends on process state rather
+than on the attacker's input, which makes the behaviour unpredictable rather than safe.
+The compressed instance built from the same tree is unaffected.</p>
+<p>The verifier must initialise every value its decision reads, enforce the specified point,
+order and codomain conditions unconditionally rather than through <code>assert</code>, and reject
+zero or malformed decoded responses before protocol verification.</p>
+<h2 id="reproducing">Reproducing</h2>
+<p>Commands below run in a checkout of the <a href="https://github.com/ngcc-dev/ngcc-harness">ngcc-harness repository</a> with the candidate built (see its README).</p>
+<p>Build the candidate and the reproducer, then run:</p>
+<pre><code class="language-sh">make -C api harness &amp;&amp; make -C tools &amp;&amp; make -C sign-25
+tools/ngcc_attack sig-uninit-verdict sign-25/lib/libSQISign2Dsquare-Level2-eff_uncompressed.so
+</code></pre>
+<p>The check verifies one all-zero signature twice, once after a genuine verification and
+once after overwriting the stack, and reports the two verdicts. The compressed instance
+is run as a control and rejects both. <code>tools/reproduce.sh</code> runs this together with every
+other reported finding and its controls. See <code>tools/README.md</code>.</p>
 </main>
 <footer class="site-footer">
 <p>Built 2026-09-21 · <a href="https://github.com/ngcc-dev/ngcc.github.io">source</a></p>

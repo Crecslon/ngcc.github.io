@@ -32,8 +32,14 @@
 <p>Changing a sampled unused packed-hint bit in a valid signature produces a different byte string that still verifies for the same public key and message. No secret key or signing operation is needed to construct the second signature.</p>
 <p>This does not by itself forge a signature for a new message, so it is not an EUF-CMA break. It does directly violate the specification's strong-unforgeability claim, because an attacker transforms one valid signature into a distinct valid signature on the same message.</p>
 <p>The decoder must reject noncanonical hint encodings and require every unused byte or bit to have its unique prescribed value.</p>
-<h2 id="reproduction">Reproduction</h2>
-<p><code>security/ngcc_security sign-01/lib/libAigis-sig1.so sig-signature-flip</code></p>
+<h2 id="reproducing">Reproducing</h2>
+<p>Commands below run in a checkout of the <a href="https://github.com/ngcc-dev/ngcc-harness">ngcc-harness repository</a> with the candidate built (see its README).</p>
+<p>Build the candidate and the reproducer, then run:</p>
+<pre><code class="language-sh">make -C api harness &amp;&amp; make -C tools &amp;&amp; make -C sign-01
+tools/ngcc_attack sig-malleable sign-01/lib/libAigis-sig1.so
+</code></pre>
+<p><code>tools/reproduce.sh</code> runs this together with every other reported
+finding and its controls. See <code>tools/README.md</code>.</p>
 </main>
 <footer class="site-footer">
 <p>Built 2026-09-21 · <a href="https://github.com/ngcc-dev/ngcc.github.io">source</a></p>

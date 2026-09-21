@@ -19,6 +19,14 @@ An attacker modifies the IND-CCA challenge ciphertext and compares the retained 
 
 The comparison result must be normalized to a Boolean and expanded to exactly `0x00` or `0xff` before key selection.
 
-## Reproduction
+## Reproducing
 
-`security/ngcc_security kem-18/lib/libLoong128.so kem-reject-mask`
+Build the candidate and the reproducer, then run:
+
+```sh
+make -C api harness && make -C tools && make -C kem-18
+tools/ngcc_attack kem-reject-mask kem-18/lib/libLoong128.so
+```
+
+`tools/reproduce.sh` runs this together with every other reported
+finding and its controls. See `tools/README.md`.

@@ -24,6 +24,14 @@ The implementation attempts to apply `pad10*1` in a single rate block. When the 
 
 Consequently, for any prefix `P` of length `r-2 mod r`, the implementation gives `H(P) = H(P || 1)`. The same defect was reproduced at 702/703 bits for MasterCube-768 and 446/447 bits for MasterCube-1024. It directly violates the claimed 256-, 384-, and 512-bit collision strengths and is an implementation error rather than an attack on the specified permutation.
 
-## Reproduction
+## Reproducing
 
-`security/ngcc_security hash-17/lib/libMasterCube-512.so hash-zero-padding`
+Build the candidate and the reproducer, then run:
+
+```sh
+make -C api harness && make -C tools && make -C hash-17
+tools/ngcc_attack hash-collide-rate hash-17/lib/libMasterCube-512.so 959
+```
+
+`tools/reproduce.sh` runs this together with every other reported
+finding and its controls. See `tools/README.md`.

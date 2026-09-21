@@ -19,6 +19,15 @@ An attacker recovers the victim's secret signing key by starting a fresh process
 
 All key-generation randomness must be derived from the initialized API DRNG; the uninitialized private generator must be removed or explicitly and securely seeded.
 
-## Reproduction
+## Reproducing
 
-`python3 security/run_low_hanging.py --wave all --candidate sign-33 --check sig-fresh-keygen --workers 1 --timeout 60`
+Build the candidate and the reproducer, then run:
+
+```sh
+make -C api harness && make -C tools && make -C sign-33
+tools/ngcc_attack keygen-fresh sign-33/lib/libvdoo_128.so 0x01
+tools/ngcc_attack keygen-fresh sign-33/lib/libvdoo_128.so 0x99   # same key digest
+```
+
+`tools/reproduce.sh` runs this together with every other reported
+finding and its controls. See `tools/README.md`.

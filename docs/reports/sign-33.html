@@ -32,8 +32,15 @@
 <p>Independent fresh-process tests with different API seeds generated identical VDOO public and secret keys. The result was directly reproduced against the built VDOO-256 library and the same RNG wiring is used by all submitted levels.</p>
 <p>An attacker recovers the victim's secret signing key by starting a fresh process and invoking key generation once. No multivariate cryptanalysis is required.</p>
 <p>All key-generation randomness must be derived from the initialized API DRNG; the uninitialized private generator must be removed or explicitly and securely seeded.</p>
-<h2 id="reproduction">Reproduction</h2>
-<p><code>python3 security/run_low_hanging.py --wave all --candidate sign-33 --check sig-fresh-keygen --workers 1 --timeout 60</code></p>
+<h2 id="reproducing">Reproducing</h2>
+<p>Commands below run in a checkout of the <a href="https://github.com/ngcc-dev/ngcc-harness">ngcc-harness repository</a> with the candidate built (see its README).</p>
+<p>Build the candidate and the reproducer, then run:</p>
+<pre><code class="language-sh">make -C api harness &amp;&amp; make -C tools &amp;&amp; make -C sign-33
+tools/ngcc_attack keygen-fresh sign-33/lib/libvdoo_128.so 0x01
+tools/ngcc_attack keygen-fresh sign-33/lib/libvdoo_128.so 0x99   # same key digest
+</code></pre>
+<p><code>tools/reproduce.sh</code> runs this together with every other reported
+finding and its controls. See <code>tools/README.md</code>.</p>
 </main>
 <footer class="site-footer">
 <p>Built 2026-09-21 · <a href="https://github.com/ngcc-dev/ngcc.github.io">source</a></p>

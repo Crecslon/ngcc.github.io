@@ -19,6 +19,14 @@ An IND-CCA attacker modifies the challenge ciphertext and compares the retained 
 
 The fix is to normalize every nonzero comparison result to an all-ones mask before selecting between the candidate and rejection secrets.
 
-## Reproduction
+## Reproducing
 
-`security/ngcc_security kem-09/lib/libCheetah128.so kem-reject-mask`
+Build the candidate and the reproducer, then run:
+
+```sh
+make -C api harness && make -C tools && make -C kem-09
+tools/ngcc_attack kem-reject-mask kem-09/lib/libCheetah128.so
+```
+
+`tools/reproduce.sh` runs this together with every other reported
+finding and its controls. See `tools/README.md`.

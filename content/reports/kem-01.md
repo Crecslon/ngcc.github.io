@@ -17,6 +17,14 @@ Changing a ciphertext bit frequently leaves the decapsulated shared secret uncha
 
 An attacker given a challenge ciphertext and candidate challenge key can modify the ciphertext, decapsulate it through the allowed CCA oracle, and compare the result with the candidate key. Retention identifies the real encapsulated key and provides a direct IND-CCA distinguisher. This violates the claimed IND-CCA security at every submitted level.
 
-## Reproduction
+## Reproducing
 
-`security/ngcc_security kem-01/lib/libAigis-enc1.so kem-ciphertext-flip`
+Build the candidate and the reproducer, then run:
+
+```sh
+make -C api harness && make -C tools && make -C kem-01
+tools/ngcc_attack kem-ct-flip kem-01/lib/libAigis-enc1.so
+```
+
+`tools/reproduce.sh` runs this together with every other reported
+finding and its controls. See `tools/README.md`.

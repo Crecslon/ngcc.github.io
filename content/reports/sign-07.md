@@ -19,6 +19,14 @@ The result is not a new-message forgery and therefore does not alone violate EUF
 
 Verification must enforce a unique encoding, including the complete fixed-size tail.
 
-## Reproduction
+## Reproducing
 
-`security/ngcc_security sign-07/lib/libCS-128.so sig-signature-flip`
+Build the candidate and the reproducer, then run:
+
+```sh
+make -C api harness && make -C tools && make -C sign-07
+tools/ngcc_attack sig-malleable sign-07/lib/libCS-128.so
+```
+
+`tools/reproduce.sh` runs this together with every other reported
+finding and its controls. See `tools/README.md`.

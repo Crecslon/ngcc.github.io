@@ -32,8 +32,14 @@
 <p>For all four parameter sets, changing ciphertext byte 1 by <code>0x80</code> produced an output retaining all seven low bits of every byte of the valid shared secret. Byte 0 is not a universal witness: at the 128- and 256-bit levels it produces only a partial mixture, while it works at the 384- and 512-bit levels. The byte-1 result was reproduced across ten independent key generations per parameter set.</p>
 <p>An attacker modifies the IND-CCA challenge ciphertext and compares the retained positions with the challenge key. Agreement distinguishes the real key from a random key with overwhelming probability. This directly violates the claimed IND-CCA security of all four instances.</p>
 <p>The comparison result must be normalized to a Boolean and expanded to exactly <code>0x00</code> or <code>0xff</code> before key selection.</p>
-<h2 id="reproduction">Reproduction</h2>
-<p><code>security/ngcc_security kem-18/lib/libLoong128.so kem-reject-mask</code></p>
+<h2 id="reproducing">Reproducing</h2>
+<p>Commands below run in a checkout of the <a href="https://github.com/ngcc-dev/ngcc-harness">ngcc-harness repository</a> with the candidate built (see its README).</p>
+<p>Build the candidate and the reproducer, then run:</p>
+<pre><code class="language-sh">make -C api harness &amp;&amp; make -C tools &amp;&amp; make -C kem-18
+tools/ngcc_attack kem-reject-mask kem-18/lib/libLoong128.so
+</code></pre>
+<p><code>tools/reproduce.sh</code> runs this together with every other reported
+finding and its controls. See <code>tools/README.md</code>.</p>
 </main>
 <footer class="site-footer">
 <p>Built 2026-09-21 · <a href="https://github.com/ngcc-dev/ngcc.github.io">source</a></p>

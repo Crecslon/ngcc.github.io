@@ -9,8 +9,8 @@ Every content/**/*.md becomes docs/**/*.html. A page's title is its first H1
 are expanded before Markdown conversion, where NAME is one of
 summary | sign | kem | kex | hash | all, and <!-- reports --> expands to the
 issue list built from content/reports/<id>.md. A report is a "Field: value"
-header block followed by one "## " section per issue ("## Reproduction" is
-not an issue). All links are relative, so the site works at any base URL.
+header block followed by one "## " section per issue (a "## Reproduc…"
+section is a procedure, not an issue, and gets a link to the harness repo). All links are relative, so the site works at any base URL.
 """
 import csv
 import datetime
@@ -29,6 +29,7 @@ CONTENT, DOCS, ASSETS = ROOT / "content", ROOT / "docs", ROOT / "assets"
 KEEP = {"CNAME", ".nojekyll"}          # never removed from docs/
 SITE = "ngcc.dev"
 REPO = "https://github.com/ngcc-dev/ngcc.github.io"
+HARNESS = "https://github.com/ngcc-dev/ngcc-harness"
 CATS = [("sign", "Signatures"), ("kem", "KEMs"), ("kex", "Key exchange"), ("hash", "Hash functions")]
 
 NAV = [("Home", "index.html"), ("Reports", "reports/index.html"), ("Candidates", "candidates/index.html"),
@@ -177,7 +178,7 @@ def parse_report(text):
         i += 1
     body = "\n".join(lines[i:])
     issues = [h.strip() for h in re.findall(r"^##\s+(.+?)\s*$", body, re.M)
-              if h.strip().lower() != "reproduction"]
+              if not h.strip().lower().startswith("reproduc")]
     return meta, body, issues
 
 
@@ -234,7 +235,14 @@ def report_page(r, prefix):
     meta_table = '<table class="meta">\n' + "\n".join(rows) + "\n</table>"
     title = f"{m.get('Candidate', r['cid'])} ({r['cid']})"
     crumb = f'<p class="crumb"><a href="{prefix}reports/index.html">Reports</a> › <code>{r["cid"]}</code></p>'
-    return f"{crumb}\n\n# {title}\n\n{meta_table}\n\n{r['body']}", title
+    note = (f"\n\nCommands below run in a checkout of the [ngcc-harness repository]({HARNESS}) "
+            f"with the candidate built (see its README).")
+    body = r["body"]
+    for pat in (r"^(##[ \t]+Reproducing[ \t]*)$", r"^(##[ \t]+Reproduc\w*[ \t]*)$"):   # prefer the newer section
+        body, n = re.subn(pat, lambda m: m.group(1) + note, body, count=1, flags=re.M)
+        if n:
+            break
+    return f"{crumb}\n\n# {title}\n\n{meta_table}\n\n{body}", title
 
 
 def expand_placeholders(text, cands, prefix, reports):

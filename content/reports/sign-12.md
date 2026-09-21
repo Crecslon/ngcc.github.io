@@ -19,6 +19,14 @@ An attacker recovers the signing key by running the public key-generation implem
 
 Key generation must obtain its seed exclusively from the initialized API DRNG and must not provide a zero-seed production default.
 
-## Reproduction
+## Reproducing
 
-`python3 security/run_low_hanging.py --wave all --candidate sign-12 --check sig-fresh-keygen --workers 1 --timeout 60`
+Build the candidate and the reproducer, then run:
+
+```sh
+make -C api harness && make -C tools && make -C sign-12
+tools/ngcc_attack keygen-determinism sign-12/lib/libGalas-160S.so
+```
+
+`tools/reproduce.sh` runs this together with every other reported
+finding and its controls. See `tools/README.md`.

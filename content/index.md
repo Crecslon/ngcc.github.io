@@ -4,4 +4,7 @@ Independent testing of the candidate algorithms in the Chinese
 [Next Generation Commercial Cryptographic (NGCC) algorithms program](https://www.niccs.org.cn/en/).
 This site is not affiliated with NICCS.
 
-Content is being prepared.
+- [Reports](reports/index.md) — security findings, one line per issue, each
+  linking to the full report and its reproduction steps.
+- [Harness](https://github.com/ngcc-dev/ngcc-harness) — the build and test tooling
+  the reproductions rely on.

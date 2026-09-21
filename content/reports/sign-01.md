@@ -19,6 +19,14 @@ This does not by itself forge a signature for a new message, so it is not an EUF
 
 The decoder must reject noncanonical hint encodings and require every unused byte or bit to have its unique prescribed value.
 
-## Reproduction
+## Reproducing
 
-`security/ngcc_security sign-01/lib/libAigis-sig1.so sig-signature-flip`
+Build the candidate and the reproducer, then run:
+
+```sh
+make -C api harness && make -C tools && make -C sign-01
+tools/ngcc_attack sig-malleable sign-01/lib/libAigis-sig1.so
+```
+
+`tools/reproduce.sh` runs this together with every other reported
+finding and its controls. See `tools/README.md`.

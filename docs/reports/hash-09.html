@@ -39,8 +39,14 @@
 <p>The collision is caused by an implementation bug, not by the specified construction. The specification requires injective <code>pad10*</code> padding, <code>M || 1 || 0^k</code>. Eijen processes message bits MSB-first, so the padding byte following a byte-aligned message must begin with <code>0x80</code>.</p>
 <p>Instead, the byte-aligned path writes <code>0x01</code>. The partial-byte path correctly computes <code>0x80 &gt;&gt; partial_bits</code>; after seven explicit zero bits, this also produces <code>0x01</code>. The two distinct messages therefore have identical padded representations.</p>
 <p>More generally, for every byte-aligned message <code>M</code>, <code>H(M) = H(M || 0^7)</code>. The defect affects all five submitted parameter sets. Replacing <code>0x01</code> with <code>0x80</code> in the byte-aligned padding path removes this collision. The implementation violates the specification's collision-resistance claims, but the defect is not inherent in the specified design.</p>
-<h2 id="reproduction">Reproduction</h2>
-<p><code>security/ngcc_security hash-09/lib/libEijen-256.so hash-zero-padding</code></p>
+<h2 id="reproducing">Reproducing</h2>
+<p>Commands below run in a checkout of the <a href="https://github.com/ngcc-dev/ngcc-harness">ngcc-harness repository</a> with the candidate built (see its README).</p>
+<p>Build the candidate and the reproducer, then run:</p>
+<pre><code class="language-sh">make -C api harness &amp;&amp; make -C tools &amp;&amp; make -C hash-09
+tools/ngcc_attack hash-collide-zeropad hash-09/lib/libEijen-256.so
+</code></pre>
+<p><code>tools/reproduce.sh</code> runs this together with every other reported
+finding and its controls. See <code>tools/README.md</code>.</p>
 </main>
 <footer class="site-footer">
 <p>Built 2026-09-21 · <a href="https://github.com/ngcc-dev/ngcc.github.io">source</a></p>

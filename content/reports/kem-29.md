@@ -19,6 +19,14 @@ Independent execution against the three built libraries called `polarkem_recover
 
 Anyone observing a public key and ciphertext can therefore recover the session key by calling code shipped by the candidate. This is a total break of the submitted KEM, violating IND-CPA and consequently the claimed IND-CCA2 security at every level.
 
-## Reproduction
+## Reproducing
 
-`python3 kem-29/reproduce_public_recovery.py`
+Build the candidate and the reproducer, then run:
+
+```sh
+make -C api harness && make -C tools && make -C kem-29
+python3 kem-29/reproduce_public_recovery.py
+```
+
+`tools/reproduce.sh` runs this together with every other reported
+finding and its controls. See `tools/README.md`.

@@ -32,8 +32,14 @@
 <p>Fresh-process tests with different API seeds produced identical public and secret keys for <code>hep-qc-1</code>, <code>hep-qc-3</code>, <code>hep-qc-5</code>, and <code>hep-qc-7</code>.</p>
 <p>An attacker recovers a victim's secret key by starting a fresh process and invoking the submitted key-generation API once. No code-based cryptanalysis is required. The resulting secret key decapsulates the victim's ciphertexts, completely breaking the claimed KEM confidentiality.</p>
 <p>The wrapper must initialize its PRNG from the supplied DRNG for every independent key-generation operation and must not rely on zero-initialized global state.</p>
-<h2 id="reproduction">Reproduction</h2>
-<p><code>python3 security/run_low_hanging.py --wave all --candidate kem-17 --check kem-fresh-keygen --workers 1 --timeout 60</code></p>
+<h2 id="reproducing">Reproducing</h2>
+<p>Commands below run in a checkout of the <a href="https://github.com/ngcc-dev/ngcc-harness">ngcc-harness repository</a> with the candidate built (see its README).</p>
+<p>Build the candidate and the reproducer, then run:</p>
+<pre><code class="language-sh">make -C api harness &amp;&amp; make -C tools &amp;&amp; make -C kem-17
+tools/ngcc_attack keygen-fresh kem-17/lib/libhep-qc-1.so 0x01   # repeat with a different seed
+</code></pre>
+<p><code>tools/reproduce.sh</code> runs this together with every other reported
+finding and its controls. See <code>tools/README.md</code>.</p>
 </main>
 <footer class="site-footer">
 <p>Built 2026-09-21 · <a href="https://github.com/ngcc-dev/ngcc.github.io">source</a></p>

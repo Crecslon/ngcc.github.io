@@ -37,8 +37,14 @@
 <p><code>847a067d6eb9078d5c3ce3e3f08fbfd3a1488eb6e89909144db1a76d5fcb9a097fef21b4927bb6fe0a1bb2769ef0f249734550c1e8acfa0023a1281d12131bf6</code></p>
 <p>The implementation attempts to apply <code>pad10*1</code> in a single rate block. When the message length is <code>r-1 mod r</code>, only one bit remains. The opening and closing delimiter bits are ORed into the same position instead of emitting the additional block required by the specification.</p>
 <p>Consequently, for any prefix <code>P</code> of length <code>r-2 mod r</code>, the implementation gives <code>H(P) = H(P || 1)</code>. The same defect was reproduced at 702/703 bits for MasterCube-768 and 446/447 bits for MasterCube-1024. It directly violates the claimed 256-, 384-, and 512-bit collision strengths and is an implementation error rather than an attack on the specified permutation.</p>
-<h2 id="reproduction">Reproduction</h2>
-<p><code>security/ngcc_security hash-17/lib/libMasterCube-512.so hash-zero-padding</code></p>
+<h2 id="reproducing">Reproducing</h2>
+<p>Commands below run in a checkout of the <a href="https://github.com/ngcc-dev/ngcc-harness">ngcc-harness repository</a> with the candidate built (see its README).</p>
+<p>Build the candidate and the reproducer, then run:</p>
+<pre><code class="language-sh">make -C api harness &amp;&amp; make -C tools &amp;&amp; make -C hash-17
+tools/ngcc_attack hash-collide-rate hash-17/lib/libMasterCube-512.so 959
+</code></pre>
+<p><code>tools/reproduce.sh</code> runs this together with every other reported
+finding and its controls. See <code>tools/README.md</code>.</p>
 </main>
 <footer class="site-footer">
 <p>Built 2026-09-21 · <a href="https://github.com/ngcc-dev/ngcc.github.io">source</a></p>
