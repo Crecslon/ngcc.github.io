@@ -31,7 +31,13 @@
 <p>Every submitted <code>hash_sm3.c</code> parses the message digest and then assigns <code>*tree = 0</code> instead of decoding the hypertree index. The implementation therefore discards the 64- to 67-bit tree selection required by the specification and repeatedly uses only bottom-layer addresses.</p>
 <p>An additional missing-parentheses defect in <code>SPX_BOTTOM_TREE_HEIGHT</code> makes the leaf mask retain two fewer bits than intended. The resulting numbers of reachable bottom FORS/WOTS addresses are only 4, 64, 8, 64, 16, 128, 32, and 128 for 160f, 160s, 256f, 256s, 384f, 384s, 512f, and 512s. Thus the initially observed 16-key collapse in 160f is actually a four-address collapse.</p>
 <p>A same-key experiment with 100 CEDRUSC-160f signatures produced exactly four bottom authentication paths, with multiplicities 23, 25, 26, and 26. The specification models FORS-instance reuse with a probability near <code>1/2^h</code>; the implementation instead repeats few-time FORS and associated WOTS keys after only a handful of signatures.</p>
+<p>An end-to-end adaptive attack collected 1,000 signatures on distinct chosen messages, combined disclosed FORS leaves from different signatures, and found a covered digest for a new message after 2,046 <code>H_MSG</code> trials. Reusing the selected address's fixed hypertree suffix produced a signature accepted by the submitted verifier. The attack completed in about three CPU-minutes.</p>
 <p>This invalidates the submitted concrete-security analysis and enables low-query leaf accumulation and signature reuse attacks. The tree index must be decoded from the digest and every height macro must be parenthesized before use in masks.</p>
+<h2 id="reproduction">Reproduction</h2>
+<p>Commands below run in a checkout of the <a href="https://github.com/ngcc-dev/ngcc-harness">ngcc-harness repository</a> with the candidate built (see its README).</p>
+<pre><code class="language-sh">make -C sign-03 exploit
+sign-03/reproduce_forgery sign-03/lib/libCEDRUSC-160f.so
+</code></pre>
 </main>
 <footer class="site-footer">
 <p>Built 2026-09-21 · <a href="https://github.com/ngcc-dev/ngcc.github.io">source</a></p>

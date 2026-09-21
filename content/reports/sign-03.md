@@ -17,4 +17,13 @@ An additional missing-parentheses defect in `SPX_BOTTOM_TREE_HEIGHT` makes the l
 
 A same-key experiment with 100 CEDRUSC-160f signatures produced exactly four bottom authentication paths, with multiplicities 23, 25, 26, and 26. The specification models FORS-instance reuse with a probability near `1/2^h`; the implementation instead repeats few-time FORS and associated WOTS keys after only a handful of signatures.
 
+An end-to-end adaptive attack collected 1,000 signatures on distinct chosen messages, combined disclosed FORS leaves from different signatures, and found a covered digest for a new message after 2,046 `H_MSG` trials. Reusing the selected address's fixed hypertree suffix produced a signature accepted by the submitted verifier. The attack completed in about three CPU-minutes.
+
 This invalidates the submitted concrete-security analysis and enables low-query leaf accumulation and signature reuse attacks. The tree index must be decoded from the digest and every height macro must be parenthesized before use in masks.
+
+## Reproduction
+
+```sh
+make -C sign-03 exploit
+sign-03/reproduce_forgery sign-03/lib/libCEDRUSC-160f.so
+```
