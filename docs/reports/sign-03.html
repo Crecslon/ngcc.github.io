@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>CEDRUS+C (sign-03) · ngcc.dev</title>
-<link rel="stylesheet" href="../assets/style.css?v=c5cd3d67">
+<link rel="stylesheet" href="../assets/style.css?v=9eeb984b">
 </head>
 <body>
 <header class="site-header">
@@ -18,22 +18,26 @@
 <div class="table-wrap"><table class="meta">
 <tr><th>Candidate</th><td>CEDRUS+C</td></tr>
 <tr><th>Family</th><td>Hash-based (stateless)</td></tr>
-<tr><th>Scope</th><td>Reference implementation, all eight parameter sets</td></tr>
-<tr><th>Severity</th><td><span class="sev sev-critical">Critical</span></td></tr>
-<tr><th>Discovery</th><td>Trivial</td></tr>
-<tr><th>Exploitation</th><td>Low-query adaptive signature accumulation</td></tr>
-<tr><th>Date</th><td>2026-09-21</td></tr>
-<tr><th>Credit</th><td>Markku-Juhani O. Saarinen <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#109;&#97;&#114;&#107;&#107;&#117;&#45;&#106;&#117;&#104;&#97;&#110;&#105;&#46;&#115;&#97;&#97;&#114;&#105;&#110;&#101;&#110;&#64;&#116;&#117;&#110;&#105;&#46;&#102;&#105;">&#109;&#97;&#114;&#107;&#107;&#117;&#45;&#106;&#117;&#104;&#97;&#110;&#105;&#46;&#115;&#97;&#97;&#114;&#105;&#110;&#101;&#110;&#64;&#116;&#117;&#110;&#105;&#46;&#102;&#105;</a>, with AI assistance</td></tr>
 <tr><th>Archive</th><td><a href="https://www.niccs.org.cn/niccs/Proposal/Public-Key%20Cryptographic%20Algorithms/Round%201%20candidates/cedrus%2Bc.zip">cedrus+c.zip</a> (SHA-256: <code>a31de849cf0a0703a4e57decbdf4d97b100d00dc74756feaded2c04a7593e110</code>)</td></tr>
 </table></div>
 
-<h2 id="hypertree-index-collapse-causes-repeated-few-time-keys">Hypertree index collapse causes repeated few-time keys</h2>
+<h2 class="issue-heading issue-heading-first" id="sign-03-1-hypertree-index-collapse-causes-repeated-few-time-keys">sign-03-1: Hypertree index collapse causes repeated few-time keys</h2>
+
+<div class="table-wrap"><table class="meta issue-meta">
+<tr><th>Classification</th><td><span class="sev sev-critical">Critical / implementation</span></td></tr>
+<tr><th>Affected</th><td>Reference implementation, all eight parameter sets</td></tr>
+<tr><th>Discovery</th><td>Trivial</td></tr>
+<tr><th>Exploitation</th><td>Low-query adaptive signature accumulation</td></tr>
+<tr><th>Credit</th><td>Markku-Juhani O. Saarinen <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#109;&#97;&#114;&#107;&#107;&#117;&#45;&#106;&#117;&#104;&#97;&#110;&#105;&#46;&#115;&#97;&#97;&#114;&#105;&#110;&#101;&#110;&#64;&#116;&#117;&#110;&#105;&#46;&#102;&#105;">&#109;&#97;&#114;&#107;&#107;&#117;&#45;&#106;&#117;&#104;&#97;&#110;&#105;&#46;&#115;&#97;&#97;&#114;&#105;&#110;&#101;&#110;&#64;&#116;&#117;&#110;&#105;&#46;&#102;&#105;</a>, with AI assistance</td></tr>
+<tr><th>Date</th><td>2026-09-21</td></tr>
+</table></div>
+
 <p>Every submitted <code>hash_sm3.c</code> parses the message digest and then assigns <code>*tree = 0</code> instead of decoding the hypertree index. The implementation therefore discards the 64- to 67-bit tree selection required by the specification and repeatedly uses only bottom-layer addresses.</p>
 <p>An additional missing-parentheses defect in <code>SPX_BOTTOM_TREE_HEIGHT</code> makes the leaf mask retain two fewer bits than intended. The resulting numbers of reachable bottom FORS/WOTS addresses are only 4, 64, 8, 64, 16, 128, 32, and 128 for 160f, 160s, 256f, 256s, 384f, 384s, 512f, and 512s. Thus the initially observed 16-key collapse in 160f is actually a four-address collapse.</p>
 <p>A same-key experiment with 100 CEDRUSC-160f signatures produced exactly four bottom authentication paths, with multiplicities 23, 25, 26, and 26. The specification models FORS-instance reuse with a probability near <code>1/2^h</code>; the implementation instead repeats few-time FORS and associated WOTS keys after only a handful of signatures.</p>
 <p>An end-to-end adaptive attack collected 1,000 signatures on distinct chosen messages, combined disclosed FORS leaves from different signatures, and found a covered digest for a new message after 2,046 <code>H_MSG</code> trials. Reusing the selected address's fixed hypertree suffix produced a signature accepted by the submitted verifier. The attack completed in about three CPU-minutes.</p>
 <p>This invalidates the submitted concrete-security analysis and enables low-query leaf accumulation and signature reuse attacks. The tree index must be decoded from the digest and every height macro must be parenthesized before use in masks.</p>
-<h2 id="reproduction">Reproduction</h2>
+<h3 id="reproduction">Reproduction</h3>
 <p>Commands below run in a checkout of the <a href="https://github.com/ngcc-dev/ngcc-harness">ngcc-harness repository</a> with the candidate built (see its README).</p>
 <pre><code class="language-sh">make -C sign-03 exploit
 sign-03/reproduce_forgery sign-03/lib/libCEDRUSC-160f.so

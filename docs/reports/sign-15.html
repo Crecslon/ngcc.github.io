@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>MORNING-ATLAS (sign-15) · ngcc.dev</title>
-<link rel="stylesheet" href="../assets/style.css?v=c5cd3d67">
+<link rel="stylesheet" href="../assets/style.css?v=9eeb984b">
 </head>
 <body>
 <header class="site-header">
@@ -18,25 +18,39 @@
 <div class="table-wrap"><table class="meta">
 <tr><th>Candidate</th><td>MORNING-ATLAS</td></tr>
 <tr><th>Family</th><td>Lattice (Module-LWR, Fiat-Shamir)</td></tr>
-<tr><th>Scope</th><td>Reference API and supplied KAT, all four parameter sets</td></tr>
-<tr><th>Severity</th><td><span class="sev sev-critical">Critical</span></td></tr>
-<tr><th>Discovery</th><td>Trivial</td></tr>
-<tr><th>Exploitation</th><td>Trivial</td></tr>
-<tr><th>Date</th><td>2026-09-21</td></tr>
-<tr><th>Credit</th><td>Markku-Juhani O. Saarinen <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#109;&#97;&#114;&#107;&#107;&#117;&#45;&#106;&#117;&#104;&#97;&#110;&#105;&#46;&#115;&#97;&#97;&#114;&#105;&#110;&#101;&#110;&#64;&#116;&#117;&#110;&#105;&#46;&#102;&#105;">&#109;&#97;&#114;&#107;&#107;&#117;&#45;&#106;&#117;&#104;&#97;&#110;&#105;&#46;&#115;&#97;&#97;&#114;&#105;&#110;&#101;&#110;&#64;&#116;&#117;&#110;&#105;&#46;&#102;&#105;</a>, with AI assistance</td></tr>
 <tr><th>Archive</th><td><a href="https://www.niccs.org.cn/niccs/Proposal/Public-Key%20Cryptographic%20Algorithms/Round%201%20candidates/MORNING-ATLAS.zip">MORNING-ATLAS.zip</a> (SHA-256: <code>c796b106a7d43b2b3d6110ec2be426aa321cc7336f39a2cc027b2d6e8b4cc8c1</code>)</td></tr>
 </table></div>
 
-<h2 id="returned-length-error-causes-an-out-of-bounds-heap-disclosure">Returned-length error causes an out-of-bounds heap disclosure</h2>
+<h2 class="issue-heading issue-heading-first" id="sign-15-1-returned-length-error-causes-an-out-of-bounds-heap-disclosure">sign-15-1: Returned-length error causes an out-of-bounds heap disclosure</h2>
+
+<div class="table-wrap"><table class="meta issue-meta">
+<tr><th>Classification</th><td><span class="sev sev-critical">Critical / implementation</span></td></tr>
+<tr><th>Affected</th><td>Reference API and supplied KAT, all four parameter sets</td></tr>
+<tr><th>Discovery</th><td>Trivial</td></tr>
+<tr><th>Exploitation</th><td>Trivial</td></tr>
+<tr><th>Credit</th><td>Markku-Juhani O. Saarinen <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#109;&#97;&#114;&#107;&#107;&#117;&#45;&#106;&#117;&#104;&#97;&#110;&#105;&#46;&#115;&#97;&#97;&#114;&#105;&#110;&#101;&#110;&#64;&#116;&#117;&#110;&#105;&#46;&#102;&#105;">&#109;&#97;&#114;&#107;&#107;&#117;&#45;&#106;&#117;&#104;&#97;&#110;&#105;&#46;&#115;&#97;&#97;&#114;&#105;&#110;&#101;&#110;&#64;&#116;&#117;&#110;&#105;&#46;&#102;&#105;</a>, with AI assistance</td></tr>
+<tr><th>Date</th><td>2026-09-21</td></tr>
+</table></div>
+
 <p><code>sig_get_sn_len_bytes()</code> advertises a <code>CRYPTO_BYTES</code>-byte output buffer. <code>sig_sign()</code> writes exactly that detached signature, but returns <code>CRYPTO_BYTES + message_length</code> as though it had also appended the message. A caller that allocates the advertised size and serializes the returned length reads beyond the allocation.</p>
 <p>The submitters' own KAT does exactly this. In its first records, the out-of-bounds <code>Sn</code> field contains allocator bytes followed by 41, 45, 40, and 41 bytes of the adjacent 64-byte KAT seed for the 128-, 192-, 256-, and 512-bit instances. From record 3 onward it includes all 64 seed bytes. That seed deterministically generates the KAT key material.</p>
 <p>The KAT format also prints <code>Seed</code> and <code>SK</code> as separate fields, so these published vectors do not newly expose an otherwise secret value. They nevertheless provide a concrete demonstration that trusting the candidate's returned length discloses adjacent heap data; in another caller the adjacent object may be private. This is a critical API/memory-disclosure defect, distinct from the cryptographic malleability below.</p>
-<h2 id="trivial-hint-padding-malleability-violates-suf-cma">Trivial hint-padding malleability violates SUF-CMA</h2>
+<h2 class="issue-heading" id="sign-15-2-trivial-hint-padding-malleability-violates-suf-cma">sign-15-2: Trivial hint-padding malleability violates SUF-CMA</h2>
+
+<div class="table-wrap"><table class="meta issue-meta">
+<tr><th>Classification</th><td><span class="sev sev-high">High / implementation</span></td></tr>
+<tr><th>Affected</th><td>Reference implementation, all four parameter sets</td></tr>
+<tr><th>Discovery</th><td>Trivial</td></tr>
+<tr><th>Exploitation</th><td>Trivial</td></tr>
+<tr><th>Credit</th><td>Markku-Juhani O. Saarinen <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#109;&#97;&#114;&#107;&#107;&#117;&#45;&#106;&#117;&#104;&#97;&#110;&#105;&#46;&#115;&#97;&#97;&#114;&#105;&#110;&#101;&#110;&#64;&#116;&#117;&#110;&#105;&#46;&#102;&#105;">&#109;&#97;&#114;&#107;&#107;&#117;&#45;&#106;&#117;&#104;&#97;&#110;&#105;&#46;&#115;&#97;&#97;&#114;&#105;&#110;&#101;&#110;&#64;&#116;&#117;&#110;&#105;&#46;&#102;&#105;</a>, with AI assistance</td></tr>
+<tr><th>Date</th><td>2026-09-21</td></tr>
+</table></div>
+
 <p>The signature decoder stops after the cumulative number of encoded hint indices but does not require the remaining fixed-size hint slots to be canonical. Verification compares only the decoded algebraic values and ignores changes in those unused slots.</p>
 <p>For each of <code>lwrdsa128</code>, <code>lwrdsa192</code>, <code>lwrdsa256</code>, and <code>lwrdsa512</code>, flipping the high bit of the final unused hint-index byte in a valid signature produced a different byte string that still verified for the same message and public key.</p>
 <p>The attack needs only one ordinary valid signature. It does not forge a new message and therefore does not by itself violate EUF-CMA, but it directly violates the specification's SUF-CMA claim.</p>
 <p>Verification must reject any noncanonical unused hint slot and enforce all stated hint-weight and ordering constraints. The separate KAT heap over-read and ATLAS-192 parameter shortfall are documented in <code>security_findings.md</code> and are not needed for this attack.</p>
-<h2 id="reproducing">Reproducing</h2>
+<h3 id="reproducing">Reproducing</h3>
 <p>Commands below run in a checkout of the <a href="https://github.com/ngcc-dev/ngcc-harness">ngcc-harness repository</a> with the candidate built (see its README).</p>
 <pre><code class="language-sh">make -C tools
 make -C sign-15
@@ -47,6 +61,25 @@ done
 <p>Each parameter set prints <code>CONFIRMED</code>: the driver changes bit 7 in an ignored
 hint slot, restores the message buffer that this verifier unexpectedly
 overwrites, and requires the byte-distinct signature to verify.</p>
+<h2 class="issue-heading" id="sign-15-3-the-atlas-192-challenge-space-is-below-192-bits">sign-15-3: The ATLAS-192 challenge space is below 192 bits</h2>
+
+<div class="table-wrap"><table class="meta issue-meta">
+<tr><th>Classification</th><td><span class="sev sev-high">High / implementation</span></td></tr>
+<tr><th>Affected</th><td>ATLAS-192 reference implementation and specification</td></tr>
+<tr><th>Discovery</th><td>Trivial</td></tr>
+<tr><th>Exploitation</th><td>Exact parameter shortfall; no separate attack required</td></tr>
+<tr><th>Credit</th><td>Markku-Juhani O. Saarinen <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#109;&#97;&#114;&#107;&#107;&#117;&#45;&#106;&#117;&#104;&#97;&#110;&#105;&#46;&#115;&#97;&#97;&#114;&#105;&#110;&#101;&#110;&#64;&#116;&#117;&#110;&#105;&#46;&#102;&#105;">&#109;&#97;&#114;&#107;&#107;&#117;&#45;&#106;&#117;&#104;&#97;&#110;&#105;&#46;&#115;&#97;&#97;&#114;&#105;&#110;&#101;&#110;&#64;&#116;&#117;&#110;&#105;&#46;&#102;&#105;</a>, with AI assistance</td></tr>
+<tr><th>Date</th><td>2026-09-21</td></tr>
+</table></div>
+
+<p>The submitted ATLAS-192 implementation uses <code>n=128</code> and <code>kappa=64</code>. Its challenge space therefore has</p>
+<p><code>log2(binomial(128,64) * 2^64) = 188.17143</code></p>
+<p>bits, below the advertised 192-bit level. The specification instead selects <code>kappa=69</code>, which gives about 192.61 bits. This is an implementation-only parameter mismatch, not a defect in the specified parameter set.</p>
+<h3 id="reproducing_1">Reproducing</h3>
+<p>Commands below run in a checkout of the <a href="https://github.com/ngcc-dev/ngcc-harness">ngcc-harness repository</a> with the candidate built (see its README).</p>
+<p>Reproduce the exact cardinality and source check with:</p>
+<pre><code class="language-sh">python3 security/design_parameter_audit.py
+</code></pre>
 </main>
 <footer class="site-footer">
 <p>Built 2026-09-21 · <a href="https://github.com/ngcc-dev/ngcc.github.io">source</a></p>

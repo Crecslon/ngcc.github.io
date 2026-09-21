@@ -1,15 +1,17 @@
 <!-- synced from ngcc1/sign-07/report.md -->
 Candidate: CS
 Family: Lattice (Module-LWE, Fiat-Shamir)
-Scope: Reference implementation, all three parameter sets
 Archive: [CS.zip](https://www.niccs.org.cn/niccs/Proposal/Public-Key%20Cryptographic%20Algorithms/Round%201%20candidates/CS.zip) (SHA-256: `c790d31cd4a288990f3d692381ed721a06641938a02dfc2e0435b7d323475cef`)
+
+## sign-07-1: Trivial signature malleability violates SUF-CMA
+
 Severity: High
+Layer: Implementation
+Affected: Reference implementation, all three parameter sets
 Discovery: Trivial
 Exploitation: Trivial
 Credit: Markku-Juhani O. Saarinen <markku-juhani.saarinen@tuni.fi>, with AI assistance
 Date: 2026-09-21
-
-## Trivial signature malleability violates SUF-CMA
 
 The signature contains a fixed-size rANS encoding area and an encoded byte count. `sigDecode` consumes only the indicated meaningful bytes and does not require the unused tail to be zero or otherwise canonical.
 
@@ -19,7 +21,7 @@ The result is not a new-message forgery and therefore does not alone violate EUF
 
 Verification must enforce a unique encoding, including the complete fixed-size tail.
 
-## Reproducing
+### Reproducing
 
 Build the candidate and the reproducer, then run:
 
@@ -28,5 +30,5 @@ make -C api harness && make -C tools && make -C sign-07
 tools/ngcc_attack sig-malleable sign-07/lib/libCS-128.so
 ```
 
-`tools/reproduce.sh` runs this together with every other reported
-finding and its controls. See `tools/README.md`.
+`tools/reproduce.sh` runs this together with the other supported runtime
+witnesses and their controls. See `tools/README.md`.

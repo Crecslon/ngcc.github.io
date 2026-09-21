@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>MasterCube (hash-17) · ngcc.dev</title>
-<link rel="stylesheet" href="../assets/style.css?v=c5cd3d67">
+<link rel="stylesheet" href="../assets/style.css?v=9eeb984b">
 </head>
 <body>
 <header class="site-header">
@@ -18,16 +18,20 @@
 <div class="table-wrap"><table class="meta">
 <tr><th>Candidate</th><td>MasterCube</td></tr>
 <tr><th>Family</th><td>Symmetric (sponge, AndRX permutation)</td></tr>
-<tr><th>Scope</th><td>Reference implementation, all three parameter sets</td></tr>
-<tr><th>Severity</th><td><span class="sev sev-critical">Critical</span></td></tr>
-<tr><th>Discovery</th><td>Trivial</td></tr>
-<tr><th>Exploitation</th><td>Trivial</td></tr>
-<tr><th>Date</th><td>2026-09-21</td></tr>
-<tr><th>Credit</th><td>Markku-Juhani O. Saarinen <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#109;&#97;&#114;&#107;&#107;&#117;&#45;&#106;&#117;&#104;&#97;&#110;&#105;&#46;&#115;&#97;&#97;&#114;&#105;&#110;&#101;&#110;&#64;&#116;&#117;&#110;&#105;&#46;&#102;&#105;">&#109;&#97;&#114;&#107;&#107;&#117;&#45;&#106;&#117;&#104;&#97;&#110;&#105;&#46;&#115;&#97;&#97;&#114;&#105;&#110;&#101;&#110;&#64;&#116;&#117;&#110;&#105;&#46;&#102;&#105;</a>, with AI assistance</td></tr>
 <tr><th>Archive</th><td><a href="https://www.niccs.org.cn/niccs/Proposal/Cryptographic%20Hash%20Algorithms/Round%201%20candidates/MasterCube.zip">MasterCube.zip</a> (SHA-256: <code>1f9773b8ece90152a6a9adc632a7112c9afc670a5d28b7f1e9ac111e5eea8f13</code>)</td></tr>
 </table></div>
 
-<h2 id="trivial-collisions-at-every-rate-boundary">Trivial collisions at every rate boundary</h2>
+<h2 class="issue-heading issue-heading-first" id="hash-17-1-trivial-collisions-at-every-rate-boundary">hash-17-1: Trivial collisions at every rate boundary</h2>
+
+<div class="table-wrap"><table class="meta issue-meta">
+<tr><th>Classification</th><td><span class="sev sev-critical">Critical / implementation</span></td></tr>
+<tr><th>Affected</th><td>Reference implementation, all three parameter sets</td></tr>
+<tr><th>Discovery</th><td>Trivial</td></tr>
+<tr><th>Exploitation</th><td>Trivial</td></tr>
+<tr><th>Credit</th><td>Markku-Juhani O. Saarinen <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#109;&#97;&#114;&#107;&#107;&#117;&#45;&#106;&#117;&#104;&#97;&#110;&#105;&#46;&#115;&#97;&#97;&#114;&#105;&#110;&#101;&#110;&#64;&#116;&#117;&#110;&#105;&#46;&#102;&#105;">&#109;&#97;&#114;&#107;&#107;&#117;&#45;&#106;&#117;&#104;&#97;&#110;&#105;&#46;&#115;&#97;&#97;&#114;&#105;&#110;&#101;&#110;&#64;&#116;&#117;&#110;&#105;&#46;&#102;&#105;</a>, with AI assistance</td></tr>
+<tr><th>Date</th><td>2026-09-21</td></tr>
+</table></div>
+
 <p>The following collision was verified against MasterCube-512:</p>
 <ul>
 <li>Input 1: 958 one bits, encoded in 120 bytes of <code>ff</code> with length 958 bits</li>
@@ -37,14 +41,14 @@
 <p><code>847a067d6eb9078d5c3ce3e3f08fbfd3a1488eb6e89909144db1a76d5fcb9a097fef21b4927bb6fe0a1bb2769ef0f249734550c1e8acfa0023a1281d12131bf6</code></p>
 <p>The implementation attempts to apply <code>pad10*1</code> in a single rate block. When the message length is <code>r-1 mod r</code>, only one bit remains. The opening and closing delimiter bits are ORed into the same position instead of emitting the additional block required by the specification.</p>
 <p>Consequently, for any prefix <code>P</code> of length <code>r-2 mod r</code>, the implementation gives <code>H(P) = H(P || 1)</code>. The same defect was reproduced at 702/703 bits for MasterCube-768 and 446/447 bits for MasterCube-1024. It directly violates the claimed 256-, 384-, and 512-bit collision strengths and is an implementation error rather than an attack on the specified permutation.</p>
-<h2 id="reproducing">Reproducing</h2>
+<h3 id="reproducing">Reproducing</h3>
 <p>Commands below run in a checkout of the <a href="https://github.com/ngcc-dev/ngcc-harness">ngcc-harness repository</a> with the candidate built (see its README).</p>
 <p>Build the candidate and the reproducer, then run:</p>
 <pre><code class="language-sh">make -C api harness &amp;&amp; make -C tools &amp;&amp; make -C hash-17
 tools/ngcc_attack hash-collide-rate hash-17/lib/libMasterCube-512.so 959
 </code></pre>
-<p><code>tools/reproduce.sh</code> runs this together with every other reported
-finding and its controls. See <code>tools/README.md</code>.</p>
+<p><code>tools/reproduce.sh</code> runs this together with the other supported runtime
+witnesses and their controls. See <code>tools/README.md</code>.</p>
 </main>
 <footer class="site-footer">
 <p>Built 2026-09-21 · <a href="https://github.com/ngcc-dev/ngcc.github.io">source</a></p>

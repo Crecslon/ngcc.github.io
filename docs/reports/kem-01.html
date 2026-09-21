@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Aigis-Enc+ (kem-01) · ngcc.dev</title>
-<link rel="stylesheet" href="../assets/style.css?v=c5cd3d67">
+<link rel="stylesheet" href="../assets/style.css?v=9eeb984b">
 </head>
 <body>
 <header class="site-header">
@@ -18,27 +18,31 @@
 <div class="table-wrap"><table class="meta">
 <tr><th>Candidate</th><td>Aigis-Enc+</td></tr>
 <tr><th>Family</th><td>Lattice (Module-LWE)</td></tr>
-<tr><th>Scope</th><td>Reference implementation, all three parameter sets</td></tr>
-<tr><th>Severity</th><td><span class="sev sev-critical">Critical</span></td></tr>
-<tr><th>Discovery</th><td>Trivial</td></tr>
-<tr><th>Exploitation</th><td>Trivial</td></tr>
-<tr><th>Date</th><td>2026-09-21</td></tr>
-<tr><th>Credit</th><td>Markku-Juhani O. Saarinen <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#109;&#97;&#114;&#107;&#107;&#117;&#45;&#106;&#117;&#104;&#97;&#110;&#105;&#46;&#115;&#97;&#97;&#114;&#105;&#110;&#101;&#110;&#64;&#116;&#117;&#110;&#105;&#46;&#102;&#105;">&#109;&#97;&#114;&#107;&#107;&#117;&#45;&#106;&#117;&#104;&#97;&#110;&#105;&#46;&#115;&#97;&#97;&#114;&#105;&#110;&#101;&#110;&#64;&#116;&#117;&#110;&#105;&#46;&#102;&#105;</a>, with AI assistance</td></tr>
 <tr><th>Archive</th><td><a href="https://www.niccs.org.cn/niccs/Proposal/Public-Key%20Cryptographic%20Algorithms/Round%201%20candidates/Aigis-Enc%2B.zip">Aigis-Enc+.zip</a> (SHA-256: <code>1c053133175cd189fd9f0e058bde684168f55a6fc3871de2a755404a08990186</code>)</td></tr>
 </table></div>
 
-<h2 id="ineffective-implicit-rejection-breaks-ind-cca-security">Ineffective implicit rejection breaks IND-CCA security</h2>
+<h2 class="issue-heading issue-heading-first" id="kem-01-1-ineffective-implicit-rejection-breaks-ind-cca-security">kem-01-1: Ineffective implicit rejection breaks IND-CCA security</h2>
+
+<div class="table-wrap"><table class="meta issue-meta">
+<tr><th>Classification</th><td><span class="sev sev-critical">Critical / implementation</span></td></tr>
+<tr><th>Affected</th><td>Reference implementation, all three parameter sets</td></tr>
+<tr><th>Discovery</th><td>Trivial</td></tr>
+<tr><th>Exploitation</th><td>Trivial</td></tr>
+<tr><th>Credit</th><td>Markku-Juhani O. Saarinen <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#109;&#97;&#114;&#107;&#107;&#117;&#45;&#106;&#117;&#104;&#97;&#110;&#105;&#46;&#115;&#97;&#97;&#114;&#105;&#110;&#101;&#110;&#64;&#116;&#117;&#110;&#105;&#46;&#102;&#105;">&#109;&#97;&#114;&#107;&#107;&#117;&#45;&#106;&#117;&#104;&#97;&#110;&#105;&#46;&#115;&#97;&#97;&#114;&#105;&#110;&#101;&#110;&#64;&#116;&#117;&#110;&#105;&#46;&#102;&#105;</a>, with AI assistance</td></tr>
+<tr><th>Date</th><td>2026-09-21</td></tr>
+</table></div>
+
 <p>Changing a ciphertext bit frequently leaves the decapsulated shared secret unchanged. An exhaustive sweep of Aigis-enc1 found that 5,632 of 7,168 single-bit ciphertext changes return the original shared secret. The same defect was reproduced in the other two parameter sets.</p>
 <p><code>mkem_dec</code> writes the candidate valid secret to the output before checking the re-encrypted ciphertext. On failure, the intended constant-time replacement writes into the wrong buffer, leaving the already-returned candidate secret untouched. Rejection is therefore ineffective.</p>
 <p>An attacker given a challenge ciphertext and candidate challenge key can modify the ciphertext, decapsulate it through the allowed CCA oracle, and compare the result with the candidate key. Retention identifies the real encapsulated key and provides a direct IND-CCA distinguisher. This violates the claimed IND-CCA security at every submitted level.</p>
-<h2 id="reproducing">Reproducing</h2>
+<h3 id="reproducing">Reproducing</h3>
 <p>Commands below run in a checkout of the <a href="https://github.com/ngcc-dev/ngcc-harness">ngcc-harness repository</a> with the candidate built (see its README).</p>
 <p>Build the candidate and the reproducer, then run:</p>
 <pre><code class="language-sh">make -C api harness &amp;&amp; make -C tools &amp;&amp; make -C kem-01
 tools/ngcc_attack kem-ct-flip kem-01/lib/libAigis-enc1.so
 </code></pre>
-<p><code>tools/reproduce.sh</code> runs this together with every other reported
-finding and its controls. See <code>tools/README.md</code>.</p>
+<p><code>tools/reproduce.sh</code> runs this together with the other supported runtime
+witnesses and their controls. See <code>tools/README.md</code>.</p>
 </main>
 <footer class="site-footer">
 <p>Built 2026-09-21 · <a href="https://github.com/ngcc-dev/ngcc.github.io">source</a></p>

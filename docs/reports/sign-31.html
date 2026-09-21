@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TSUOV (sign-31) · ngcc.dev</title>
+<link rel="stylesheet" href="../assets/style.css?v=9eeb984b">
+</head>
+<body>
+<header class="site-header">
+<a class="brand" href="../index.html">ngcc.dev</a>
+<nav><a href="../index.html">Home</a><a href="../reports/index.html">Reports</a></nav>
+</header>
+<main>
+<p class="crumb"><a href="../reports/index.html">Reports</a> › <code>sign-31</code></p>
+
+<h1 id="tsuov-sign-31">TSUOV (sign-31)</h1>
+<div class="table-wrap"><table class="meta">
+<tr><th>Candidate</th><td>TSUOV</td></tr>
+<tr><th>Family</th><td>Multivariate</td></tr>
+<tr><th>Archive</th><td><a href="https://www.niccs.org.cn/niccs/Proposal/Public-Key%20Cryptographic%20Algorithms/Round%201%20candidates/TSUOV.zip">TSUOV.zip</a> (SHA-256: <code>7ab1effc5fe911c6ab9483ca44a9d9f6d6d911b03eee9f2873b384d97f9aee1d</code>)</td></tr>
+</table></div>
+
+<h2 class="issue-heading issue-heading-first" id="sign-31-1-a-512-bit-prehash-caps-forgery-security-at-256-bits">sign-31-1: A 512-bit prehash caps forgery security at 256 bits</h2>
+
+<div class="table-wrap"><table class="meta issue-meta">
+<tr><th>Classification</th><td><span class="sev sev-high">High / design</span></td></tr>
+<tr><th>Affected</th><td>TSUOV-512 specification and reference implementation</td></tr>
+<tr><th>Discovery</th><td>Trivial</td></tr>
+<tr><th>Exploitation</th><td>Approximately 2^256 hash evaluations</td></tr>
+<tr><th>Credit</th><td>Markku-Juhani O. Saarinen <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#109;&#97;&#114;&#107;&#107;&#117;&#45;&#106;&#117;&#104;&#97;&#110;&#105;&#46;&#115;&#97;&#97;&#114;&#105;&#110;&#101;&#110;&#64;&#116;&#117;&#110;&#105;&#46;&#102;&#105;">&#109;&#97;&#114;&#107;&#107;&#117;&#45;&#106;&#117;&#104;&#97;&#110;&#105;&#46;&#115;&#97;&#97;&#114;&#105;&#110;&#101;&#110;&#64;&#116;&#117;&#110;&#105;&#46;&#102;&#105;</a>, with AI assistance</td></tr>
+<tr><th>Date</th><td>2026-09-21</td></tr>
+</table></div>
+
+<p>TSUOV-512 claims 512-bit classical security and specifies <code>mu = Expand_mu(seed_pk || M)</code> as a 512-bit pseudohash. Only afterward does it hash <code>mu || salt</code> to the MQ target.</p>
+<p>A generic collision in <code>Expand_mu</code> costs about <code>2^256</code> evaluations. The two colliding messages have the same <code>mu</code>, so the later salt produces the same target for both and a requested signature transfers unchanged. The PDF's own EUF-CMA bound includes a digest-collision term but does not reconcile this birthday ceiling with its claimed Level-5 security.</p>
+<p>This is a specification-level design break, not an implementation-only truncation.</p>
+<h3 id="reproducing">Reproducing</h3>
+<p>Commands below run in a checkout of the <a href="https://github.com/ngcc-dev/ngcc-harness">ngcc-harness repository</a> with the candidate built (see its README).</p>
+<pre><code class="language-sh">python3 security/design_parameter_audit.py
+</code></pre>
+<p>The check verifies the Level-5 construction on physical PDF pages 18–21 and 27–29 and the submitted 64-byte <code>mu</code> constant.</p>
+</main>
+<footer class="site-footer">
+<p>Built 2026-09-21 · <a href="https://github.com/ngcc-dev/ngcc.github.io">source</a></p>
+</footer>
+</body>
+</html>

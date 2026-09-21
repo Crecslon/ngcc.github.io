@@ -1,15 +1,17 @@
 <!-- synced from ngcc1/hash-09/report.md -->
 Candidate: Eijen
 Family: Symmetric (sponge, Sponge-F)
-Scope: Reference implementation, all five parameter sets
 Archive: [Eijen.zip](https://www.niccs.org.cn/niccs/Proposal/Cryptographic%20Hash%20Algorithms/Round%201%20candidates/Eijen.zip) (SHA-256: `5e2581d905b9a3d3a8c34c76ed73213c77da970a15cc6b3b26b2bb086b93e3f4`)
+
+## hash-09-1: Trivial collisions in all Eijen implementations
+
 Severity: Critical
+Layer: Implementation
+Affected: Reference implementation, all five parameter sets
 Discovery: Trivial
 Exploitation: Trivial
 Credit: Markku-Juhani O. Saarinen <markku-juhani.saarinen@tuni.fi>, with AI assistance
 Date: 2026-09-21
-
-## Trivial collisions in all Eijen implementations
 
 The following collision was verified against Eijen-256:
 
@@ -28,7 +30,7 @@ Instead, the byte-aligned path writes `0x01`. The partial-byte path correctly co
 
 More generally, for every byte-aligned message `M`, `H(M) = H(M || 0^7)`. The defect affects all five submitted parameter sets. Replacing `0x01` with `0x80` in the byte-aligned padding path removes this collision. The implementation violates the specification's collision-resistance claims, but the defect is not inherent in the specified design.
 
-## Reproducing
+### Reproducing
 
 Build the candidate and the reproducer, then run:
 
@@ -37,5 +39,5 @@ make -C api harness && make -C tools && make -C hash-09
 tools/ngcc_attack hash-collide-zeropad hash-09/lib/libEijen-256.so
 ```
 
-`tools/reproduce.sh` runs this together with every other reported
-finding and its controls. See `tools/README.md`.
+`tools/reproduce.sh` runs this together with the other supported runtime
+witnesses and their controls. See `tools/README.md`.

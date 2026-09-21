@@ -1,15 +1,17 @@
 <!-- synced from ngcc1/sign-03/report.md -->
 Candidate: CEDRUS+C
 Family: Hash-based (stateless)
-Scope: Reference implementation, all eight parameter sets
 Archive: [cedrus+c.zip](https://www.niccs.org.cn/niccs/Proposal/Public-Key%20Cryptographic%20Algorithms/Round%201%20candidates/cedrus%2Bc.zip) (SHA-256: `a31de849cf0a0703a4e57decbdf4d97b100d00dc74756feaded2c04a7593e110`)
+
+## sign-03-1: Hypertree index collapse causes repeated few-time keys
+
 Severity: Critical
+Layer: Implementation
+Affected: Reference implementation, all eight parameter sets
 Discovery: Trivial
 Exploitation: Low-query adaptive signature accumulation
 Credit: Markku-Juhani O. Saarinen <markku-juhani.saarinen@tuni.fi>, with AI assistance
 Date: 2026-09-21
-
-## Hypertree index collapse causes repeated few-time keys
 
 Every submitted `hash_sm3.c` parses the message digest and then assigns `*tree = 0` instead of decoding the hypertree index. The implementation therefore discards the 64- to 67-bit tree selection required by the specification and repeatedly uses only bottom-layer addresses.
 
@@ -21,7 +23,7 @@ An end-to-end adaptive attack collected 1,000 signatures on distinct chosen mess
 
 This invalidates the submitted concrete-security analysis and enables low-query leaf accumulation and signature reuse attacks. The tree index must be decoded from the digest and every height macro must be parenthesized before use in masks.
 
-## Reproduction
+### Reproduction
 
 ```sh
 make -C sign-03 exploit

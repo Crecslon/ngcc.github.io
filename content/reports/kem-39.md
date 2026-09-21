@@ -1,15 +1,17 @@
 <!-- synced from ngcc1/kem-39/report.md -->
 Candidate: WeaverKEM
 Family: Lattice (Module-LWR)
-Scope: Reference implementation, all three parameter sets
 Archive: [Weaver.zip](https://www.niccs.org.cn/niccs/Proposal/Public-Key%20Cryptographic%20Algorithms/Round%201%20candidates/Weaver.zip) (SHA-256: `9b0bad96e9bc836b0ff811492a70891066df5634ee47fda4d1518dccd4e09927`)
+
+## kem-39-1: PRF substream reuse violates the IND-CPA proof's independence premise
+
 Severity: High
+Layer: Implementation
+Affected: Reference implementation, all three parameter sets
 Discovery: Non-trivial
 Exploitation: Not yet demonstrated
 Credit: Markku-Juhani O. Saarinen <markku-juhani.saarinen@tuni.fi>, with AI assistance
 Date: 2026-09-21
-
-## PRF substream reuse violates the IND-CPA proof's independence premise
 
 The specification's encryption proof models randomized inverse-q lifting and the ephemeral secret `r` as independent PRF outputs obtained under distinct counters.
 

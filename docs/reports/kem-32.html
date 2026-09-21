@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>QCTM (kem-32) · ngcc.dev</title>
-<link rel="stylesheet" href="../assets/style.css?v=c5cd3d67">
+<link rel="stylesheet" href="../assets/style.css?v=9eeb984b">
 </head>
 <body>
 <header class="site-header">
@@ -18,16 +18,20 @@
 <div class="table-wrap"><table class="meta">
 <tr><th>Candidate</th><td>QCTM</td></tr>
 <tr><th>Family</th><td>Code-based (quasi-cyclic twisted McEliece)</td></tr>
-<tr><th>Scope</th><td>Reference implementation, all three parameter sets when tracing is enabled</td></tr>
-<tr><th>Severity</th><td><span class="sev sev-high">High</span></td></tr>
-<tr><th>Discovery</th><td>Trivial</td></tr>
-<tr><th>Exploitation</th><td>Requires stderr visibility or local/in-process memory access</td></tr>
-<tr><th>Date</th><td>2026-09-21</td></tr>
-<tr><th>Credit</th><td>Markku-Juhani O. Saarinen <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#109;&#97;&#114;&#107;&#107;&#117;&#45;&#106;&#117;&#104;&#97;&#110;&#105;&#46;&#115;&#97;&#97;&#114;&#105;&#110;&#101;&#110;&#64;&#116;&#117;&#110;&#105;&#46;&#102;&#105;">&#109;&#97;&#114;&#107;&#107;&#117;&#45;&#106;&#117;&#104;&#97;&#110;&#105;&#46;&#115;&#97;&#97;&#114;&#105;&#110;&#101;&#110;&#64;&#116;&#117;&#110;&#105;&#46;&#102;&#105;</a>, with AI assistance</td></tr>
 <tr><th>Archive</th><td><a href="https://www.niccs.org.cn/niccs/Proposal/Public-Key%20Cryptographic%20Algorithms/Round%201%20candidates/QCTM.zip">QCTM.zip</a> (SHA-256: <code>24a3986a4fbb852a677267a6443756328eae3642af770e767fe38f8291f294db</code>)</td></tr>
 </table></div>
 
-<h2 id="debug-path-retains-the-secret-error-vector">Debug path retains the secret error vector</h2>
+<h2 class="issue-heading issue-heading-first" id="kem-32-1-debug-path-retains-the-secret-error-vector">kem-32-1: Debug path retains the secret error vector</h2>
+
+<div class="table-wrap"><table class="meta issue-meta">
+<tr><th>Classification</th><td><span class="sev sev-high">High / implementation</span></td></tr>
+<tr><th>Affected</th><td>Reference implementation, all three parameter sets when tracing is enabled</td></tr>
+<tr><th>Discovery</th><td>Trivial</td></tr>
+<tr><th>Exploitation</th><td>Requires stderr visibility or local/in-process memory access</td></tr>
+<tr><th>Credit</th><td>Markku-Juhani O. Saarinen <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#109;&#97;&#114;&#107;&#107;&#117;&#45;&#106;&#117;&#104;&#97;&#110;&#105;&#46;&#115;&#97;&#97;&#114;&#105;&#110;&#101;&#110;&#64;&#116;&#117;&#110;&#105;&#46;&#102;&#105;">&#109;&#97;&#114;&#107;&#107;&#117;&#45;&#106;&#117;&#104;&#97;&#110;&#105;&#46;&#115;&#97;&#97;&#114;&#105;&#110;&#101;&#110;&#64;&#116;&#117;&#110;&#105;&#46;&#102;&#105;</a>, with AI assistance</td></tr>
+<tr><th>Date</th><td>2026-09-21</td></tr>
+</table></div>
+
 <p>When the <code>LOCALLY_QUASI_CYCLIC_TWISTED_MCELIECE_TRACE_DEC</code> environment variable is present, encapsulation copies the fixed-weight secret error positions into file-static process-global storage. The same opt-in trace path prints decoder stages, syndrome-difference counts, decoded weight, and failure-location diagnostics to standard error.</p>
 <p>The logic is present in the compiled QCTM128, QCTM256, and QCTM512 reference sources. The retained error positions are secret per-encapsulation material and should be erased after ciphertext construction, not persisted for a later decoder trace.</p>
 <p>The static buffer has no exported accessor, so merely setting the environment variable does not reveal its contents to a remote KEM caller. Exploitation additionally requires stderr visibility, local/in-process memory access, or another disclosure primitive. This is a confirmed implementation-security and secret-lifetime defect, not a demonstrated remote key-recovery attack.</p>

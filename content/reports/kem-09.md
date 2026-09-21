@@ -1,15 +1,17 @@
 <!-- synced from ngcc1/kem-09/report.md -->
 Candidate: CheetahKEM
 Family: Lattice (Ring/Module-LWE)
-Scope: Reference implementation, all four parameter sets
 Archive: [CheetahKEM.zip](https://www.niccs.org.cn/niccs/Proposal/Public-Key%20Cryptographic%20Algorithms/Round%201%20candidates/CheetahKEM.zip) (SHA-256: `fc321e46bac9c387535e2053bed560eac3d3cd88ba9bebc154f5bf68dd47dcd1`)
+
+## kem-09-1: Partial rejection mask leaks the candidate shared secret
+
 Severity: Critical
+Layer: Implementation
+Affected: Reference implementation, all four parameter sets
 Discovery: Trivial
 Exploitation: Trivial
 Credit: Markku-Juhani O. Saarinen <markku-juhani.saarinen@tuni.fi>, with AI assistance
 Date: 2026-09-21
-
-## Partial rejection mask leaks the candidate shared secret
 
 The decapsulator ORs ciphertext-byte differences into an arbitrary nonzero byte and then uses its negation directly as a selection mask. Negating a nonzero byte produces `0xff` only when that byte is `0x01`; other values select a bitwise mixture of the valid candidate key and the rejection key.
 
@@ -19,7 +21,7 @@ An IND-CCA attacker modifies the challenge ciphertext and compares the retained 
 
 The fix is to normalize every nonzero comparison result to an all-ones mask before selecting between the candidate and rejection secrets.
 
-## Reproducing
+### Reproducing
 
 Build the candidate and the reproducer, then run:
 
@@ -28,5 +30,5 @@ make -C api harness && make -C tools && make -C kem-09
 tools/ngcc_attack kem-reject-mask kem-09/lib/libCheetah128.so
 ```
 
-`tools/reproduce.sh` runs this together with every other reported
-finding and its controls. See `tools/README.md`.
+`tools/reproduce.sh` runs this together with the other supported runtime
+witnesses and their controls. See `tools/README.md`.

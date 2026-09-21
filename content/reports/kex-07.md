@@ -1,15 +1,17 @@
 <!-- synced from ngcc1/kex-07/report.md -->
 Candidate: NEV-AKE
 Family: Lattice (NTRU/Ring-LWE AKE)
-Scope: Uniform-API reference wrappers, all nine parameter sets
 Archive: [NEV-AKE.zip](https://www.niccs.org.cn/niccs/Proposal/Public-Key%20Cryptographic%20Algorithms/Round%201%20candidates/NEV-AKE.zip) (SHA-256: `da75005b4060167f25125cbd1a769ed872c8b6fcb770fe0827a599e44536e8e6`)
+
+## kex-07-1: Both party identities are hard-wired to zero
+
 Severity: High
+Layer: Implementation
+Affected: Uniform-API reference wrappers, all nine parameter sets
 Discovery: Trivial
 Exploitation: Integration-dependent; no complete UKS attack demonstrated
 Credit: Markku-Juhani O. Saarinen <markku-juhani.saarinen@tuni.fi>, with AI assistance
 Date: 2026-09-21
-
-## Both party identities are hard-wired to zero
 
 Every submitted `kat_test/KEX_AlgorithmInstance.c` allocates the initiator and responder identities as all-zero `SEED_BYTES` arrays. The wrappers pass those constants into responder processing and initiator key derivation for all nine profiles.
 

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CTL (kem-12) · ngcc.dev</title>
+<link rel="stylesheet" href="../assets/style.css?v=9eeb984b">
+</head>
+<body>
+<header class="site-header">
+<a class="brand" href="../index.html">ngcc.dev</a>
+<nav><a href="../index.html">Home</a><a href="../reports/index.html">Reports</a></nav>
+</header>
+<main>
+<p class="crumb"><a href="../reports/index.html">Reports</a> › <code>kem-12</code></p>
+
+<h1 id="ctl-kem-12">CTL (kem-12)</h1>
+<div class="table-wrap"><table class="meta">
+<tr><th>Candidate</th><td>CTL</td></tr>
+<tr><th>Family</th><td>Lattice-based</td></tr>
+<tr><th>Archive</th><td><a href="https://www.niccs.org.cn/niccs/Proposal/Public-Key%20Cryptographic%20Algorithms/Round%201%20candidates/CTL.zip">CTL.zip</a> (SHA-256: <code>512caaf5fa04ea5ab51fb5eeee9e81f8c7c7c430b60727130067634bfb674d01</code>)</td></tr>
+</table></div>
+
+<h2 class="issue-heading issue-heading-first" id="kem-12-1-the-specified-ctl-512-public-key-space-has-at-most-256-bits-of-support">kem-12-1: The specified CTL-512 public-key space has at most 256 bits of support</h2>
+
+<div class="table-wrap"><table class="meta issue-meta">
+<tr><th>Classification</th><td><span class="sev sev-high">High / design</span></td></tr>
+<tr><th>Affected</th><td>CTL-512 specification and reference implementation</td></tr>
+<tr><th>Discovery</th><td>Trivial</td></tr>
+<tr><th>Exploitation</th><td>Approximately 2^256 key-generation trials</td></tr>
+<tr><th>Credit</th><td>Markku-Juhani O. Saarinen <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#109;&#97;&#114;&#107;&#107;&#117;&#45;&#106;&#117;&#104;&#97;&#110;&#105;&#46;&#115;&#97;&#97;&#114;&#105;&#110;&#101;&#110;&#64;&#116;&#117;&#110;&#105;&#46;&#102;&#105;">&#109;&#97;&#114;&#107;&#107;&#117;&#45;&#106;&#117;&#104;&#97;&#110;&#105;&#46;&#115;&#97;&#97;&#114;&#105;&#110;&#101;&#110;&#64;&#116;&#117;&#110;&#105;&#46;&#102;&#105;</a>, with AI assistance</td></tr>
+<tr><th>Date</th><td>2026-09-21</td></tr>
+</table></div>
+
+<p>CTL-512 claims 512-bit security, but its normative short private-key format stores one 32-byte key-generation seed. The specification requires <code>f</code> and <code>g</code> to be regenerated deterministically from this seed and recomputes the public key as <code>h = f^-1 g mod q</code>.</p>
+<p>Consequently, at most <code>2^256</code> public keys can be generated. An attacker can enumerate the seeds, recompute <code>h</code>, and compare it with the target public key; a match recovers the target trapdoor data. This ceiling is independent of the nominal lattice dimensions and is present in both the specification and submitted code.</p>
+<h3 id="reproducing">Reproducing</h3>
+<p>Commands below run in a checkout of the <a href="https://github.com/ngcc-dev/ngcc-harness">ngcc-harness repository</a> with the candidate built (see its README).</p>
+<pre><code class="language-sh">python3 security/design_parameter_audit.py
+</code></pre>
+<p>The <code>kem-12-1</code> check verifies the short-key algorithms on physical PDF pages
+24 and 28–36 and the corresponding reference constants.</p>
+<h2 class="issue-heading" id="kem-12-2-the-level-5-implementation-returns-only-384-shared-secret-bits">kem-12-2: The Level-5 implementation returns only 384 shared-secret bits</h2>
+
+<div class="table-wrap"><table class="meta issue-meta">
+<tr><th>Classification</th><td><span class="sev sev-high">High / implementation</span></td></tr>
+<tr><th>Affected</th><td>CTL-512 reference adapter and specification</td></tr>
+<tr><th>Discovery</th><td>Trivial</td></tr>
+<tr><th>Exploitation</th><td>Capacity/conformance defect; no IND-CCA attack demonstrated</td></tr>
+<tr><th>Credit</th><td>Markku-Juhani O. Saarinen <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#109;&#97;&#114;&#107;&#107;&#117;&#45;&#106;&#117;&#104;&#97;&#110;&#105;&#46;&#115;&#97;&#97;&#114;&#105;&#110;&#101;&#110;&#64;&#116;&#117;&#110;&#105;&#46;&#102;&#105;">&#109;&#97;&#114;&#107;&#107;&#117;&#45;&#106;&#117;&#104;&#97;&#110;&#105;&#46;&#115;&#97;&#97;&#114;&#105;&#110;&#101;&#110;&#64;&#116;&#117;&#110;&#105;&#46;&#102;&#105;</a>, with AI assistance</td></tr>
+<tr><th>Date</th><td>2026-09-21</td></tr>
+</table></div>
+
+<p>The CTL-512 adapter returns a 48-byte shared secret and instantiates the ciphertext hash component <code>c2</code> at 48 bytes. The specification assigns 64 bytes to Level-5 <code>c2</code>.</p>
+<p>The returned key therefore has at most 384 bits of delivered-key capacity and the ciphertext format contradicts the PDF. Output length alone is not an IND-CCA attack, so this second issue is classified as an implementation/specification conformance break rather than a complete KEM confidentiality attack.</p>
+<h3 id="reproducing_1">Reproducing</h3>
+<p>Commands below run in a checkout of the <a href="https://github.com/ngcc-dev/ngcc-harness">ngcc-harness repository</a> with the candidate built (see its README).</p>
+<pre><code class="language-sh">python3 security/design_parameter_audit.py
+</code></pre>
+<p>The <code>kem-12-2</code> check verifies the Level-5 output table and the corresponding
+reference constants.</p>
+</main>
+<footer class="site-footer">
+<p>Built 2026-09-21 · <a href="https://github.com/ngcc-dev/ngcc.github.io">source</a></p>
+</footer>
+</body>
+</html>

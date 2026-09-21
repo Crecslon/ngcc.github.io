@@ -1,15 +1,17 @@
 <!-- synced from ngcc1/kex-02/report.md -->
 Candidate: AFS-KEX
 Family: Lattice (Module-LWE AKE)
-Scope: Uniform-API reference wrappers, all three parameter sets
 Archive: [AFS-KEX.zip](https://www.niccs.org.cn/niccs/Proposal/Public-Key%20Cryptographic%20Algorithms/Round%201%20candidates/AFS-KEX.zip) (SHA-256: `7d902107b74870e512c84da82c6bfb386633ca864ddc7df2f7b0b183511f983a`)
+
+## kex-02-1: The ephemeral key is generated once as long-term state
+
 Severity: Critical
+Layer: Implementation
+Affected: Uniform-API reference wrappers, all three parameter sets
 Discovery: Trivial
 Exploitation: Trivial after later long-term-key compromise
 Credit: Markku-Juhani O. Saarinen <markku-juhani.saarinen@tuni.fi>, with AI assistance
 Date: 2026-09-21
-
-## The ephemeral key is generated once as long-term state
 
 The specification requires fresh AFS ephemeral key material for each session and claims completed-session forward secrecy after later compromise of long-term keys.
 
@@ -19,7 +21,7 @@ This gives a direct completed-session key-recovery attack. A passive attacker re
 
 Ephemeral AFS keys must be generated for each protocol execution, kept outside long-term key serialization, and erased when the session completes.
 
-## Reproducing
+### Reproducing
 
 ```sh
 make -C kex-02 exploit

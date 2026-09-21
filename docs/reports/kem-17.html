@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>HEP-QC (kem-17) · ngcc.dev</title>
-<link rel="stylesheet" href="../assets/style.css?v=c5cd3d67">
+<link rel="stylesheet" href="../assets/style.css?v=9eeb984b">
 </head>
 <body>
 <header class="site-header">
@@ -18,28 +18,51 @@
 <div class="table-wrap"><table class="meta">
 <tr><th>Candidate</th><td>HEP-QC</td></tr>
 <tr><th>Family</th><td>Code-based (quasi-cyclic)</td></tr>
-<tr><th>Scope</th><td>Reference implementation, all four parameter sets</td></tr>
-<tr><th>Severity</th><td><span class="sev sev-critical">Critical</span></td></tr>
-<tr><th>Discovery</th><td>Trivial</td></tr>
-<tr><th>Exploitation</th><td>Trivial</td></tr>
-<tr><th>Date</th><td>2026-09-21</td></tr>
-<tr><th>Credit</th><td>Markku-Juhani O. Saarinen <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#109;&#97;&#114;&#107;&#107;&#117;&#45;&#106;&#117;&#104;&#97;&#110;&#105;&#46;&#115;&#97;&#97;&#114;&#105;&#110;&#101;&#110;&#64;&#116;&#117;&#110;&#105;&#46;&#102;&#105;">&#109;&#97;&#114;&#107;&#107;&#117;&#45;&#106;&#117;&#104;&#97;&#110;&#105;&#46;&#115;&#97;&#97;&#114;&#105;&#110;&#101;&#110;&#64;&#116;&#117;&#110;&#105;&#46;&#102;&#105;</a>, with AI assistance</td></tr>
 <tr><th>Archive</th><td><a href="https://www.niccs.org.cn/niccs/Proposal/Public-Key%20Cryptographic%20Algorithms/Round%201%20candidates/HEP-QC.zip">HEP-QC.zip</a> (SHA-256: <code>3780991127f49b6397b4182d32b35ab7a6359bf825a707e90df0f809beeb3790</code>)</td></tr>
 </table></div>
 
-<h2 id="publicly-reproducible-secret-keys">Publicly reproducible secret keys</h2>
+<h2 class="issue-heading issue-heading-first" id="kem-17-1-publicly-reproducible-secret-keys">kem-17-1: Publicly reproducible secret keys</h2>
+
+<div class="table-wrap"><table class="meta issue-meta">
+<tr><th>Classification</th><td><span class="sev sev-critical">Critical / implementation</span></td></tr>
+<tr><th>Affected</th><td>Reference implementation, all four parameter sets</td></tr>
+<tr><th>Discovery</th><td>Trivial</td></tr>
+<tr><th>Exploitation</th><td>Trivial</td></tr>
+<tr><th>Credit</th><td>Markku-Juhani O. Saarinen <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#109;&#97;&#114;&#107;&#107;&#117;&#45;&#106;&#117;&#104;&#97;&#110;&#105;&#46;&#115;&#97;&#97;&#114;&#105;&#110;&#101;&#110;&#64;&#116;&#117;&#110;&#105;&#46;&#102;&#105;">&#109;&#97;&#114;&#107;&#107;&#117;&#45;&#106;&#117;&#104;&#97;&#110;&#105;&#46;&#115;&#97;&#97;&#114;&#105;&#110;&#101;&#110;&#64;&#116;&#117;&#110;&#105;&#46;&#102;&#105;</a>, with AI assistance</td></tr>
+<tr><th>Date</th><td>2026-09-21</td></tr>
+</table></div>
+
 <p>Key generation draws from a file-scope SHAKE-256 PRNG context that is never initialized by the KEM wrapper. The API-provided seeded DRNG is declared but never consumed. Each fresh process therefore begins from the same zero-initialized state and generates the same key pair.</p>
 <p>Fresh-process tests with different API seeds produced identical public and secret keys for <code>hep-qc-1</code>, <code>hep-qc-3</code>, <code>hep-qc-5</code>, and <code>hep-qc-7</code>.</p>
 <p>An attacker recovers a victim's secret key by starting a fresh process and invoking the submitted key-generation API once. No code-based cryptanalysis is required. The resulting secret key decapsulates the victim's ciphertexts, completely breaking the claimed KEM confidentiality.</p>
 <p>The wrapper must initialize its PRNG from the supplied DRNG for every independent key-generation operation and must not rely on zero-initialized global state.</p>
-<h2 id="reproducing">Reproducing</h2>
+<h3 id="reproducing">Reproducing</h3>
 <p>Commands below run in a checkout of the <a href="https://github.com/ngcc-dev/ngcc-harness">ngcc-harness repository</a> with the candidate built (see its README).</p>
 <p>Build the candidate and the reproducer, then run:</p>
 <pre><code class="language-sh">make -C api harness &amp;&amp; make -C tools &amp;&amp; make -C kem-17
 tools/ngcc_attack keygen-fresh kem-17/lib/libhep-qc-1.so 0x01   # repeat with a different seed
 </code></pre>
-<p><code>tools/reproduce.sh</code> runs this together with every other reported
-finding and its controls. See <code>tools/README.md</code>.</p>
+<p><code>tools/reproduce.sh</code> runs this together with the other supported runtime
+witnesses and their controls. See <code>tools/README.md</code>.</p>
+<h2 class="issue-heading" id="kem-17-2-the-level-5-key-space-has-at-most-256-bits-of-support">kem-17-2: The Level-5 key space has at most 256 bits of support</h2>
+
+<div class="table-wrap"><table class="meta issue-meta">
+<tr><th>Classification</th><td><span class="sev sev-high">High / design</span></td></tr>
+<tr><th>Affected</th><td>HEP-QC-7 specification</td></tr>
+<tr><th>Discovery</th><td>Trivial</td></tr>
+<tr><th>Exploitation</th><td>Approximately 2^256 key-generation trials</td></tr>
+<tr><th>Credit</th><td>Markku-Juhani O. Saarinen <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#109;&#97;&#114;&#107;&#107;&#117;&#45;&#106;&#117;&#104;&#97;&#110;&#105;&#46;&#115;&#97;&#97;&#114;&#105;&#110;&#101;&#110;&#64;&#116;&#117;&#110;&#105;&#46;&#102;&#105;">&#109;&#97;&#114;&#107;&#107;&#117;&#45;&#106;&#117;&#104;&#97;&#110;&#105;&#46;&#115;&#97;&#97;&#114;&#105;&#110;&#101;&#110;&#64;&#116;&#117;&#110;&#105;&#46;&#102;&#105;</a>, with AI assistance</td></tr>
+<tr><th>Date</th><td>2026-09-21</td></tr>
+</table></div>
+
+<p>This is independent of the implementation defect above. The HEP-QC-7 specification claims 512-bit classical security, but fixes <code>seedKEM</code>, every derived seed, and the shared key <code>K</code> at 32 bytes. <code>KEM.KeyGen</code> samples one 256-bit <code>seedKEM</code> and deterministically derives <code>seedPKE</code> and the complete PKE key pair from it.</p>
+<p>There are consequently at most <code>2^256</code> HEP-QC-7 public keys. A generic attacker can enumerate <code>seedKEM</code>, regenerate the encapsulation key, and compare it with the target public key. A match supplies the corresponding decapsulation key. The 32-byte KEM output also has at most 256 bits of delivered-key capacity.</p>
+<p>This is a specification-level parameter-selection break of the advertised 512-bit classical level. It is not made less valid by the submitted wrapper's much cheaper predictable-key failure; repairing the wrapper still leaves this <code>2^256</code> design ceiling.</p>
+<h3 id="reproducing_1">Reproducing</h3>
+<p>Commands below run in a checkout of the <a href="https://github.com/ngcc-dev/ngcc-harness">ngcc-harness repository</a> with the candidate built (see its README).</p>
+<p>Specification evidence is on physical PDF pages 12–14. Run:</p>
+<pre><code class="language-sh">python3 security/design_parameter_audit.py
+</code></pre>
 </main>
 <footer class="site-footer">
 <p>Built 2026-09-21 · <a href="https://github.com/ngcc-dev/ngcc.github.io">source</a></p>

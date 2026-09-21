@@ -1,15 +1,17 @@
 <!-- synced from ngcc1/sign-01/report.md -->
 Candidate: Aigis-Sig+
 Family: Lattice (Module-LWE/SIS, Fiat-Shamir)
-Scope: Reference implementation, all three parameter sets
 Archive: [Aigis-Sig+.zip](https://www.niccs.org.cn/niccs/Proposal/Public-Key%20Cryptographic%20Algorithms/Round%201%20candidates/Aigis-Sig%2B.zip) (SHA-256: `88242576a3ae8f9d090b0c9045020f04ee9b5ae828e01b839f25267959e9c7ea`)
+
+## sign-01-1: Trivial signature malleability violates SUF-CMA
+
 Severity: High
+Layer: Implementation
+Affected: Reference implementation, all three parameter sets
 Discovery: Trivial
 Exploitation: Trivial
 Credit: Markku-Juhani O. Saarinen <markku-juhani.saarinen@tuni.fi>, with AI assistance
 Date: 2026-09-21
-
-## Trivial signature malleability violates SUF-CMA
 
 The packed hint has a variable meaningful length inside a fixed-size signature buffer. Verification decodes the meaningful portion but does not require a unique, canonical encoding of the remaining bytes.
 
@@ -19,7 +21,7 @@ This does not by itself forge a signature for a new message, so it is not an EUF
 
 The decoder must reject noncanonical hint encodings and require every unused byte or bit to have its unique prescribed value.
 
-## Reproducing
+### Reproducing
 
 Build the candidate and the reproducer, then run:
 
@@ -28,5 +30,5 @@ make -C api harness && make -C tools && make -C sign-01
 tools/ngcc_attack sig-malleable sign-01/lib/libAigis-sig1.so
 ```
 
-`tools/reproduce.sh` runs this together with every other reported
-finding and its controls. See `tools/README.md`.
+`tools/reproduce.sh` runs this together with the other supported runtime
+witnesses and their controls. See `tools/README.md`.

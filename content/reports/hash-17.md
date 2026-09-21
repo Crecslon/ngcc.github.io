@@ -1,15 +1,17 @@
 <!-- synced from ngcc1/hash-17/report.md -->
 Candidate: MasterCube
 Family: Symmetric (sponge, AndRX permutation)
-Scope: Reference implementation, all three parameter sets
 Archive: [MasterCube.zip](https://www.niccs.org.cn/niccs/Proposal/Cryptographic%20Hash%20Algorithms/Round%201%20candidates/MasterCube.zip) (SHA-256: `1f9773b8ece90152a6a9adc632a7112c9afc670a5d28b7f1e9ac111e5eea8f13`)
+
+## hash-17-1: Trivial collisions at every rate boundary
+
 Severity: Critical
+Layer: Implementation
+Affected: Reference implementation, all three parameter sets
 Discovery: Trivial
 Exploitation: Trivial
 Credit: Markku-Juhani O. Saarinen <markku-juhani.saarinen@tuni.fi>, with AI assistance
 Date: 2026-09-21
-
-## Trivial collisions at every rate boundary
 
 The following collision was verified against MasterCube-512:
 
@@ -24,7 +26,7 @@ The implementation attempts to apply `pad10*1` in a single rate block. When the 
 
 Consequently, for any prefix `P` of length `r-2 mod r`, the implementation gives `H(P) = H(P || 1)`. The same defect was reproduced at 702/703 bits for MasterCube-768 and 446/447 bits for MasterCube-1024. It directly violates the claimed 256-, 384-, and 512-bit collision strengths and is an implementation error rather than an attack on the specified permutation.
 
-## Reproducing
+### Reproducing
 
 Build the candidate and the reproducer, then run:
 
@@ -33,5 +35,5 @@ make -C api harness && make -C tools && make -C hash-17
 tools/ngcc_attack hash-collide-rate hash-17/lib/libMasterCube-512.so 959
 ```
 
-`tools/reproduce.sh` runs this together with every other reported
-finding and its controls. See `tools/README.md`.
+`tools/reproduce.sh` runs this together with the other supported runtime
+witnesses and their controls. See `tools/README.md`.

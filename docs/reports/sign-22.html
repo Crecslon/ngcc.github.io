@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rhyme (sign-22) · ngcc.dev</title>
+<link rel="stylesheet" href="../assets/style.css?v=9eeb984b">
+</head>
+<body>
+<header class="site-header">
+<a class="brand" href="../index.html">ngcc.dev</a>
+<nav><a href="../index.html">Home</a><a href="../reports/index.html">Reports</a></nav>
+</header>
+<main>
+<p class="crumb"><a href="../reports/index.html">Reports</a> › <code>sign-22</code></p>
+
+<h1 id="rhyme-sign-22">Rhyme (sign-22)</h1>
+<div class="table-wrap"><table class="meta">
+<tr><th>Candidate</th><td>Rhyme</td></tr>
+<tr><th>Family</th><td>Lattice-based</td></tr>
+<tr><th>Archive</th><td><a href="https://www.niccs.org.cn/niccs/Proposal/Public-Key%20Cryptographic%20Algorithms/Round%201%20candidates/Rhyme.zip">Rhyme.zip</a> (SHA-256: <code>7b509d21c6674bc23751b8743cb7c2a4a07ee295fafe04e2fa95c0613160bdfd</code>)</td></tr>
+</table></div>
+
+<h2 class="issue-heading issue-heading-first" id="sign-22-1-the-implemented-message-representative-caps-forgery-security-at-256-bits">sign-22-1: The implemented message representative caps forgery security at 256 bits</h2>
+
+<div class="table-wrap"><table class="meta issue-meta">
+<tr><th>Classification</th><td><span class="sev sev-high">High / implementation</span></td></tr>
+<tr><th>Affected</th><td>Rhyme-512 reference implementation and specification</td></tr>
+<tr><th>Discovery</th><td>Trivial</td></tr>
+<tr><th>Exploitation</th><td>Approximately 2^256 hash evaluations</td></tr>
+<tr><th>Credit</th><td>Markku-Juhani O. Saarinen <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#109;&#97;&#114;&#107;&#107;&#117;&#45;&#106;&#117;&#104;&#97;&#110;&#105;&#46;&#115;&#97;&#97;&#114;&#105;&#110;&#101;&#110;&#64;&#116;&#117;&#110;&#105;&#46;&#102;&#105;">&#109;&#97;&#114;&#107;&#107;&#117;&#45;&#106;&#117;&#104;&#97;&#110;&#105;&#46;&#115;&#97;&#97;&#114;&#105;&#110;&#101;&#110;&#64;&#116;&#117;&#110;&#105;&#46;&#102;&#105;</a>, with AI assistance</td></tr>
+<tr><th>Date</th><td>2026-09-21</td></tr>
+</table></div>
+
+<p>Rhyme-512 claims 512-bit classical security and uses the unsalted message binding <code>mu = H_gen(pk, M)</code>. Its implementation fixes <code>mu</code> at 64 bytes, enabling a generic collision-and-signature-transfer attack in about <code>2^256</code> evaluations.</p>
+<p>The PDF specifies the construction but never defines the output length of <code>H_gen</code>. The implementation ceiling is confirmed, but the omission prevents calling the 64-byte length a clean normative parameter.</p>
+<h3 id="reproducing">Reproducing</h3>
+<p>Commands below run in a checkout of the <a href="https://github.com/ngcc-dev/ngcc-harness">ngcc-harness repository</a> with the candidate built (see its README).</p>
+<pre><code class="language-sh">python3 security/design_parameter_audit.py
+</code></pre>
+<p>The <code>sign-22-1</code> check verifies the normative message-binding algorithm on
+physical PDF pages 29–32 and 50–51 and the source digest constant.</p>
+<h2 class="issue-heading" id="sign-22-2-the-implementation-expands-the-complete-key-pair-from-a-256-bit-root">sign-22-2: The implementation expands the complete key pair from a 256-bit root</h2>
+
+<div class="table-wrap"><table class="meta issue-meta">
+<tr><th>Classification</th><td><span class="sev sev-high">High / implementation</span></td></tr>
+<tr><th>Affected</th><td>Rhyme-512 reference implementation and specification</td></tr>
+<tr><th>Discovery</th><td>Trivial</td></tr>
+<tr><th>Exploitation</th><td>Approximately 2^256 key-generation trials</td></tr>
+<tr><th>Credit</th><td>Markku-Juhani O. Saarinen <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#109;&#97;&#114;&#107;&#107;&#117;&#45;&#106;&#117;&#104;&#97;&#110;&#105;&#46;&#115;&#97;&#97;&#114;&#105;&#110;&#101;&#110;&#64;&#116;&#117;&#110;&#105;&#46;&#102;&#105;">&#109;&#97;&#114;&#107;&#107;&#117;&#45;&#106;&#117;&#104;&#97;&#110;&#105;&#46;&#115;&#97;&#97;&#114;&#105;&#110;&#101;&#110;&#64;&#116;&#117;&#110;&#105;&#46;&#102;&#105;</a>, with AI assistance</td></tr>
+<tr><th>Date</th><td>2026-09-21</td></tr>
+</table></div>
+
+<p>Rhyme-512 expands its entire key pair from one 32-byte root. The generated public-key support is therefore at most <code>2^256</code>; generic root enumeration and public-key matching recovers the corresponding signing key.</p>
+<p>The normative algorithm denotes the root length by <code>rho_0</code> but never assigns <code>rho_0</code> in its parameter table. This is both an implementation security ceiling and a specification omission.</p>
+<h3 id="reproducing_1">Reproducing</h3>
+<p>Commands below run in a checkout of the <a href="https://github.com/ngcc-dev/ngcc-harness">ngcc-harness repository</a> with the candidate built (see its README).</p>
+<pre><code class="language-sh">python3 security/design_parameter_audit.py
+</code></pre>
+<p>The <code>sign-22-2</code> check verifies the normative KeyGen algorithm on physical PDF
+pages 29 and 50–51 and the source root constant.</p>
+</main>
+<footer class="site-footer">
+<p>Built 2026-09-21 · <a href="https://github.com/ngcc-dev/ngcc.github.io">source</a></p>
+</footer>
+</body>
+</html>

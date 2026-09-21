@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Polar-KEM (kem-29) · ngcc.dev</title>
-<link rel="stylesheet" href="../assets/style.css?v=c5cd3d67">
+<link rel="stylesheet" href="../assets/style.css?v=9eeb984b">
 </head>
 <body>
 <header class="site-header">
@@ -18,28 +18,32 @@
 <div class="table-wrap"><table class="meta">
 <tr><th>Candidate</th><td>Polar-KEM</td></tr>
 <tr><th>Family</th><td>Lattice (polar-code-defined)</td></tr>
-<tr><th>Scope</th><td>Reference implementation, all three parameter sets</td></tr>
-<tr><th>Severity</th><td><span class="sev sev-critical">Critical</span></td></tr>
-<tr><th>Discovery</th><td>Trivial</td></tr>
-<tr><th>Exploitation</th><td>Trivial</td></tr>
-<tr><th>Date</th><td>2026-09-21</td></tr>
-<tr><th>Credit</th><td>Markku-Juhani O. Saarinen <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#109;&#97;&#114;&#107;&#107;&#117;&#45;&#106;&#117;&#104;&#97;&#110;&#105;&#46;&#115;&#97;&#97;&#114;&#105;&#110;&#101;&#110;&#64;&#116;&#117;&#110;&#105;&#46;&#102;&#105;">&#109;&#97;&#114;&#107;&#107;&#117;&#45;&#106;&#117;&#104;&#97;&#110;&#105;&#46;&#115;&#97;&#97;&#114;&#105;&#110;&#101;&#110;&#64;&#116;&#117;&#110;&#105;&#46;&#102;&#105;</a>, with AI assistance</td></tr>
 <tr><th>Archive</th><td><a href="https://www.niccs.org.cn/niccs/Proposal/Public-Key%20Cryptographic%20Algorithms/Round%201%20candidates/Polar-KEM.zip">Polar-KEM.zip</a> (SHA-256: <code>3ae9d4f1a717fb473e76447014d585cd5d14fe38728f02b1a044cc6a2d03e16d</code>)</td></tr>
 </table></div>
 
-<h2 id="the-submission-ships-a-complete-public-key-only-break">The submission ships a complete public-key-only break</h2>
+<h2 class="issue-heading issue-heading-first" id="kem-29-1-the-submission-ships-a-complete-public-key-only-break">kem-29-1: The submission ships a complete public-key-only break</h2>
+
+<div class="table-wrap"><table class="meta issue-meta">
+<tr><th>Classification</th><td><span class="sev sev-critical">Critical / implementation</span></td></tr>
+<tr><th>Affected</th><td>Reference implementation, all three parameter sets</td></tr>
+<tr><th>Discovery</th><td>Trivial</td></tr>
+<tr><th>Exploitation</th><td>Trivial</td></tr>
+<tr><th>Credit</th><td>Markku-Juhani O. Saarinen <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#109;&#97;&#114;&#107;&#107;&#117;&#45;&#106;&#117;&#104;&#97;&#110;&#105;&#46;&#115;&#97;&#97;&#114;&#105;&#110;&#101;&#110;&#64;&#116;&#117;&#110;&#105;&#46;&#102;&#105;">&#109;&#97;&#114;&#107;&#107;&#117;&#45;&#106;&#117;&#104;&#97;&#110;&#105;&#46;&#115;&#97;&#97;&#114;&#105;&#110;&#101;&#110;&#64;&#116;&#117;&#110;&#105;&#46;&#102;&#105;</a>, with AI assistance</td></tr>
+<tr><th>Date</th><td>2026-09-21</td></tr>
+</table></div>
+
 <p>The submission's own shipped functions provide the complete attack. <code>polarkem_recover_message(pk, ct, mu)</code> and <code>polarkem_derive_valid_secret(mu, ct, ss)</code> are declared in <code>polarkem_ct.h</code> and implemented in the submitted reference source. They recover the encapsulated message and derive the exact shared secret using only public inputs.</p>
 <p>The frozen specification does not have this defect: it defines the public key as the disguised basis <code>B_pk = O * B_red</code>, keeps the orthogonal transformation <code>O</code> in the secret key, and requires decapsulation to apply <code>O^-1</code> before decoding. The submitted implementation does not implement that construction. Instead, <code>polarkem_recover_message</code> expands a signed permutation from the seed at <code>pk + POLARKEM_PK_SEED_OFFSET</code>, making the implementation's decoding transform public. Secret-key material is consulted only to derive the fallback secret for invalid ciphertexts.</p>
 <p>Independent execution against the three built libraries called <code>polarkem_recover_message(pk, ct, mu)</code> followed by <code>polarkem_derive_valid_secret(mu, ct, ss)</code>. The result exactly matched the encapsulator's 16-, 32-, and 64-byte secrets for PolarKEM-128, PolarKEM-256, and PolarKEM-512 without supplying any secret-key bytes.</p>
 <p>Anyone observing a public key and ciphertext can therefore recover the session key by calling code shipped by the candidate. This is a total break of the submitted implementation at every level, but it is not an attack on the secret-isometry construction described by the specification.</p>
-<h2 id="reproducing">Reproducing</h2>
+<h3 id="reproducing">Reproducing</h3>
 <p>Commands below run in a checkout of the <a href="https://github.com/ngcc-dev/ngcc-harness">ngcc-harness repository</a> with the candidate built (see its README).</p>
 <p>Build the candidate and the reproducer, then run:</p>
 <pre><code class="language-sh">make -C api harness &amp;&amp; make -C tools &amp;&amp; make -C kem-29
 python3 kem-29/reproduce_public_recovery.py
 </code></pre>
-<p><code>tools/reproduce.sh</code> runs this together with every other reported
-finding and its controls. See <code>tools/README.md</code>.</p>
+<p><code>tools/reproduce.sh</code> runs this together with the other supported runtime
+witnesses and their controls. See <code>tools/README.md</code>.</p>
 </main>
 <footer class="site-footer">
 <p>Built 2026-09-21 · <a href="https://github.com/ngcc-dev/ngcc.github.io">source</a></p>

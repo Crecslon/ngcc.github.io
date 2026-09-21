@@ -164,10 +164,12 @@ def summary_html(cands, prefix):
 
 
 REPORT_ID_RE = re.compile(r"^(sign|kem|kex|hash)-\d\d$")
+ISSUE_ID_RE = re.compile(r"^((?:sign|kem|kex|hash)-\d\d-([1-9]\d*)):\s+(.+)$")
+ISSUE_FIELDS = ("Severity", "Layer", "Affected", "Discovery", "Exploitation", "Credit", "Date")
 
 
 def parse_report(text):
-    """Split a report into (meta dict, body markdown, [issue titles])."""
+    """Split a report into (meta dict, body markdown, [issue headings])."""
     lines = text.splitlines()
     i = 0
     while i < len(lines) and (not lines[i].strip() or lines[i].startswith("<!--")):
@@ -186,10 +188,10 @@ def parse_report(text):
 
 
 def load_reports():
-    """id -> {meta, body, issues, cid, severity, date}"""
+    """Load candidate metadata and independently headed vulnerability records."""
     from markdown.extensions.toc import slugify
     reports = {}
-    scopes = {row["ID"]: row["Scope"].strip().lower() for row in read_csv("report-scopes.csv")}
+    seen_issues = set()
     rdir = CONTENT / "reports"
     if not rdir.is_dir():
         return reports
@@ -197,20 +199,51 @@ def load_reports():
         if not REPORT_ID_RE.match(p.stem):
             continue
         meta, body, issues = parse_report(p.read_text(encoding="utf-8"))
-        sev = meta.get("Severity", "").strip().lower()
-        if p.stem not in scopes:
-            raise ValueError(f"missing design/implementation classification for {p.stem}")
-        if scopes[p.stem] not in {"design", "implementation"}:
-            raise ValueError(f"invalid report classification for {p.stem}: {scopes[p.stem]}")
-        reports[p.stem] = {"cid": p.stem, "meta": meta, "body": body, "date": meta.get("Date", ""),
-                           "severity": sev if sev in SEVERITIES else "info",
-                           "finding_scope": scopes[p.stem],
-                           "issues": [(t, slugify(t, "-")) for t in issues]}
+        unexpected = set(meta) - {"Candidate", "Family", "Archive"}
+        if unexpected:
+            raise ValueError(f"report-level issue metadata in {p.name}: {', '.join(sorted(unexpected))}")
+        body_lines = body.splitlines()
+        heading_lines = {line[3:].strip(): i for i, line in enumerate(body_lines) if line.startswith("## ")}
+        parsed_issues = []
+        numbers = []
+        for heading in issues:
+            match = ISSUE_ID_RE.fullmatch(heading)
+            if not match or not match.group(1).startswith(p.stem + "-"):
+                raise ValueError(f"invalid issue heading in {p.name}: {heading}")
+            issue_id, number, title = match.group(1), int(match.group(2)), match.group(3)
+            if issue_id in seen_issues:
+                raise ValueError(f"duplicate report ID: {issue_id}")
+            at = heading_lines[heading] + 1
+            if at >= len(body_lines) or body_lines[at].strip():
+                raise ValueError(f"missing blank line after {issue_id}")
+            issue_meta = {}
+            for offset, field in enumerate(ISSUE_FIELDS, 1):
+                line_at = at + offset
+                expected = f"{field}: "
+                if line_at >= len(body_lines) or not body_lines[line_at].startswith(expected):
+                    raise ValueError(f"missing {field} metadata for {issue_id}")
+                issue_meta[field] = body_lines[line_at][len(expected):].strip()
+                if not issue_meta[field]:
+                    raise ValueError(f"empty {field} metadata for {issue_id}")
+            severity = issue_meta["Severity"].lower()
+            layer = issue_meta["Layer"].lower()
+            if severity not in SEVERITIES:
+                raise ValueError(f"invalid severity for {issue_id}: {issue_meta['Severity']}")
+            if layer not in {"design", "implementation"}:
+                raise ValueError(f"invalid layer for {issue_id}: {issue_meta['Layer']}")
+            seen_issues.add(issue_id)
+            numbers.append(number)
+            parsed_issues.append({"id": issue_id, "title": title,
+                                  "anchor": slugify(heading, "-"), "severity": severity,
+                                  "layer": layer, "meta": issue_meta})
+        if numbers != list(range(1, len(numbers) + 1)):
+            raise ValueError(f"non-sequential report IDs in {p.name}: {numbers}")
+        reports[p.stem] = {"cid": p.stem, "meta": meta, "body": body, "issues": parsed_issues}
     return reports
 
 
-def sev_badge(sev, finding_scope=""):
-    label = sev.capitalize() + (f" / {finding_scope}" if finding_scope else "")
+def sev_badge(sev, layer=""):
+    label = sev.capitalize() + (f" / {layer}" if layer else "")
     return f'<span class="sev sev-{sev}">{html.escape(label)}</span>'
 
 
@@ -218,7 +251,7 @@ def reports_html(reports, cands, prefix):
     h = []
     for cat, label in CATS:
         h.extend([f'<h2 id="{cat}">{label}</h2>', '<table class="reports">',
-                  '<thead><tr><th>no.</th><th>status</th><th>candidate</th><th>family</th><th>issue</th></tr></thead><tbody>'])
+                  '<thead><tr><th>no.</th><th>candidate</th><th>family</th><th>classification</th><th>vulnerability</th></tr></thead><tbody>'])
         for c in sorted((c for c in cands.values() if c["cat"] == cat), key=lambda c: c["no"]):
             cid, r = c["id"], reports.get(c["id"])
             family = (r["meta"].get("Family", "") if r else "") or c.get("family", "")
@@ -226,17 +259,25 @@ def reports_html(reports, cands, prefix):
                 name = html.escape(c["algorithm"])
                 href = html.escape(c.get("page", ""))
                 candidate = f'<a href="{href}">{name}</a>' if href else name
-                h.append(f'<tr><td>{c["no"]}</td><td class="st"><span class="sev sev-none">No report</span></td>'
-                         f'<td>{candidate} <code>{cid}</code></td><td class="family">{html.escape(family)}</td><td>—</td></tr>')
+                h.append(f'<tr><td>{c["no"]}</td><td>{candidate} <code>{cid}</code></td>'
+                         f'<td class="family">{html.escape(family)}</td>'
+                         f'<td class="st"><span class="sev sev-none">No report</span></td><td>—</td></tr>')
                 continue
-            issues = r["issues"] or [("Report", "")]
-            for i, (title, anchor) in enumerate(issues):
-                issue_href = f'{prefix}reports/{cid}.html' + (f'#{anchor}' if anchor else '')
+            for i, issue in enumerate(r["issues"]):
+                issue_href = f'{prefix}reports/{cid}.html#{issue["anchor"]}'
                 candidate = (f'<a href="{prefix}reports/{cid}.html">'
                              f'{html.escape(r["meta"].get("Candidate", c["algorithm"]))}</a> <code>{cid}</code>')
-                h.append(f'<tr><td>{c["no"] if i == 0 else ""}</td><td class="st">{sev_badge(r["severity"], r["finding_scope"])}</td>'
-                         f'<td>{candidate}</td><td class="family">{html.escape(family)}</td>'
-                         f'<td><a href="{issue_href}">{html.escape(title)}</a></td></tr>')
+                status = f'<td class="st">{sev_badge(issue["severity"], issue["layer"])}</td>'
+                issue_cell = (f'<td><a href="{issue_href}"><code>{issue["id"]}</code> '
+                              f'{html.escape(issue["title"])}</a></td>')
+                if i == 0:
+                    span = len(r["issues"])
+                    h.append(f'<tr><td rowspan="{span}">{c["no"]}</td>'
+                             f'<td rowspan="{span}">{candidate}</td>'
+                             f'<td rowspan="{span}" class="family">{html.escape(family)}</td>'
+                             f'{status}{issue_cell}</tr>')
+                else:
+                    h.append(f'<tr>{status}{issue_cell}</tr>')
         h.append("</tbody></table>")
     return "\n".join(h)
 
@@ -244,11 +285,11 @@ def reports_html(reports, cands, prefix):
 def report_page(r, prefix):
     """Markdown for a report page: H1, metadata table, then the original body."""
     m = r["meta"]
-    order = ["Candidate", "Family", "Scope", "Severity", "Discovery", "Exploitation", "Date", "Credit", "Archive"]
+    order = ["Candidate", "Family", "Archive"]
     keys = [k for k in order if k in m] + [k for k in m if k not in order]
     rows = []
     for k in keys:
-        v = sev_badge(r["severity"]) if k == "Severity" else markdown.markdown(m[k])[3:-4]
+        v = markdown.markdown(m[k])[3:-4]
         rows.append(f"<tr><th>{html.escape(k)}</th><td>{v}</td></tr>")
     meta_table = '<table class="meta">\n' + "\n".join(rows) + "\n</table>"
     title = f"{m.get('Candidate', r['cid'])} ({r['cid']})"
@@ -256,10 +297,24 @@ def report_page(r, prefix):
     note = (f"\n\nCommands below run in a checkout of the [ngcc-harness repository]({HARNESS}) "
             f"with the candidate built (see its README).")
     body = r["body"]
-    for pat in (r"^(##[ \t]+Reproducing[ \t]*)$", r"^(##[ \t]+Reproduc\w*[ \t]*)$"):   # prefer the newer section
-        body, n = re.subn(pat, lambda m: m.group(1) + note, body, count=1, flags=re.M)
-        if n:
-            break
+    for issue_number, issue in enumerate(r["issues"]):
+        heading = f'## {issue["id"]}: {issue["title"]}'
+        heading_class = "issue-heading issue-heading-first" if issue_number == 0 else "issue-heading"
+        rendered_heading = (
+            f'<h2 class="{heading_class}" id="{html.escape(issue["anchor"])}">'
+            f'{html.escape(issue["id"])}: {html.escape(issue["title"])}</h2>'
+        )
+        source_meta = "\n".join(f'{field}: {issue["meta"][field]}' for field in ISSUE_FIELDS)
+        rows = [f'<tr><th>Classification</th><td>{sev_badge(issue["severity"], issue["layer"])}</td></tr>']
+        for field in ISSUE_FIELDS[2:]:
+            value = markdown.markdown(issue["meta"][field])[3:-4]
+            rows.append(f'<tr><th>{html.escape(field)}</th><td>{value}</td></tr>')
+        issue_table = '<table class="meta issue-meta">\n' + "\n".join(rows) + "\n</table>"
+        source = f"{heading}\n\n{source_meta}"
+        if source not in body:
+            raise ValueError(f"could not render metadata for {issue['id']}")
+        body = body.replace(source, f"{rendered_heading}\n\n{issue_table}", 1)
+    body = re.sub(r"^(###[ \t]+Reproduc\w*[ \t]*)$", lambda m: m.group(1) + note, body, flags=re.M)
     return f"{crumb}\n\n# {title}\n\n{meta_table}\n\n{body}", title
 
 

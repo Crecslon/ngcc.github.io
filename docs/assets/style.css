@@ -83,3 +83,10 @@ table.meta { margin: 1rem 0; font-size: 0.9rem; }
 table.meta th { width: 8rem; background: var(--head); font-weight: 600; white-space: nowrap; }
 table.meta td { word-break: break-word; }
 table.reports td.family { color: var(--muted); font-size: 0.85rem; }
+table.reports td[rowspan] { vertical-align: top; }
+.issue-heading { scroll-margin-top: 1rem; }
+.issue-heading:not(.issue-heading-first) {
+  margin-top: 4rem;
+  padding-top: 1.5rem;
+  border-top: 2px solid var(--line);
+}

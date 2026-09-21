@@ -1,15 +1,17 @@
 <!-- synced from ngcc1/hash-20/report.md -->
 Candidate: MOZI
 Family: Symmetric (sponge)
-Scope: Reference implementation, MOZI-384 and MOZI-512
 Archive: [Mozi.zip](https://www.niccs.org.cn/niccs/Proposal/Cryptographic%20Hash%20Algorithms/Round%201%20candidates/Mozi.zip) (SHA-256: `f68c6b73ff4ac064e6bb8a9b74c4bd8a929594c3c48c89e1a65941e03676ea30`)
+
+## hash-20-1: The 384-bit digest is a prefix of the 512-bit digest
+
 Severity: High
+Layer: Design
+Affected: Reference implementation, MOZI-384 and MOZI-512
 Discovery: Trivial
 Exploitation: Trivial
 Credit: Markku-Juhani O. Saarinen <markku-juhani.saarinen@tuni.fi>, with AI assistance
 Date: 2026-09-21
-
-## The 384-bit digest is a prefix of the 512-bit digest
 
 For the 24-bit message hex `616263` (`abc`), MOZI-384 returns:
 
@@ -23,7 +25,7 @@ For every message shorter than 1024 bits, both variants initialize the same zero
 
 The two functions therefore lack cross-variant domain separation and cannot be treated as independent hashes. No explicit specification claim of cross-profile independence was located, so this is reported as a confirmed composition defect rather than a collision-resistance claim violation.
 
-## Reproducing
+### Reproducing
 
 Build the candidate and the reproducer, then run:
 
@@ -32,5 +34,5 @@ make -C api harness && make -C tools && make -C hash-20
 tools/ngcc_attack hash-prefix hash-20/lib/libMOZI-384.so hash-20/lib/libMOZI-512.so
 ```
 
-`tools/reproduce.sh` runs this together with every other reported
-finding and its controls. See `tools/README.md`.
+`tools/reproduce.sh` runs this together with the other supported runtime
+witnesses and their controls. See `tools/README.md`.

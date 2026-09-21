@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>NEV-AKE (kex-07) · ngcc.dev</title>
-<link rel="stylesheet" href="../assets/style.css?v=c5cd3d67">
+<link rel="stylesheet" href="../assets/style.css?v=9eeb984b">
 </head>
 <body>
 <header class="site-header">
@@ -18,16 +18,20 @@
 <div class="table-wrap"><table class="meta">
 <tr><th>Candidate</th><td>NEV-AKE</td></tr>
 <tr><th>Family</th><td>Lattice (NTRU/Ring-LWE AKE)</td></tr>
-<tr><th>Scope</th><td>Uniform-API reference wrappers, all nine parameter sets</td></tr>
-<tr><th>Severity</th><td><span class="sev sev-high">High</span></td></tr>
-<tr><th>Discovery</th><td>Trivial</td></tr>
-<tr><th>Exploitation</th><td>Integration-dependent; no complete UKS attack demonstrated</td></tr>
-<tr><th>Date</th><td>2026-09-21</td></tr>
-<tr><th>Credit</th><td>Markku-Juhani O. Saarinen <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#109;&#97;&#114;&#107;&#107;&#117;&#45;&#106;&#117;&#104;&#97;&#110;&#105;&#46;&#115;&#97;&#97;&#114;&#105;&#110;&#101;&#110;&#64;&#116;&#117;&#110;&#105;&#46;&#102;&#105;">&#109;&#97;&#114;&#107;&#107;&#117;&#45;&#106;&#117;&#104;&#97;&#110;&#105;&#46;&#115;&#97;&#97;&#114;&#105;&#110;&#101;&#110;&#64;&#116;&#117;&#110;&#105;&#46;&#102;&#105;</a>, with AI assistance</td></tr>
 <tr><th>Archive</th><td><a href="https://www.niccs.org.cn/niccs/Proposal/Public-Key%20Cryptographic%20Algorithms/Round%201%20candidates/NEV-AKE.zip">NEV-AKE.zip</a> (SHA-256: <code>da75005b4060167f25125cbd1a769ed872c8b6fcb770fe0827a599e44536e8e6</code>)</td></tr>
 </table></div>
 
-<h2 id="both-party-identities-are-hard-wired-to-zero">Both party identities are hard-wired to zero</h2>
+<h2 class="issue-heading issue-heading-first" id="kex-07-1-both-party-identities-are-hard-wired-to-zero">kex-07-1: Both party identities are hard-wired to zero</h2>
+
+<div class="table-wrap"><table class="meta issue-meta">
+<tr><th>Classification</th><td><span class="sev sev-high">High / implementation</span></td></tr>
+<tr><th>Affected</th><td>Uniform-API reference wrappers, all nine parameter sets</td></tr>
+<tr><th>Discovery</th><td>Trivial</td></tr>
+<tr><th>Exploitation</th><td>Integration-dependent; no complete UKS attack demonstrated</td></tr>
+<tr><th>Credit</th><td>Markku-Juhani O. Saarinen <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#109;&#97;&#114;&#107;&#107;&#117;&#45;&#106;&#117;&#104;&#97;&#110;&#105;&#46;&#115;&#97;&#97;&#114;&#105;&#110;&#101;&#110;&#64;&#116;&#117;&#110;&#105;&#46;&#102;&#105;">&#109;&#97;&#114;&#107;&#107;&#117;&#45;&#106;&#117;&#104;&#97;&#110;&#105;&#46;&#115;&#97;&#97;&#114;&#105;&#110;&#101;&#110;&#64;&#116;&#117;&#110;&#105;&#46;&#102;&#105;</a>, with AI assistance</td></tr>
+<tr><th>Date</th><td>2026-09-21</td></tr>
+</table></div>
+
 <p>Every submitted <code>kat_test/KEX_AlgorithmInstance.c</code> allocates the initiator and responder identities as all-zero <code>SEED_BYTES</code> arrays. The wrappers pass those constants into responder processing and initiator key derivation for all nine profiles.</p>
 <p>The core <code>ake.c</code> code hashes both identities into the session-key computations, and the specification's CK+ model distinguishes the session holder and peer identities <code>i</code> and <code>j</code>. The wrapper therefore collapses every deployment and every pair of parties onto one fixed identity pair instead of instantiating the protocol's modeled identity binding.</p>
 <p>This is a confirmed integration security defect. The transcript still contains cryptographic public keys, and no complete unknown-key-share or impersonation attack was demonstrated through the fixed API, so this report does not claim a proved AKE break beyond the missing identity binding.</p>

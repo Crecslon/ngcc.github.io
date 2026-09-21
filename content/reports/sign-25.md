@@ -1,15 +1,17 @@
 <!-- synced from ngcc1/sign-25/report.md -->
 Candidate: SQIsign2D2
 Family: Isogeny
-Scope: Level2-eff uncompressed reference implementation
 Archive: [SQIsign2D2.zip](https://www.niccs.org.cn/niccs/Proposal/Public-Key%20Cryptographic%20Algorithms/Round%201%20candidates/SQIsign2D2.zip) (SHA-256: `cf635de5eebbdeb7b2212e84f349da4ca878889e0a4a59b463d0c8cdfdb8eeab`)
+
+## sign-25-1: Verifier verdict is decided by stale stack contents
+
 Severity: Critical
+Layer: Implementation
+Affected: Level2-eff uncompressed reference implementation
 Discovery: Trivial
 Exploitation: Trivial
 Credit: Markku-Juhani O. Saarinen <markku-juhani.saarinen@tuni.fi>, with AI assistance
 Date: 2026-09-21
-
-## Verifier verdict is decided by stale stack contents
 
 The Level2-eff uncompressed verifier accepts a full-length all-zero signature, and
 accepts a valid signature after the message is changed, when either is verified after
@@ -35,7 +37,7 @@ The verifier must initialise every value its decision reads, enforce the specifi
 order and codomain conditions unconditionally rather than through `assert`, and reject
 zero or malformed decoded responses before protocol verification.
 
-## Reproducing
+### Reproducing
 
 Build the candidate and the reproducer, then run:
 
