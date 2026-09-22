@@ -5,19 +5,21 @@ Archive: [Amoeba.zip](https://www.niccs.org.cn/niccs/Proposal/Public-Key%20Crypt
 
 ## kem-02-1: The FO check compares only every fourth ciphertext byte
 
-Severity: High
+Severity: Critical
 Status: Confirmed
 Layer: Implementation
 Affected: All five Amoeba reference parameter sets
 Discovery: Trivial
-Exploitation: Reported full Amoeba-576 key recovery in approximately 30,000 decapsulation queries
+Exploitation: Full Amoeba-576 key recovery independently reproduced in 128,161 decapsulation queries; reporter used approximately 30,000
 Credit: Jinnuo Li
 Date: 2026-09-22
 Original source: [NGCC PKC Forum report](https://list.niccs.org.cn/archives/list/pkcforum@list.niccs.org.cn/message/JB6IBZZUEVGTMM2SF6WK5PIYW7ESSPYT/)
 
 Jinnuo Li reported the attack in the [NGCC PKC Forum](https://list.niccs.org.cn/archives/list/pkcforum@list.niccs.org.cn/message/JB6IBZZUEVGTMM2SF6WK5PIYW7ESSPYT/). Amoeba's Fujisaki--Okamoto decapsulation re-encrypts the decoded message, but `cmp()` advances its byte index by four. Amoeba-576 consequently checks only 262 of 1,047 ciphertext bytes; changes in the other 785 bytes cannot trigger implicit rejection. The same source defect appears in every submitted parameter set.
 
-This exposes a plaintext-checking primitive of the type developed by Das in [ePrint 2026/1682](https://eprint.iacr.org/2026/1682): unchecked ciphertext coefficients can be swept across decoding thresholds to obtain linear information about the reused Ring-LWE secret. Li reports recovering the secret keys for all ten official Amoeba-576 KAT vectors in about `3*10^4` decapsulation queries per key. We independently confirmed the incomplete predicate and the attack class, but have not independently reproduced Li's Amoeba-specific end-to-end key-recovery code. The attack also requires an application-level accept/reject signal under a reused KEM key; implicit rejection alone returns a pseudorandom-looking key in both branches.
+This exposes a plaintext-checking primitive of the type developed by Das in [ePrint 2026/1682](https://eprint.iacr.org/2026/1682): unchecked ciphertext coefficients can be swept across decoding thresholds to obtain linear information about the reused Ring-LWE secret. Li reports recovering all ten official Amoeba-576 KAT secret keys in about `3*10^4` decapsulation queries per key. Our independent witness uses a blind external-parity coordinate as a controlled first error, then binary-searches 320 other blind coordinates per chosen ciphertext. It recovers all 576 secret coefficients from 80 ciphertexts and 128,161 oracle calls, constructs a new decapsulation key without copying the original secret-key bytes, and recovers ten fresh honest encapsulations' shared secrets. Seeds 1, 2, and 3 reproduced. The measurement and regression are local and finish in about 17 seconds on this 28-vCPU host; they are less query-efficient than Li's method.
+
+The attack assumes a reused KEM key and an observable valid-plaintext/derived-key signal. The local witness models that signal using the decapsulation output and an attacker-computable candidate key. An application that never exposes a usable downstream accept/reject signal is not shown vulnerable to remote key recovery by this witness.
 
 The fix is to compare the complete ciphertext in constant time. A full-byte comparison is also required by the scheme's stated FO construction and IND-CCA2 argument.
 
@@ -28,3 +30,11 @@ make -C kem-02 exploit
 ```
 
 The source-level witness verifies the vulnerable loop in all five trees, enumerates the 262 checked positions for Amoeba-576, and exercises checked and unchecked mutation controls.
+
+For independent end-to-end recovery, use Sage's Python (with NumPy and SciPy):
+
+```sh
+make -C kem-02 exploit-key-recovery PYTHON=/path/to/sage/bin/python
+```
+
+The attack-only library is linked from the same submitted Amoeba-576 object files as the normal harness library, but additionally exports the public CPA encryption and hash helpers needed to make chosen valid ciphertexts. It does not patch the candidate's comparison or decoder. The original secret key is supplied only to the decapsulation oracle and to score the recovered coefficients; the reconstructed key and fresh shared-secret checks do not copy it. A checked-byte mutation is a negative control.

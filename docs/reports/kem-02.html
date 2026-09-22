@@ -24,26 +24,31 @@
 <h2 class="issue-heading issue-heading-first" id="kem-02-1-the-fo-check-compares-only-every-fourth-ciphertext-byte">kem-02-1: The FO check compares only every fourth ciphertext byte</h2>
 
 <div class="table-wrap"><table class="meta issue-meta">
-<tr><th>Classification</th><td><span class="sev sev-high">High / implementation</span></td></tr>
+<tr><th>Classification</th><td><span class="sev sev-critical">Critical / implementation</span></td></tr>
 <tr><th>Status</th><td><span class="issue-status status-confirmed">Confirmed</span></td></tr>
 <tr><th>Affected</th><td>All five Amoeba reference parameter sets</td></tr>
 <tr><th>Discovery</th><td>Trivial</td></tr>
-<tr><th>Exploitation</th><td>Reported full Amoeba-576 key recovery in approximately 30,000 decapsulation queries</td></tr>
+<tr><th>Exploitation</th><td>Full Amoeba-576 key recovery independently reproduced in 128,161 decapsulation queries; reporter used approximately 30,000</td></tr>
 <tr><th>Credit</th><td>Jinnuo Li</td></tr>
 <tr><th>Date</th><td>2026-09-22</td></tr>
 </table></div>
 <p>Original source: <a href="https://list.niccs.org.cn/archives/list/pkcforum@list.niccs.org.cn/message/JB6IBZZUEVGTMM2SF6WK5PIYW7ESSPYT/">NGCC PKC Forum report</a></p>
 <p>Jinnuo Li reported the attack in the <a href="https://list.niccs.org.cn/archives/list/pkcforum@list.niccs.org.cn/message/JB6IBZZUEVGTMM2SF6WK5PIYW7ESSPYT/">NGCC PKC Forum</a>. Amoeba's Fujisaki--Okamoto decapsulation re-encrypts the decoded message, but <code>cmp()</code> advances its byte index by four. Amoeba-576 consequently checks only 262 of 1,047 ciphertext bytes; changes in the other 785 bytes cannot trigger implicit rejection. The same source defect appears in every submitted parameter set.</p>
-<p>This exposes a plaintext-checking primitive of the type developed by Das in <a href="https://eprint.iacr.org/2026/1682">ePrint 2026/1682</a>: unchecked ciphertext coefficients can be swept across decoding thresholds to obtain linear information about the reused Ring-LWE secret. Li reports recovering the secret keys for all ten official Amoeba-576 KAT vectors in about <code>3*10^4</code> decapsulation queries per key. We independently confirmed the incomplete predicate and the attack class, but have not independently reproduced Li's Amoeba-specific end-to-end key-recovery code. The attack also requires an application-level accept/reject signal under a reused KEM key; implicit rejection alone returns a pseudorandom-looking key in both branches.</p>
+<p>This exposes a plaintext-checking primitive of the type developed by Das in <a href="https://eprint.iacr.org/2026/1682">ePrint 2026/1682</a>: unchecked ciphertext coefficients can be swept across decoding thresholds to obtain linear information about the reused Ring-LWE secret. Li reports recovering all ten official Amoeba-576 KAT secret keys in about <code>3*10^4</code> decapsulation queries per key. Our independent witness uses a blind external-parity coordinate as a controlled first error, then binary-searches 320 other blind coordinates per chosen ciphertext. It recovers all 576 secret coefficients from 80 ciphertexts and 128,161 oracle calls, constructs a new decapsulation key without copying the original secret-key bytes, and recovers ten fresh honest encapsulations' shared secrets. Seeds 1, 2, and 3 reproduced. The measurement and regression are local and finish in about 17 seconds on this 28-vCPU host; they are less query-efficient than Li's method.</p>
+<p>The attack assumes a reused KEM key and an observable valid-plaintext/derived-key signal. The local witness models that signal using the decapsulation output and an attacker-computable candidate key. An application that never exposes a usable downstream accept/reject signal is not shown vulnerable to remote key recovery by this witness.</p>
 <p>The fix is to compare the complete ciphertext in constant time. A full-byte comparison is also required by the scheme's stated FO construction and IND-CCA2 argument.</p>
 <h3 id="reproducing">Reproducing</h3>
 <p>Commands below run in a checkout of the <a href="https://github.com/ngcc-dev/ngcc-harness">ngcc-harness repository</a> with the candidate built (see its README).</p>
 <pre><code class="language-sh">make -C kem-02 exploit
 </code></pre>
 <p>The source-level witness verifies the vulnerable loop in all five trees, enumerates the 262 checked positions for Amoeba-576, and exercises checked and unchecked mutation controls.</p>
+<p>For independent end-to-end recovery, use Sage's Python (with NumPy and SciPy):</p>
+<pre><code class="language-sh">make -C kem-02 exploit-key-recovery PYTHON=/path/to/sage/bin/python
+</code></pre>
+<p>The attack-only library is linked from the same submitted Amoeba-576 object files as the normal harness library, but additionally exports the public CPA encryption and hash helpers needed to make chosen valid ciphertexts. It does not patch the candidate's comparison or decoder. The original secret key is supplied only to the decapsulation oracle and to score the recovered coefficients; the reconstructed key and fresh shared-secret checks do not copy it. A checked-byte mutation is a negative control.</p>
 </main>
 <footer class="site-footer">
-<p>Updated 2026-09-22 18:06:29 UTC · Maintained by: <a href="mailto:markku-juhani.saarinen@tuni.fi">markku-juhani.saarinen@tuni.fi</a></p>
+<p>Maintained by: <a href="mailto:markku-juhani.saarinen@tuni.fi">markku-juhani.saarinen@tuni.fi</a></p>
 <p>Submissions are welcome via <a href="https://github.com/ngcc-dev/ngcc-harness/issues">GitHub issues</a>.</p>
 </footer>
 </body>

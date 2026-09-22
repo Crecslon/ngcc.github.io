@@ -73,7 +73,7 @@ TEMPLATE = """<!DOCTYPE html>
 {body}
 </main>
 <footer class="site-footer">
-<p>Updated {updated} · Maintained by: <a href="mailto:{maintainer}">{maintainer}</a></p>
+<p>{updated_line}Maintained by: <a href="mailto:{maintainer}">{maintainer}</a></p>
 <p>Submissions are welcome via <a href="{harness}/issues">GitHub issues</a>.</p>
 </footer>
 </body>
@@ -454,9 +454,11 @@ def render(rel, cands, reports):
     out = DOCS / rel.with_suffix(".html")
     out.parent.mkdir(parents=True, exist_ok=True)
     head_title = SITE if title == SITE else f"{title} · {SITE}"
+    is_main_page = len(rel.parts) == 1 or (len(rel.parts) == 2 and rel.name == "index.md")
+    updated_line = f"Updated {UPDATED_UTC} · " if is_main_page else ""
     out.write_text(TEMPLATE.format(head_title=html.escape(head_title), site=SITE, harness=HARNESS,
                                    css_ver=CSS_VER, prefix=prefix, nav=nav, body=body,
-                                   updated=UPDATED_UTC, maintainer=MAINTAINER), encoding="utf-8")
+                                   updated_line=updated_line, maintainer=MAINTAINER), encoding="utf-8")
 
 
 def clean():
