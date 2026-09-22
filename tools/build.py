@@ -270,6 +270,38 @@ def pdf_link(c):
     return f'<a class="pdf-link" href="{href}" title="Open the {cid} specification PDF">PDF</a>'
 
 
+def recent_updates_html(reports, prefix):
+    """One linked line per UTC publication date, newest first."""
+    by_date = {}
+    by_layer = {"implementation": 0, "design": 0}
+    for report in reports.values():
+        for issue in report["issues"]:
+            date = issue["meta"]["Date"]
+            try:
+                datetime.date.fromisoformat(date)
+            except ValueError as error:
+                raise ValueError(f'invalid Date for {issue["id"]}: {date}') from error
+            by_date.setdefault(date, []).append((issue["id"], report["cid"], issue["anchor"]))
+            by_layer[issue["layer"]] += 1
+
+    lines = ['<h2 id="recent-updates">Recent updates</h2>']
+    for date in sorted(by_date, reverse=True):
+        links = []
+        for issue_id, cid, anchor in sorted(by_date[date]):
+            href = f'{prefix}reports/{cid}.html#{anchor}'
+            links.append(f'<a href="{href}"><code>{issue_id}</code></a>')
+        lines.append(
+            f'<p class="recent-update"><time datetime="{date}">{date}</time> '
+            f'({len(links)}): {" ".join(links)}</p>'
+        )
+    total = sum(by_layer.values())
+    lines.append(
+        f'<p class="recent-total">Total {total}: implementation {by_layer["implementation"]}, '
+        f'design {by_layer["design"]}.</p>'
+    )
+    return "\n".join(lines)
+
+
 def reports_html(reports, cands, prefix):
     h = []
     for cat, label in CATS:
@@ -346,6 +378,8 @@ def report_page(r, prefix):
 
 
 def expand_placeholders(text, cands, prefix, reports):
+    text = re.sub(r"<!--\s*recent-updates\s*-->",
+                  lambda m: recent_updates_html(reports, prefix), text)
     text = re.sub(r"<!--\s*reports\s*-->", lambda m: reports_html(reports, cands, prefix), text)
 
     def repl(m):
