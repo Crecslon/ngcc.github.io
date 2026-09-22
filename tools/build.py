@@ -260,18 +260,21 @@ def status_badge(status):
     return f'<span class="issue-status status-{css}">{html.escape(status.capitalize())}</span>'
 
 
-def spec_cell(c):
+def id_cell(c):
+    return f'<td class="report-id"><code>{c["id"]}</code></td>'
+
+
+def pdf_link(c):
     cid = c["id"]
     href = f"{HARNESS_RAW}/{cid}/{cid}-spec.pdf"
-    return (f'<td class="report-spec"><span class="report-no">{c["no"]}</span>'
-            f'<a class="pdf-link" href="{href}" title="Open the {cid} specification PDF">PDF</a></td>')
+    return f'<a class="pdf-link" href="{href}" title="Open the {cid} specification PDF">PDF</a>'
 
 
 def reports_html(reports, cands, prefix):
     h = []
     for cat, label in CATS:
         h.extend([f'<h2 id="{cat}">{label}</h2>', '<table class="reports">',
-                  '<thead><tr><th>no. / spec</th><th>candidate</th><th>family</th><th>classification</th><th>vulnerability</th></tr></thead><tbody>'])
+                  '<thead><tr><th>identifier</th><th>candidate / spec</th><th>family</th><th>classification</th><th>vulnerability</th></tr></thead><tbody>'])
         for c in sorted((c for c in cands.values() if c["cat"] == cat), key=lambda c: c["no"]):
             cid, r = c["id"], reports.get(c["id"])
             family = (r["meta"].get("Family", "") if r else "") or c.get("family", "")
@@ -279,21 +282,22 @@ def reports_html(reports, cands, prefix):
                 name = html.escape(c["algorithm"])
                 href = html.escape(c.get("page", ""))
                 candidate = f'<a href="{href}">{name}</a>' if href else name
-                h.append(f'<tr>{spec_cell(c)}<td>{candidate} <code>{cid}</code></td>'
+                candidate += f' {pdf_link(c)}'
+                h.append(f'<tr>{id_cell(c)}<td>{candidate}</td>'
                          f'<td class="family">{html.escape(family)}</td>'
                          f'<td class="st"><span class="sev sev-none">No report</span></td><td>—</td></tr>')
                 continue
             for i, issue in enumerate(r["issues"]):
                 issue_href = f'{prefix}reports/{cid}.html#{issue["anchor"]}'
                 candidate = (f'<a href="{prefix}reports/{cid}.html">'
-                             f'{html.escape(r["meta"].get("Candidate", c["algorithm"]))}</a> <code>{cid}</code>')
+                             f'{html.escape(r["meta"].get("Candidate", c["algorithm"]))}</a> {pdf_link(c)}')
                 classification = f'<td class="st">{sev_badge(issue["severity"], issue["layer"])}</td>'
                 issue_cell = (f'<td>{status_badge(issue["status"])} '
                               f'<a href="{issue_href}"><code>{issue["id"]}</code> '
                               f'{html.escape(issue["title"])}</a></td>')
                 if i == 0:
                     span = len(r["issues"])
-                    first_cell = spec_cell(c).replace('<td ', f'<td rowspan="{span}" ', 1)
+                    first_cell = id_cell(c).replace('<td ', f'<td rowspan="{span}" ', 1)
                     h.append(f'<tr>{first_cell}'
                              f'<td rowspan="{span}">{candidate}</td>'
                              f'<td rowspan="{span}" class="family">{html.escape(family)}</td>'
