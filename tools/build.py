@@ -29,7 +29,7 @@ CONTENT, DOCS, ASSETS = ROOT / "content", ROOT / "docs", ROOT / "assets"
 KEEP = {"CNAME", ".nojekyll"}          # never removed from docs/
 SITE = "ngcc.dev"
 HARNESS = "https://github.com/ngcc-dev/ngcc-harness"
-HARNESS_RAW = "https://raw.githubusercontent.com/ngcc-dev/ngcc-harness/main"
+HARNESS_RAW = "https://cdn.jsdelivr.net/gh/ngcc-dev/ngcc-harness@main"
 MAINTAINER = "markku-juhani.saarinen@tuni.fi"
 UPDATED_UTC = datetime.datetime.now(datetime.UTC).replace(microsecond=0).strftime("%Y-%m-%d %H:%M:%S UTC")
 CATS = [("sign", "Signatures"), ("kem", "KEMs"), ("kex", "Key exchange"), ("hash", "Hash functions")]
