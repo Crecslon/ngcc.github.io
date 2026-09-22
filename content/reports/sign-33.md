@@ -1,4 +1,4 @@
-<!-- synced from ngcc1/sign-33/report.md -->
+<!-- synchronized report: sign-33/report.md -->
 Candidate: VDOO
 Family: Multivariate (UOV family)
 Archive: [VDOO.zip](https://www.niccs.org.cn/niccs/Proposal/Public-Key%20Cryptographic%20Algorithms/Round%201%20candidates/VDOO.zip) (SHA-256: `4b7bb0f15388b395b9308ae480f25622105a734f0ab4a6bd16398438c4b9752a`)

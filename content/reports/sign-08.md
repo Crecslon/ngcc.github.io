@@ -1,4 +1,4 @@
-<!-- synced from ngcc1/sign-08/report.md -->
+<!-- synchronized report: sign-08/report.md -->
 Candidate: DARTS
 Family: Lattice-based
 Archive: [DARTS.zip](https://www.niccs.org.cn/niccs/Proposal/Public-Key%20Cryptographic%20Algorithms/Round%201%20candidates/DARTS.zip) (SHA-256: `1846cfe63f0cef83e2e0ca21f5dcadce3c4b16da33713957be6d156e2a9e6e95`)

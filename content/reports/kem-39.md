@@ -1,4 +1,4 @@
-<!-- synced from ngcc1/kem-39/report.md -->
+<!-- synchronized report: kem-39/report.md -->
 Candidate: WeaverKEM
 Family: Lattice (Module-LWR)
 Archive: [Weaver.zip](https://www.niccs.org.cn/niccs/Proposal/Public-Key%20Cryptographic%20Algorithms/Round%201%20candidates/Weaver.zip) (SHA-256: `9b0bad96e9bc836b0ff811492a70891066df5634ee47fda4d1518dccd4e09927`)

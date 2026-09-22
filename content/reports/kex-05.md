@@ -1,4 +1,4 @@
-<!-- synced from ngcc1/kex-05/report.md -->
+<!-- synchronized report: kex-05/report.md -->
 Candidate: Loom
 Family: Hybrid lattice KEM/signature AKE
 Archive: [Loom.zip](https://www.niccs.org.cn/niccs/Proposal/Public-Key%20Cryptographic%20Algorithms/Round%201%20candidates/Loom.zip) (SHA-256: `e9e7ff0fb453a371634797febeaeac7c1f081b5fd2438204787c763667482ec4`)

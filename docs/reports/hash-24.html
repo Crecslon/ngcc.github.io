@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>QuantaSylva Hash (QSH) (hash-24) · ngcc.dev</title>
+<link rel="stylesheet" href="../assets/style.css?v=8c137f6d">
+</head>
+<body>
+<header class="site-header">
+<a class="brand" href="../index.html">ngcc.dev</a>
+<nav><a href="../index.html">Home</a><a href="../reports/index.html">Reports</a></nav>
+</header>
+<main>
+<p class="crumb"><a href="../reports/index.html">Reports</a> › <code>hash-24</code></p>
+
+<h1 id="quantasylva-hash-qsh-hash-24">QuantaSylva Hash (QSH) (hash-24)</h1>
+<div class="table-wrap"><table class="meta">
+<tr><th>Candidate</th><td>QuantaSylva Hash (QSH)</td></tr>
+<tr><th>Family</th><td>Symmetric (tree hash, ARX permutation)</td></tr>
+<tr><th>Archive</th><td><a href="https://www.niccs.org.cn/niccs/Proposal/Cryptographic%20Hash%20Algorithms/Round%201%20candidates/QSH.zip">QSH.zip</a> (SHA-256: <code>d2b33441b42825ea10fd374adfdafea64525ad471159b4787c6dc2bd420f05d9</code>)</td></tr>
+</table></div>
+
+<h2 class="issue-heading issue-heading-first" id="hash-24-1-full-round-core-permutation-has-a-one-query-invariant-subspace-distinguisher">hash-24-1: Full-round core permutation has a one-query invariant-subspace distinguisher</h2>
+
+<div class="table-wrap"><table class="meta issue-meta">
+<tr><th>Classification</th><td><span class="sev sev-low">Low / design</span></td></tr>
+<tr><th>Status</th><td><span class="issue-status status-confirmed">Confirmed</span></td></tr>
+<tr><th>Affected</th><td>All parameter sets, core permutation only</td></tr>
+<tr><th>Discovery</th><td>Moderate</td></tr>
+<tr><th>Exploitation</th><td>One chosen-state permutation evaluation</td></tr>
+<tr><th>Credit</th><td>ISCAS (archive sender <code>Cryptanalysts001</code>)</td></tr>
+<tr><th>Date</th><td>2026-09-22</td></tr>
+</table></div>
+<p>Original source: <a href="https://list.niccs.org.cn/archives/list/crypthashforum@list.niccs.org.cn/message/BUUGULWWDDQT2XCVX5GICOLHQB5H6CXT/">CryptHashForum report</a></p>
+<p>As <a href="https://list.niccs.org.cn/archives/list/crypthashforum@list.niccs.org.cn/message/BUUGULWWDDQT2XCVX5GICOLHQB5H6CXT/">reported on the CryptHash mailing list</a>, the full ChaCha Bahru permutation commutes with translation of the <code>x2</code> coordinate. Consequently the subspace in which the four words differing only in <code>x2</code> are equal is invariant through every round and the final layer. It has dimension <code>16w</code> inside the <code>64w</code>-bit state. One evaluation on a chosen member therefore distinguishes the permutation from random with advantage <code>1 - 2^-1536</code> for QSH-512 and <code>1 - 2^-3072</code> for QSH-768/1024.</p>
+<p>This is a structural distinguisher on the independently specified core permutation, not a collision, preimage, or distinguisher through the QSH hash interface. The fixed IV and compression-function injection do not give an attacker a chosen full-state permutation input, and no whole-hash attack is presently known.</p>
+<h3 id="reproducing">Reproducing</h3>
+<p>Commands below run in a checkout of the <a href="https://github.com/ngcc-dev/ngcc-harness">ngcc-harness repository</a> with the candidate built (see its README).</p>
+<p>The witness calls the submitted QSH-512 permutation on the mailing-list input, checks all 48 defining equalities, and also checks the published exact output:</p>
+<pre><code class="language-sh">cc -O2 -std=c99 -Ihash-24/QSH/Implementations/03_Implementations/1_Reference_Implementation/QSH-512 \
+  hash-24/reproduce_invariant.c -o /tmp/qsh-invariant
+/tmp/qsh-invariant
+</code></pre>
+<p>Expected output:</p>
+<pre><code class="language-text">CONFIRMED: full QSH-512 permutation preserves the 512-bit subspace
+random-permutation probability: 2^-1536
+</code></pre>
+</main>
+<footer class="site-footer">
+<p>Updated 2026-09-22 16:51:04 UTC · Maintained by: <a href="mailto:markku-juhani.saarinen@tuni.fi">markku-juhani.saarinen@tuni.fi</a></p>
+<p>Submissions are welcome via <a href="https://github.com/ngcc-dev/ngcc-harness/issues">GitHub issues</a>.</p>
+</footer>
+</body>
+</html>

@@ -1,4 +1,4 @@
-<!-- synced from ngcc1/sign-31/report.md -->
+<!-- synchronized report: sign-31/report.md -->
 Candidate: TSUOV
 Family: Multivariate
 Archive: [TSUOV.zip](https://www.niccs.org.cn/niccs/Proposal/Public-Key%20Cryptographic%20Algorithms/Round%201%20candidates/TSUOV.zip) (SHA-256: `7ab1effc5fe911c6ab9483ca44a9d9f6d6d911b03eee9f2873b384d97f9aee1d`)

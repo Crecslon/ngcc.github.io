@@ -1,4 +1,4 @@
-<!-- synced from ngcc1/sign-22/report.md -->
+<!-- synchronized report: sign-22/report.md -->
 Candidate: Rhyme
 Family: Lattice-based
 Archive: [Rhyme.zip](https://www.niccs.org.cn/niccs/Proposal/Public-Key%20Cryptographic%20Algorithms/Round%201%20candidates/Rhyme.zip) (SHA-256: `7b509d21c6674bc23751b8743cb7c2a4a07ee295fafe04e2fa95c0613160bdfd`)

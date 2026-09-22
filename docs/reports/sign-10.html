@@ -32,7 +32,7 @@
 <tr><th>Credit</th><td>Kris Kwiatkowski <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#99;&#111;&#110;&#116;&#97;&#99;&#116;&#64;&#97;&#109;&#111;&#110;&#103;&#98;&#121;&#116;&#101;&#115;&#46;&#99;&#111;&#109;">&#99;&#111;&#110;&#116;&#97;&#99;&#116;&#64;&#97;&#109;&#111;&#110;&#103;&#98;&#121;&#116;&#101;&#115;&#46;&#99;&#111;&#109;</a></td></tr>
 <tr><th>Date</th><td>2026-09-22</td></tr>
 </table></div>
-
+<p>Original source: <a href="https://github.com/ngcc-dev/ngcc-harness/pull/3">ngcc-harness PR #3</a></p>
 <p>The specification prices recovery of one nonzero vector in <code>K2 = ker(L2)</code> as an unstructured <code>q^n</code> search. But <code>K2</code> is an <code>n</code>-dimensional linear subspace contained in the zero locus of the public homogeneous cubic map. A random <code>(n+1)</code>-dimensional linear subspace of the <code>2n</code>-dimensional ambient space must meet <code>K2</code> nontrivially. Restricting the public map to it therefore gives <code>m</code> cubic equations in <code>n</code> affine variables with a guaranteed rational solution, which can be attacked algebraically rather than by guessing ambient points.</p>
 <p>The submitted <code>build_public_key()</code> directly constructs <code>Q(L1*z)+R(L2*z)</code>, multiplies it by <code>Y=L2*z</code>, and applies the public output map <code>T</code>, confirming that the source has the structure used by the attack. The supplied specification-derived implementation reproduces the submitted parameter sizes and signing behavior, and confirms at full dimensions that <code>K2</code> has dimension <code>n</code> and the public map vanishes on it. Public-key-only reduced experiments recover the exact secret <code>K2</code> for <code>n=5,6,7</code>; the <code>n=7</code> instance reached solving degree 8 and completed in about 349 seconds in this review. Reduced <code>s=1</code> experiments then recover the coordinate separation, hidden quadratic space, symmetriser, and an equivalent triangular central map.</p>
 <p>If solving degree remains <code>n+1</code>, the specification's own cubic-linear-algebra model gives <code>3*log2(binomial(2n+1,n+1))</code>, or approximately 55.3, 96.2, and 184.9 bits. This is not yet a confirmed submitted-size break: the degree pattern is extrapolated, Facto-DSA-128 has the less-overdetermined <code>s=6</code> shape, no full-size solve was run, and the final rational-normal-curve/GRS container identification needed for a working forgery was not implemented. The result nevertheless invalidates treating <code>q^n</code> search as the only structural recovery model and warrants a new full-scale algebraic analysis.</p>
@@ -45,9 +45,30 @@ make -C sign-10/cryptanalysis test
 # Optional larger reduced instance; about six minutes on the audit host.
 sign-10/cryptanalysis/build/attack1 7 12 1 12
 </code></pre>
+<h2 class="issue-heading" id="sign-10-2-the-public-key-yields-a-universal-signing-trapdoor">sign-10-2: The public key yields a universal signing trapdoor</h2>
+
+<div class="table-wrap"><table class="meta issue-meta">
+<tr><th>Classification</th><td><span class="sev sev-critical">Critical / design</span></td></tr>
+<tr><th>Status</th><td><span class="issue-status status-confirmed">Confirmed</span></td></tr>
+<tr><th>Affected</th><td>Standard Facto-DSA-128 parameter set</td></tr>
+<tr><th>Discovery</th><td>Non-trivial</td></tr>
+<tr><th>Exploitation</th><td>Seconds to recover an equivalent trapdoor, then below one second per message in the submitted experiments</td></tr>
+<tr><th>Credit</th><td>MingLLuo (GitHub @MingLLuo), with AI assistance disclosed by the submitter</td></tr>
+<tr><th>Date</th><td>2026-09-22</td></tr>
+</table></div>
+<p>Original source: <a href="https://github.com/ngcc-dev/ngcc-harness/issues/5">GitHub issue #5</a></p>
+<p>Facto-DSA's public cubic map has a derivative space of dimension 165 inside the 210-dimensional space of quadratic forms. The 45 missing dimensions expose the hidden <code>X/Y</code> variable separation by linear algebra. In the recovered coordinates, another linear solve removes the mixed block and reveals the <code>n</code>-dimensional quadratic space; rank-one points recover a certified flag in which that space is triangular.</p>
+<p>For Facto-DSA-128, slicing only the <code>Y</code> variables then reduces public inversion from 13 cubics in 20 variables to <code>f=m-n=3</code> equations of degree at most 10 in three variables. Solving this system, applying the signer's rescaling, and inverting the recovered triangular map gives an equivalent signing trapdoor using only the public key. It does not recover the submitter's original secret basis and needs no signing oracle.</p>
+<p>An independent run against the pinned public key that the attack repository identifies as the first official 128-bit KAT key produced a 40-byte signature in 6.4 seconds with 58 MiB peak resident memory. The unmodified submitted <code>sig_verify</code> returned 0 for that signature and -1 after flipping one signature bit. This checkout omits the original KAT text, so the local reproducer validates the artifact hash and submitted verifier but cannot independently establish that public key's KAT provenance. The flag search is randomized and has exponential worst-case cost; the submitter reports 4--76 seconds over runs. The official 256- and 512-bit sets are not broken by this route because their reduced systems retain 15 and 30 variables respectively.</p>
+<h3 id="reproducing_1">Reproducing</h3>
+<p>Commands below run in a checkout of the <a href="https://github.com/ngcc-dev/ngcc-harness">ngcc-harness repository</a> with the candidate built (see its README).</p>
+<p>The local target downloads hash-pinned artifacts from attack commit <code>bd9d4ce38ed2b78daf57093556ef2e866bbc2264</code>, then checks the forgery and negative control with this repository's submitted verifier:</p>
+<pre><code class="language-sh">make -C sign-10 reproduce-forgery
+</code></pre>
+<p>For the complete public-key recovery and fresh forgery, use the <a href="https://github.com/MingLLuo/facto_dsa_ngcc_round1/tree/bd9d4ce38ed2b78daf57093556ef2e866bbc2264">pinned attack library</a>: run <code>scripts/check_environment.py</code>, then <code>scripts/run_acceptance.py --source kat</code>. It requires NumPy, FLINT, msolve 0.10.1 or later, and a C compiler.</p>
 </main>
 <footer class="site-footer">
-<p>Updated 2026-09-22 08:11:45 UTC · Maintained by: <a href="mailto:markku-juhani.saarinen@tuni.fi">markku-juhani.saarinen@tuni.fi</a></p>
+<p>Updated 2026-09-22 16:51:04 UTC · Maintained by: <a href="mailto:markku-juhani.saarinen@tuni.fi">markku-juhani.saarinen@tuni.fi</a></p>
 <p>Submissions are welcome via <a href="https://github.com/ngcc-dev/ngcc-harness/issues">GitHub issues</a>.</p>
 </footer>
 </body>

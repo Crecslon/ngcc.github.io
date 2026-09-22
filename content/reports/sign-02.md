@@ -1,4 +1,4 @@
-<!-- synced from ngcc1/sign-02/report.md -->
+<!-- synchronized report: sign-02/report.md -->
 Candidate: BiT
 Family: Lattice-based
 Archive: [BiT.zip](https://www.niccs.org.cn/niccs/Proposal/Public-Key%20Cryptographic%20Algorithms/Round%201%20candidates/BiT.zip) (SHA-256: `698fbe834279a4100a66c20f3e0b634c738e1150936acf74b55efc6db6975e8d`)

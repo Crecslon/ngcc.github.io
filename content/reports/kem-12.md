@@ -1,4 +1,4 @@
-<!-- synced from ngcc1/kem-12/report.md -->
+<!-- synchronized report: kem-12/report.md -->
 Candidate: CTL
 Family: Lattice-based
 Archive: [CTL.zip](https://www.niccs.org.cn/niccs/Proposal/Public-Key%20Cryptographic%20Algorithms/Round%201%20candidates/CTL.zip) (SHA-256: `512caaf5fa04ea5ab51fb5eeee9e81f8c7c7c430b60727130067634bfb674d01`)

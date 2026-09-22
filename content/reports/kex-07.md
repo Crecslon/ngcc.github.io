@@ -1,4 +1,4 @@
-<!-- synced from ngcc1/kex-07/report.md -->
+<!-- synchronized report: kex-07/report.md -->
 Candidate: NEV-AKE
 Family: Lattice (NTRU/Ring-LWE AKE)
 Archive: [NEV-AKE.zip](https://www.niccs.org.cn/niccs/Proposal/Public-Key%20Cryptographic%20Algorithms/Round%201%20candidates/NEV-AKE.zip) (SHA-256: `da75005b4060167f25125cbd1a769ed872c8b6fcb770fe0827a599e44536e8e6`)

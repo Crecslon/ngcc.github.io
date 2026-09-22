@@ -1,4 +1,4 @@
-<!-- synced from ngcc1/sign-01/report.md -->
+<!-- synchronized report: sign-01/report.md -->
 Candidate: Aigis-Sig+
 Family: Lattice (Module-LWE/SIS, Fiat-Shamir)
 Archive: [Aigis-Sig+.zip](https://www.niccs.org.cn/niccs/Proposal/Public-Key%20Cryptographic%20Algorithms/Round%201%20candidates/Aigis-Sig%2B.zip) (SHA-256: `88242576a3ae8f9d090b0c9045020f04ee9b5ae828e01b839f25267959e9c7ea`)

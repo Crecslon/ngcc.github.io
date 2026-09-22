@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Laurus (hash-14) · ngcc.dev</title>
+<link rel="stylesheet" href="../assets/style.css?v=8c137f6d">
+</head>
+<body>
+<header class="site-header">
+<a class="brand" href="../index.html">ngcc.dev</a>
+<nav><a href="../index.html">Home</a><a href="../reports/index.html">Reports</a></nav>
+</header>
+<main>
+<p class="crumb"><a href="../reports/index.html">Reports</a> › <code>hash-14</code></p>
+
+<h1 id="laurus-hash-14">Laurus (hash-14)</h1>
+<div class="table-wrap"><table class="meta">
+<tr><th>Candidate</th><td>Laurus</td></tr>
+<tr><th>Family</th><td>Symmetric (permutation-based)</td></tr>
+<tr><th>Archive</th><td><a href="https://www.niccs.org.cn/niccs/Proposal/Cryptographic%20Hash%20Algorithms/Round%201%20candidates/Laurus.zip">Laurus.zip</a> (SHA-256: <code>9499a772e532577f85902c0f631a95af8e2fb4bc308da6466c076debd63d1415</code>)</td></tr>
+</table></div>
+
+<h2 class="issue-heading issue-heading-first" id="hash-14-1-laurus-loses-its-function-domain-separation-at-c1024">hash-14-1: Laurus loses its function-domain separation at c=1024</h2>
+
+<div class="table-wrap"><table class="meta issue-meta">
+<tr><th>Classification</th><td><span class="sev sev-medium">Medium / design</span></td></tr>
+<tr><th>Status</th><td><span class="issue-status status-confirmed">Confirmed</span></td></tr>
+<tr><th>Affected</th><td>Specified generic <code>Laurus[c,fid]</code> interface at <code>c=1024</code>; the named XOF fixes <code>c=512</code></td></tr>
+<tr><th>Discovery</th><td>Moderate</td></tr>
+<tr><th>Exploitation</th><td>Trivial</td></tr>
+<tr><th>Credit</th><td>Tsinghua Hash Lab <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#99;&#117;&#105;&#104;&#114;&#50;&#54;&#64;&#109;&#97;&#105;&#108;&#115;&#46;&#116;&#115;&#105;&#110;&#103;&#104;&#117;&#97;&#46;&#101;&#100;&#117;&#46;&#99;&#110;">&#99;&#117;&#105;&#104;&#114;&#50;&#54;&#64;&#109;&#97;&#105;&#108;&#115;&#46;&#116;&#115;&#105;&#110;&#103;&#104;&#117;&#97;&#46;&#101;&#100;&#117;&#46;&#99;&#110;</a></td></tr>
+<tr><th>Date</th><td>2026-09-22</td></tr>
+</table></div>
+<p>Original source: <a href="https://list.niccs.org.cn/archives/list/crypthashforum@list.niccs.org.cn/message/YGSFWSHQSIOIFIJTX6IBSDQCV25WS7I2/">CryptHashForum report</a></p>
+<p>The specification uses <code>fid=0</code> for hashing and <code>fid=1</code> for XOF operation, placing the identifier only in the initial state. At <code>c=1024</code>, a message of 513 to 1024 bits causes one 512-bit absorption. That absorption omits the identifier from the permutation input and moves its difference into the first eight state words; finalization then discards exactly those words. The complete output is consequently independent of <code>fid</code>.</p>
+<p>For example, the 768-bit all-zero message has identical 1024-bit outputs under <code>Laurus[1024,0]</code> and <code>Laurus[1024,1]</code>. This is a functional-domain separation failure in the normative generic interface, not a collision between distinct messages in a named fixed-output hash. The submitted <code>Laurus-XOF</code> wrapper fixes <code>c=512</code>, so it does not expose this particular pair through the uniform API.</p>
+<h3 id="reproducing">Reproducing</h3>
+<p>Commands below run in a checkout of the <a href="https://github.com/ngcc-dev/ngcc-harness">ngcc-harness repository</a> with the candidate built (see its README).</p>
+<p>The target exposes the otherwise internal generic interface from the submitted source, checks the 768-bit equality, and checks a 512-bit negative control:</p>
+<pre><code class="language-sh">make -C hash-14 reproduce
+</code></pre>
+</main>
+<footer class="site-footer">
+<p>Updated 2026-09-22 16:51:04 UTC · Maintained by: <a href="mailto:markku-juhani.saarinen@tuni.fi">markku-juhani.saarinen@tuni.fi</a></p>
+<p>Submissions are welcome via <a href="https://github.com/ngcc-dev/ngcc-harness/issues">GitHub issues</a>.</p>
+</footer>
+</body>
+</html>

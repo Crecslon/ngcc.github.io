@@ -48,9 +48,27 @@ tools/ngcc_attack hash-prefix hash-20/lib/libMOZI-384.so hash-20/lib/libMOZI-512
 </code></pre>
 <p><code>tools/reproduce.sh</code> runs this together with the other supported runtime
 witnesses and their controls. See <code>tools/README.md</code>.</p>
+<h2 class="issue-heading" id="hash-20-2-the-specified-final-marker-creates-cross-rate-relations-absent-from-the-implementation">hash-20-2: The specified final marker creates cross-rate relations absent from the implementation</h2>
+
+<div class="table-wrap"><table class="meta issue-meta">
+<tr><th>Classification</th><td><span class="sev sev-medium">Medium / design</span></td></tr>
+<tr><th>Status</th><td><span class="issue-status status-confirmed">Confirmed</span></td></tr>
+<tr><th>Affected</th><td>Specified MOZI-768 and MOZI-1024 constructions; reference implementation is incompatible</td></tr>
+<tr><th>Discovery</th><td>Moderate</td></tr>
+<tr><th>Exploitation</th><td>Moderate</td></tr>
+<tr><th>Credit</th><td>Tsinghua Hash Lab <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#99;&#117;&#105;&#104;&#114;&#50;&#54;&#64;&#109;&#97;&#105;&#108;&#115;&#46;&#116;&#115;&#105;&#110;&#103;&#104;&#117;&#97;&#46;&#101;&#100;&#117;&#46;&#99;&#110;">&#99;&#117;&#105;&#104;&#114;&#50;&#54;&#64;&#109;&#97;&#105;&#108;&#115;&#46;&#116;&#115;&#105;&#110;&#103;&#104;&#117;&#97;&#46;&#101;&#100;&#117;&#46;&#99;&#110;</a></td></tr>
+<tr><th>Date</th><td>2026-09-22</td></tr>
+</table></div>
+<p>Original source: <a href="https://list.niccs.org.cn/archives/list/crypthashforum@list.niccs.org.cn/message/5657BKOE43VZOJSF47X5KAFZ5E6FA6CI/">CryptHashForum report</a></p>
+<p>Algorithm 2 places the final marker at the same absolute state bit for every rate. This permits a three-block suffix under one rate to reproduce the same permutation input as a related suffix under another rate. The submitters report 16/16 cross-rate witnesses in an independent model of the specified construction. This is a relation between different MOZI profiles, not a same-profile collision.</p>
+<p>The reference code instead places the marker at the first capacity bit, which is bit 1216 for MOZI-768 and bit 960 for MOZI-1024 rather than the specification's common bit 2047. That rate-dependent placement blocks the reported construction, but makes the code deterministically incompatible with Algorithm 2. The public report did not include its 16 witness messages, so the local check confirms the exact marker discrepancy rather than claiming an end-to-end collision reproduction.</p>
+<h3 id="reproducing_1">Reproducing</h3>
+<p>Commands below run in a checkout of the <a href="https://github.com/ngcc-dev/ngcc-harness">ngcc-harness repository</a> with the candidate built (see its README).</p>
+<pre><code class="language-sh">make -C hash-20 reproduce-forum
+</code></pre>
 </main>
 <footer class="site-footer">
-<p>Updated 2026-09-22 08:11:45 UTC · Maintained by: <a href="mailto:markku-juhani.saarinen@tuni.fi">markku-juhani.saarinen@tuni.fi</a></p>
+<p>Updated 2026-09-22 16:51:04 UTC · Maintained by: <a href="mailto:markku-juhani.saarinen@tuni.fi">markku-juhani.saarinen@tuni.fi</a></p>
 <p>Submissions are welcome via <a href="https://github.com/ngcc-dev/ngcc-harness/issues">GitHub issues</a>.</p>
 </footer>
 </body>

@@ -1,4 +1,4 @@
-<!-- synced from ngcc1/kem-01/report.md -->
+<!-- synchronized report: kem-01/report.md -->
 Candidate: Aigis-Enc+
 Family: Lattice (Module-LWE)
 Archive: [Aigis-Enc+.zip](https://www.niccs.org.cn/niccs/Proposal/Public-Key%20Cryptographic%20Algorithms/Round%201%20candidates/Aigis-Enc%2B.zip) (SHA-256: `1c053133175cd189fd9f0e058bde684168f55a6fc3871de2a755404a08990186`)

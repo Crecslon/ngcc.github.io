@@ -1,4 +1,4 @@
-<!-- synced from ngcc1/kem-11/report.md -->
+<!-- synchronized report: kem-11/report.md -->
 Candidate: COMPASS-KEM
 Family: Lattice-based
 Archive: [COMPASS-KEM.zip](https://www.niccs.org.cn/niccs/Proposal/Public-Key%20Cryptographic%20Algorithms/Round%201%20candidates/COMPASS-KEM.zip) (SHA-256: `8fc838488ac0849d4c6afd161f8b9742c7a8b9a330bc3b79df70ced7e2d1d5e2`)

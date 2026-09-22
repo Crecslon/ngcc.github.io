@@ -1,4 +1,4 @@
-<!-- synced from ngcc1/kex-06/report.md -->
+<!-- synchronized report: kex-06/report.md -->
 Candidate: MAMBA-NIKE
 Family: Lattice-based NIKE
 Archive: [MAMBA-NIKE.zip](https://www.niccs.org.cn/niccs/Proposal/Public-Key%20Cryptographic%20Algorithms/Round%201%20candidates/MAMBA-NIKE.zip) (SHA-256: `79b53ff726121ccb1ce970003c06b605e973c4e4f452dbe780e70cd4c40ca018`)

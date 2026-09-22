@@ -1,4 +1,4 @@
-<!-- synced from ngcc1/sign-12/report.md -->
+<!-- synchronized report: sign-12/report.md -->
 Candidate: Galas
 Family: Symmetric (MPC/VOLE-in-the-Head)
 Archive: [Galas Signature.zip](https://www.niccs.org.cn/niccs/Proposal/Public-Key%20Cryptographic%20Algorithms/Round%201%20candidates/Galas%20Signature.zip) (SHA-256: `98d57af868fa10d74b2c0656e565aa14a42ff902646d6fc440ffb7355b75342c`)

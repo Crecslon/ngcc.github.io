@@ -48,9 +48,31 @@ tools/ngcc_attack hash-prefix hash-18/lib/libMEGASCON-384.so hash-18/lib/libMEGA
 </code></pre>
 <p><code>tools/reproduce.sh</code> runs this together with the other supported runtime
 witnesses and their controls. See <code>tools/README.md</code>.</p>
+<h2 class="issue-heading" id="hash-18-2-the-avx-512-listing-defines-a-noninjective-s-box-and-practical-collisions">hash-18-2: The AVX-512 listing defines a noninjective S-box and practical collisions</h2>
+
+<div class="table-wrap"><table class="meta issue-meta">
+<tr><th>Classification</th><td><span class="sev sev-high">High / design</span></td></tr>
+<tr><th>Status</th><td><span class="issue-status status-confirmed">Confirmed</span></td></tr>
+<tr><th>Affected</th><td>AVX-512 computation printed in Listing 3; all four fixed-output profiles</td></tr>
+<tr><th>Discovery</th><td>Moderate</td></tr>
+<tr><th>Exploitation</th><td>Trivial</td></tr>
+<tr><th>Credit</th><td>Cryptanalysts001 (ISCAS) <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#121;&#117;&#102;&#101;&#105;&#50;&#48;&#50;&#49;&#64;&#105;&#115;&#99;&#97;&#115;&#46;&#97;&#99;&#46;&#99;&#110;">&#121;&#117;&#102;&#101;&#105;&#50;&#48;&#50;&#49;&#64;&#105;&#115;&#99;&#97;&#115;&#46;&#97;&#99;&#46;&#99;&#110;</a></td></tr>
+<tr><th>Date</th><td>2026-09-22</td></tr>
+</table></div>
+<p>Original source: <a href="https://list.niccs.org.cn/archives/list/crypthashforum@list.niccs.org.cn/message/J2WP5X7I7BHCONJCHMDD6ECLNV7D3XQ5/">CryptHashForum report</a></p>
+<p>Listing 3 uses ternary-logic immediates <code>b4</code> and <code>1e</code> with the wrong operand truth-table order. Its induced S-box has only 175 distinct outputs; in particular, <code>S_bad(23) = S_bad(24) = 1b</code>. A local collision can therefore be injected through the rate and makes the complete states equal after the second block's first substitution layer.</p>
+<p>For MEGASCON-512, take two 256-byte messages initialized to zero, set <code>M[192] = 04</code>, and set <code>N[128] = N[160] = 04</code>. Under Listing 3, both hash to:</p>
+<p><code>2ed13b513054b271a9640e8ccc139d5a363cc69eee4158ec7453b6e39b3549a15a87b8695340271fdcb02903cfe42b79ea8227f074e05599299a318581faf368</code></p>
+<p>This is a specification-listing failure, not an attack on the archived implementations: the optimized code uses the corrected immediates <code>a6</code> and <code>56</code>, and the reference code implements the bijective mathematical S-box.</p>
+<h3 id="reproducing_1">Reproducing</h3>
+<p>Commands below run in a checkout of the <a href="https://github.com/ngcc-dev/ngcc-harness">ngcc-harness repository</a> with the candidate built (see its README).</p>
+<p>The local checker verifies the erroneous truth tables, the displayed collision inside the S-box, and bijectivity after correction:</p>
+<pre><code class="language-sh">python3 hash-18/validate_listing3.py
+</code></pre>
+<p>The complete-message collision above was independently evaluated in Python and scalar C by the reporters; no native AVX-512 execution is required or claimed.</p>
 </main>
 <footer class="site-footer">
-<p>Updated 2026-09-22 08:11:45 UTC · Maintained by: <a href="mailto:markku-juhani.saarinen@tuni.fi">markku-juhani.saarinen@tuni.fi</a></p>
+<p>Updated 2026-09-22 16:51:04 UTC · Maintained by: <a href="mailto:markku-juhani.saarinen@tuni.fi">markku-juhani.saarinen@tuni.fi</a></p>
 <p>Submissions are welcome via <a href="https://github.com/ngcc-dev/ngcc-harness/issues">GitHub issues</a>.</p>
 </footer>
 </body>

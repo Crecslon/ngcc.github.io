@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MoFang Hash Function (hash-19) · ngcc.dev</title>
+<link rel="stylesheet" href="../assets/style.css?v=8c137f6d">
+</head>
+<body>
+<header class="site-header">
+<a class="brand" href="../index.html">ngcc.dev</a>
+<nav><a href="../index.html">Home</a><a href="../reports/index.html">Reports</a></nav>
+</header>
+<main>
+<p class="crumb"><a href="../reports/index.html">Reports</a> › <code>hash-19</code></p>
+
+<h1 id="mofang-hash-function-hash-19">MoFang Hash Function (hash-19)</h1>
+<div class="table-wrap"><table class="meta">
+<tr><th>Candidate</th><td>MoFang Hash Function</td></tr>
+<tr><th>Family</th><td>Symmetric (block-cipher-based)</td></tr>
+<tr><th>Archive</th><td><a href="https://www.niccs.org.cn/niccs/Proposal/Cryptographic%20Hash%20Algorithms/Round%201%20candidates/MoFang.zip">MoFang.zip</a> (SHA-256: <code>dfdd7dd54361fb09e6d0bc47ae6245a9f992f284c56b04ff55d528e2339c9acc</code>)</td></tr>
+</table></div>
+
+<h2 class="issue-heading issue-heading-first" id="hash-19-1-round-key-cancellation-gives-deterministic-full-round-collisions">hash-19-1: Round-key cancellation gives deterministic full-round collisions</h2>
+
+<div class="table-wrap"><table class="meta issue-meta">
+<tr><th>Classification</th><td><span class="sev sev-critical">Critical / design</span></td></tr>
+<tr><th>Status</th><td><span class="issue-status status-confirmed">Confirmed</span></td></tr>
+<tr><th>Affected</th><td>All six MoFang hash and XOF instances</td></tr>
+<tr><th>Discovery</th><td>Moderate</td></tr>
+<tr><th>Exploitation</th><td>Trivial</td></tr>
+<tr><th>Credit</th><td>Tsinghua Hash Lab <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#99;&#117;&#105;&#104;&#114;&#50;&#54;&#64;&#109;&#97;&#105;&#108;&#115;&#46;&#116;&#115;&#105;&#110;&#103;&#104;&#117;&#97;&#46;&#101;&#100;&#117;&#46;&#99;&#110;">&#99;&#117;&#105;&#104;&#114;&#50;&#54;&#64;&#109;&#97;&#105;&#108;&#115;&#46;&#116;&#115;&#105;&#110;&#103;&#104;&#117;&#97;&#46;&#101;&#100;&#117;&#46;&#99;&#110;</a></td></tr>
+<tr><th>Date</th><td>2026-09-22</td></tr>
+</table></div>
+<p>Original source: <a href="https://list.niccs.org.cn/archives/list/crypthashforum@list.niccs.org.cn/message/IK33PEQPGZ4WVC4EZPOPK62ITTYN37ZD/">CryptHashForum report</a></p>
+<p>MoFang uses the two 576-bit halves of each message block as cipher keys. Both key schedules move words 5 and 7 identically, never apply the S-box to them, and rotate them only by odd amounts. Applying the same two-periodic XOR difference to the corresponding words in both halves therefore cancels from every combined round key, for every chaining value and all 16 rounds.</p>
+<p>As a concrete collision, let <code>M</code> be 120 zero bytes and let <code>M'</code> set bytes 40--47 and 112--119 to <code>ff</code>. MoFang-512 maps both to <code>ebbc07cddba0f381917c62cf0954fd63eb3e162065f61b14baef1a8d09982e5fbbd9f6ce5aac1e7d36d979126e11358c0635f4a8d2bda29e037ed733e1a9aca4</code>; the same pair collides in every other submitted instance. Because the cancellation is independent of the base key, it also supplies a same-length second preimage for every message of at least 960 bits. Independent differences in words 5 and 7 give 16 equivalent choices per complete message block and multicollisions across blocks.</p>
+<h3 id="reproducing">Reproducing</h3>
+<p>Commands below run in a checkout of the <a href="https://github.com/ngcc-dev/ngcc-harness">ngcc-harness repository</a> with the candidate built (see its README).</p>
+<p>The local witness checks the published pair and a nonzero-base second preimage against all six submitted libraries:</p>
+<pre><code class="language-sh">make -C hash-19 reproduce
+</code></pre>
+</main>
+<footer class="site-footer">
+<p>Updated 2026-09-22 16:51:04 UTC · Maintained by: <a href="mailto:markku-juhani.saarinen@tuni.fi">markku-juhani.saarinen@tuni.fi</a></p>
+<p>Submissions are welcome via <a href="https://github.com/ngcc-dev/ngcc-harness/issues">GitHub issues</a>.</p>
+</footer>
+</body>
+</html>

@@ -1,4 +1,4 @@
-<!-- synced from ngcc1/sign-18/report.md -->
+<!-- synchronized report: sign-18/report.md -->
 Candidate: Origami
 Family: MPC-in-the-head
 Archive: [Origami.zip](https://www.niccs.org.cn/niccs/Proposal/Public-Key%20Cryptographic%20Algorithms/Round%201%20candidates/Origami.zip) (SHA-256: `e34f18832e968681dd0c51ce0d4b29d80e01ad29daa83dfb805718b76fdffa80`)
@@ -27,3 +27,30 @@ python3 security/design_parameter_audit.py
 ```
 
 The check verifies physical PDF pages 14–16 and 50–52 and the submitted 64-byte digest constant.
+
+## sign-18-2: Signatures expose the hidden-algebra constraint subspace
+
+Severity: High
+Status: Confirmed
+Layer: Design
+Affected: All four parameter sets
+Discovery: Moderate
+Exploitation: Polynomial-time structure recovery; no complete forgery demonstrated
+Credit: Peigen Li (archive sender `PeigenLi`)
+Date: 2026-09-22
+Original source: [NGCC PKC Forum report](https://list.niccs.org.cn/archives/list/pkcforum@list.niccs.org.cn/message/7LD2222NOYVSL3KXW4UQCLPHMU7JFKQW/)
+
+The specification places every vinegar and oil element in a degree-`l_j` subalgebra of `l_j`-by-`l_j` matrices, but counts and solves all `l_j^2` matrix coordinates independently. These requirements are incompatible: a subalgebra element has only `l_j` degrees of freedom. The implementation makes the signer work by sampling only vinegar elements in the hidden subalgebra while treating oil coordinates as unrestricted field elements, contradicting the specified variable space.
+
+Peigen Li's [mailing-list analysis](https://list.niccs.org.cn/archives/list/pkcforum@list.niccs.org.cn/message/7LD2222NOYVSL3KXW4UQCLPHMU7JFKQW/) identifies this mismatch and observes that repeated signatures reveal the small hidden subalgebras. Further extension to Peigen Li's analysis: the source gives Origami-128 exactly 18 sampled degree-2 vinegar elements; each occupies four matrix coordinates but has dimension two. Every signature therefore lies in a subspace of dimension at most `200 - 18*(4-2) = 164`. A run of 180 accepted signatures reaches rank 164, saturating that bound, while 180 uniform 200-coordinate vectors reach the sample-count maximum rank 180. The analogous source count predicts 180, 336, and 432 exposed constraints for Origami-256, -384, and -512.
+
+This is direct, reproducible leakage of the purportedly hidden structure, but no end-to-end key recovery or forgery is yet established. The post's separate estimate of at most 93 bits for Origami-128 has no published derivation and is therefore not adopted here.
+
+### Reproducing
+
+```sh
+make -C sign-18 lib/libOrigami-128.so
+python3 sign-18/reproduce_signature_subspace.py
+```
+
+The witness verifies every collected signature with the official verifier before measuring its rank over `GF(16)`.

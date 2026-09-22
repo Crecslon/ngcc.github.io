@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Hash Function CHIME (hash-26) · ngcc.dev</title>
+<link rel="stylesheet" href="../assets/style.css?v=8c137f6d">
+</head>
+<body>
+<header class="site-header">
+<a class="brand" href="../index.html">ngcc.dev</a>
+<nav><a href="../index.html">Home</a><a href="../reports/index.html">Reports</a></nav>
+</header>
+<main>
+<p class="crumb"><a href="../reports/index.html">Reports</a> › <code>hash-26</code></p>
+
+<h1 id="the-hash-function-chime-hash-26">The Hash Function CHIME (hash-26)</h1>
+<div class="table-wrap"><table class="meta">
+<tr><th>Candidate</th><td>The Hash Function CHIME</td></tr>
+<tr><th>Family</th><td>Symmetric (sponge and feed-forward sponge)</td></tr>
+<tr><th>Archive</th><td><a href="https://www.niccs.org.cn/niccs/Proposal/Cryptographic%20Hash%20Algorithms/Round%201%20candidates/CHIME.zip">CHIME.zip</a> (SHA-256: <code>3368eff8f86744eefba82825c11990a3b4d914e014ff184324ab3cb9af88b3a4</code>)</td></tr>
+</table></div>
+
+<h2 class="issue-heading issue-heading-first" id="hash-26-1-an-invariant-subspace-reduces-chime-collision-bounds-to-64-and-224-bits">hash-26-1: An invariant subspace reduces CHIME collision bounds to 64 and 224 bits</h2>
+
+<div class="table-wrap"><table class="meta issue-meta">
+<tr><th>Classification</th><td><span class="sev sev-high">High / design</span></td></tr>
+<tr><th>Status</th><td><span class="issue-status status-confirmed">Confirmed</span></td></tr>
+<tr><th>Affected</th><td>Submitted CHIME-512 and CHIME-1024 specifications and implementations</td></tr>
+<tr><th>Discovery</th><td>Moderate</td></tr>
+<tr><th>Exploitation</th><td>Approximately 2^64 and 2^224 evaluations; no collision has been computed</td></tr>
+<tr><th>Credit</th><td>Cryptanalysts001 (ISCAS) <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#121;&#117;&#102;&#101;&#105;&#50;&#48;&#50;&#49;&#64;&#105;&#115;&#99;&#97;&#115;&#46;&#97;&#99;&#46;&#99;&#110;">&#121;&#117;&#102;&#101;&#105;&#50;&#48;&#50;&#49;&#64;&#105;&#115;&#99;&#97;&#115;&#46;&#97;&#99;&#46;&#99;&#110;</a></td></tr>
+<tr><th>Date</th><td>2026-09-22</td></tr>
+</table></div>
+<p>Original source: <a href="https://list.niccs.org.cn/archives/list/crypthashforum@list.niccs.org.cn/message/5UIMK76TG55NELJD44XE7QVM2OPURHCK/">CryptHashForum report</a></p>
+<p>In the submitted permutation, each 256-bit array remains in the repeated-word form <code>(x,x,x,x)</code>: every layer preserves it and each round constant repeats one 64-bit word four times. This gives a 384-dimensional invariant subspace for the complete nonlinear, full-round permutation.</p>
+<p>For CHIME-512, a <code>2^240</code>-message family remains in the subspace through ordinary padding, while its digest contains only two independent 64-bit words. Sampling this family therefore gives a classical collision upper bound of about <code>2^64</code>, rather than the claimed 256 bits. For CHIME-1024, eight controlled blocks encode <code>2^512</code> distinct messages but reach at most <code>2^448</code> pre-final states; common padding and finalization preserve equality, giving an upper bound of about <code>2^224</code>, rather than 512 bits. These are proof-level squeeze bounds, not computed collisions.</p>
+<p>The submission team subsequently published an <a href="https://list.niccs.org.cn/archives/list/crypthashforum@list.niccs.org.cn/message/HLW3FPCIRT2UIR3YMYJJ5YW7SCGZENUL/">erratum</a> changing the repeated round constants to word-dependent constants. That acknowledges and removes this particular invariant in a revised design; the archived Round 1 submission remains affected.</p>
+<h3 id="reproducing">Reproducing</h3>
+<p>Commands below run in a checkout of the <a href="https://github.com/ngcc-dev/ngcc-harness">ngcc-harness repository</a> with the candidate built (see its README).</p>
+<p>The local check reproduces the reporters' 126-byte CHIME-512 invariant-state witness and digest and recomputes both dimension bounds:</p>
+<pre><code class="language-sh">make -C hash-26 reproduce
+</code></pre>
+</main>
+<footer class="site-footer">
+<p>Updated 2026-09-22 16:51:04 UTC · Maintained by: <a href="mailto:markku-juhani.saarinen@tuni.fi">markku-juhani.saarinen@tuni.fi</a></p>
+<p>Submissions are welcome via <a href="https://github.com/ngcc-dev/ngcc-harness/issues">GitHub issues</a>.</p>
+</footer>
+</body>
+</html>

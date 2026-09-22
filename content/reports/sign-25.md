@@ -1,4 +1,4 @@
-<!-- synced from ngcc1/sign-25/report.md -->
+<!-- synchronized report: sign-25/report.md -->
 Candidate: SQIsign2D2
 Family: Isogeny
 Archive: [SQIsign2D2.zip](https://www.niccs.org.cn/niccs/Proposal/Public-Key%20Cryptographic%20Algorithms/Round%201%20candidates/SQIsign2D2.zip) (SHA-256: `cf635de5eebbdeb7b2212e84f349da4ca878889e0a4a59b463d0c8cdfdb8eeab`)

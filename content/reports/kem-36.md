@@ -1,4 +1,4 @@
-<!-- synced from ngcc1/kem-36/report.md -->
+<!-- synchronized report: kem-36/report.md -->
 Candidate: TRIKE
 Family: Code-based
 Archive: [TRIKE.zip](https://www.niccs.org.cn/niccs/Proposal/Public-Key%20Cryptographic%20Algorithms/Round%201%20candidates/TRIKE.zip) (SHA-256: `03956a13fde3d402513bfcf9942f2b04fd23e98b01a3dc52b48938b9c89fe4d6`)

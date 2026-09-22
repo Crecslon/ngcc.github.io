@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Neulaser (hash-21) · ngcc.dev</title>
+<link rel="stylesheet" href="../assets/style.css?v=8c137f6d">
+</head>
+<body>
+<header class="site-header">
+<a class="brand" href="../index.html">ngcc.dev</a>
+<nav><a href="../index.html">Home</a><a href="../reports/index.html">Reports</a></nav>
+</header>
+<main>
+<p class="crumb"><a href="../reports/index.html">Reports</a> › <code>hash-21</code></p>
+
+<h1 id="neulaser-hash-21">Neulaser (hash-21)</h1>
+<div class="table-wrap"><table class="meta">
+<tr><th>Candidate</th><td>Neulaser</td></tr>
+<tr><th>Family</th><td>Symmetric (PRNG-based iterated hash)</td></tr>
+<tr><th>Archive</th><td><a href="https://www.niccs.org.cn/niccs/Proposal/Cryptographic%20Hash%20Algorithms/Round%201%20candidates/Neulaser.zip">Neulaser.zip</a> (SHA-256: <code>ffa76faaf6ae1c939ef6b1a726d6bcef19f0f0df63daddfe74a82e2831c4c6b3</code>)</td></tr>
+</table></div>
+
+<h2 class="issue-heading issue-heading-first" id="hash-21-1-a-local-feedback-collision-merges-complete-neulaser-states">hash-21-1: A local feedback collision merges complete Neulaser states</h2>
+
+<div class="table-wrap"><table class="meta issue-meta">
+<tr><th>Classification</th><td><span class="sev sev-critical">Critical / design</span></td></tr>
+<tr><th>Status</th><td><span class="issue-status status-confirmed">Confirmed</span></td></tr>
+<tr><th>Affected</th><td>Neulaser-512, Neulaser-768, and Neulaser-1024</td></tr>
+<tr><th>Discovery</th><td>Moderate</td></tr>
+<tr><th>Exploitation</th><td>Trivial after a 175,493-input local search</td></tr>
+<tr><th>Credit</th><td>Cryptanalysts001 (ISCAS) <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#121;&#117;&#102;&#101;&#105;&#50;&#48;&#50;&#49;&#64;&#105;&#115;&#99;&#97;&#115;&#46;&#97;&#99;&#46;&#99;&#110;">&#121;&#117;&#102;&#101;&#105;&#50;&#48;&#50;&#49;&#64;&#105;&#115;&#99;&#97;&#115;&#46;&#97;&#99;&#46;&#99;&#110;</a></td></tr>
+<tr><th>Date</th><td>2026-09-22</td></tr>
+</table></div>
+<p>Original source: <a href="https://list.niccs.org.cn/archives/list/crypthashforum@list.niccs.org.cn/message/ENAQP4ZG7BMA4R4VTSXAWS74ARE7D7SX/">CryptHashForum report</a></p>
+<p>For a register module whose only nonzero word is its discarded first stage, the feedback map sends both <code>00002743</code> and <code>0002ad84</code> to <code>8c41db68</code>. The global mixing function does not read that stage, so states differing only by these words become identical after one initialization round. All later rounds and the final digests are then identical.</p>
+<p>The reporters give equal-length fixed-IV messages <code>00^d || BE32(x) || 00^60</code>, with <code>d=56,88,120</code> bytes for the three instances and <code>x</code> chosen from the colliding pair. The submitted Neulaser-512 implementation maps both 120-byte messages to <code>f899bf50663e6e04fa5374baf28886153ea332bf25443817eb2abbca88072458dbd7a077712aae99fb112b7672c85a705700e027b348516cc45f8fff537713d3</code>; full-round collisions reproduce for all three instances.</p>
+<h2 class="issue-heading" id="hash-21-2-reduction-modulo-232-5-creates-reachable-state-mergers">hash-21-2: Reduction modulo 2^32-5 creates reachable state mergers</h2>
+
+<div class="table-wrap"><table class="meta issue-meta">
+<tr><th>Classification</th><td><span class="sev sev-critical">Critical / design</span></td></tr>
+<tr><th>Status</th><td><span class="issue-status status-confirmed">Confirmed</span></td></tr>
+<tr><th>Affected</th><td>Neulaser-512, Neulaser-768, and Neulaser-1024</td></tr>
+<tr><th>Discovery</th><td>Moderate</td></tr>
+<tr><th>Exploitation</th><td>Trivial</td></tr>
+<tr><th>Credit</th><td>Tsinghua Hash Lab <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#99;&#117;&#105;&#104;&#114;&#50;&#54;&#64;&#109;&#97;&#105;&#108;&#115;&#46;&#116;&#115;&#105;&#110;&#103;&#104;&#117;&#97;&#46;&#101;&#100;&#117;&#46;&#99;&#110;">&#99;&#117;&#105;&#104;&#114;&#50;&#54;&#64;&#109;&#97;&#105;&#108;&#115;&#46;&#116;&#115;&#105;&#110;&#103;&#104;&#117;&#97;&#46;&#101;&#100;&#117;&#46;&#99;&#110;</a></td></tr>
+<tr><th>Date</th><td>2026-09-22</td></tr>
+</table></div>
+<p>Original source: <a href="https://list.niccs.org.cn/archives/list/crypthashforum@list.niccs.org.cn/message/XQYQ4KEDXJKCSRQT6DY5XNA4WIHGJB4J/">CryptHashForum report</a></p>
+<p>Neulaser loads unrestricted 32-bit message words but overwrites stages 8, 12, and 15 after reduction modulo <code>p=2^32-5</code>. Each value <code>y</code> from 0 through 4 therefore has two encodings, <code>y</code> and <code>y+p</code>. Stages 8 and 12 do not enter any other tap feeding that round, so choosing the two pre-reduction values makes the entire state merge after one round.</p>
+<p>The public comment supplies deterministic one-block collisions for every parameter set. For Neulaser-512, two otherwise-zero 888-bit messages place <code>45d27672</code> and <code>ba2d8989</code> at bytes 24--27; both produce the published digest beginning <code>a4cfaefc283b5d78</code>. Four independently mergeable words give 16-message multicollisions. This is a second, independent full-round collision mechanism, not a restatement of <code>hash-21-1</code>.</p>
+<h3 id="reproducing">Reproducing</h3>
+<p>Commands below run in a checkout of the <a href="https://github.com/ngcc-dev/ngcc-harness">ngcc-harness repository</a> with the candidate built (see its README).</p>
+<p>The witness verifies both published collision families, including the exact full digests, against all three submitted libraries:</p>
+<pre><code class="language-sh">make -C hash-21 reproduce
+</code></pre>
+</main>
+<footer class="site-footer">
+<p>Updated 2026-09-22 16:51:04 UTC · Maintained by: <a href="mailto:markku-juhani.saarinen@tuni.fi">markku-juhani.saarinen@tuni.fi</a></p>
+<p>Submissions are welcome via <a href="https://github.com/ngcc-dev/ngcc-harness/issues">GitHub issues</a>.</p>
+</footer>
+</body>
+</html>

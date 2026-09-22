@@ -1,4 +1,4 @@
-<!-- synced from ngcc1/hash-09/report.md -->
+<!-- synchronized report: hash-09/report.md -->
 Candidate: Eijen
 Family: Symmetric (sponge, Sponge-F)
 Archive: [Eijen.zip](https://www.niccs.org.cn/niccs/Proposal/Cryptographic%20Hash%20Algorithms/Round%201%20candidates/Eijen.zip) (SHA-256: `5e2581d905b9a3d3a8c34c76ed73213c77da970a15cc6b3b26b2bb086b93e3f4`)
@@ -42,3 +42,19 @@ tools/ngcc_attack hash-collide-zeropad hash-09/lib/libEijen-256.so
 
 `tools/reproduce.sh` runs this together with the other supported runtime
 witnesses and their controls. See `tools/README.md`.
+
+## hash-09-2: Cross-instance three-block relations
+
+Severity: Medium
+Status: Confirmed
+Layer: Design
+Affected: Specified Eijen-512, Eijen-768, and Eijen-1024 construction
+Discovery: Moderate
+Exploitation: Moderate
+Credit: Tsinghua Hash Lab <cuihr26@mails.tsinghua.edu.cn>
+Date: 2026-09-22
+Original source: [CryptHashForum report](https://list.niccs.org.cn/archives/list/crypthashforum@list.niccs.org.cn/message/3KZDO7FTB6ELVWL2ILGNXP256XCJBBES/)
+
+The three instances use the same 2048-bit permutation and zero initial state, with only the rate and capacity-feed-forward boundary changing. The reporters constructed three-block message pairs whose outputs obey a predictable cross-instance suffix relation, succeeding on 8/8 trials for every pair of instances. This distinguishes the family from independent random functions, but is not a same-instance collision or a direct break of an individual instance's collision resistance.
+
+The [Eijen Algorithm Group independently confirmed the issue](https://list.niccs.org.cn/archives/list/crypthashforum@list.niccs.org.cn/message/LZYIEYXZWH7LADLHM64NH2G4MDTOQ6DK/) and revised finalization to inject the digest length. The public message does not include the concrete witnesses, so this report records the confirmed construction-level result without claiming a local executable reproduction.

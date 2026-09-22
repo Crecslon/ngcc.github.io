@@ -1,4 +1,4 @@
-<!-- synced from ngcc1/sign-06/report.md -->
+<!-- synchronized report: sign-06/report.md -->
 Candidate: COMPASS-SIG
 Family: Lattice-based
 Archive: [COMPASS-SIG.zip](https://www.niccs.org.cn/niccs/Proposal/Public-Key%20Cryptographic%20Algorithms/Round%201%20candidates/COMPASS-SIG.zip) (SHA-256: `ce88066506fe9b58c300b3ca51462c7a8350484d88ad5b8a9c9f17b5152ca820`)

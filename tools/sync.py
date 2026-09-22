@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-"""Pull the published documents from an ngcc1 checkout into content/.
+"""Pull cleared documents from an explicitly supplied source checkout.
 
-    python3 tools/sync.py [path/to/ngcc1]     (default: ../ngcc1)
+    python3 tools/sync.py /path/to/source-checkout
 
 Only the files listed in TOP, PER_CANDIDATE and DATA are written; hand-written
 pages (content/index.md, content/candidates/index.md, ...) are never touched.
@@ -19,10 +19,12 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 CONTENT = ROOT / "content"
-SRC = Path(sys.argv[1] if len(sys.argv) > 1 else ROOT.parent / "ngcc1").resolve()
+if len(sys.argv) != 2:
+    sys.exit("usage: python3 tools/sync.py /path/to/source-checkout")
+SRC = Path(sys.argv[1]).resolve()
 
 # Nothing is listed here until it has been cleared for publication.
-# ngcc1-relative source -> content-relative destination, e.g. "RESULTS.md": "results.md"
+# Source-relative path -> content-relative destination, e.g. "RESULTS.md": "results.md"
 TOP = {}
 # per-candidate file -> content-relative destination template ({id} = candidate id)
 PER_CANDIDATE = {
@@ -41,7 +43,7 @@ def die(msg):
 
 def main():
     if not (SRC / "RESULTS.md").is_file():
-        die(f"{SRC} does not look like an ngcc1 checkout (no RESULTS.md)")
+        die(f"{SRC} does not look like a report source checkout (no RESULTS.md)")
 
     candidates = sorted(
         d.name for d in SRC.iterdir()
@@ -49,7 +51,7 @@ def main():
         and any((d / f).is_file() for f in PER_CANDIDATE)
     )
 
-    # Complete map of ngcc1-relative path -> content-relative path.
+    # Complete map of source-relative path -> content-relative path.
     site_of = dict(TOP)
     for cid in candidates:
         for src, dst in PER_CANDIDATE.items():
@@ -74,7 +76,7 @@ def main():
                 return m.group(0)
             path, _, frag = target.partition("#")
             frag = f"#{frag}" if frag else ""
-            # resolve relative to the file's directory, then to the ngcc1 root
+            # Resolve relative to the file's directory, then to the source root
             # (some reviews link as if they lived at the root)
             for cand in (posixpath.normpath(posixpath.join(src_dir, path)),
                          posixpath.normpath(path)):
@@ -93,7 +95,7 @@ def main():
         text = rewrite(text, src_rel, dst_rel)
         out = CONTENT / dst_rel
         out.parent.mkdir(parents=True, exist_ok=True)
-        out.write_text(f"<!-- synced from ngcc1/{src_rel} -->\n{text}", encoding="utf-8")
+        out.write_text(f"<!-- synchronized report: {src_rel} -->\n{text}", encoding="utf-8")
 
     n = 0
     for src_rel, dst_rel in TOP.items():

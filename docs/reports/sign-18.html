@@ -41,9 +41,30 @@
 <pre><code class="language-sh">python3 security/design_parameter_audit.py
 </code></pre>
 <p>The check verifies physical PDF pages 14–16 and 50–52 and the submitted 64-byte digest constant.</p>
+<h2 class="issue-heading" id="sign-18-2-signatures-expose-the-hidden-algebra-constraint-subspace">sign-18-2: Signatures expose the hidden-algebra constraint subspace</h2>
+
+<div class="table-wrap"><table class="meta issue-meta">
+<tr><th>Classification</th><td><span class="sev sev-high">High / design</span></td></tr>
+<tr><th>Status</th><td><span class="issue-status status-confirmed">Confirmed</span></td></tr>
+<tr><th>Affected</th><td>All four parameter sets</td></tr>
+<tr><th>Discovery</th><td>Moderate</td></tr>
+<tr><th>Exploitation</th><td>Polynomial-time structure recovery; no complete forgery demonstrated</td></tr>
+<tr><th>Credit</th><td>Peigen Li (archive sender <code>PeigenLi</code>)</td></tr>
+<tr><th>Date</th><td>2026-09-22</td></tr>
+</table></div>
+<p>Original source: <a href="https://list.niccs.org.cn/archives/list/pkcforum@list.niccs.org.cn/message/7LD2222NOYVSL3KXW4UQCLPHMU7JFKQW/">NGCC PKC Forum report</a></p>
+<p>The specification places every vinegar and oil element in a degree-<code>l_j</code> subalgebra of <code>l_j</code>-by-<code>l_j</code> matrices, but counts and solves all <code>l_j^2</code> matrix coordinates independently. These requirements are incompatible: a subalgebra element has only <code>l_j</code> degrees of freedom. The implementation makes the signer work by sampling only vinegar elements in the hidden subalgebra while treating oil coordinates as unrestricted field elements, contradicting the specified variable space.</p>
+<p>Peigen Li's <a href="https://list.niccs.org.cn/archives/list/pkcforum@list.niccs.org.cn/message/7LD2222NOYVSL3KXW4UQCLPHMU7JFKQW/">mailing-list analysis</a> identifies this mismatch and observes that repeated signatures reveal the small hidden subalgebras. Further extension to Peigen Li's analysis: the source gives Origami-128 exactly 18 sampled degree-2 vinegar elements; each occupies four matrix coordinates but has dimension two. Every signature therefore lies in a subspace of dimension at most <code>200 - 18*(4-2) = 164</code>. A run of 180 accepted signatures reaches rank 164, saturating that bound, while 180 uniform 200-coordinate vectors reach the sample-count maximum rank 180. The analogous source count predicts 180, 336, and 432 exposed constraints for Origami-256, -384, and -512.</p>
+<p>This is direct, reproducible leakage of the purportedly hidden structure, but no end-to-end key recovery or forgery is yet established. The post's separate estimate of at most 93 bits for Origami-128 has no published derivation and is therefore not adopted here.</p>
+<h3 id="reproducing_1">Reproducing</h3>
+<p>Commands below run in a checkout of the <a href="https://github.com/ngcc-dev/ngcc-harness">ngcc-harness repository</a> with the candidate built (see its README).</p>
+<pre><code class="language-sh">make -C sign-18 lib/libOrigami-128.so
+python3 sign-18/reproduce_signature_subspace.py
+</code></pre>
+<p>The witness verifies every collected signature with the official verifier before measuring its rank over <code>GF(16)</code>.</p>
 </main>
 <footer class="site-footer">
-<p>Updated 2026-09-22 08:11:45 UTC · Maintained by: <a href="mailto:markku-juhani.saarinen@tuni.fi">markku-juhani.saarinen@tuni.fi</a></p>
+<p>Updated 2026-09-22 16:51:04 UTC · Maintained by: <a href="mailto:markku-juhani.saarinen@tuni.fi">markku-juhani.saarinen@tuni.fi</a></p>
 <p>Submissions are welcome via <a href="https://github.com/ngcc-dev/ngcc-harness/issues">GitHub issues</a>.</p>
 </footer>
 </body>

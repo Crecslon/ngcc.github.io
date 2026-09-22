@@ -1,4 +1,4 @@
-<!-- synced from ngcc1/kem-17/report.md -->
+<!-- synchronized report: kem-17/report.md -->
 Candidate: HEP-QC
 Family: Code-based (quasi-cyclic)
 Archive: [HEP-QC.zip](https://www.niccs.org.cn/niccs/Proposal/Public-Key%20Cryptographic%20Algorithms/Round%201%20candidates/HEP-QC.zip) (SHA-256: `3780991127f49b6397b4182d32b35ab7a6359bf825a707e90df0f809beeb3790`)
@@ -85,3 +85,28 @@ tools/reproduce.sh kem-17
 ```
 
 It reports identical first public-key, ciphertext, and shared-secret digests for HEP-QC. The Aigis-Enc+ control differs across the two seeds.
+
+## kem-17-4: Public column multiplicities break the EPC-P assumption
+
+Severity: High
+Status: Confirmed
+Layer: Design
+Affected: All four HEP-QC parameter sets
+Discovery: Moderate
+Exploitation: Linear-time distinguishing; claimed structure recovery takes seconds to minutes
+Credit: Tianyuan Xie
+Date: 2026-09-22
+Original source: [NGCC PKC Forum report](https://list.niccs.org.cn/archives/list/pkcforum@list.niccs.org.cn/message/XQ3A3A3IGNRQDLEQ6BD73ENALBGSDEO6/)
+
+HEP-QC repeats every column of its inner Reed–Muller generator `MULT = n2/128` times before applying row mixing and a column permutation. Those operations preserve equality. The public matrix `G'` therefore has exactly `n1*128` column classes of multiplicity `MULT` and 64 singleton columns, whereas a uniform matrix has no repeated columns except with negligible probability. This gives a public, linear-time distinguisher with advantage essentially one and directly falsifies the EPC-P assumption used by the specification's first security bound.
+
+Tianyuan Xie's [mailing-list analysis](https://list.niccs.org.cn/archives/list/pkcforum@list.niccs.org.cn/message/XQ3A3A3IGNRQDLEQ6BD73ENALBGSDEO6/) additionally reports recovery of the affine blocks and exact secret transformation `T` on 35/35 official keys. The remaining frame-label searches are estimated at `2^84.1`, `2^131.0`, and `2^198.7` for HEP-QC-1, -3, and -5, below their 128-, 192-, and 256-bit claims. The public attachment reproduces the distinguisher, but not the full transformation recovery, so those residual key-recovery costs are less independently reproducible than the confirmed EPC-P break.
+
+### Reproducing
+
+```sh
+make -C kem-17 lib/libhep-qc-1.so
+python3 kem-17/reproduce_epcp_fingerprint.py
+```
+
+On a freshly generated official HEP-QC-1 key, this prints `3^5888 + 1^64`; its uniform-matrix control prints `1^17728`.

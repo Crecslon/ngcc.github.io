@@ -1,4 +1,4 @@
-<!-- synced from ngcc1/kem-09/report.md -->
+<!-- synchronized report: kem-09/report.md -->
 Candidate: CheetahKEM
 Family: Lattice (Ring/Module-LWE)
 Archive: [CheetahKEM.zip](https://www.niccs.org.cn/niccs/Proposal/Public-Key%20Cryptographic%20Algorithms/Round%201%20candidates/CheetahKEM.zip) (SHA-256: `fc321e46bac9c387535e2053bed560eac3d3cd88ba9bebc154f5bf68dd47dcd1`)
@@ -33,3 +33,32 @@ tools/ngcc_attack kem-reject-mask kem-09/lib/libCheetah128.so
 
 `tools/reproduce.sh` runs this together with the other supported runtime
 witnesses and their controls. See `tools/README.md`.
+
+## kem-09-2: A degree-128 quotient defeats the full-dimension MLWE estimates
+
+Severity: High
+Status: Lead
+Layer: Design
+Affected: All four parameter sets
+Discovery: Moderate
+Exploitation: Estimated at 2^27.7, 2^67.7, 2^99.3, and 2^133.4 operations
+Credit: XuHaomeng
+Date: 2026-09-22
+Original source: [NGCC PKC Forum report](https://list.niccs.org.cn/archives/list/pkcforum@list.niccs.org.cn/message/IKMFXEEH5K427JC75E7364RNOJEO5OK7/)
+
+The specified ring polynomial is reducible: `X^640+1 = (X^128+1)(X^512-X^384+X^256-X^128+1)`. Reducing a public MLWE sample modulo `X^128+1` is the public alternating fold `a[j]-a[j+128]+a[j+256]-a[j+384]+a[j+512]`. It reduces the scalar secret dimension from `640k` to `128k`; five independent `CBD(eta)` coefficients fold to `CBD(5*eta)`, and public-key compression noise folds in the same way.
+
+Re-running `lattice-estimator` with that quotient distribution reproduces XuHaomeng's [mailing-list estimates](https://list.niccs.org.cn/archives/list/pkcforum@list.niccs.org.cn/message/IKMFXEEH5K427JC75E7364RNOJEO5OK7/): uSVP costs of 27.7, 67.7, 99.3, and 133.4 bits, versus the specification's 159, 307, 426, and 541 bits. This establishes a much cheaper distinguisher for the underlying structured samples and invalidates estimates that treat all `640k` coordinates as one irreducible component.
+
+This remains a Lead because a complete IND-CCA attack on the KEM has not been constructed. Full secret recovery also requires solving the residual degree-512 component; the post explicitly leaves that cost unresolved.
+
+### Reproducing
+
+Install Martin Albrecht's [lattice-estimator](https://github.com/malb/lattice-estimator), then run the script with Sage's Python and point it at that checkout:
+
+```sh
+LATTICE_ESTIMATOR_PATH=/path/to/lattice-estimator \
+  sage -python kem-09/reproduce_quotient_estimate.py
+```
+
+The script checks the factorization and quotient homomorphism, then instantiates the estimator with the folded secret, error, and compression distributions.

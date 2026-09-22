@@ -50,9 +50,34 @@ tools/ngcc_attack hash-collide-rate hash-17/lib/libMasterCube-512.so 959
 </code></pre>
 <p><code>tools/reproduce.sh</code> runs this together with the other supported runtime
 witnesses and their controls. See <code>tools/README.md</code>.</p>
+<h2 class="issue-heading" id="hash-17-2-the-specified-and-implemented-inverse-rounds-do-not-invert-the-forward-round">hash-17-2: The specified and implemented inverse rounds do not invert the forward round</h2>
+
+<div class="table-wrap"><table class="meta issue-meta">
+<tr><th>Classification</th><td><span class="sev sev-medium">Medium / design</span></td></tr>
+<tr><th>Status</th><td><span class="issue-status status-confirmed">Confirmed</span></td></tr>
+<tr><th>Affected</th><td>Specification and reference/optimized implementations, all parameter sets</td></tr>
+<tr><th>Discovery</th><td>Moderate</td></tr>
+<tr><th>Exploitation</th><td>Construction and conformance failure; no collision demonstrated</td></tr>
+<tr><th>Credit</th><td>ISCAS (archive sender <code>Cryptanalysts001</code>)</td></tr>
+<tr><th>Date</th><td>2026-09-22</td></tr>
+</table></div>
+<p>Original source: <a href="https://list.niccs.org.cn/archives/list/crypthashforum@list.niccs.org.cn/message/2XVZUBVVMVXYKMSOBJOKY2IFHFMQUNEK/">CryptHashForum report</a></p>
+<p>As <a href="https://list.niccs.org.cn/archives/list/crypthashforum@list.niccs.org.cn/message/2XVZUBVVMVXYKMSOBJOKY2IFHFMQUNEK/">reported on the CryptHash mailing list</a>, the inverse in Algorithm 2 does not invert the published forward round, and the implementation differs from Algorithm 2 but still fails the inverse identity. In the code, the nonlinear calls are already reversed correctly, yet an extra exchange of the two slices remains; additionally, the forward <code>MixColumns</code> is reused although its inverse is <code>J MixColumns J</code>, where <code>J</code> exchanges the slices.</p>
+<p>This matters to the complete hash: MasterCube's <code>Cube-f</code> transformation XORs the forward branch with a branch explicitly designed and analyzed as its inverse, while the reference and optimized hashing paths execute the defective branch. Correcting the two operations changes the transformation and resulting digests. The finding invalidates conformance and the submitted security rationale, but it does not establish noninjectivity of the forward permutation or by itself give a hash collision or preimage attack.</p>
+<h3 id="reproducing_1">Reproducing</h3>
+<p>Commands below run in a checkout of the <a href="https://github.com/ngcc-dev/ngcc-harness">ngcc-harness repository</a> with the candidate built (see its README).</p>
+<p>The witness uses the submitted MasterCube-512 round functions. On the mailing-list state <code>(left,right)=(1,0)</code>, a forward round followed by the submitted inverse returns <code>(0,1)</code>; the corrected inverse returns the input exactly.</p>
+<pre><code class="language-sh">cc -O2 -std=c99 -Ihash-17/MasterCube/Implementations/Reference_Implementation/MasterCube-512 \
+  hash-17/reproduce_inverse.c -o /tmp/mastercube-inverse
+/tmp/mastercube-inverse
+</code></pre>
+<p>Expected output:</p>
+<pre><code class="language-text">CONFIRMED: forward round followed by submitted inverse swaps the slices
+CONTROL: corrected inverse recovers the input exactly
+</code></pre>
 </main>
 <footer class="site-footer">
-<p>Updated 2026-09-22 08:11:45 UTC · Maintained by: <a href="mailto:markku-juhani.saarinen@tuni.fi">markku-juhani.saarinen@tuni.fi</a></p>
+<p>Updated 2026-09-22 16:51:04 UTC · Maintained by: <a href="mailto:markku-juhani.saarinen@tuni.fi">markku-juhani.saarinen@tuni.fi</a></p>
 <p>Submissions are welcome via <a href="https://github.com/ngcc-dev/ngcc-harness/issues">GitHub issues</a>.</p>
 </footer>
 </body>

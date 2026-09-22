@@ -1,4 +1,4 @@
-<!-- synced from ngcc1/sign-11/report.md -->
+<!-- synchronized report: sign-11/report.md -->
 Candidate: FlexTree
 Family: Hash-based (stateless)
 Archive: [Flextree.zip](https://www.niccs.org.cn/niccs/Proposal/Public-Key%20Cryptographic%20Algorithms/Round%201%20candidates/Flextree.zip) (SHA-256: `f31d434ac297ef6a8c454bf9d219f125290749de157df3eb90d29ae3b8a0270a`)

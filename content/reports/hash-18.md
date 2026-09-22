@@ -1,4 +1,4 @@
-<!-- synced from ngcc1/hash-18/report.md -->
+<!-- synchronized report: hash-18/report.md -->
 Candidate: MEGASCON
 Family: Symmetric (sponge)
 Archive: [Megascon.zip](https://www.niccs.org.cn/niccs/Proposal/Cryptographic%20Hash%20Algorithms/Round%201%20candidates/Megascon.zip) (SHA-256: `70d0796942e60a1ddd25ad2332dbfe2755052825c301e9585167c90c1fa09d3d`)
@@ -39,3 +39,33 @@ tools/ngcc_attack hash-prefix hash-18/lib/libMEGASCON-384.so hash-18/lib/libMEGA
 
 `tools/reproduce.sh` runs this together with the other supported runtime
 witnesses and their controls. See `tools/README.md`.
+
+## hash-18-2: The AVX-512 listing defines a noninjective S-box and practical collisions
+
+Severity: High
+Status: Confirmed
+Layer: Design
+Affected: AVX-512 computation printed in Listing 3; all four fixed-output profiles
+Discovery: Moderate
+Exploitation: Trivial
+Credit: Cryptanalysts001 (ISCAS) <yufei2021@iscas.ac.cn>
+Date: 2026-09-22
+Original source: [CryptHashForum report](https://list.niccs.org.cn/archives/list/crypthashforum@list.niccs.org.cn/message/J2WP5X7I7BHCONJCHMDD6ECLNV7D3XQ5/)
+
+Listing 3 uses ternary-logic immediates `b4` and `1e` with the wrong operand truth-table order. Its induced S-box has only 175 distinct outputs; in particular, `S_bad(23) = S_bad(24) = 1b`. A local collision can therefore be injected through the rate and makes the complete states equal after the second block's first substitution layer.
+
+For MEGASCON-512, take two 256-byte messages initialized to zero, set `M[192] = 04`, and set `N[128] = N[160] = 04`. Under Listing 3, both hash to:
+
+`2ed13b513054b271a9640e8ccc139d5a363cc69eee4158ec7453b6e39b3549a15a87b8695340271fdcb02903cfe42b79ea8227f074e05599299a318581faf368`
+
+This is a specification-listing failure, not an attack on the archived implementations: the optimized code uses the corrected immediates `a6` and `56`, and the reference code implements the bijective mathematical S-box.
+
+### Reproducing
+
+The local checker verifies the erroneous truth tables, the displayed collision inside the S-box, and bijectivity after correction:
+
+```sh
+python3 hash-18/validate_listing3.py
+```
+
+The complete-message collision above was independently evaluated in Python and scalar C by the reporters; no native AVX-512 execution is required or claimed.

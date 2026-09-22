@@ -45,9 +45,31 @@ tools/ngcc_attack kem-reject-mask kem-09/lib/libCheetah128.so
 </code></pre>
 <p><code>tools/reproduce.sh</code> runs this together with the other supported runtime
 witnesses and their controls. See <code>tools/README.md</code>.</p>
+<h2 class="issue-heading" id="kem-09-2-a-degree-128-quotient-defeats-the-full-dimension-mlwe-estimates">kem-09-2: A degree-128 quotient defeats the full-dimension MLWE estimates</h2>
+
+<div class="table-wrap"><table class="meta issue-meta">
+<tr><th>Classification</th><td><span class="sev sev-high">High / design</span></td></tr>
+<tr><th>Status</th><td><span class="issue-status status-lead">Lead</span></td></tr>
+<tr><th>Affected</th><td>All four parameter sets</td></tr>
+<tr><th>Discovery</th><td>Moderate</td></tr>
+<tr><th>Exploitation</th><td>Estimated at 2^27.7, 2^67.7, 2^99.3, and 2^133.4 operations</td></tr>
+<tr><th>Credit</th><td>XuHaomeng</td></tr>
+<tr><th>Date</th><td>2026-09-22</td></tr>
+</table></div>
+<p>Original source: <a href="https://list.niccs.org.cn/archives/list/pkcforum@list.niccs.org.cn/message/IKMFXEEH5K427JC75E7364RNOJEO5OK7/">NGCC PKC Forum report</a></p>
+<p>The specified ring polynomial is reducible: <code>X^640+1 = (X^128+1)(X^512-X^384+X^256-X^128+1)</code>. Reducing a public MLWE sample modulo <code>X^128+1</code> is the public alternating fold <code>a[j]-a[j+128]+a[j+256]-a[j+384]+a[j+512]</code>. It reduces the scalar secret dimension from <code>640k</code> to <code>128k</code>; five independent <code>CBD(eta)</code> coefficients fold to <code>CBD(5*eta)</code>, and public-key compression noise folds in the same way.</p>
+<p>Re-running <code>lattice-estimator</code> with that quotient distribution reproduces XuHaomeng's <a href="https://list.niccs.org.cn/archives/list/pkcforum@list.niccs.org.cn/message/IKMFXEEH5K427JC75E7364RNOJEO5OK7/">mailing-list estimates</a>: uSVP costs of 27.7, 67.7, 99.3, and 133.4 bits, versus the specification's 159, 307, 426, and 541 bits. This establishes a much cheaper distinguisher for the underlying structured samples and invalidates estimates that treat all <code>640k</code> coordinates as one irreducible component.</p>
+<p>This remains a Lead because a complete IND-CCA attack on the KEM has not been constructed. Full secret recovery also requires solving the residual degree-512 component; the post explicitly leaves that cost unresolved.</p>
+<h3 id="reproducing_1">Reproducing</h3>
+<p>Commands below run in a checkout of the <a href="https://github.com/ngcc-dev/ngcc-harness">ngcc-harness repository</a> with the candidate built (see its README).</p>
+<p>Install Martin Albrecht's <a href="https://github.com/malb/lattice-estimator">lattice-estimator</a>, then run the script with Sage's Python and point it at that checkout:</p>
+<pre><code class="language-sh">LATTICE_ESTIMATOR_PATH=/path/to/lattice-estimator \
+  sage -python kem-09/reproduce_quotient_estimate.py
+</code></pre>
+<p>The script checks the factorization and quotient homomorphism, then instantiates the estimator with the folded secret, error, and compression distributions.</p>
 </main>
 <footer class="site-footer">
-<p>Updated 2026-09-22 08:11:45 UTC · Maintained by: <a href="mailto:markku-juhani.saarinen@tuni.fi">markku-juhani.saarinen@tuni.fi</a></p>
+<p>Updated 2026-09-22 16:51:04 UTC · Maintained by: <a href="mailto:markku-juhani.saarinen@tuni.fi">markku-juhani.saarinen@tuni.fi</a></p>
 <p>Submissions are welcome via <a href="https://github.com/ngcc-dev/ngcc-harness/issues">GitHub issues</a>.</p>
 </footer>
 </body>

@@ -3,10 +3,10 @@
 #   make build   render content/*.md -> docs/
 #   make serve   preview at http://localhost:8000
 #   make check   verify the rendered site (links, anchors, tag balance)
-#   make sync    pull cleared documents from an ngcc1 checkout (see tools/sync.py)
+#   make sync REPORT_SOURCE=/path/to/source-checkout
 #   make clean   remove generated output (keeps docs/CNAME and docs/.nojekyll)
 
-NGCC1 ?= ../ngcc1
+REPORT_SOURCE ?=
 PORT  ?= 8000
 
 .PHONY: build check serve sync clean
@@ -18,6 +18,7 @@ check: build
 serve: build
 	python3 -m http.server -d docs $(PORT)
 sync:
-	python3 tools/sync.py $(NGCC1)
+	@test -n "$(REPORT_SOURCE)" || { echo "set REPORT_SOURCE=/path/to/source-checkout" >&2; exit 2; }
+	python3 tools/sync.py "$(REPORT_SOURCE)"
 clean:
 	python3 tools/build.py --clean

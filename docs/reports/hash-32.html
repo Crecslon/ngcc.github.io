@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ZC-EDMC (hash-32) · ngcc.dev</title>
+<link rel="stylesheet" href="../assets/style.css?v=8c137f6d">
+</head>
+<body>
+<header class="site-header">
+<a class="brand" href="../index.html">ngcc.dev</a>
+<nav><a href="../index.html">Home</a><a href="../reports/index.html">Reports</a></nav>
+</header>
+<main>
+<p class="crumb"><a href="../reports/index.html">Reports</a> › <code>hash-32</code></p>
+
+<h1 id="zc-edmc-hash-32">ZC-EDMC (hash-32)</h1>
+<div class="table-wrap"><table class="meta">
+<tr><th>Candidate</th><td>ZC-EDMC</td></tr>
+<tr><th>Family</th><td>Symmetric (sponge)</td></tr>
+<tr><th>Archive</th><td><a href="https://www.niccs.org.cn/niccs/Proposal/Cryptographic%20Hash%20Algorithms/Round%201%20candidates/ZC-EDMC.zip">ZC-EDMC.zip</a> (SHA-256: <code>235157f178c0ec885dad4062ee232cdc0d16e95474f05c6f93038fd951ca3712</code>)</td></tr>
+</table></div>
+
+<h2 class="issue-heading issue-heading-first" id="hash-32-1-the-specified-and-implemented-zc-edmc-mappings-differ">hash-32-1: The specified and implemented ZC-EDMC mappings differ</h2>
+
+<div class="table-wrap"><table class="meta issue-meta">
+<tr><th>Classification</th><td><span class="sev sev-low">Low / design</span></td></tr>
+<tr><th>Status</th><td><span class="issue-status status-confirmed">Confirmed</span></td></tr>
+<tr><th>Affected</th><td>All six ZC-EDMC parameter sets</td></tr>
+<tr><th>Discovery</th><td>Trivial</td></tr>
+<tr><th>Exploitation</th><td>Trivial</td></tr>
+<tr><th>Credit</th><td>Cryptanalysts001, Institute of Software, Chinese Academy of Sciences <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#121;&#117;&#102;&#101;&#105;&#50;&#48;&#50;&#49;&#64;&#105;&#115;&#99;&#97;&#115;&#46;&#97;&#99;&#46;&#99;&#110;">&#121;&#117;&#102;&#101;&#105;&#50;&#48;&#50;&#49;&#64;&#105;&#115;&#99;&#97;&#115;&#46;&#97;&#99;&#46;&#99;&#110;</a></td></tr>
+<tr><th>Date</th><td>2026-09-22</td></tr>
+</table></div>
+<p>Original source: <a href="https://list.niccs.org.cn/archives/list/crypthashforum@list.niccs.org.cn/message/6BKFT5FXW3PL3ZXWNQFTLEIQOJSXZTWK/">CryptHashForum report</a></p>
+<p>The construction prose and Algorithm 3 define the compression mapping with two different six-round halves, <code>h(g(X) xor (0^r || X_c))</code>. A displayed equation instead uses <code>h(h(X) xor ...)</code>, and the reference implementation invokes the same last-six-round function twice. It therefore implements the displayed equation rather than Algorithm 3.</p>
+<p>The submitted permutation constants introduce a second deterministic mismatch: rounds 5--7 and 9--11 of the code's twelve-round schedule are permuted relative to the specification table. The submitters independently modeled the code schedule and reproduced its KATs, and report that changing the inner call from <code>h</code> to <code>g</code> changes all 22 tested digests for each of the six instances. This is an interoperability and analysis-target defect, not a demonstrated collision or preimage attack.</p>
+<h3 id="reproducing">Reproducing</h3>
+<p>Commands below run in a checkout of the <a href="https://github.com/ngcc-dev/ngcc-harness">ngcc-harness repository</a> with the candidate built (see its README).</p>
+<p>The local checker verifies both calls in every reference instance and the exact submitted constant schedule:</p>
+<pre><code class="language-sh">make -C hash-32 reproduce-forum
+</code></pre>
+</main>
+<footer class="site-footer">
+<p>Updated 2026-09-22 16:51:04 UTC · Maintained by: <a href="mailto:markku-juhani.saarinen@tuni.fi">markku-juhani.saarinen@tuni.fi</a></p>
+<p>Submissions are welcome via <a href="https://github.com/ngcc-dev/ngcc-harness/issues">GitHub issues</a>.</p>
+</footer>
+</body>
+</html>

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DOVE (sign-09) · ngcc.dev</title>
+<link rel="stylesheet" href="../assets/style.css?v=8c137f6d">
+</head>
+<body>
+<header class="site-header">
+<a class="brand" href="../index.html">ngcc.dev</a>
+<nav><a href="../index.html">Home</a><a href="../reports/index.html">Reports</a></nav>
+</header>
+<main>
+<p class="crumb"><a href="../reports/index.html">Reports</a> › <code>sign-09</code></p>
+
+<h1 id="dove-sign-09">DOVE (sign-09)</h1>
+<div class="table-wrap"><table class="meta">
+<tr><th>Candidate</th><td>DOVE</td></tr>
+<tr><th>Family</th><td>Multivariate (Double Oil-and-Vinegar)</td></tr>
+<tr><th>Archive</th><td><a href="https://www.niccs.org.cn/niccs/Proposal/Public-Key%20Cryptographic%20Algorithms/Round%201%20candidates/DOVE.zip">DOVE.zip</a> (SHA-256: <code>19169e545f6a6fd90b844b0deb72db81b5eb73c136873d1dae113c2c39d1c6e0</code>)</td></tr>
+</table></div>
+
+<h2 class="issue-heading issue-heading-first" id="sign-09-1-the-256-bit-sm3-state-caps-forgery-security-at-128-bits">sign-09-1: The 256-bit SM3 state caps forgery security at 128 bits</h2>
+
+<div class="table-wrap"><table class="meta issue-meta">
+<tr><th>Classification</th><td><span class="sev sev-critical">Critical / design</span></td></tr>
+<tr><th>Status</th><td><span class="issue-status status-confirmed">Confirmed</span></td></tr>
+<tr><th>Affected</th><td>DOVE-256 and DOVE-512, both classic and pkc_skc variants</td></tr>
+<tr><th>Discovery</th><td>Moderate</td></tr>
+<tr><th>Exploitation</th><td>Approximately 2^128 SM3 compression evaluations and one signing query</td></tr>
+<tr><th>Credit</th><td>Dariia Porechna (<a href="https://github.com/dariolina">dariolina</a>)</td></tr>
+<tr><th>Date</th><td>2026-09-22</td></tr>
+</table></div>
+<p>Original source: <a href="https://github.com/ngcc-dev/ngcc-harness/issues/9">GitHub issue #9</a></p>
+<p>Further extension to the existing analysis… Dariia Porechna observed in the <a href="https://github.com/ngcc-dev/ngcc-harness/issues/9">original submission, GitHub issue #9</a>, that the inert signature salt gives a new-message forgery, not only signature malleability. The specified and implemented verification target is <code>pseudoXOF(msg || seed_pk)</code>; the signature's salt is never read by the verifier. The XOF produces each output block as <code>SM3(msg || seed_pk || BE32(counter))</code> using SM3's 256-bit Merkle--Damgard state.</p>
+<p>Find two distinct 64-byte messages <code>B</code> and <code>B'</code> for which the first compression produces the same chaining state. This is a generic collision search with expected cost about <code>2^128</code>. For every XOF counter, both computations then continue from that same state with the identical <code>seed_pk</code>, counter, padding, and encoded length. Consequently all target bytes match, independent of whether DOVE requests 96 bytes or 216 bytes. A signature requested for <code>B</code> therefore verifies unchanged for the previously unsigned message <code>B'</code>, directly violating the EUF-CMA claim.</p>
+<p>The attack caps classical forgery security at 128 bits, far below the specification's Table 5 minima of 263 and 522 bits for DOVE-256 and DOVE-512. DOVE-128 is not below its claimed 128-bit classical target through this attack; generic quantum collision search also remains above its stated 80-bit quantum target. Appending the salt after the attacker-controlled message would not stop this fixed-prefix collision. Preventing this security cap for the larger sets requires a target hash construction with a sufficiently wider internal state.</p>
+<p>No <code>2^128</code> collision search was attempted. The structural validator checks all four submitted classic/pkc_skc source copies, confirms that signing and verification hash <code>msg || seed_pk</code>, confirms that verification ignores the salt, and traces every XOF block to the 256-bit SM3 state and big-endian counter.</p>
+<h3 id="reproducing">Reproducing</h3>
+<p>Commands below run in a checkout of the <a href="https://github.com/ngcc-dev/ngcc-harness">ngcc-harness repository</a> with the candidate built (see its README).</p>
+<pre><code class="language-sh">make -C sign-09 exploit
+</code></pre>
+</main>
+<footer class="site-footer">
+<p>Updated 2026-09-22 16:51:04 UTC · Maintained by: <a href="mailto:markku-juhani.saarinen@tuni.fi">markku-juhani.saarinen@tuni.fi</a></p>
+<p>Submissions are welcome via <a href="https://github.com/ngcc-dev/ngcc-harness/issues">GitHub issues</a>.</p>
+</footer>
+</body>
+</html>

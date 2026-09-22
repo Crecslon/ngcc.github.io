@@ -1,4 +1,4 @@
-<!-- synced from ngcc1/kex-02/report.md -->
+<!-- synchronized report: kex-02/report.md -->
 Candidate: AFS-KEX
 Family: Lattice (Module-LWE AKE)
 Archive: [AFS-KEX.zip](https://www.niccs.org.cn/niccs/Proposal/Public-Key%20Cryptographic%20Algorithms/Round%201%20candidates/AFS-KEX.zip) (SHA-256: `7d902107b74870e512c84da82c6bfb386633ca864ddc7df2f7b0b183511f983a`)

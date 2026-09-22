@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>YuanYang.KEM (kem-40) · ngcc.dev</title>
+<link rel="stylesheet" href="../assets/style.css?v=8c137f6d">
+</head>
+<body>
+<header class="site-header">
+<a class="brand" href="../index.html">ngcc.dev</a>
+<nav><a href="../index.html">Home</a><a href="../reports/index.html">Reports</a></nav>
+</header>
+<main>
+<p class="crumb"><a href="../reports/index.html">Reports</a> › <code>kem-40</code></p>
+
+<h1 id="yuanyangkem-kem-40">YuanYang.KEM (kem-40)</h1>
+<div class="table-wrap"><table class="meta">
+<tr><th>Candidate</th><td>YuanYang.KEM</td></tr>
+<tr><th>Family</th><td>Lattice (NTRU)</td></tr>
+<tr><th>Archive</th><td><a href="https://www.niccs.org.cn/niccs/Proposal/Public-Key%20Cryptographic%20Algorithms/Round%201%20candidates/YuanYang.KEM.zip">YuanYang.KEM.zip</a> (SHA-256: <code>fe1bf3d78272bb79048e7d456819160324c6140206798cb77a22c2babcfdcf4a</code>)</td></tr>
+</table></div>
+
+<h2 class="issue-heading issue-heading-first" id="kem-40-1-encryption-discards-the-specified-error-polynomial">kem-40-1: Encryption discards the specified error polynomial</h2>
+
+<div class="table-wrap"><table class="meta issue-meta">
+<tr><th>Classification</th><td><span class="sev sev-medium">Medium / implementation</span></td></tr>
+<tr><th>Status</th><td><span class="issue-status status-confirmed">Confirmed</span></td></tr>
+<tr><th>Affected</th><td>Reference implementation, all three parameter sets</td></tr>
+<tr><th>Discovery</th><td>Trivial</td></tr>
+<tr><th>Exploitation</th><td>Security-proof gap; no complete attack demonstrated</td></tr>
+<tr><th>Credit</th><td>Yijian Liu (archive sender <code>Yijian_Liu</code>)</td></tr>
+<tr><th>Date</th><td>2026-09-22</td></tr>
+</table></div>
+<p>Original source: <a href="https://list.niccs.org.cn/archives/list/pkcforum@list.niccs.org.cn/message/FXRFQBH243BPG4XMEBKRPWCAQVGINRWF/">NGCC PKC Forum report</a></p>
+<p>Algorithm 3 specifies <code>c_bar = h*s + e + m*p^-1 mod q</code>, and the IND-CPA proof invokes decisional Ring-LWE for <code>(h, h*s+e)</code>. Every submitted <code>yy_encrypt</code> samples both <code>s</code> and <code>e</code>, but computes the ciphertext from <code>h*s</code> and the encoded message without ever reading <code>e</code> again.</p>
+<p>This confirms Yijian Liu's <a href="https://list.niccs.org.cn/archives/list/pkcforum@list.niccs.org.cn/message/FXRFQBH243BPG4XMEBKRPWCAQVGINRWF/">mailing-list report</a>. The shipped ciphertext distribution is not the distribution analyzed by the proof or the failure calculation. Omitting <code>e</code> is not by itself a demonstrated message-recovery attack—classical NTRU encryption can use a single ephemeral short polynomial—but the submitted implementation cannot claim the stated Ring-LWE reduction without a new analysis.</p>
+<h3 id="reproducing">Reproducing</h3>
+<p>Commands below run in a checkout of the <a href="https://github.com/ngcc-dev/ngcc-harness">ngcc-harness repository</a> with the candidate built (see its README).</p>
+<pre><code class="language-sh">python3 kem-40/reproduce_unused_error.py
+</code></pre>
+<p>The static witness checks all three independent implementation copies and fails unless <code>e</code> is sampled and then absent from the remainder of <code>yy_encrypt</code>.</p>
+</main>
+<footer class="site-footer">
+<p>Updated 2026-09-22 16:51:04 UTC · Maintained by: <a href="mailto:markku-juhani.saarinen@tuni.fi">markku-juhani.saarinen@tuni.fi</a></p>
+<p>Submissions are welcome via <a href="https://github.com/ngcc-dev/ngcc-harness/issues">GitHub issues</a>.</p>
+</footer>
+</body>
+</html>

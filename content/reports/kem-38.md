@@ -1,4 +1,4 @@
-<!-- synced from ngcc1/kem-38/report.md -->
+<!-- synchronized report: kem-38/report.md -->
 Candidate: UVW Key Encapsulation Mechanism
 Family: Code-based
 Archive: [UVW-KEM.zip](https://www.niccs.org.cn/niccs/Proposal/Public-Key%20Cryptographic%20Algorithms/Round%201%20candidates/UVW-KEM.zip) (SHA-256: `f9a1b135ea16aca0c974861732e03cd3164f1288f33ff150ff66c98326b75bcb`)

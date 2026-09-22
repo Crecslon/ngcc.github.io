@@ -1,4 +1,4 @@
-<!-- synced from ngcc1/kem-23/report.md -->
+<!-- synchronized report: kem-23/report.md -->
 Candidate: Mito
 Family: Code-based
 Archive: [Mito.zip](https://www.niccs.org.cn/niccs/Proposal/Public-Key%20Cryptographic%20Algorithms/Round%201%20candidates/Mito.zip) (SHA-256: `ee11788a3e8bf8653d18ade6580c47a331b91e7eac3e31a5a6750a4b4cfb827b`)

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tins (sign-29) · ngcc.dev</title>
+<link rel="stylesheet" href="../assets/style.css?v=8c137f6d">
+</head>
+<body>
+<header class="site-header">
+<a class="brand" href="../index.html">ngcc.dev</a>
+<nav><a href="../index.html">Home</a><a href="../reports/index.html">Reports</a></nav>
+</header>
+<main>
+<p class="crumb"><a href="../reports/index.html">Reports</a> › <code>sign-29</code></p>
+
+<h1 id="tins-sign-29">Tins (sign-29)</h1>
+<div class="table-wrap"><table class="meta">
+<tr><th>Candidate</th><td>Tins</td></tr>
+<tr><th>Family</th><td>Multivariate (MPC-in-the-head)</td></tr>
+<tr><th>Archive</th><td><a href="https://www.niccs.org.cn/niccs/Proposal/Public-Key%20Cryptographic%20Algorithms/Round%201%20candidates/Tins.zip">Tins.zip</a> (SHA-256: <code>84affc1f7cbdeec48a7cb6df3349b5708644672f2ac12140c529e74f6d57ca21</code>)</td></tr>
+</table></div>
+
+<h2 class="issue-heading issue-heading-first" id="sign-29-1-one-signature-reveals-the-complete-signing-witness">sign-29-1: One signature reveals the complete signing witness</h2>
+
+<div class="table-wrap"><table class="meta issue-meta">
+<tr><th>Classification</th><td><span class="sev sev-critical">Critical / design</span></td></tr>
+<tr><th>Status</th><td><span class="issue-status status-confirmed">Confirmed</span></td></tr>
+<tr><th>Affected</th><td>Tins128, Tins256, and Tins512</td></tr>
+<tr><th>Discovery</th><td>Non-trivial</td></tr>
+<tr><th>Exploitation</th><td>One signature and binary Gaussian elimination on at most 1,044 unknowns</td></tr>
+<tr><th>Credit</th><td>Tianyuan Xie</td></tr>
+<tr><th>Date</th><td>2026-09-22</td></tr>
+</table></div>
+<p>Original source: <a href="https://list.niccs.org.cn/archives/list/pkcforum@list.niccs.org.cn/message/ECMH3PMGM2NWJG4JIBQBCKQ6U5CBUDDA/">NGCC PKC Forum report</a></p>
+<p>Tianyuan Xie reported the attack in the <a href="https://list.niccs.org.cn/archives/list/pkcforum@list.niccs.org.cn/message/ECMH3PMGM2NWJG4JIBQBCKQ6U5CBUDDA/">NGCC PKC Forum</a>. Tins masks its binary witness <code>(alpha,beta)</code> with vectors over the 12-bit subfield, while publishing <code>p_mid</code> in <code>GF(2^k)</code>. After substituting the verifier-reconstructed evaluations into <code>p_mid</code>, the bilinear witness terms cancel in characteristic two. Only a 12-bit additive mask remains, confined to the final subfield coefficient.</p>
+<p>Every execution therefore exposes <code>k-12</code> public binary equations in the <code>2(n-2)</code> witness bits. Two executions from one signature have full rank for each submitted set: the reported ranks after the first and second executions are 264 then 276, 516 then 532, and 1,032 then 1,044. Recovering the witness is deterministic and inexpensive; the witness satisfies the public NSBC relation and can run the specified signer on arbitrary messages, violating EUF-CMA.</p>
+<p>The local reproducer independently performs the attack on a fresh Tins128 key and signature. It uses only the public key and signature after signing, obtains rank 276/276 from two executions, and validates the recovered witness against the public relation. Xie additionally reports end-to-end accepted forgeries on all three sets and exact recovery from all ten usable Tins128 and Tins256 KAT signatures.</p>
+<h3 id="reproducing">Reproducing</h3>
+<p>Commands below run in a checkout of the <a href="https://github.com/ngcc-dev/ngcc-harness">ngcc-harness repository</a> with the candidate built (see its README).</p>
+<pre><code class="language-sh">make -C sign-29 exploit
+</code></pre>
+</main>
+<footer class="site-footer">
+<p>Updated 2026-09-22 16:51:04 UTC · Maintained by: <a href="mailto:markku-juhani.saarinen@tuni.fi">markku-juhani.saarinen@tuni.fi</a></p>
+<p>Submissions are welcome via <a href="https://github.com/ngcc-dev/ngcc-harness/issues">GitHub issues</a>.</p>
+</footer>
+</body>
+</html>

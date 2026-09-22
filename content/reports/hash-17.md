@@ -1,4 +1,4 @@
-<!-- synced from ngcc1/hash-17/report.md -->
+<!-- synchronized report: hash-17/report.md -->
 Candidate: MasterCube
 Family: Symmetric (sponge, AndRX permutation)
 Archive: [MasterCube.zip](https://www.niccs.org.cn/niccs/Proposal/Cryptographic%20Hash%20Algorithms/Round%201%20candidates/MasterCube.zip) (SHA-256: `1f9773b8ece90152a6a9adc632a7112c9afc670a5d28b7f1e9ac111e5eea8f13`)
@@ -38,3 +38,36 @@ tools/ngcc_attack hash-collide-rate hash-17/lib/libMasterCube-512.so 959
 
 `tools/reproduce.sh` runs this together with the other supported runtime
 witnesses and their controls. See `tools/README.md`.
+
+## hash-17-2: The specified and implemented inverse rounds do not invert the forward round
+
+Severity: Medium
+Status: Confirmed
+Layer: Design
+Affected: Specification and reference/optimized implementations, all parameter sets
+Discovery: Moderate
+Exploitation: Construction and conformance failure; no collision demonstrated
+Credit: ISCAS (archive sender `Cryptanalysts001`)
+Date: 2026-09-22
+Original source: [CryptHashForum report](https://list.niccs.org.cn/archives/list/crypthashforum@list.niccs.org.cn/message/2XVZUBVVMVXYKMSOBJOKY2IFHFMQUNEK/)
+
+As [reported on the CryptHash mailing list](https://list.niccs.org.cn/archives/list/crypthashforum@list.niccs.org.cn/message/2XVZUBVVMVXYKMSOBJOKY2IFHFMQUNEK/), the inverse in Algorithm 2 does not invert the published forward round, and the implementation differs from Algorithm 2 but still fails the inverse identity. In the code, the nonlinear calls are already reversed correctly, yet an extra exchange of the two slices remains; additionally, the forward `MixColumns` is reused although its inverse is `J MixColumns J`, where `J` exchanges the slices.
+
+This matters to the complete hash: MasterCube's `Cube-f` transformation XORs the forward branch with a branch explicitly designed and analyzed as its inverse, while the reference and optimized hashing paths execute the defective branch. Correcting the two operations changes the transformation and resulting digests. The finding invalidates conformance and the submitted security rationale, but it does not establish noninjectivity of the forward permutation or by itself give a hash collision or preimage attack.
+
+### Reproducing
+
+The witness uses the submitted MasterCube-512 round functions. On the mailing-list state `(left,right)=(1,0)`, a forward round followed by the submitted inverse returns `(0,1)`; the corrected inverse returns the input exactly.
+
+```sh
+cc -O2 -std=c99 -Ihash-17/MasterCube/Implementations/Reference_Implementation/MasterCube-512 \
+  hash-17/reproduce_inverse.c -o /tmp/mastercube-inverse
+/tmp/mastercube-inverse
+```
+
+Expected output:
+
+```text
+CONFIRMED: forward round followed by submitted inverse swaps the slices
+CONTROL: corrected inverse recovers the input exactly
+```

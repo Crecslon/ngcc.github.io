@@ -86,9 +86,29 @@ witnesses and their controls. See <code>tools/README.md</code>.</p>
 <pre><code class="language-sh">tools/reproduce.sh kem-17
 </code></pre>
 <p>It reports identical first public-key, ciphertext, and shared-secret digests for HEP-QC. The Aigis-Enc+ control differs across the two seeds.</p>
+<h2 class="issue-heading" id="kem-17-4-public-column-multiplicities-break-the-epc-p-assumption">kem-17-4: Public column multiplicities break the EPC-P assumption</h2>
+
+<div class="table-wrap"><table class="meta issue-meta">
+<tr><th>Classification</th><td><span class="sev sev-high">High / design</span></td></tr>
+<tr><th>Status</th><td><span class="issue-status status-confirmed">Confirmed</span></td></tr>
+<tr><th>Affected</th><td>All four HEP-QC parameter sets</td></tr>
+<tr><th>Discovery</th><td>Moderate</td></tr>
+<tr><th>Exploitation</th><td>Linear-time distinguishing; claimed structure recovery takes seconds to minutes</td></tr>
+<tr><th>Credit</th><td>Tianyuan Xie</td></tr>
+<tr><th>Date</th><td>2026-09-22</td></tr>
+</table></div>
+<p>Original source: <a href="https://list.niccs.org.cn/archives/list/pkcforum@list.niccs.org.cn/message/XQ3A3A3IGNRQDLEQ6BD73ENALBGSDEO6/">NGCC PKC Forum report</a></p>
+<p>HEP-QC repeats every column of its inner Reed–Muller generator <code>MULT = n2/128</code> times before applying row mixing and a column permutation. Those operations preserve equality. The public matrix <code>G'</code> therefore has exactly <code>n1*128</code> column classes of multiplicity <code>MULT</code> and 64 singleton columns, whereas a uniform matrix has no repeated columns except with negligible probability. This gives a public, linear-time distinguisher with advantage essentially one and directly falsifies the EPC-P assumption used by the specification's first security bound.</p>
+<p>Tianyuan Xie's <a href="https://list.niccs.org.cn/archives/list/pkcforum@list.niccs.org.cn/message/XQ3A3A3IGNRQDLEQ6BD73ENALBGSDEO6/">mailing-list analysis</a> additionally reports recovery of the affine blocks and exact secret transformation <code>T</code> on 35/35 official keys. The remaining frame-label searches are estimated at <code>2^84.1</code>, <code>2^131.0</code>, and <code>2^198.7</code> for HEP-QC-1, -3, and -5, below their 128-, 192-, and 256-bit claims. The public attachment reproduces the distinguisher, but not the full transformation recovery, so those residual key-recovery costs are less independently reproducible than the confirmed EPC-P break.</p>
+<h3 id="reproducing_3">Reproducing</h3>
+<p>Commands below run in a checkout of the <a href="https://github.com/ngcc-dev/ngcc-harness">ngcc-harness repository</a> with the candidate built (see its README).</p>
+<pre><code class="language-sh">make -C kem-17 lib/libhep-qc-1.so
+python3 kem-17/reproduce_epcp_fingerprint.py
+</code></pre>
+<p>On a freshly generated official HEP-QC-1 key, this prints <code>3^5888 + 1^64</code>; its uniform-matrix control prints <code>1^17728</code>.</p>
 </main>
 <footer class="site-footer">
-<p>Updated 2026-09-22 08:11:45 UTC · Maintained by: <a href="mailto:markku-juhani.saarinen@tuni.fi">markku-juhani.saarinen@tuni.fi</a></p>
+<p>Updated 2026-09-22 16:51:04 UTC · Maintained by: <a href="mailto:markku-juhani.saarinen@tuni.fi">markku-juhani.saarinen@tuni.fi</a></p>
 <p>Submissions are welcome via <a href="https://github.com/ngcc-dev/ngcc-harness/issues">GitHub issues</a>.</p>
 </footer>
 </body>

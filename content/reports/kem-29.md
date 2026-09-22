@@ -1,4 +1,4 @@
-<!-- synced from ngcc1/kem-29/report.md -->
+<!-- synchronized report: kem-29/report.md -->
 Candidate: Polar-KEM
 Family: Lattice (polar-code-defined)
 Archive: [Polar-KEM.zip](https://www.niccs.org.cn/niccs/Proposal/Public-Key%20Cryptographic%20Algorithms/Round%201%20candidates/Polar-KEM.zip) (SHA-256: `3ae9d4f1a717fb473e76447014d585cd5d14fe38728f02b1a044cc6a2d03e16d`)
