@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TRIKE (kem-36) · ngcc.dev</title>
+<link rel="stylesheet" href="../assets/style.css?v=0289cbf1">
+</head>
+<body>
+<header class="site-header">
+<a class="brand" href="../index.html">ngcc.dev</a>
+<nav><a href="../index.html">Home</a><a href="../reports/index.html">Reports</a></nav>
+</header>
+<main>
+<p class="crumb"><a href="../reports/index.html">Reports</a> › <code>kem-36</code></p>
+
+<h1 id="trike-kem-36">TRIKE (kem-36)</h1>
+<div class="table-wrap"><table class="meta">
+<tr><th>Candidate</th><td>TRIKE</td></tr>
+<tr><th>Family</th><td>Code-based</td></tr>
+<tr><th>Archive</th><td><a href="https://www.niccs.org.cn/niccs/Proposal/Public-Key%20Cryptographic%20Algorithms/Round%201%20candidates/TRIKE.zip">TRIKE.zip</a> (SHA-256: <code>03956a13fde3d402513bfcf9942f2b04fd23e98b01a3dc52b48938b9c89fe4d6</code>)</td></tr>
+</table></div>
+
+<h2 class="issue-heading issue-heading-first" id="kem-36-1-the-specified-trike-decoder-rejects-every-tested-honest-ciphertext">kem-36-1: The specified TRIKE decoder rejects every tested honest ciphertext</h2>
+
+<div class="table-wrap"><table class="meta issue-meta">
+<tr><th>Classification</th><td><span class="sev sev-high">High / design</span></td></tr>
+<tr><th>Status</th><td><span class="issue-status status-confirmed">Confirmed</span></td></tr>
+<tr><th>Affected</th><td>TRIKE specification; all four implementations use a different rule</td></tr>
+<tr><th>Discovery</th><td>Trivial</td></tr>
+<tr><th>Exploitation</th><td>Trivial correctness failure for the specified algorithm</td></tr>
+<tr><th>Credit</th><td>Markku-Juhani O. Saarinen <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#109;&#97;&#114;&#107;&#107;&#117;&#45;&#106;&#117;&#104;&#97;&#110;&#105;&#46;&#115;&#97;&#97;&#114;&#105;&#110;&#101;&#110;&#64;&#116;&#117;&#110;&#105;&#46;&#102;&#105;">&#109;&#97;&#114;&#107;&#107;&#117;&#45;&#106;&#117;&#104;&#97;&#110;&#105;&#46;&#115;&#97;&#97;&#114;&#105;&#110;&#101;&#110;&#64;&#116;&#117;&#110;&#105;&#46;&#102;&#105;</a>, with AI assistance</td></tr>
+<tr><th>Date</th><td>2026-09-21</td></tr>
+</table></div>
+
+<p>TRIKE's PDF defines the bit-flipping threshold as <code>max(Tnow,T′)</code>, repeats that return value in Algorithm 8, and explains that the decoder uses the larger threshold. Every submitted implementation instead computes <code>min(Tnow,T′)</code>.</p>
+<p>The difference is decisive. In a paired whole-KEM test where the libraries differed only in this expression, the shipped <code>min</code> decoder recovered 1,000/1,000 honest TRIKE-2 shared secrets. The literal PDF <code>max</code> decoder recovered 0/1,000: the API still returned success, but every derived shared secret was wrong. Hence the specified scheme is nonfunctional, while the implementation and its KATs instantiate a materially different decoder. Any DFR claim must identify and analyze the actual rule.</p>
+<h3 id="reproducing">Reproducing</h3>
+<p>Commands below run in a checkout of the <a href="https://github.com/ngcc-dev/ngcc-harness">ngcc-harness repository</a> with the candidate built (see its README).</p>
+<pre><code class="language-sh">make -C kem-36 lib/libTRIKE-2.so
+python3 security/trike_threshold_differential.py --trials 1000
+</code></pre>
+<p>The script builds an isolated copy with the literal PDF expression and compares both complete KEMs on identical deterministic trials.</p>
+</main>
+<footer class="site-footer">
+<p>Updated 2026-09-22 07:49:17 UTC · Maintained by: <a href="mailto:markku-juhani.saarinen@tuni.fi">markku-juhani.saarinen@tuni.fi</a></p>
+<p>Submissions are welcome via <a href="https://github.com/ngcc-dev/ngcc-harness/issues">GitHub issues</a>.</p>
+</footer>
+</body>
+</html>

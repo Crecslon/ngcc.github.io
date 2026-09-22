@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>CS (sign-07) · ngcc.dev</title>
-<link rel="stylesheet" href="../assets/style.css?v=27c401c5">
+<link rel="stylesheet" href="../assets/style.css?v=0289cbf1">
 </head>
 <body>
 <header class="site-header">
@@ -45,9 +45,38 @@ tools/ngcc_attack sig-malleable sign-07/lib/libCS-128.so
 </code></pre>
 <p><code>tools/reproduce.sh</code> runs this together with the other supported runtime
 witnesses and their controls. See <code>tools/README.md</code>.</p>
+<h2 class="issue-heading" id="sign-07-2-verifier-challenge-sign-blindness-enables-universal-forgery">sign-07-2: Verifier challenge-sign blindness enables universal forgery</h2>
+
+<div class="table-wrap"><table class="meta issue-meta">
+<tr><th>Classification</th><td><span class="sev sev-high">High / design</span></td></tr>
+<tr><th>Status</th><td><span class="issue-status status-confirmed">Confirmed</span></td></tr>
+<tr><th>Affected</th><td>CS-128, CS-256, and CS-512</td></tr>
+<tr><th>Discovery</th><td>Non-trivial</td></tr>
+<tr><th>Exploitation</th><td>Approximately 2^108.08, 2^212.46, and 2^394.18 hash trials, respectively</td></tr>
+<tr><th>Credit</th><td>Kris Kwiatkowski <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#99;&#111;&#110;&#116;&#97;&#99;&#116;&#64;&#97;&#109;&#111;&#110;&#103;&#98;&#121;&#116;&#101;&#115;&#46;&#99;&#111;&#109;">&#99;&#111;&#110;&#116;&#97;&#99;&#116;&#64;&#97;&#109;&#111;&#110;&#103;&#98;&#121;&#116;&#101;&#115;&#46;&#99;&#111;&#109;</a></td></tr>
+<tr><th>Date</th><td>2026-09-21</td></tr>
+</table></div>
+
+<p>CS samples a weight-<code>tau</code> challenge over <code>{0,+1,-1}</code> and credits all <code>tau</code> sign bits in its challenge-entropy calculation. In both specification Algorithm 12 and <code>CS_Verify</code>, however, the challenge reaches verification only through parity: the <code>-q*c</code> term is identical for <code>+1</code> and <code>-1</code> modulo <code>2q</code>, and the other hash input retains only <code>LSB(z0-c)</code>. Verification therefore sees the challenge support but not its signs.</p>
+<p>The verifier also imposes no independent weight or norm bound on the hint. For any chosen support, an attacker can set <code>z0=z1=0</code> and choose an encodable hint so that every norm and reconstruction check passes. Grinding the free hint until the hash selects that support costs <code>binomial(n,tau)</code>, rather than the <code>binomial(n,tau)*2^tau</code> challenge space used in Table 3. Independently recomputed costs are 108.08, 212.46, and 394.18 bits, below every claimed classical level; generic quantum search halves those exponents.</p>
+<p>The complete submitted-size grinds were not executed. The reproducer proves the free-transcript construction at every submitted parameter set and runs the same attack to completion on a scaled CS-128 instance with <code>tau</code> reduced from 23 to 3. Compensating <code>B0</code>, <code>B1</code>, <code>B2</code>, and <code>M0</code> adjustments preserve the <code>z0</code> and <code>z1</code> bounds and tighten the <code>z2'</code> bound from 2812 to 2521. The submitted verifier compiled with those scaled parameters accepted the forged signature without a signing query or secret key. Binding the challenge signs into a verifier-visible equation and bounding the hint are both necessary repairs.</p>
+<h3 id="reproducing_1">Reproducing</h3>
+<p>Commands below run in a checkout of the <a href="https://github.com/ngcc-dev/ngcc-harness">ngcc-harness repository</a> with the candidate built (see its README).</p>
+<p>The original reproducer was submitted in <a href="https://github.com/ngcc-dev/ngcc-harness/pull/1">ngcc-harness PR #1</a>.</p>
+<pre><code class="language-sh">make -C sign-07 libs exploit
+sign-07/forgery_CS-128-scaled-tau3 \
+  sign-07/lib/libCS-128-scaled-tau3.so --threads 4 --verbose
+sign-07/forgery_CS-128 sign-07/lib/libCS-128.so \
+  --control --threads 4 --trials 200000 --verbose
+sign-07/forgery_CS-256 sign-07/lib/libCS-256.so \
+  --control --threads 4 --trials 200000 --verbose
+sign-07/forgery_CS-512 sign-07/lib/libCS-512.so \
+  --control --threads 4 --trials 200000 --verbose
+</code></pre>
 </main>
 <footer class="site-footer">
-<p>Updated 2026-09-21 18:31:51 UTC · Maintained by: <a href="mailto:markku-juhani.saarinen@tuni.fi">markku-juhani.saarinen@tuni.fi</a></p>
+<p>Updated 2026-09-22 07:49:17 UTC · Maintained by: <a href="mailto:markku-juhani.saarinen@tuni.fi">markku-juhani.saarinen@tuni.fi</a></p>
+<p>Submissions are welcome via <a href="https://github.com/ngcc-dev/ngcc-harness/issues">GitHub issues</a>.</p>
 </footer>
 </body>
 </html>

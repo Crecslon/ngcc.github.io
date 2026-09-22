@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FlexTree (sign-11) · ngcc.dev</title>
+<link rel="stylesheet" href="../assets/style.css?v=0289cbf1">
+</head>
+<body>
+<header class="site-header">
+<a class="brand" href="../index.html">ngcc.dev</a>
+<nav><a href="../index.html">Home</a><a href="../reports/index.html">Reports</a></nav>
+</header>
+<main>
+<p class="crumb"><a href="../reports/index.html">Reports</a> › <code>sign-11</code></p>
+
+<h1 id="flextree-sign-11">FlexTree (sign-11)</h1>
+<div class="table-wrap"><table class="meta">
+<tr><th>Candidate</th><td>FlexTree</td></tr>
+<tr><th>Family</th><td>Hash-based (stateless)</td></tr>
+<tr><th>Archive</th><td><a href="https://www.niccs.org.cn/niccs/Proposal/Public-Key%20Cryptographic%20Algorithms/Round%201%20candidates/Flextree.zip">Flextree.zip</a> (SHA-256: <code>f31d434ac297ef6a8c454bf9d219f125290749de157df3eb90d29ae3b8a0270a</code>)</td></tr>
+</table></div>
+
+<h2 class="issue-heading issue-heading-first" id="sign-11-1-pors-counter-grinding-reduces-every-claimed-security-level">sign-11-1: PORS counter grinding reduces every claimed security level</h2>
+
+<div class="table-wrap"><table class="meta issue-meta">
+<tr><th>Classification</th><td><span class="sev sev-high">High / design</span></td></tr>
+<tr><th>Status</th><td><span class="issue-status status-confirmed">Confirmed</span></td></tr>
+<tr><th>Affected</th><td>All eight parameter sets</td></tr>
+<tr><th>Discovery</th><td>Moderate</td></tr>
+<tr><th>Exploitation</th><td>Approximately 2^134 to 2^489 work after 2^64 signing queries</td></tr>
+<tr><th>Credit</th><td>Mikhail Kudinov <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#109;&#105;&#115;&#104;&#101;&#108;&#46;&#107;&#117;&#100;&#105;&#110;&#111;&#118;&#64;&#103;&#109;&#97;&#105;&#108;&#46;&#99;&#111;&#109;">&#109;&#105;&#115;&#104;&#101;&#108;&#46;&#107;&#117;&#100;&#105;&#110;&#111;&#118;&#64;&#103;&#109;&#97;&#105;&#108;&#46;&#99;&#111;&#109;</a></td></tr>
+<tr><th>Date</th><td>2026-09-22</td></tr>
+</table></div>
+
+<p>FlexTree first derives the PORS instance from <code>HMSG(R, PK.seed, PK.root, msg)</code>, then searches a 32-bit counter in <code>HPORS(R, ctr, md)</code> until the selected subset passes forced pruning. Verification accepts any successful counter. An attacker can therefore keep the instance fixed while trying up to <code>2^32-1</code> different subsets, whereas the submitted bound models every trial as selecting a fresh random instance.</p>
+<p>At the unstated <code>q_sig = 2^64</code> budget that reproduces the specification's security table, an independent evaluation of the paper's raw attack gives 133.1, 128.9, 225.2, 224.2, 352.2, 352.0, 480.0, and 480.0 bits for the 160s through 512f sets. Accounting for repeated leaves and the forced-pruning condition raises these estimates but still leaves the claims overstated by approximately 20 to 32 bits.</p>
+<p>The repair is to bind the counter into the hash that selects the PORS instance, or require and verify the unique minimal acceptable counter.</p>
+<h3 id="reproducing">Reproducing</h3>
+<p>Commands below run in a checkout of the <a href="https://github.com/ngcc-dev/ngcc-harness">ngcc-harness repository</a> with the candidate built (see its README).</p>
+<pre><code class="language-sh">python3 security/flextree_kudinov_validation.py
+</code></pre>
+<h2 class="issue-heading" id="sign-11-2-the-specified-deterministic-mode-is-length-extendable">sign-11-2: The specified deterministic mode is length-extendable</h2>
+
+<div class="table-wrap"><table class="meta issue-meta">
+<tr><th>Classification</th><td><span class="sev sev-high">High / design</span></td></tr>
+<tr><th>Status</th><td><span class="issue-status status-confirmed">Confirmed</span></td></tr>
+<tr><th>Affected</th><td>Specified deterministic mode, all eight parameter sets; shipped hedged implementation is unaffected</td></tr>
+<tr><th>Discovery</th><td>Moderate</td></tr>
+<tr><th>Exploitation</th><td>Approximately 2^74.5 to 2^96 work, depending on the parameter set</td></tr>
+<tr><th>Credit</th><td>Mikhail Kudinov <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#109;&#105;&#115;&#104;&#101;&#108;&#46;&#107;&#117;&#100;&#105;&#110;&#111;&#118;&#64;&#103;&#109;&#97;&#105;&#108;&#46;&#99;&#111;&#109;">&#109;&#105;&#115;&#104;&#101;&#108;&#46;&#107;&#117;&#100;&#105;&#110;&#111;&#118;&#64;&#103;&#109;&#97;&#105;&#108;&#46;&#99;&#111;&#109;</a></td></tr>
+<tr><th>Date</th><td>2026-09-22</td></tr>
+</table></div>
+
+<p>The specification permits deterministic signing with <code>optRand = PK.seed</code> and defines <code>PRFMSG</code> as a raw secret-prefix SM3 construction rather than a PRF such as HMAC. For 160 and 256, <code>R</code> is a truncation of <code>SM3(SK.prf || PK.seed || M)</code>; for 384 and 512, its first block is <code>SM3(SK.prf || PK.seed || M || 1)</code>. Because SM3 is Merkle-Damgård, a signature reveals enough chaining state to predict the randomizer for suitable message extensions. The 160-bit sets require recovery of the 96 truncated state bits; the other sets disclose a full state.</p>
+<p>The predictable randomizer lets a chosen-message attacker determine the PORS/XMSS instance of an extension before requesting its signature, then combine chosen-instance accumulation with counter grinding. Kudinov estimates total costs between <code>2^74.5</code> and <code>2^79.4</code> for the 256-, 384-, and 512-bit sets and <code>2^96</code> for both 160-bit sets, all below their claims.</p>
+<p>The submitted code always draws fresh <code>optRand</code>, so this is a break of the normative deterministic option rather than the shipped hedged mode. <code>PRFMSG</code> should use HMAC-SM3 or another prefix-free PRF construction.</p>
+<h3 id="reproducing_1">Reproducing</h3>
+<p>Commands below run in a checkout of the <a href="https://github.com/ngcc-dev/ngcc-harness">ngcc-harness repository</a> with the candidate built (see its README).</p>
+<pre><code class="language-sh">python3 security/flextree_kudinov_validation.py
+</code></pre>
+<p>This confirms the raw secret-prefix construction, the counter-mode XOF, and the
+shipped implementation's hedged-only path. It does not reproduce the optimized
+attack cost or the end-to-end witness, which is not part of this repository.</p>
+<h2 class="issue-heading" id="sign-11-3-the-specified-ots-verifier-omits-its-encoding-checks">sign-11-3: The specified OTS verifier omits its encoding checks</h2>
+
+<div class="table-wrap"><table class="meta issue-meta">
+<tr><th>Classification</th><td><span class="sev sev-critical">Critical / design</span></td></tr>
+<tr><th>Status</th><td><span class="issue-status status-confirmed">Confirmed</span></td></tr>
+<tr><th>Affected</th><td>Specification-conformant verifiers, all parameter sets; submitted verifier is unaffected</td></tr>
+<tr><th>Discovery</th><td>Trivial</td></tr>
+<tr><th>Exploitation</th><td>About 2^40.4 work for a full FlexTree-160s forgery</td></tr>
+<tr><th>Credit</th><td>Mikhail Kudinov <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#109;&#105;&#115;&#104;&#101;&#108;&#46;&#107;&#117;&#100;&#105;&#110;&#111;&#118;&#64;&#103;&#109;&#97;&#105;&#108;&#46;&#99;&#111;&#109;">&#109;&#105;&#115;&#104;&#101;&#108;&#46;&#107;&#117;&#100;&#105;&#110;&#111;&#118;&#64;&#103;&#109;&#97;&#105;&#108;&#46;&#99;&#111;&#109;</a></td></tr>
+<tr><th>Date</th><td>2026-09-22</td></tr>
+</table></div>
+
+<p>Algorithm 9 accepts an OTS digest only when its leading <code>zb</code> bits are zero and its digit vector has the required constant sum. Algorithm 10 and the abstract verifier in Construction 1 recompute the digits but enforce neither condition. Without those checks, the claimed incomparable encoding becomes an ordinary checksum-free Winternitz encoding.</p>
+<p>Given one OTS signature with digits <code>x</code>, an attacker searches for a target digest whose digits <code>x'</code> satisfy <code>x' &gt;= x</code> componentwise, then advances every disclosed chain by <code>x'-x</code>. Independent generating-function calculations reproduce Kudinov's per-trial costs of <code>2^33.35</code> through <code>2^128</code> for all eight specified parameter sets. Reusing the top XMSS signature and freely choosing the lower signature material adds the seven-bit top-layer leaf match for FlexTree-160s, giving about <code>2^(33.35+7) = 2^40.4</code> work. The analogous estimate for 160f is about <code>2^(47.25+3) = 2^50.3</code>.</p>
+<p>The submitted <code>wots_pk_from_sig</code> does perform both checks, so existing binaries are not affected. The normative verifier must explicitly enforce the zero-bit and constant-sum conditions.</p>
+<h3 id="reproducing_2">Reproducing</h3>
+<p>Commands below run in a checkout of the <a href="https://github.com/ngcc-dev/ngcc-harness">ngcc-harness repository</a> with the candidate built (see its README).</p>
+<pre><code class="language-sh">python3 security/flextree_kudinov_validation.py
+</code></pre>
+<h2 class="issue-heading" id="sign-11-4-a-256-bit-sm3-state-caps-the-384-and-512-bit-sets">sign-11-4: A 256-bit SM3 state caps the 384- and 512-bit sets</h2>
+
+<div class="table-wrap"><table class="meta issue-meta">
+<tr><th>Classification</th><td><span class="sev sev-critical">Critical / design</span></td></tr>
+<tr><th>Status</th><td><span class="issue-status status-confirmed">Confirmed</span></td></tr>
+<tr><th>Affected</th><td>FlexTree-384s/f and FlexTree-512s/f</td></tr>
+<tr><th>Discovery</th><td>Trivial</td></tr>
+<tr><th>Exploitation</th><td>At most 2^256 classical or 2^128 quantum preimage work</td></tr>
+<tr><th>Credit</th><td>Mikhail Kudinov <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#109;&#105;&#115;&#104;&#101;&#108;&#46;&#107;&#117;&#100;&#105;&#110;&#111;&#118;&#64;&#103;&#109;&#97;&#105;&#108;&#46;&#99;&#111;&#109;">&#109;&#105;&#115;&#104;&#101;&#108;&#46;&#107;&#117;&#100;&#105;&#110;&#111;&#118;&#64;&#103;&#109;&#97;&#105;&#108;&#46;&#99;&#111;&#109;</a></td></tr>
+<tr><th>Date</th><td>2026-09-22</td></tr>
+</table></div>
+
+<p>The 384- and 512-bit parameter sets expand SM3's 256-bit state with a counter-mode XOF. Longer output does not increase the internal state: a state collision extends to every output block, and generic preimage security remains capped at 256 classical bits and 128 quantum bits. These sets therefore cannot provide the 384/192 and 512/256 classical/quantum strengths printed in Table 1.3.</p>
+<p>The specification acknowledges on page 45 that the SM3 instantiations may not reach their named levels, but still presents those levels as the parameter sets' security strengths. Meeting them requires a primitive with a sufficiently large internal state, not merely a longer XOF output.</p>
+<h3 id="reproducing_3">Reproducing</h3>
+<p>Commands below run in a checkout of the <a href="https://github.com/ngcc-dev/ngcc-harness">ngcc-harness repository</a> with the candidate built (see its README).</p>
+<pre><code class="language-sh">python3 security/flextree_kudinov_validation.py
+</code></pre>
+<p>The script checks the submitted counter-mode SM3 construction and the affected
+parameter widths. This is a source/parameter check, not a brute-force attack.</p>
+<h2 class="issue-heading" id="sign-11-5-unchecked-pors-padding-makes-signatures-malleable">sign-11-5: Unchecked PORS padding makes signatures malleable</h2>
+
+<div class="table-wrap"><table class="meta issue-meta">
+<tr><th>Classification</th><td><span class="sev sev-medium">Medium / design</span></td></tr>
+<tr><th>Status</th><td><span class="issue-status status-confirmed">Confirmed</span></td></tr>
+<tr><th>Affected</th><td>All parameter sets</td></tr>
+<tr><th>Discovery</th><td>Trivial</td></tr>
+<tr><th>Exploitation</th><td>Trivial from one valid signature</td></tr>
+<tr><th>Credit</th><td>Mikhail Kudinov <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#109;&#105;&#115;&#104;&#101;&#108;&#46;&#107;&#117;&#100;&#105;&#110;&#111;&#118;&#64;&#103;&#109;&#97;&#105;&#108;&#46;&#99;&#111;&#109;">&#109;&#105;&#115;&#104;&#101;&#108;&#46;&#107;&#117;&#100;&#105;&#110;&#111;&#118;&#64;&#103;&#109;&#97;&#105;&#108;&#46;&#99;&#111;&#109;</a></td></tr>
+<tr><th>Date</th><td>2026-09-22</td></tr>
+</table></div>
+
+<p>PORS signatures reserve space for <code>mMAX</code> authentication nodes and zero-pad the unused suffix. The verifier recomputes the actual node count and reads only those nodes; neither the specification nor the implementation requires the remaining bytes to be zero. Whenever padding is present, it can be changed freely without invalidating the signature.</p>
+<p>The existing 160f harness result is a direct witness: flipping bit 28911 at byte 3613 yields a byte-distinct signature that verifies for the same message and key. Source inspection places that byte in the unused PORS authentication-node suffix. This does not forge a new message and no explicit SUF-CMA claim was found, but it defeats canonical signatures and can break protocols that use a signature or its hash as an identifier.</p>
+<h3 id="reproducing_4">Reproducing</h3>
+<p>Commands below run in a checkout of the <a href="https://github.com/ngcc-dev/ngcc-harness">ngcc-harness repository</a> with the candidate built (see its README).</p>
+<pre><code class="language-sh">make -C sign-11 lib/libFlextree-160f.so
+security/ngcc_security sign-11/lib/libFlextree-160f.so sig-signature-flip
+</code></pre>
+<h2 class="issue-heading" id="sign-11-6-the-specified-pors-tree-reuses-leaf-hash-addresses">sign-11-6: The specified PORS tree reuses leaf hash addresses</h2>
+
+<div class="table-wrap"><table class="meta issue-meta">
+<tr><th>Classification</th><td><span class="sev sev-low">Low / design</span></td></tr>
+<tr><th>Status</th><td><span class="issue-status status-confirmed">Confirmed</span></td></tr>
+<tr><th>Affected</th><td>Specification-conformant implementations; submitted code is unaffected</td></tr>
+<tr><th>Discovery</th><td>Trivial</td></tr>
+<tr><th>Exploitation</th><td>One-bit generic multi-target loss and interoperability failure</td></tr>
+<tr><th>Credit</th><td>Mikhail Kudinov <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#109;&#105;&#115;&#104;&#101;&#108;&#46;&#107;&#117;&#100;&#105;&#110;&#111;&#118;&#64;&#103;&#109;&#97;&#105;&#108;&#46;&#99;&#111;&#109;">&#109;&#105;&#115;&#104;&#101;&#108;&#46;&#107;&#117;&#100;&#105;&#110;&#111;&#118;&#64;&#103;&#109;&#97;&#105;&#108;&#46;&#99;&#111;&#109;</a></td></tr>
+<tr><th>Date</th><td>2026-09-22</td></tr>
+</table></div>
+
+<p>Algorithms 17 and 21 hash a height-1 PORS leaf for secret index <code>i+s</code> with <code>(treeHeight=0, treeIndex=i)</code>. The same tweak is already used for height-0 leaf <code>i</code>, contrary to the specification's distinct-address requirement. Depending on the set, 516 to 95,017 tweaks per instance are reused for two independent secret values.</p>
+<p>The collision gives a one-bit generic multi-target advantage on that leaf-preimage path and invalidates the distinct-tweak premise invoked by the security discussion. It also prevents interoperability: the submitted code correctly uses global leaf index <code>i+s</code>, so a literal implementation of the algorithms computes a different PORS root whenever a height-1 leaf is revealed. Both algorithms should use <code>setTreeIndex(i+s)</code>.</p>
+<h3 id="reproducing_5">Reproducing</h3>
+<p>Commands below run in a checkout of the <a href="https://github.com/ngcc-dev/ngcc-harness">ngcc-harness repository</a> with the candidate built (see its README).</p>
+<pre><code class="language-sh">python3 security/flextree_kudinov_validation.py
+</code></pre>
+<p>The <code>reused-addresses</code> column recomputes the collision count for every set.</p>
+<h2 class="issue-heading" id="sign-11-7-the-implementation-leaves-1-to-4-ots-digest-bits-unchecked">sign-11-7: The implementation leaves 1 to 4 OTS digest bits unchecked</h2>
+
+<div class="table-wrap"><table class="meta issue-meta">
+<tr><th>Classification</th><td><span class="sev sev-low">Low / implementation</span></td></tr>
+<tr><th>Status</th><td><span class="issue-status status-confirmed">Confirmed</span></td></tr>
+<tr><th>Affected</th><td>Seven parameter sets; FlexTree-384s has no loss</td></tr>
+<tr><th>Discovery</th><td>Trivial</td></tr>
+<tr><th>Exploitation</th><td>Exact 1- to 4-bit reduction on the OTS digest path</td></tr>
+<tr><th>Credit</th><td>Mikhail Kudinov <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#109;&#105;&#115;&#104;&#101;&#108;&#46;&#107;&#117;&#100;&#105;&#110;&#111;&#118;&#64;&#103;&#109;&#97;&#105;&#108;&#46;&#99;&#111;&#109;">&#109;&#105;&#115;&#104;&#101;&#108;&#46;&#107;&#117;&#100;&#105;&#110;&#111;&#118;&#64;&#103;&#109;&#97;&#105;&#108;&#46;&#99;&#111;&#109;</a></td></tr>
+<tr><th>Date</th><td>2026-09-22</td></tr>
+</table></div>
+
+<p>The code derives OTS digits from the leading <code>8n-zb</code> digest bits but tests the high <code>zb</code> bits of the final byte. Those regions overlap for seven sets, leaving an equal number of other bits neither encoded nor checked. The effective matched lengths are 157, 159, 252, 255, 384, 382, 511, and 509 bits for 160s through 512f: losses of 3, 1, 4, 1, 0, 2, 1, and 3 bits.</p>
+<p>This is not the best known attack because <code>sign-11-1</code> is cheaper, and injectivity is not lost. It is nevertheless a concrete implementation-level shortfall from the claimed <code>8n</code>-bit OTS digest path. The verifier must check exactly the <code>zb</code> bits excluded from digit decoding.</p>
+<h3 id="reproducing_6">Reproducing</h3>
+<p>Commands below run in a checkout of the <a href="https://github.com/ngcc-dev/ngcc-harness">ngcc-harness repository</a> with the candidate built (see its README).</p>
+<pre><code class="language-sh">python3 security/flextree_kudinov_validation.py
+</code></pre>
+<h2 class="issue-heading" id="sign-11-8-complementary-constant-sum-rounding-breaks-interoperability">sign-11-8: Complementary constant-sum rounding breaks interoperability</h2>
+
+<div class="table-wrap"><table class="meta issue-meta">
+<tr><th>Classification</th><td><span class="sev sev-low">Low / design</span></td></tr>
+<tr><th>Status</th><td><span class="issue-status status-confirmed">Confirmed</span></td></tr>
+<tr><th>Affected</th><td>FlexTree-384f and FlexTree-512s specification/code interoperability</td></tr>
+<tr><th>Discovery</th><td>Trivial</td></tr>
+<tr><th>Exploitation</th><td>Deterministic interoperability failure; no security loss from the rounding alone</td></tr>
+<tr><th>Credit</th><td>Mikhail Kudinov <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#109;&#105;&#115;&#104;&#101;&#108;&#46;&#107;&#117;&#100;&#105;&#110;&#111;&#118;&#64;&#103;&#109;&#97;&#105;&#108;&#46;&#99;&#111;&#109;">&#109;&#105;&#115;&#104;&#101;&#108;&#46;&#107;&#117;&#100;&#105;&#110;&#111;&#118;&#64;&#103;&#109;&#97;&#105;&#108;&#46;&#99;&#111;&#109;</a></td></tr>
+<tr><th>Date</th><td>2026-09-22</td></tr>
+</table></div>
+
+<p>Algorithm 9, the Section 1.7 prose, and Construction 1 explicitly require the OTS digit sum to be <code>floor(sum_i(w_i-1)/2)</code>. The specified signer therefore terminates. For FlexTree-384f and FlexTree-512s, those digit sums are 1169 and 1565.</p>
+<p>The code's <code>chain_lengths</code> instead computes the complementary sum <code>sum_i(w_i-1-x_i)</code> and compares it with <code>WANTED_CHECKSUM</code> values 1169 and 1565. Consequently, the code accepts digit sums 1170 and 1566, the ceilings rather than the specified floors. A specification-conformant implementation and the submitted implementation therefore reject each other's OTS signatures for these two sets.</p>
+<p>The specification also leaves a “valid counter” predicate undefined, uses non-integral byte slices, disagrees with its tables about the <code>HPORS</code> argument order, and differs from the code's digit window and compressed-address encoding. These are additional interoperability defects, but the previously reported non-termination claim was incorrect.</p>
+<h3 id="reproducing_7">Reproducing</h3>
+<p>Commands below run in a checkout of the <a href="https://github.com/ngcc-dev/ngcc-harness">ngcc-harness repository</a> with the candidate built (see its README).</p>
+<pre><code class="language-sh">python3 security/flextree_kudinov_validation.py
+</code></pre>
+</main>
+<footer class="site-footer">
+<p>Updated 2026-09-22 07:49:17 UTC · Maintained by: <a href="mailto:markku-juhani.saarinen@tuni.fi">markku-juhani.saarinen@tuni.fi</a></p>
+<p>Submissions are welcome via <a href="https://github.com/ngcc-dev/ngcc-harness/issues">GitHub issues</a>.</p>
+</footer>
+</body>
+</html>

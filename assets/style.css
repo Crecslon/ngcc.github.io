@@ -89,6 +89,11 @@ table.meta th { width: 8rem; background: var(--head); font-weight: 600; white-sp
 table.meta td { word-break: break-word; }
 table.reports td.family { color: var(--muted); font-size: 0.85rem; }
 table.reports td[rowspan] { vertical-align: top; }
+table.reports td.report-spec { white-space: nowrap; text-align: center; }
+.report-no { display: inline-block; min-width: 1.5em; margin-right: 0.35rem; text-align: right; }
+.pdf-link { display: inline-block; padding: 0.05em 0.4em; border: 1px solid var(--link);
+  border-radius: 3px; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.03em; }
+.pdf-link:hover { background: var(--link); color: var(--bg); text-decoration: none; }
 .issue-heading { scroll-margin-top: 1rem; }
 .issue-heading:not(.issue-heading-first) {
   margin-top: 4rem;

@@ -29,6 +29,7 @@ CONTENT, DOCS, ASSETS = ROOT / "content", ROOT / "docs", ROOT / "assets"
 KEEP = {"CNAME", ".nojekyll"}          # never removed from docs/
 SITE = "ngcc.dev"
 HARNESS = "https://github.com/ngcc-dev/ngcc-harness"
+HARNESS_RAW = "https://raw.githubusercontent.com/ngcc-dev/ngcc-harness/main"
 MAINTAINER = "markku-juhani.saarinen@tuni.fi"
 UPDATED_UTC = datetime.datetime.now(datetime.UTC).replace(microsecond=0).strftime("%Y-%m-%d %H:%M:%S UTC")
 CATS = [("sign", "Signatures"), ("kem", "KEMs"), ("kex", "Key exchange"), ("hash", "Hash functions")]
@@ -73,6 +74,7 @@ TEMPLATE = """<!DOCTYPE html>
 </main>
 <footer class="site-footer">
 <p>Updated {updated} · Maintained by: <a href="mailto:{maintainer}">{maintainer}</a></p>
+<p>Submissions are welcome via <a href="{harness}/issues">GitHub issues</a>.</p>
 </footer>
 </body>
 </html>
@@ -258,11 +260,18 @@ def status_badge(status):
     return f'<span class="issue-status status-{css}">{html.escape(status.capitalize())}</span>'
 
 
+def spec_cell(c):
+    cid = c["id"]
+    href = f"{HARNESS_RAW}/{cid}/{cid}-spec.pdf"
+    return (f'<td class="report-spec"><span class="report-no">{c["no"]}</span>'
+            f'<a class="pdf-link" href="{href}" title="Open the {cid} specification PDF">PDF</a></td>')
+
+
 def reports_html(reports, cands, prefix):
     h = []
     for cat, label in CATS:
         h.extend([f'<h2 id="{cat}">{label}</h2>', '<table class="reports">',
-                  '<thead><tr><th>no.</th><th>candidate</th><th>family</th><th>classification</th><th>vulnerability</th></tr></thead><tbody>'])
+                  '<thead><tr><th>no. / spec</th><th>candidate</th><th>family</th><th>classification</th><th>vulnerability</th></tr></thead><tbody>'])
         for c in sorted((c for c in cands.values() if c["cat"] == cat), key=lambda c: c["no"]):
             cid, r = c["id"], reports.get(c["id"])
             family = (r["meta"].get("Family", "") if r else "") or c.get("family", "")
@@ -270,7 +279,7 @@ def reports_html(reports, cands, prefix):
                 name = html.escape(c["algorithm"])
                 href = html.escape(c.get("page", ""))
                 candidate = f'<a href="{href}">{name}</a>' if href else name
-                h.append(f'<tr><td>{c["no"]}</td><td>{candidate} <code>{cid}</code></td>'
+                h.append(f'<tr>{spec_cell(c)}<td>{candidate} <code>{cid}</code></td>'
                          f'<td class="family">{html.escape(family)}</td>'
                          f'<td class="st"><span class="sev sev-none">No report</span></td><td>—</td></tr>')
                 continue
@@ -284,7 +293,8 @@ def reports_html(reports, cands, prefix):
                               f'{html.escape(issue["title"])}</a></td>')
                 if i == 0:
                     span = len(r["issues"])
-                    h.append(f'<tr><td rowspan="{span}">{c["no"]}</td>'
+                    first_cell = spec_cell(c).replace('<td ', f'<td rowspan="{span}" ', 1)
+                    h.append(f'<tr>{first_cell}'
                              f'<td rowspan="{span}">{candidate}</td>'
                              f'<td rowspan="{span}" class="family">{html.escape(family)}</td>'
                              f'{classification}{issue_cell}</tr>')
@@ -406,7 +416,8 @@ def render(rel, cands, reports):
     out = DOCS / rel.with_suffix(".html")
     out.parent.mkdir(parents=True, exist_ok=True)
     head_title = SITE if title == SITE else f"{title} · {SITE}"
-    out.write_text(TEMPLATE.format(head_title=html.escape(head_title), site=SITE, css_ver=CSS_VER, prefix=prefix, nav=nav, body=body,
+    out.write_text(TEMPLATE.format(head_title=html.escape(head_title), site=SITE, harness=HARNESS,
+                                   css_ver=CSS_VER, prefix=prefix, nav=nav, body=body,
                                    updated=UPDATED_UTC, maintainer=MAINTAINER), encoding="utf-8")
 
 

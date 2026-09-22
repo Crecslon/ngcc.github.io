@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Facto-DSA (sign-10) · ngcc.dev</title>
+<link rel="stylesheet" href="../assets/style.css?v=0289cbf1">
+</head>
+<body>
+<header class="site-header">
+<a class="brand" href="../index.html">ngcc.dev</a>
+<nav><a href="../index.html">Home</a><a href="../reports/index.html">Reports</a></nav>
+</header>
+<main>
+<p class="crumb"><a href="../reports/index.html">Reports</a> › <code>sign-10</code></p>
+
+<h1 id="facto-dsa-sign-10">Facto-DSA (sign-10)</h1>
+<div class="table-wrap"><table class="meta">
+<tr><th>Candidate</th><td>Facto-DSA</td></tr>
+<tr><th>Family</th><td>Multivariate (cubic factorisation)</td></tr>
+<tr><th>Archive</th><td><a href="https://www.niccs.org.cn/niccs/Proposal/Public-Key%20Cryptographic%20Algorithms/Round%201%20candidates/Facto-DSA.zip">Facto-DSA.zip</a> (SHA-256: <code>b3de38fcc2d92ce83290d17cb250dde61f95d3326a49ada36fad3c578f2fc509</code>)</td></tr>
+</table></div>
+
+<h2 class="issue-heading issue-heading-first" id="sign-10-1-the-hidden-zero-subspace-has-an-unpriced-algebraic-recovery-path">sign-10-1: The hidden zero subspace has an unpriced algebraic recovery path</h2>
+
+<div class="table-wrap"><table class="meta issue-meta">
+<tr><th>Classification</th><td><span class="sev sev-high">High / design</span></td></tr>
+<tr><th>Status</th><td><span class="issue-status status-lead">Lead</span></td></tr>
+<tr><th>Affected</th><td>Facto-DSA-128, -256, and -512 security estimates</td></tr>
+<tr><th>Discovery</th><td>Non-trivial</td></tr>
+<tr><th>Exploitation</th><td>Full-size costs are extrapolated; approximately 2^55, 2^96, and 2^185 under the observed solving-degree model</td></tr>
+<tr><th>Credit</th><td>Kris Kwiatkowski <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#99;&#111;&#110;&#116;&#97;&#99;&#116;&#64;&#97;&#109;&#111;&#110;&#103;&#98;&#121;&#116;&#101;&#115;&#46;&#99;&#111;&#109;">&#99;&#111;&#110;&#116;&#97;&#99;&#116;&#64;&#97;&#109;&#111;&#110;&#103;&#98;&#121;&#116;&#101;&#115;&#46;&#99;&#111;&#109;</a></td></tr>
+<tr><th>Date</th><td>2026-09-22</td></tr>
+</table></div>
+
+<p>The specification prices recovery of one nonzero vector in <code>K2 = ker(L2)</code> as an unstructured <code>q^n</code> search. But <code>K2</code> is an <code>n</code>-dimensional linear subspace contained in the zero locus of the public homogeneous cubic map. A random <code>(n+1)</code>-dimensional linear subspace of the <code>2n</code>-dimensional ambient space must meet <code>K2</code> nontrivially. Restricting the public map to it therefore gives <code>m</code> cubic equations in <code>n</code> affine variables with a guaranteed rational solution, which can be attacked algebraically rather than by guessing ambient points.</p>
+<p>The submitted <code>build_public_key()</code> directly constructs <code>Q(L1*z)+R(L2*z)</code>, multiplies it by <code>Y=L2*z</code>, and applies the public output map <code>T</code>, confirming that the source has the structure used by the attack. The supplied specification-derived implementation reproduces the submitted parameter sizes and signing behavior, and confirms at full dimensions that <code>K2</code> has dimension <code>n</code> and the public map vanishes on it. Public-key-only reduced experiments recover the exact secret <code>K2</code> for <code>n=5,6,7</code>; the <code>n=7</code> instance reached solving degree 8 and completed in about 349 seconds in this review. Reduced <code>s=1</code> experiments then recover the coordinate separation, hidden quadratic space, symmetriser, and an equivalent triangular central map.</p>
+<p>If solving degree remains <code>n+1</code>, the specification's own cubic-linear-algebra model gives <code>3*log2(binomial(2n+1,n+1))</code>, or approximately 55.3, 96.2, and 184.9 bits. This is not yet a confirmed submitted-size break: the degree pattern is extrapolated, Facto-DSA-128 has the less-overdetermined <code>s=6</code> shape, no full-size solve was run, and the final rational-normal-curve/GRS container identification needed for a working forgery was not implemented. The result nevertheless invalidates treating <code>q^n</code> search as the only structural recovery model and warrants a new full-scale algebraic analysis.</p>
+<h3 id="reproducing">Reproducing</h3>
+<p>Commands below run in a checkout of the <a href="https://github.com/ngcc-dev/ngcc-harness">ngcc-harness repository</a> with the candidate built (see its README).</p>
+<p>The specification-derived attack code was submitted in <a href="https://github.com/ngcc-dev/ngcc-harness/pull/3">ngcc-harness PR #3</a>.</p>
+<pre><code class="language-sh">make -C sign-10/cryptanalysis
+make -C sign-10/cryptanalysis test
+
+# Optional larger reduced instance; about six minutes on the audit host.
+sign-10/cryptanalysis/build/attack1 7 12 1 12
+</code></pre>
+</main>
+<footer class="site-footer">
+<p>Updated 2026-09-22 07:49:17 UTC · Maintained by: <a href="mailto:markku-juhani.saarinen@tuni.fi">markku-juhani.saarinen@tuni.fi</a></p>
+<p>Submissions are welcome via <a href="https://github.com/ngcc-dev/ngcc-harness/issues">GitHub issues</a>.</p>
+</footer>
+</body>
+</html>

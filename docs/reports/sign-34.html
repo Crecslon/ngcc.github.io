@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>YuanYang.DSA (sign-34) · ngcc.dev</title>
+<link rel="stylesheet" href="../assets/style.css?v=0289cbf1">
+</head>
+<body>
+<header class="site-header">
+<a class="brand" href="../index.html">ngcc.dev</a>
+<nav><a href="../index.html">Home</a><a href="../reports/index.html">Reports</a></nav>
+</header>
+<main>
+<p class="crumb"><a href="../reports/index.html">Reports</a> › <code>sign-34</code></p>
+
+<h1 id="yuanyangdsa-sign-34">YuanYang.DSA (sign-34)</h1>
+<div class="table-wrap"><table class="meta">
+<tr><th>Candidate</th><td>YuanYang.DSA</td></tr>
+<tr><th>Family</th><td>Lattice-based (NTRU hash-and-sign)</td></tr>
+<tr><th>Archive</th><td><a href="https://www.niccs.org.cn/niccs/Proposal/Public-Key%20Cryptographic%20Algorithms/Round%201%20candidates/YuanYang.DSA.zip">YuanYang.DSA.zip</a> (SHA-256: <code>1eb45f24ad8f7ff25db923479c6500f273aee8b2470d76339030fed8d96b5b31</code>)</td></tr>
+</table></div>
+
+<h2 class="issue-heading issue-heading-first" id="sign-34-1-wrong-perturbation-covariance-leaks-secret-basis-information">sign-34-1: Wrong perturbation covariance leaks secret-basis information</h2>
+
+<div class="table-wrap"><table class="meta issue-meta">
+<tr><th>Classification</th><td><span class="sev sev-high">High / implementation</span></td></tr>
+<tr><th>Status</th><td><span class="issue-status status-confirmed">Confirmed</span></td></tr>
+<tr><th>Affected</th><td>YuanYang.DSA-512, -1024, and -2048 reference implementations</td></tr>
+<tr><th>Discovery</th><td>Non-trivial</td></tr>
+<tr><th>Exploitation</th><td>Key-dependent transcript distinguisher from a few thousand signatures; complete key recovery not demonstrated</td></tr>
+<tr><th>Credit</th><td>Kris Kwiatkowski <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#99;&#111;&#110;&#116;&#97;&#99;&#116;&#64;&#97;&#109;&#111;&#110;&#103;&#98;&#121;&#116;&#101;&#115;&#46;&#99;&#111;&#109;">&#99;&#111;&#110;&#116;&#97;&#99;&#116;&#64;&#97;&#109;&#111;&#110;&#103;&#98;&#121;&#116;&#101;&#115;&#46;&#99;&#111;&#109;</a></td></tr>
+<tr><th>Date</th><td>2026-09-22</td></tr>
+</table></div>
+
+<p>The specification represents the NTRU basis vectors as columns and requires perturbation covariance <code>Sigma_p = sigma^2 I - B_hat B_hat^*</code>. The implementation's <code>sigma_p_set_slot()</code> instead subtracts <code>B_hat^* B_hat</code>, the Gram matrix of those basis vectors. Since the two matrix products differ for this non-normal basis, the intended cancellation fails and leaves secret-dependent variance and cross-covariance in every signature.</p>
+<p>For each Fourier slot, the diagonal leakage predicts <code>Var(s1)=sigma_eff^2-|g|^2+|F_hat|^2</code> and the opposite deviation in <code>Var(s2)</code>. The off-diagonal covariance combines with that difference to expose an approximation to the slotwise ratio <code>f/g</code>. The public-data reproducer decodes only published signature bytes and never reads the secret key. On an independently generated YuanYang-512 key, 4,000 signatures produced a 7.4-sigma dispersion and a 2.23-fold slot-variance spread; a spherical control produced 1.0 sigma and a 1.08-fold spread. The faulty source is byte-identical across all three parameter sets.</p>
+<p>This confirms substantial key-dependent leakage and invalidates the claimed spherical-transcript simulation. It does not yet recover <code>(f,g)</code> or forge a signature: the proposed final rank-one module-lattice recovery has not been implemented, and the observed ratio estimate retains a systematic error floor. The implementation must subtract <code>B_hat B_hat^*</code>, and the repaired sampler must be revalidated statistically.</p>
+<h3 id="reproducing">Reproducing</h3>
+<p>Commands below run in a checkout of the <a href="https://github.com/ngcc-dev/ngcc-harness">ngcc-harness repository</a> with the candidate built (see its README).</p>
+<p>The public-data reproducer was submitted in <a href="https://github.com/ngcc-dev/ngcc-harness/pull/3">ngcc-harness PR #3</a>.</p>
+<pre><code class="language-sh">make -C sign-34 exploit
+sign-34/reproduce_transcript_leak sign-34/lib/libyuanyang-512.so 4000
+</code></pre>
+<p>The same run prints the <code>sign-34-2</code> packing witness; its 4,000-signature count
+is needed by the <code>sign-34-1</code> statistical test, not by this encoding check.</p>
+<h2 class="issue-heading" id="sign-34-2-non-injective-public-key-packing-creates-key-aliases">sign-34-2: Non-injective public-key packing creates key aliases</h2>
+
+<div class="table-wrap"><table class="meta issue-meta">
+<tr><th>Classification</th><td><span class="sev sev-medium">Medium / implementation</span></td></tr>
+<tr><th>Status</th><td><span class="issue-status status-confirmed">Confirmed</span></td></tr>
+<tr><th>Affected</th><td>YuanYang.DSA-512, -1024, and -2048 public-key encodings</td></tr>
+<tr><th>Discovery</th><td>Moderate</td></tr>
+<tr><th>Exploitation</th><td>Trivial transformation of an aliasable packed block</td></tr>
+<tr><th>Credit</th><td>Kris Kwiatkowski <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#99;&#111;&#110;&#116;&#97;&#99;&#116;&#64;&#97;&#109;&#111;&#110;&#103;&#98;&#121;&#116;&#101;&#115;&#46;&#99;&#111;&#109;">&#99;&#111;&#110;&#116;&#97;&#99;&#116;&#64;&#97;&#109;&#111;&#110;&#103;&#98;&#121;&#116;&#101;&#115;&#46;&#99;&#111;&#109;</a></td></tr>
+<tr><th>Date</th><td>2026-09-22</td></tr>
+</table></div>
+
+<p>The implementation packs four coefficients as a fixed-width radix-<code>q</code> integer but never rejects integers at least <code>q^4</code>. Decoding uses repeated reduction modulo <code>q</code>, so adding <code>q^4</code> to any block with sufficient encoding slack changes the byte string while recovering exactly the same four coefficients.</p>
+<p>For the 512, 1024, and 2048 sets, the block widths are 46, 49, and 52 bits and unused codeword fractions are approximately 25.70%, 28.38%, and 22.71%. The boundary words <code>0</code> and <code>q^4</code> decode to the same coefficient tuple in every set. The runtime witness alters an actual YuanYang-512 public key and confirms that its bytes differ while the same signature verifies under both encodings.</p>
+<p>This is not an EUF-CMA forgery, because the mathematical public key is unchanged. It breaks canonical key identity and can defeat systems that fingerprint, pin, compare, or hash serialized public keys. Decoding must reject each packed block unless it is strictly below <code>q^4</code>, or re-encode and compare the complete public-key byte string.</p>
+<h3 id="reproducing_1">Reproducing</h3>
+<p>Commands below run in a checkout of the <a href="https://github.com/ngcc-dev/ngcc-harness">ngcc-harness repository</a> with the candidate built (see its README).</p>
+<p>The encoding witness was submitted in <a href="https://github.com/ngcc-dev/ngcc-harness/pull/3">ngcc-harness PR #3</a>.</p>
+<pre><code class="language-sh">make -C sign-34 exploit
+sign-34/reproduce_transcript_leak sign-34/lib/libyuanyang-512.so 4000
+</code></pre>
+</main>
+<footer class="site-footer">
+<p>Updated 2026-09-22 07:49:17 UTC · Maintained by: <a href="mailto:markku-juhani.saarinen@tuni.fi">markku-juhani.saarinen@tuni.fi</a></p>
+<p>Submissions are welcome via <a href="https://github.com/ngcc-dev/ngcc-harness/issues">GitHub issues</a>.</p>
+</footer>
+</body>
+</html>

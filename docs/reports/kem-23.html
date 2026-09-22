@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mito (kem-23) · ngcc.dev</title>
+<link rel="stylesheet" href="../assets/style.css?v=0289cbf1">
+</head>
+<body>
+<header class="site-header">
+<a class="brand" href="../index.html">ngcc.dev</a>
+<nav><a href="../index.html">Home</a><a href="../reports/index.html">Reports</a></nav>
+</header>
+<main>
+<p class="crumb"><a href="../reports/index.html">Reports</a> › <code>kem-23</code></p>
+
+<h1 id="mito-kem-23">Mito (kem-23)</h1>
+<div class="table-wrap"><table class="meta">
+<tr><th>Candidate</th><td>Mito</td></tr>
+<tr><th>Family</th><td>Code-based</td></tr>
+<tr><th>Archive</th><td><a href="https://www.niccs.org.cn/niccs/Proposal/Public-Key%20Cryptographic%20Algorithms/Round%201%20candidates/Mito.zip">Mito.zip</a> (SHA-256: <code>ee11788a3e8bf8653d18ade6580c47a331b91e7eac3e31a5a6750a4b4cfb827b</code>)</td></tr>
+</table></div>
+
+<h2 class="issue-heading issue-heading-first" id="kem-23-1-mito-e-discards-every-erasure-before-reedsolomon-decoding">kem-23-1: Mito-E discards every erasure before Reed–Solomon decoding</h2>
+
+<div class="table-wrap"><table class="meta issue-meta">
+<tr><th>Classification</th><td><span class="sev sev-medium">Medium / implementation</span></td></tr>
+<tr><th>Status</th><td><span class="issue-status status-confirmed">Confirmed</span></td></tr>
+<tr><th>Affected</th><td>Mito-1-E and Mito-2-E, all three parameter sets</td></tr>
+<tr><th>Discovery</th><td>Trivial</td></tr>
+<tr><th>Exploitation</th><td>DFR/conformance failure; concrete decapsulation failure rate not measured</td></tr>
+<tr><th>Credit</th><td>Markku-Juhani O. Saarinen <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#109;&#97;&#114;&#107;&#107;&#117;&#45;&#106;&#117;&#104;&#97;&#110;&#105;&#46;&#115;&#97;&#97;&#114;&#105;&#110;&#101;&#110;&#64;&#116;&#117;&#110;&#105;&#46;&#102;&#105;">&#109;&#97;&#114;&#107;&#107;&#117;&#45;&#106;&#117;&#104;&#97;&#110;&#105;&#46;&#115;&#97;&#97;&#114;&#105;&#110;&#101;&#110;&#64;&#116;&#117;&#110;&#105;&#46;&#102;&#105;</a>, with AI assistance</td></tr>
+<tr><th>Date</th><td>2026-09-21</td></tr>
+</table></div>
+
+<p>The specification defines Mito-E by distance-informed errors-and-erasures decoding. The modified inner Reed–Muller decoder returns an erasure count <code>t</code> and erasure positions <code>pos</code>; the outer Reed–Solomon decoder is then supposed to use them, with correctness condition <code>2ν+t ≤ N−K</code>. The E-variant DFR calculation relies on this extra decoding capacity.</p>
+<p>All twelve submitted Mito-E source trees (six parameter variants, each in reference and optimized form) compute <code>t</code> and <code>pos</code> but immediately discard both. They call the same two-argument, errors-only <code>reed_solomon_decode(m,tmp)</code> used by the baseline scheme. Thus the shipped E variants do not implement the algorithm whose DFR is claimed in the PDF. Some submitted trees also hard-code <code>PARAM_ALPHA=7</code> where the specification's E-variant DFR tables use 9 or 11. Without a fresh analysis of the shipped decoder and constants, this is not yet a quantified key-recovery attack.</p>
+<h3 id="reproducing">Reproducing</h3>
+<p>Commands below run in a checkout of the <a href="https://github.com/ngcc-dev/ngcc-harness">ngcc-harness repository</a> with the candidate built (see its README).</p>
+<pre><code class="language-sh">python3 security/design_parameter_audit.py --report-id kem-23-1
+</code></pre>
+<p>The <code>kem-23-1</code> check verifies this data-flow defect in all twelve E-variant source trees (six parameter variants in reference and optimized form) and the corresponding errors-and-erasures requirement in the PDF.</p>
+</main>
+<footer class="site-footer">
+<p>Updated 2026-09-22 07:49:17 UTC · Maintained by: <a href="mailto:markku-juhani.saarinen@tuni.fi">markku-juhani.saarinen@tuni.fi</a></p>
+<p>Submissions are welcome via <a href="https://github.com/ngcc-dev/ngcc-harness/issues">GitHub issues</a>.</p>
+</footer>
+</body>
+</html>

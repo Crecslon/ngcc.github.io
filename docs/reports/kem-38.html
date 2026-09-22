@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>UVW Key Encapsulation Mechanism (kem-38) · ngcc.dev</title>
+<link rel="stylesheet" href="../assets/style.css?v=0289cbf1">
+</head>
+<body>
+<header class="site-header">
+<a class="brand" href="../index.html">ngcc.dev</a>
+<nav><a href="../index.html">Home</a><a href="../reports/index.html">Reports</a></nav>
+</header>
+<main>
+<p class="crumb"><a href="../reports/index.html">Reports</a> › <code>kem-38</code></p>
+
+<h1 id="uvw-key-encapsulation-mechanism-kem-38">UVW Key Encapsulation Mechanism (kem-38)</h1>
+<div class="table-wrap"><table class="meta">
+<tr><th>Candidate</th><td>UVW Key Encapsulation Mechanism</td></tr>
+<tr><th>Family</th><td>Code-based</td></tr>
+<tr><th>Archive</th><td><a href="https://www.niccs.org.cn/niccs/Proposal/Public-Key%20Cryptographic%20Algorithms/Round%201%20candidates/UVW-KEM.zip">UVW-KEM.zip</a> (SHA-256: <code>f9a1b135ea16aca0c974861732e03cd3164f1288f33ff150ff66c98326b75bcb</code>)</td></tr>
+</table></div>
+
+<h2 class="issue-heading issue-heading-first" id="kem-38-1-uvw-512-derives-its-encryption-pair-from-only-256-bits">kem-38-1: UVW-512 derives its encryption pair from only 256 bits</h2>
+
+<div class="table-wrap"><table class="meta issue-meta">
+<tr><th>Classification</th><td><span class="sev sev-high">High / implementation</span></td></tr>
+<tr><th>Status</th><td><span class="issue-status status-confirmed">Confirmed</span></td></tr>
+<tr><th>Affected</th><td>UVW-KEM-512 reference and optimized implementations</td></tr>
+<tr><th>Discovery</th><td>Trivial</td></tr>
+<tr><th>Exploitation</th><td>Approximately 2^256 H1-seed trials</td></tr>
+<tr><th>Credit</th><td>Markku-Juhani O. Saarinen <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#109;&#97;&#114;&#107;&#107;&#117;&#45;&#106;&#117;&#104;&#97;&#110;&#105;&#46;&#115;&#97;&#97;&#114;&#105;&#110;&#101;&#110;&#64;&#116;&#117;&#110;&#105;&#46;&#102;&#105;">&#109;&#97;&#114;&#107;&#107;&#117;&#45;&#106;&#117;&#104;&#97;&#110;&#105;&#46;&#115;&#97;&#97;&#114;&#105;&#110;&#101;&#110;&#64;&#116;&#117;&#110;&#105;&#46;&#102;&#105;</a>, with AI assistance</td></tr>
+<tr><th>Date</th><td>2026-09-21</td></tr>
+</table></div>
+
+<p>UVW-512 claims 512-bit classical security. The specification models <code>H1(m)</code> as a hash directly into the full encryption pair <code>(r,e)</code>, but the implementation first hashes <code>m</code> to a fixed 32-byte seed and then deterministically expands that seed into <code>(r,e)</code>.</p>
+<p>An attacker can enumerate the at most <code>2^256</code> H1 seeds, expand each candidate <code>(r,e)</code>, and test the public equation <code>c1 = rG + e</code> against the challenge. A match recovers <code>m = c2 XOR H3(r,e)</code> and therefore the session key. This caps the implemented UVW-512 confidentiality at 256 classical bits and 128 quantum bits under generic search, independently of its nominal code-decoding parameters. The 256-bit intermediate is not specified by the PDF, so this is an implementation rather than specification-level break.</p>
+<h3 id="reproducing">Reproducing</h3>
+<p>Commands below run in a checkout of the <a href="https://github.com/ngcc-dev/ngcc-harness">ngcc-harness repository</a> with the candidate built (see its README).</p>
+<pre><code class="language-sh">python3 security/design_parameter_audit.py --report-id kem-38-1
+</code></pre>
+<p>The <code>kem-38-1</code> check verifies the 512-bit claim and <code>H1</code> type in the PDF and the 32-byte H1 seed in the submitted source.</p>
+<h2 class="issue-heading" id="kem-38-2-uvw-exposes-a-stable-list-decoding-failure-oracle">kem-38-2: UVW exposes a stable list-decoding failure oracle</h2>
+
+<div class="table-wrap"><table class="meta issue-meta">
+<tr><th>Classification</th><td><span class="sev sev-medium">Medium / implementation</span></td></tr>
+<tr><th>Status</th><td><span class="issue-status status-confirmed">Confirmed</span></td></tr>
+<tr><th>Affected</th><td>UVW-KEM reference implementation, all parameter sets</td></tr>
+<tr><th>Discovery</th><td>Trivial</td></tr>
+<tr><th>Exploitation</th><td>Decryption-failure oracle; key recovery not demonstrated</td></tr>
+<tr><th>Credit</th><td>Markku-Juhani O. Saarinen <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#109;&#97;&#114;&#107;&#107;&#117;&#45;&#106;&#117;&#104;&#97;&#110;&#105;&#46;&#115;&#97;&#97;&#114;&#105;&#110;&#101;&#110;&#64;&#116;&#117;&#110;&#105;&#46;&#102;&#105;">&#109;&#97;&#114;&#107;&#107;&#117;&#45;&#106;&#117;&#104;&#97;&#110;&#105;&#46;&#115;&#97;&#97;&#114;&#105;&#110;&#101;&#110;&#64;&#116;&#117;&#110;&#105;&#46;&#102;&#105;</a>, with AI assistance</td></tr>
+<tr><th>Date</th><td>2026-09-21</td></tr>
+</table></div>
+
+<p>The decapsulator returns <code>-2</code> when randomized PKE list decoding fails, but <code>-1</code> when decoding succeeds and a later hash or re-encryption check fails. These paths are also dramatically separated in time because the failing decoder exhausts its retry bound.</p>
+<p>For one deterministic UVW-128 key and valid ciphertext, flipping ciphertext bit 0 returned <code>-2</code> after about 49.3 seconds; flipping bit 846 returned <code>-1</code> after about 0.81 seconds on the same host. Thus an attacker can distinguish a secret-dependent decoder failure through both API status and a roughly 60-fold timing gap. This supplies the oracle primitive used by reaction attacks, but this audit has not yet converted it into full secret-key recovery.</p>
+<h3 id="reproducing_1">Reproducing</h3>
+<p>Commands below run in a checkout of the <a href="https://github.com/ngcc-dev/ngcc-harness">ngcc-harness repository</a> with the candidate built (see its README).</p>
+<pre><code class="language-sh">make -C kem-38 lib/libUVW-KEM-128.so
+python3 security/kem_mutation_oracle.py \
+  kem-38/lib/libUVW-KEM-128.so --bits 0,846
+</code></pre>
+<p>The seeds, mutations, return codes, and timings are deterministic. The slow <code>-2</code> witness takes about 50 seconds on the audit host.</p>
+</main>
+<footer class="site-footer">
+<p>Updated 2026-09-22 07:49:17 UTC · Maintained by: <a href="mailto:markku-juhani.saarinen@tuni.fi">markku-juhani.saarinen@tuni.fi</a></p>
+<p>Submissions are welcome via <a href="https://github.com/ngcc-dev/ngcc-harness/issues">GitHub issues</a>.</p>
+</footer>
+</body>
+</html>

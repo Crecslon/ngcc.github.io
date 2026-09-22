@@ -33,3 +33,36 @@ tools/ngcc_attack sig-malleable sign-07/lib/libCS-128.so
 
 `tools/reproduce.sh` runs this together with the other supported runtime
 witnesses and their controls. See `tools/README.md`.
+
+## sign-07-2: Verifier challenge-sign blindness enables universal forgery
+
+Severity: High
+Status: Confirmed
+Layer: Design
+Affected: CS-128, CS-256, and CS-512
+Discovery: Non-trivial
+Exploitation: Approximately 2^108.08, 2^212.46, and 2^394.18 hash trials, respectively
+Credit: Kris Kwiatkowski <contact@amongbytes.com>
+Date: 2026-09-21
+
+CS samples a weight-`tau` challenge over `{0,+1,-1}` and credits all `tau` sign bits in its challenge-entropy calculation. In both specification Algorithm 12 and `CS_Verify`, however, the challenge reaches verification only through parity: the `-q*c` term is identical for `+1` and `-1` modulo `2q`, and the other hash input retains only `LSB(z0-c)`. Verification therefore sees the challenge support but not its signs.
+
+The verifier also imposes no independent weight or norm bound on the hint. For any chosen support, an attacker can set `z0=z1=0` and choose an encodable hint so that every norm and reconstruction check passes. Grinding the free hint until the hash selects that support costs `binomial(n,tau)`, rather than the `binomial(n,tau)*2^tau` challenge space used in Table 3. Independently recomputed costs are 108.08, 212.46, and 394.18 bits, below every claimed classical level; generic quantum search halves those exponents.
+
+The complete submitted-size grinds were not executed. The reproducer proves the free-transcript construction at every submitted parameter set and runs the same attack to completion on a scaled CS-128 instance with `tau` reduced from 23 to 3. Compensating `B0`, `B1`, `B2`, and `M0` adjustments preserve the `z0` and `z1` bounds and tighten the `z2'` bound from 2812 to 2521. The submitted verifier compiled with those scaled parameters accepted the forged signature without a signing query or secret key. Binding the challenge signs into a verifier-visible equation and bounding the hint are both necessary repairs.
+
+### Reproducing
+
+The original reproducer was submitted in [ngcc-harness PR #1](https://github.com/ngcc-dev/ngcc-harness/pull/1).
+
+```sh
+make -C sign-07 libs exploit
+sign-07/forgery_CS-128-scaled-tau3 \
+  sign-07/lib/libCS-128-scaled-tau3.so --threads 4 --verbose
+sign-07/forgery_CS-128 sign-07/lib/libCS-128.so \
+  --control --threads 4 --trials 200000 --verbose
+sign-07/forgery_CS-256 sign-07/lib/libCS-256.so \
+  --control --threads 4 --trials 200000 --verbose
+sign-07/forgery_CS-512 sign-07/lib/libCS-512.so \
+  --control --threads 4 --trials 200000 --verbose
+```
