@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>ngcc.dev</title>
+<title>ngcc.dev · Independent analysis of Chinese Next Generation Commercial Cryptographic (NGCC) algorithms program candidate algorithms</title>
 <link rel="stylesheet" href="assets/style.css?v=15e56c79">
 </head>
 <body>
@@ -13,8 +13,9 @@
 </header>
 <main>
 <h1 id="ngccdev">ngcc.dev</h1>
-<p>Independent testing of the candidate algorithms in the Chinese
-<a href="https://www.niccs.org.cn/en/">Next Generation Commercial Cryptographic (NGCC) algorithms program</a>.
+<p>Independent analysis of Chinese
+<a href="https://www.niccs.org.cn/en/">Next Generation Commercial Cryptographic (NGCC) algorithms program</a>
+candidate algorithms.
 This site is not affiliated with NICCS.</p>
 <ul>
 <li><a href="reports/index.html">Reports</a> — security findings, one line per issue, each
@@ -24,9 +25,39 @@ This site is not affiliated with NICCS.</p>
 <li><a href="https://github.com/ngcc-dev/ngcc-harness">Harness</a> — the build and test tooling
   the reproductions rely on.</li>
 </ul>
+<h2 id="citing">Citing</h2>
+<p>To cite this web site:</p>
+<pre><code class="language-bibtex">@misc{ngccdev,
+  author       = {Saarinen, Markku-Juhani O.},
+  title        = {{ngcc.dev}: Independent Analysis of the {NGCC} Candidates},
+  year         = {2026},
+  url          = {https://ngcc.dev/},
+  note         = {Accessed 2026-09-26}
+}
+</code></pre>
+<p>To cite one finding, use its stable <code>xxx-yy-z</code> identifier and credit the people
+named in that finding's <code>Credit</code> field, who are often <strong>not</strong> the maintainer of
+this site:</p>
+<pre><code class="language-bibtex">@misc{ngccdev-sign-32-1,
+  author       = {Vulnerability Author},
+  title        = {{UVW}: Every Signature is Accepted},
+  year         = {2026},
+  url          = {https://ngcc.dev/reports/sign-32.html},
+  note         = {Finding \texttt{sign-32-1}, ngcc.dev. Accessed 2026-09-26}
+}
+</code></pre>
+<p>The braces around <code>{ngcc.dev}</code> and the acronyms stop BibTeX from lowercasing
+them. Load <code>hyperref</code> or <code>url</code> to make the link clickable. For
+<code>biblatex</code>, use <code>@online</code> and give the access date as <code>urldate</code>. The original
+standard styles (<code>plain</code>, <code>abbrv</code>, <code>alpha</code>, <code>unsrt</code>) ignore the <code>url</code> field; with
+those, either use a URL-aware style such as <code>splncs04</code> or <code>IEEEtran</code>, or move the
+address into <code>howpublished = {\url{...}}</code>.</p>
+<p>Findings are added and revised continuously, so please cite the date you read a
+page rather than the date prefilled above, and quote the finding identifier so
+the reference stays resolvable if a title is reworded.</p>
 </main>
 <footer class="site-footer">
-<p>Updated 2026-09-26 18:59:49 UTC · Maintained by: <a href="mailto:markku-juhani.saarinen@tuni.fi">markku-juhani.saarinen@tuni.fi</a></p>
+<p>Updated 2026-09-26 20:56:56 UTC · Maintained by: <a href="mailto:markku-juhani.saarinen@tuni.fi">markku-juhani.saarinen@tuni.fi</a></p>
 <p>Submissions are welcome via <a href="https://github.com/ngcc-dev/ngcc-harness/issues">GitHub issues</a>.</p>
 </footer>
 </body>

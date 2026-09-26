@@ -8,7 +8,10 @@ Every content/**/*.md becomes docs/**/*.html. A page's title is its first H1
 (or one derived from its path). Placeholders of the form <!-- table:NAME -->
 are expanded before Markdown conversion, where NAME is one of
 summary | sign | kem | kex | hash | all; <!-- reports --> and
-<!-- report-totals --> expand from content/reports/<id>.md. A report is a "Field: value"
+<!-- report-totals --> expand from content/reports/<id>.md; <!-- date --> expands to
+the build date, so a prefilled citation access date never goes stale;
+<!-- head-title: ... --> sets that page's <title> independently of its H1.
+A report is a "Field: value"
 header block followed by one "## " section per issue (a "## Reproduc…"
 section is a procedure, not an issue, and gets a link to the harness repo). All links are relative, so the site works at any base URL.
 """
@@ -32,6 +35,7 @@ HARNESS = "https://github.com/ngcc-dev/ngcc-harness"
 HARNESS_RAW = "https://cdn.jsdelivr.net/gh/ngcc-dev/ngcc-harness@main"
 MAINTAINER = "markku-juhani.saarinen@tuni.fi"
 UPDATED_UTC = datetime.datetime.now(datetime.UTC).replace(microsecond=0).strftime("%Y-%m-%d %H:%M:%S UTC")
+TODAY = datetime.datetime.now(datetime.UTC).date().isoformat()   # <!-- date --> (prefilled access date)
 CATS = [("sign", "Signatures"), ("kem", "KEMs"), ("kex", "Key exchange"), ("hash", "Hash functions")]
 
 NAV = [("Home", "index.html"), ("Reports", "reports/index.html"), ("Constant-Time", "constant-time/index.html"), ("Candidates", "candidates/index.html"),
@@ -393,6 +397,7 @@ def expand_placeholders(text, cands, prefix, reports):
     text = re.sub(r"<!--\s*reports\s*-->", lambda m: reports_html(reports, cands, prefix), text)
     text = re.sub(r"<!--\s*report-totals\s*-->", lambda m: report_totals_html(reports), text)
     text = re.sub(r"<!--\s*constant-time\s*-->", lambda m: constant_time_html(cands, prefix), text)
+    text = re.sub(r"<!--\s*date\s*-->", TODAY, text)
 
     def repl(m):
         name = m.group(1)
@@ -438,10 +443,18 @@ def page_title(text, rel):
     return rel.stem.replace("-", " ")
 
 
+HEAD_TITLE_RE = re.compile(r"^<!--\s*head-title:\s*(.+?)\s*-->\s*$\n?", re.M)
+
+
 def render(rel, cands, reports):
     text = (CONTENT / rel).read_text(encoding="utf-8")
     depth = len(rel.parts) - 1
     prefix = "../" * depth
+    # <!-- head-title: ... --> sets <title> independently of the page's H1
+    head_override = None
+    m = HEAD_TITLE_RE.search(text)
+    if m:
+        head_override, text = m.group(1), HEAD_TITLE_RE.sub("", text, count=1)
     title = page_title(text, rel)
     if rel.parts[0] == "reports" and rel.stem in reports:
         text, title = report_page(reports[rel.stem], prefix)
@@ -471,7 +484,7 @@ def render(rel, cands, reports):
                   if (CONTENT / href).with_suffix(".md").is_file())
     out = DOCS / rel.with_suffix(".html")
     out.parent.mkdir(parents=True, exist_ok=True)
-    head_title = SITE if title == SITE else f"{title} · {SITE}"
+    head_title = head_override or (SITE if title == SITE else f"{title} · {SITE}")
     is_main_page = len(rel.parts) == 1 or (len(rel.parts) == 2 and rel.name == "index.md")
     updated_line = f"Updated {UPDATED_UTC} · " if is_main_page else ""
     out.write_text(TEMPLATE.format(head_title=html.escape(head_title), site=SITE, harness=HARNESS,
