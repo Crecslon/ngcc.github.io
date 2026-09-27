@@ -1,4 +1,4 @@
-# Constant-time source reviews
+# ngcc.dev: Constant-Time Source Reviews
 
 These 119 notes inspect representative reference paths for branches, variable
 work, and memory accesses controlled by secret data. Each note states its

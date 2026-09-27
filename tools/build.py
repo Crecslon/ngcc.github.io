@@ -66,11 +66,12 @@ TEMPLATE = """<!DOCTYPE html>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{head_title}</title>
+<link rel="icon" type="image/png" href="{prefix}assets/mag-glass.png">
 <link rel="stylesheet" href="{prefix}assets/style.css?v={css_ver}">
 </head>
 <body>
 <header class="site-header">
-<a class="brand" href="{prefix}index.html">{site}</a>
+<a class="brand" href="{prefix}index.html"><img class="brand-icon" src="{prefix}assets/mag-glass.png" alt="" width="28" height="28">{site}</a>
 <nav>{nav}</nav>
 </header>
 <main>
@@ -492,7 +493,8 @@ def render(rel, cands, reports):
                   if (CONTENT / href).with_suffix(".md").is_file())
     out = DOCS / rel.with_suffix(".html")
     out.parent.mkdir(parents=True, exist_ok=True)
-    head_title = head_override or (SITE if title == SITE else f"{title} · {SITE}")
+    head_title = head_override or (title if title == SITE or title.startswith(f"{SITE}: ")
+                                   else f"{SITE}: {title}")
     is_main_page = len(rel.parts) == 1 or (len(rel.parts) == 2 and rel.name == "index.md")
     updated_line = f"Updated {UPDATED_UTC} · " if is_main_page else ""
     out.write_text(TEMPLATE.format(head_title=html.escape(head_title), site=SITE, harness=HARNESS,

@@ -1,4 +1,4 @@
-<!-- head-title: ngcc.dev · Independent analysis of Chinese Next Generation Commercial Cryptographic (NGCC) algorithms program candidate algorithms -->
+<!-- head-title: ngcc.dev: Independent analysis of Chinese Next Generation Commercial Cryptographic (NGCC) algorithms program candidate algorithms -->
 # ngcc.dev
 
 Independent analysis of Chinese

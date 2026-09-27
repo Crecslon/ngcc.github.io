@@ -18,9 +18,11 @@ body { margin: 0; background: var(--bg); color: var(--fg); }
 a { color: var(--link); text-decoration: none; }
 a:hover { text-decoration: underline; }
 main, .site-header, .site-footer { max-width: 80rem; margin: 0 auto; padding: 0 1rem; }
-.site-header { display: flex; flex-wrap: wrap; gap: 0.5rem 1.5rem; align-items: baseline;
+.site-header { display: flex; flex-wrap: wrap; gap: 0.5rem 1.5rem; align-items: center;
   padding-top: 0.9rem; padding-bottom: 0.9rem; border-bottom: 1px solid var(--line); }
-.site-header .brand { font-weight: 700; font-size: 1.15rem; color: var(--fg); }
+.site-header .brand { display: inline-flex; align-items: center; gap: 0.4em;
+  font-weight: 700; font-size: 1.15rem; color: var(--fg); }
+.brand-icon { display: block; width: 1.3em; height: 1.3em; object-fit: contain; }
 .site-header nav { display: flex; flex-wrap: wrap; gap: 0.25rem 1.1rem; }
 .site-footer { margin-top: 3rem; padding-top: 1rem; padding-bottom: 2rem;
   border-top: 1px solid var(--line); color: var(--muted); font-size: 0.9rem; }
