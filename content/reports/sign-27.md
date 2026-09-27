@@ -57,6 +57,7 @@ Exploitation: About 2^64, 2^80, 2^128, or 2^256 classical hash trials at the 128
 Credit: Tako Boris Fouotsa
 Date: 2026-09-26
 Original source: [Fouotsa's PKC Forum post and attached analysis](https://list.niccs.org.cn/archives/list/pkcforum@list.niccs.org.cn/message/F3RT6SYIAB7MLENH3OUBX6OSWQQTJ2LE/)
+Follow-up source: [SQIsignTriangle team's confirmation](https://list.niccs.org.cn/archives/list/pkcforum@list.niccs.org.cn/message/AD6OWNGXIO365OS2TU27TNSBKKCJZV4T/)
 
 A signature exposes its response degree `q`; its auxiliary curve and torsion data recover the same commitment independently of the message. Verification hashes the public-key curve, commitment curve and message to `(c1,c2)`, then checks `q mod c1 = c2`. A forger therefore keeps any valid signature and searches for a different message whose challenge satisfies that single congruence.
 
@@ -81,6 +82,7 @@ Exploitation: Proof failure; no attack beyond sign-27-3 is claimed
 Credit: Tako Boris Fouotsa
 Date: 2026-09-26
 Original source: [Fouotsa's PKC Forum post and attached analysis](https://list.niccs.org.cn/archives/list/pkcforum@list.niccs.org.cn/message/F3RT6SYIAB7MLENH3OUBX6OSWQQTJ2LE/)
+Follow-up source: [SQIsignTriangle team's confirmation](https://list.niccs.org.cn/archives/list/pkcforum@list.niccs.org.cn/message/AD6OWNGXIO365OS2TU27TNSBKKCJZV4T/)
 
 The proof claims that two accepting transcripts with the same commitment and distinct challenges yield two different response isogenies, except with negligible probability. That implication is false. In the submitted hash-to-challenge implementation, given one response of degree `q`, choose any different accepted prime `c1'` and set `c2' = q mod c1'`; the unchanged response is valid for the distinct challenge `(c1',c2')`. In the proof's shifted interval description, one instead samples `c1'` until this remainder lies in the stated interval. Composing the two identical responses in the extractor produces a scalar endomorphism, not the required non-scalar witness.
 

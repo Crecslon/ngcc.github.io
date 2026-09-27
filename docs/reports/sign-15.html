@@ -19,6 +19,7 @@
 <tr><th>Candidate</th><td>MORNING-ATLAS</td></tr>
 <tr><th>Family</th><td>Lattice (Module-LWR, Fiat-Shamir)</td></tr>
 <tr><th>Archive</th><td><a href="https://www.niccs.org.cn/niccs/Proposal/Public-Key%20Cryptographic%20Algorithms/Round%201%20candidates/MORNING-ATLAS.zip">MORNING-ATLAS.zip</a> (SHA-256: <code>c796b106a7d43b2b3d6110ec2be426aa321cc7336f39a2cc027b2d6e8b4cc8c1</code>)</td></tr>
+<tr><th>Specification</th><td><a href="https://github.com/ngcc-dev/ngcc-harness/raw/refs/heads/main/sign-15/sign-15-spec.pdf" title="Download sign-15-spec.pdf from GitHub">sign-15-spec.pdf</a> <a class="pdf-link" href="https://cdn.jsdelivr.net/gh/ngcc-dev/ngcc-harness@main/sign-15/sign-15-spec.pdf" title="Open the sign-15 specification PDF">PDF</a></td></tr>
 </table></div>
 
 <h2 class="issue-heading issue-heading-first" id="sign-15-1-returned-length-error-causes-an-out-of-bounds-heap-disclosure">sign-15-1: Returned-length error causes an out-of-bounds heap disclosure</h2>
@@ -33,7 +34,7 @@
 <tr><th>Credit</th><td>Markku-Juhani O. Saarinen <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#109;&#97;&#114;&#107;&#107;&#117;&#45;&#106;&#117;&#104;&#97;&#110;&#105;&#46;&#115;&#97;&#97;&#114;&#105;&#110;&#101;&#110;&#64;&#116;&#117;&#110;&#105;&#46;&#102;&#105;">&#109;&#97;&#114;&#107;&#107;&#117;&#45;&#106;&#117;&#104;&#97;&#110;&#105;&#46;&#115;&#97;&#97;&#114;&#105;&#110;&#101;&#110;&#64;&#116;&#117;&#110;&#105;&#46;&#102;&#105;</a>, with AI assistance</td></tr>
 <tr><th>Date</th><td>2026-09-21</td></tr>
 </table></div>
-
+<p>Follow-up source: <a href="https://list.niccs.org.cn/archives/list/pkcforum@list.niccs.org.cn/message/QUKIQWX7B5D2UYVTGSZ3JC6IVELQWA2Q/">Song-Anxiao's independent assessment</a></p>
 <p><code>sig_get_sn_len_bytes()</code> advertises a <code>CRYPTO_BYTES</code>-byte output buffer. <code>sig_sign()</code> writes exactly that detached signature, but returns <code>CRYPTO_BYTES + message_length</code> as though it had also appended the message. A caller that allocates the advertised size and serializes the returned length reads beyond the allocation.</p>
 <p>The submitters' own KAT does exactly this. In its first records, the out-of-bounds <code>Sn</code> field contains allocator bytes followed by 41, 45, 40, and 41 bytes of the adjacent 64-byte KAT seed for the 128-, 192-, 256-, and 512-bit instances. From record 3 onward it includes all 64 seed bytes. That seed deterministically generates the KAT key material.</p>
 <p>The KAT format also prints <code>Seed</code> and <code>SK</code> as separate fields, so these published vectors do not newly expose an otherwise secret value. They nevertheless provide a concrete demonstration that trusting the candidate's returned length discloses adjacent heap data; in another caller the adjacent object may be private. This is a serious API/memory-disclosure defect, distinct from the cryptographic malleability below.</p>
@@ -61,7 +62,7 @@ IDS=sign-15 ./download.sh
 <tr><th>Credit</th><td>Markku-Juhani O. Saarinen <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#109;&#97;&#114;&#107;&#107;&#117;&#45;&#106;&#117;&#104;&#97;&#110;&#105;&#46;&#115;&#97;&#97;&#114;&#105;&#110;&#101;&#110;&#64;&#116;&#117;&#110;&#105;&#46;&#102;&#105;">&#109;&#97;&#114;&#107;&#107;&#117;&#45;&#106;&#117;&#104;&#97;&#110;&#105;&#46;&#115;&#97;&#97;&#114;&#105;&#110;&#101;&#110;&#64;&#116;&#117;&#110;&#105;&#46;&#102;&#105;</a>, with AI assistance</td></tr>
 <tr><th>Date</th><td>2026-09-21</td></tr>
 </table></div>
-
+<p>Follow-up source: <a href="https://list.niccs.org.cn/archives/list/pkcforum@list.niccs.org.cn/message/QUKIQWX7B5D2UYVTGSZ3JC6IVELQWA2Q/">Song-Anxiao's independent assessment</a></p>
 <p>The signature decoder stops after the cumulative number of encoded hint indices but does not require the remaining fixed-size hint slots to be canonical. Verification compares only the decoded algebraic values and ignores changes in those unused slots.</p>
 <p>For each of <code>lwrdsa128</code>, <code>lwrdsa192</code>, <code>lwrdsa256</code>, and <code>lwrdsa512</code>, flipping the high bit of the final unused hint-index byte in a valid signature produced a different byte string that still verified for the same message and public key.</p>
 <p>The attack needs only one ordinary valid signature. It does not forge a new message and therefore does not by itself violate EUF-CMA, but it directly violates the specification's SUF-CMA claim.</p>
@@ -89,7 +90,7 @@ overwrites, and requires the byte-distinct signature to verify.</p>
 <tr><th>Credit</th><td>Markku-Juhani O. Saarinen <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#109;&#97;&#114;&#107;&#107;&#117;&#45;&#106;&#117;&#104;&#97;&#110;&#105;&#46;&#115;&#97;&#97;&#114;&#105;&#110;&#101;&#110;&#64;&#116;&#117;&#110;&#105;&#46;&#102;&#105;">&#109;&#97;&#114;&#107;&#107;&#117;&#45;&#106;&#117;&#104;&#97;&#110;&#105;&#46;&#115;&#97;&#97;&#114;&#105;&#110;&#101;&#110;&#64;&#116;&#117;&#110;&#105;&#46;&#102;&#105;</a>, with AI assistance</td></tr>
 <tr><th>Date</th><td>2026-09-21</td></tr>
 </table></div>
-
+<p>Follow-up source: <a href="https://list.niccs.org.cn/archives/list/pkcforum@list.niccs.org.cn/message/QUKIQWX7B5D2UYVTGSZ3JC6IVELQWA2Q/">Song-Anxiao's independent assessment</a></p>
 <p>The submitted ATLAS-192 implementation uses <code>n=128</code> and <code>kappa=64</code>. Its challenge space therefore has</p>
 <p><code>log2(binomial(128,64) * 2^64) = 188.17143</code></p>
 <p>bits, below the advertised 192-bit level. The specification instead selects <code>kappa=69</code>, which gives about 192.61 bits. This is an implementation-only parameter mismatch, not a defect in the specified parameter set.</p>
@@ -111,7 +112,8 @@ overwrites, and requires the byte-distinct signature to verify.</p>
 <tr><th>Credit</th><td>Xianhui Lu and Yijian Liu, with AI assistance</td></tr>
 <tr><th>Date</th><td>2026-09-23</td></tr>
 </table></div>
-<p>Original source: <a href="https://list.niccs.org.cn/archives/list/pkcforum@list.niccs.org.cn/message/L5UNKA72RZ2TBTCKZYIVJ5KFDU6XTWFB/">Yijian Liu's NGCC PKC Forum post on behalf of Xianhui Lu</a></p>
+<p>Original source: <a href="https://list.niccs.org.cn/archives/list/pkcforum@list.niccs.org.cn/message/L5UNKA72RZ2TBTCKZYIVJ5KFDU6XTWFB/">Yijian Liu's NGCC PKC Forum post on behalf of Xianhui Lu</a>
+Follow-up source: <a href="https://list.niccs.org.cn/archives/list/pkcforum@list.niccs.org.cn/message/QUKIQWX7B5D2UYVTGSZ3JC6IVELQWA2Q/">Song-Anxiao's independent assessment and proof-premise check</a></p>
 <p>In <code>rej_gamma1m1()</code>, the second 20-bit decode overwrites <code>t</code> before either accepted coefficient is stored. Every masking polynomial therefore has <code>y[2i] = y[2i+1]</code>. Since the signature contains <code>z = y + c*s1</code> modulo <code>q</code>, subtracting each adjacent response pair cancels the mask and gives a noiseless linear equation in the secret <code>s1</code>. Two signatures supply a full-rank system for each secret polynomial in all three affected profiles. ATLAS-512 uses a separate three-byte sampler branch.</p>
 <p>The local witness solves those equations using only two public, officially verified signatures, recovers every <code>s1</code> coefficient, and checks zero residuals on two further signatures. It then reconstructs the remaining signing-key fields from <code>s1</code> and the public key, chooses a fresh signing-randomness key, and produces a new-message signature accepted by the submitted verifier. It never uses the original secret key in the recovery or forgery stage.</p>
 <h3 id="reproducing_3">Reproducing</h3>
@@ -119,6 +121,65 @@ overwrites, and requires the byte-distinct signature to verify.</p>
 <pre><code class="language-sh">mamba run -n sage python sign-15/reproduce_mask_key_recovery.py
 </code></pre>
 <p>The command uses this host's Sage environment; elsewhere, use any Python with <code>sage.all</code> importable. The witness compiles only the archived reference and optimized C sources in a temporary directory. It prints six <code>CONFIRMED sign-15-4</code> lines, one for each affected implementation/profile combination. The optimized builds require AVX2.</p>
+<h2 class="issue-heading" id="sign-15-5-unchecked-hint-decoding-causes-out-of-bounds-reads-and-writes">sign-15-5: Unchecked hint decoding causes out-of-bounds reads and writes</h2>
+
+<div class="table-wrap"><table class="meta issue-meta">
+<tr><th>Severity</th><td><span class="sev sev-high">High</span></td></tr>
+<tr><th>Scope</th><td>implementation</td></tr>
+<tr><th>Status</th><td><span class="issue-status status-confirmed">Confirmed</span></td></tr>
+<tr><th>Affected</th><td>Reference verifiers, all four parameter sets</td></tr>
+<tr><th>Discovery</th><td>Trivial</td></tr>
+<tr><th>Exploitation</th><td>Unauthenticated out-of-bounds reads and writes; downstream control is unshown</td></tr>
+<tr><th>Credit</th><td>Song-Anxiao, with Xuanzhi CryptoLLM assistance</td></tr>
+<tr><th>Date</th><td>2026-09-27</td></tr>
+</table></div>
+<p>Original source: <a href="https://list.niccs.org.cn/archives/list/pkcforum@list.niccs.org.cn/message/QUKIQWX7B5D2UYVTGSZ3JC6IVELQWA2Q/">Song-Anxiao's PKC Forum assessment</a></p>
+<p><code>unpack_sig</code> takes both its loop limit and coefficient indices from the unauthenticated hint encoding, before checking the signature. In ATLAS-128 (<code>packing.c:223-224</code>) and -192 (<code>:218-219</code>), it writes <code>h-&gt;vec[i].coeffs[sig[j]] = 1</code> without checking that a byte-sized position is below <code>N=128</code>; a position such as 200 writes beyond the coefficient array. The count is also unchecked. In ATLAS-256, a count of 255 reads beyond the signature buffer. In ATLAS-512, it reads beyond <code>h_coeffs[OMEGA]</code> and can use the stray value as an index for a coefficient write.</p>
+<p>The local witness links the submitted <code>packing.c</code> and calls the decoder used by verification. AddressSanitizer confirms four-byte heap-buffer-overflow writes in the 128- and 192-bit sets, a signature-buffer over-read in the 256-bit set, and an out-of-bounds hint-array read in the 512-bit set. In the submitted verifier the decoded output is on the stack, so the first two writes corrupt its frame.</p>
+<h3 id="reproducing_4">Reproducing</h3>
+<p>Commands below run in a checkout of the <a href="https://github.com/ngcc-dev/ngcc-harness">ngcc-harness repository</a> with the candidate built (see its README).</p>
+<pre><code class="language-sh">make -C sign-15 exploit-memory-safety
+</code></pre>
+<p>The target runs all four reference parameter sets.</p>
+<h2 class="issue-heading" id="sign-15-6-withdrawn-official-niccs-drng-rotates-by-the-word-size">sign-15-6: Withdrawn — official NICCS DRNG rotates by the word size</h2>
+
+<div class="table-wrap"><table class="meta issue-meta">
+<tr><th>Severity</th><td><span class="sev sev-info">Info</span></td></tr>
+<tr><th>Scope</th><td>evaluation</td></tr>
+<tr><th>Status</th><td><span class="issue-status status-withdrawn">Withdrawn</span></td></tr>
+<tr><th>Affected</th><td>Shared official NICCS API DRNG, not ATLAS specifically</td></tr>
+<tr><th>Discovery</th><td>Trivial</td></tr>
+<tr><th>Exploitation</th><td>No ATLAS-specific vulnerability established</td></tr>
+<tr><th>Credit</th><td>Song-Anxiao, with Xuanzhi CryptoLLM assistance</td></tr>
+<tr><th>Date</th><td>2026-09-27</td></tr>
+</table></div>
+<p>Original source: <a href="https://list.niccs.org.cn/archives/list/pkcforum@list.niccs.org.cn/message/QUKIQWX7B5D2UYVTGSZ3JC6IVELQWA2Q/">Song-Anxiao's PKC Forum assessment</a></p>
+<p>The undefined shift is real: the SM3 helper in <code>drng.c:36</code> evaluates <code>(a &lt;&lt; n) | (a &gt;&gt; (32-n))</code> with <code>n=0</code> reached at line 90. But the candidate's <code>drng.c</code> is the official NICCS API file, with only a final-newline difference in the archived copies. The same rotation appears across submissions that use that shared file. ATLAS calls the DRNG during key generation, not signature generation. This is an upstream API portability issue rather than an ATLAS-specific finding, so this report is withdrawn.</p>
+<h3 id="reproducing_5">Reproducing</h3>
+<p>Commands below run in a checkout of the <a href="https://github.com/ngcc-dev/ngcc-harness">ngcc-harness repository</a> with the candidate built (see its README).</p>
+<p>Compare <code>sign-15/Implementation/Reference_Implementation/lwrdsa128/drng.c</code> with <code>api/API_PKC/Implementations/Reference_Implementation/AlgorithmInstance/drng.c</code> after normalizing the final newline.</p>
+<h2 class="issue-heading" id="sign-15-7-finite-mask-support-leaks-the-specified-atlas-128-signing-key">sign-15-7: Finite mask support leaks the specified ATLAS-128 signing key</h2>
+
+<div class="table-wrap"><table class="meta issue-meta">
+<tr><th>Severity</th><td><span class="sev sev-critical">Critical</span></td></tr>
+<tr><th>Scope</th><td>design</td></tr>
+<tr><th>Status</th><td><span class="issue-status status-confirmed">Confirmed</span></td></tr>
+<tr><th>Affected</th><td>ATLAS-128 as specified; the other parameter sets were not claimed or tested</td></tr>
+<tr><th>Discovery</th><td>Non-trivial</td></tr>
+<tr><th>Exploitation</th><td>3,000,000 ordinary chosen-message signatures; 996 seconds in our 12-worker rerun, followed by key recovery and forgery</td></tr>
+<tr><th>Credit</th><td>Martin Feussner, with OpenAI Codex (Daybreak Blue) assistance</td></tr>
+<tr><th>Date</th><td>2026-09-27</td></tr>
+</table></div>
+<p>Original source: <a href="https://list.niccs.org.cn/archives/list/pkcforum@list.niccs.org.cn/message/3BUUSX5DBW37Y35QAEXA53ZAEU3JBDET/">Feussner's PKC Forum post</a> and <a href="https://github.com/martinfeussner/NGCC-Signature-Audit/tree/d03848f40a49a1d1d146e33c88ce251ac092439d/MORNING-ATLAS">pinned public analysis and reproducer</a></p>
+<p>The specification samples each mask coefficient from the finite interval <code>[-(gamma1-1), gamma1-1]</code>, publishes <code>z=y+c*s1</code>, and accepts only <code>|z| &lt; gamma1-beta1</code>. Its translated-interval argument on pages 17–18 needs <code>|c*s1| &lt;= beta1</code>; ATLAS-128 instead has <code>gamma1=2^19</code>, <code>beta1=51</code>, and <code>kappa*eta=31*16=496</code>. About 34% of coefficients exceed <code>beta1</code>, so this is not a rare tail. Intersection with the finite mask support loses <code>(|c*s1|-51)+</code> possible values and makes boundary responses secret-dependent. Page 21 itself notes that <code>beta1</code> is no longer close to <code>kappa*eta</code>.</p>
+<p>The published recovery converts those boundary events into exact public half-spaces, combines them with the public Module-LWR relation and hint information, recovers all 768 coefficients of <code>s1</code> and all 1,152 coefficients of the omitted <code>t0</code>, and constructs an equivalent signing key. It uses corrected samplers matching the written distributions, so it is independent of <code>sign-15-4</code>'s repeated-mask implementation bug. A calibration key and a prospectively selected second key each yielded an accepted fresh-message forgery from 3,000,000 signatures.</p>
+<p>We reran the hash-pinned public evidence and reconstruction checks, then independently ran the complete 3-million-signature pipeline from raw generation for the prospectively selected deterministic key 4. It retained 1,931,974 support rows, recovered a key satisfying all 1,152 public LWR residual bounds, and produced an accepted fresh-message forgery. The run took 996 seconds with 12 collection workers; the changed-message control rejected.</p>
+<h3 id="reproducing_6">Reproducing</h3>
+<p>Commands below run in a checkout of the <a href="https://github.com/ngcc-dev/ngcc-harness">ngcc-harness repository</a> with the candidate built (see its README).</p>
+<pre><code class="language-sh">make -C sign-15 exploit-spec-key-recovery
+ATLAS_FULL=1 NGCC_SAGE_PYTHON=/path/to/python make -C sign-15 exploit-spec-key-recovery
+</code></pre>
+<p>The first command uses stored recovered <code>s1</code> and <code>t0</code> values to rebuild an equivalent key and forgery, then verifies the fresh-message signature and changed-message control. It does not rederive that key from signatures. The second regenerates three million signatures and performs the full public recovery; it needs NumPy, SciPy, and fpylll. Our 12-worker run took 996 seconds; a smaller CPU may take substantially longer.</p>
 </main>
 <footer class="site-footer">
 <p>Maintained by: <a href="mailto:markku-juhani.saarinen@tuni.fi">markku-juhani.saarinen@tuni.fi</a></p>

@@ -38,3 +38,30 @@ Algorithm 2 (§1.4) specifies `K(ξ, ct')` on rejection, where `ct'` is the re-e
 ```sh
 python3 kem-03/reproduce_rejection_key.py kem-03/lib/libBAG-Loong-128.so
 ```
+
+## kem-03-3: Public support spaces reduce secret-key recovery to linear algebra
+
+Severity: Critical
+Status: Confirmed
+Layer: Implementation
+Affected: Reference implementation, all four parameter sets
+Discovery: Moderate
+Exploitation: 0.049–0.988 seconds for public-key recovery in the published Python experiments
+Credit: Zihan Liu
+Date: 2026-09-27
+Reference: [Liu, “Linear Key Recovery in the BAG-Loong Reference Implementation,” ePrint 2026/2223](https://eprint.iacr.org/2026/2223)
+
+The specification calls for secret random support spaces for the PKE matrices `X` and `Y`. While choosing those supports, the reference sampler ignores its XOF reader and builds one public pool `1,beta,beta^2,...`; fixed overlapping slices are the two supports. The matrix coefficients are still sampled from the seed-dependent XOF. Expanding the public relation `S=H*X+Y` over `F_2` and projecting away the known support of `Y` leaves a binary linear system for `X`. Encryption uses the same fixed-pool sampler, so the supports of `R1`, `E`, and `R2` are public too.
+
+The paper gives two independent solvers. On all 40 supplied KAT records, their reduced matrices had full column rank and recovered `X` exactly. A KEM secret key assembled from the public seed, recovered `X`, public key, and an arbitrary rejection secret decapsulated every valid KAT ciphertext to the reference session key; replacing `X` by zero rejected. Mean Python recovery times were 0.049, 0.171, 0.432, and 0.988 seconds for the 128-, 256-, 384-, and 512-bit sets. This is complete public-key recovery of the decryption capability, independent of decoder timing.
+
+An independent source-linked witness recovered `X` byte for byte from five fresh BAG-Loong-128 public keys. Every column's binary system had rank 210/210; the five recoveries took 0.66–0.68 seconds each on this host. The secret key was used only afterward to check the recovered bytes.
+
+### Reproducing
+
+```sh
+python3 kem-03/reproduce_public_supports.py
+make -C kem-03 reproduce-public-supports
+```
+
+The first command checks all four archived samplers, the `S=H*X+Y` source operation, and the reported reduced-system dimensions. The second builds the submitted 128-bit source and recovers `X` from five fresh public keys, requiring full rank and a byte-for-byte match with the secret used to generate each key. The ePrint reports the full 40-key elimination and unmodified-decapsulation experiment; its solver code was not released with the paper.

@@ -68,7 +68,7 @@ Layer: Implementation
 Affected: Aigis-Sig+ reference wrappers, all three parameter sets; runtime witness on set I
 Discovery: Trivial
 Exploitation: Out-of-bounds read or crash on a caller-supplied short key; no disclosure shown
-Credit: Askus Operator (Luna High), with human review by Askus Li
+Credit: Askus Li, with Askus Operator (Luna High) assistance
 Date: 2026-09-23
 Original source: [NGCC PKC Forum post](https://list.niccs.org.cn/archives/list/pkcforum@list.niccs.org.cn/message/2ZTM3BMRATA6QTPA2OZSSSEBVBCTPHM6/), [GitHub PR #14](https://github.com/ngcc-dev/ngcc-harness/pull/14)
 
@@ -90,7 +90,7 @@ Layer: Implementation
 Affected: Aigis-Sig+ reference signers, all three parameter sets; runtime witness on set I
 Discovery: Trivial
 Exploitation: 2,048-byte stack-buffer write on the signer path; controlled corruption or key disclosure not shown
-Credit: Askus Operator (Luna High), with human review by Askus Li
+Credit: Askus Li, with Askus Operator (Luna High) assistance
 Date: 2026-09-23
 Original source: [NGCC PKC Forum post](https://list.niccs.org.cn/archives/list/pkcforum@list.niccs.org.cn/message/2ZTM3BMRATA6QTPA2OZSSSEBVBCTPHM6/), [GitHub PR #14](https://github.com/ngcc-dev/ngcc-harness/pull/14)
 
@@ -103,3 +103,30 @@ bash sign-01/reproduce_memory_safety.sh
 ```
 
 The set-I witness invokes the same mask sampler as the signer and requires an AddressSanitizer stack-buffer-overflow diagnostic at `polyvecl_uniform_gamma1`.
+
+## sign-01-5: The challenge sampler collapses independent signs to one effective bit
+
+Severity: Critical
+Status: Confirmed
+Layer: Implementation
+Affected: Aigis-Sig+-I and -II reference, AVX2, NEON, and AArch64 implementations
+Discovery: Trivial
+Exploitation: Most likely challenge costs about 2^213.46 work in set II; Grover cost about 2^68.59 in set I
+Credit: Yijian Liu, with Doubao assistance
+Date: 2026-09-27
+Original source: [Liu's PKC Forum post](https://list.niccs.org.cn/archives/list/pkcforum@list.niccs.org.cn/message/PKKXNPUY433TLJHGCS365LENBN75SHAZ/)
+Follow-up source: [Aigis-Sig+ team's confirmation and fix summary](https://list.niccs.org.cn/archives/list/pkcforum@list.niccs.org.cn/message/2BWLA2SMHII22YXJM6EWHVGE26WKG2PG/)
+
+Algorithm 24 assigns an independent sign to every nonzero challenge coefficient. In the `PARAM_C <= 64` implementation branch, however, the sampler sets one coefficient from `signs & 1` and then executes `signs = 0` instead of shifting to the next bit. This affects both set I (24 nonzero coefficients) and set II (44). For each support, one sign-bit value gives the all-positive challenge; the other leaves one negative coefficient whose position can vary as the sampler swaps coefficients. Thus set II has about `45*binomial(512,44) = 2^217.95` distinct outputs, but the most likely output has probability `1/(2*binomial(512,44))`. Its min-entropy, and the corresponding generic challenge-search work, is only `213.4609` bits. The specification instead defines
+
+`binomial(512,44) * 2^44 = 2^256.4609` possible uniformly signed challenges.
+
+The most likely set-II challenge therefore costs about `2^213.46` work, below its 256-bit claim. Set I similarly has `137.17` bits of min-entropy: this remains above its 128-bit classical claim, but Grover search costs about `2^68.59`, below its claimed 80-bit quantum level. Set III uses a separate branch and is unaffected. The team confirms the error and reports replacing it in updated REF, AVX2, and ARM code.
+
+### Reproducing
+
+```sh
+python3 sign-01/reproduce_challenge_entropy.py
+```
+
+The script checks the defective assignment in eight archived implementation copies across sets I and II. It computes the number of distinct outputs and the maximum output probability separately, since the outputs are not equally likely.

@@ -19,6 +19,7 @@
 <tr><th>Candidate</th><td>BAG-Loong</td></tr>
 <tr><th>Family</th><td>Code-based (rank metric)</td></tr>
 <tr><th>Archive</th><td><a href="https://www.niccs.org.cn/niccs/Proposal/Public-Key%20Cryptographic%20Algorithms/Round%201%20candidates/BAG-Loong.zip">BAG-Loong.zip</a> (SHA-256: <code>2795fd57d3d00791652256362b4a21982116d3aad1fb63633dac923e0e76e05b</code>)</td></tr>
+<tr><th>Specification</th><td><a href="https://github.com/ngcc-dev/ngcc-harness/raw/refs/heads/main/kem-03/kem-03-spec.pdf" title="Download kem-03-spec.pdf from GitHub">kem-03-spec.pdf</a> <a class="pdf-link" href="https://cdn.jsdelivr.net/gh/ngcc-dev/ngcc-harness@main/kem-03/kem-03-spec.pdf" title="Open the kem-03 specification PDF">PDF</a></td></tr>
 </table></div>
 
 <h2 class="issue-heading issue-heading-first" id="kem-03-1-secret-dependent-pivoting-in-the-gabidulin-decoder">kem-03-1: Secret-dependent pivoting in the Gabidulin decoder</h2>
@@ -56,6 +57,28 @@
 <p>Commands below run in a checkout of the <a href="https://github.com/ngcc-dev/ngcc-harness">ngcc-harness repository</a> with the candidate built (see its README).</p>
 <pre><code class="language-sh">python3 kem-03/reproduce_rejection_key.py kem-03/lib/libBAG-Loong-128.so
 </code></pre>
+<h2 class="issue-heading" id="kem-03-3-public-support-spaces-reduce-secret-key-recovery-to-linear-algebra">kem-03-3: Public support spaces reduce secret-key recovery to linear algebra</h2>
+
+<div class="table-wrap"><table class="meta issue-meta">
+<tr><th>Severity</th><td><span class="sev sev-critical">Critical</span></td></tr>
+<tr><th>Scope</th><td>implementation</td></tr>
+<tr><th>Status</th><td><span class="issue-status status-confirmed">Confirmed</span></td></tr>
+<tr><th>Affected</th><td>Reference implementation, all four parameter sets</td></tr>
+<tr><th>Discovery</th><td>Moderate</td></tr>
+<tr><th>Exploitation</th><td>0.049–0.988 seconds for public-key recovery in the published Python experiments</td></tr>
+<tr><th>Credit</th><td>Zihan Liu</td></tr>
+<tr><th>Date</th><td>2026-09-27</td></tr>
+</table></div>
+<p>Reference: <a href="https://eprint.iacr.org/2026/2223">Liu, “Linear Key Recovery in the BAG-Loong Reference Implementation,” ePrint 2026/2223</a></p>
+<p>The specification calls for secret random support spaces for the PKE matrices <code>X</code> and <code>Y</code>. While choosing those supports, the reference sampler ignores its XOF reader and builds one public pool <code>1,beta,beta^2,...</code>; fixed overlapping slices are the two supports. The matrix coefficients are still sampled from the seed-dependent XOF. Expanding the public relation <code>S=H*X+Y</code> over <code>F_2</code> and projecting away the known support of <code>Y</code> leaves a binary linear system for <code>X</code>. Encryption uses the same fixed-pool sampler, so the supports of <code>R1</code>, <code>E</code>, and <code>R2</code> are public too.</p>
+<p>The paper gives two independent solvers. On all 40 supplied KAT records, their reduced matrices had full column rank and recovered <code>X</code> exactly. A KEM secret key assembled from the public seed, recovered <code>X</code>, public key, and an arbitrary rejection secret decapsulated every valid KAT ciphertext to the reference session key; replacing <code>X</code> by zero rejected. Mean Python recovery times were 0.049, 0.171, 0.432, and 0.988 seconds for the 128-, 256-, 384-, and 512-bit sets. This is complete public-key recovery of the decryption capability, independent of decoder timing.</p>
+<p>An independent source-linked witness recovered <code>X</code> byte for byte from five fresh BAG-Loong-128 public keys. Every column's binary system had rank 210/210; the five recoveries took 0.66–0.68 seconds each on this host. The secret key was used only afterward to check the recovered bytes.</p>
+<h3 id="reproducing_2">Reproducing</h3>
+<p>Commands below run in a checkout of the <a href="https://github.com/ngcc-dev/ngcc-harness">ngcc-harness repository</a> with the candidate built (see its README).</p>
+<pre><code class="language-sh">python3 kem-03/reproduce_public_supports.py
+make -C kem-03 reproduce-public-supports
+</code></pre>
+<p>The first command checks all four archived samplers, the <code>S=H*X+Y</code> source operation, and the reported reduced-system dimensions. The second builds the submitted 128-bit source and recovers <code>X</code> from five fresh public keys, requiring full rank and a byte-for-byte match with the secret used to generate each key. The ePrint reports the full 40-key elimination and unmodified-decapsulation experiment; its solver code was not released with the paper.</p>
 </main>
 <footer class="site-footer">
 <p>Maintained by: <a href="mailto:markku-juhani.saarinen@tuni.fi">markku-juhani.saarinen@tuni.fi</a></p>

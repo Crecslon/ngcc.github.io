@@ -19,6 +19,7 @@
 <tr><th>Candidate</th><td>Polar-KEM</td></tr>
 <tr><th>Family</th><td>Lattice (polar-code-defined)</td></tr>
 <tr><th>Archive</th><td><a href="https://www.niccs.org.cn/niccs/Proposal/Public-Key%20Cryptographic%20Algorithms/Round%201%20candidates/Polar-KEM.zip">Polar-KEM.zip</a> (SHA-256: <code>3ae9d4f1a717fb473e76447014d585cd5d14fe38728f02b1a044cc6a2d03e16d</code>)</td></tr>
+<tr><th>Specification</th><td><a href="https://github.com/ngcc-dev/ngcc-harness/raw/refs/heads/main/kem-29/kem-29-spec.pdf" title="Download kem-29-spec.pdf from GitHub">kem-29-spec.pdf</a> <a class="pdf-link" href="https://cdn.jsdelivr.net/gh/ngcc-dev/ngcc-harness@main/kem-29/kem-29-spec.pdf" title="Open the kem-29 specification PDF">PDF</a></td></tr>
 </table></div>
 
 <h2 class="issue-heading issue-heading-first" id="kem-29-1-the-submission-ships-a-complete-public-key-only-break">kem-29-1: The submission ships a complete public-key-only break</h2>
@@ -48,6 +49,29 @@ python3 kem-29/reproduce_public_recovery.py
 </code></pre>
 <p><code>tools/reproduce.sh</code> runs this together with the other supported runtime
 witnesses and their controls. See <code>tools/README.md</code>.</p>
+<h2 class="issue-heading" id="kem-29-2-the-specified-aligned-basis-directly-exposes-the-secret-isometry">kem-29-2: The specified aligned basis directly exposes the secret isometry</h2>
+
+<div class="table-wrap"><table class="meta issue-meta">
+<tr><th>Severity</th><td><span class="sev sev-critical">Critical</span></td></tr>
+<tr><th>Scope</th><td>design</td></tr>
+<tr><th>Status</th><td><span class="issue-status status-confirmed">Confirmed</span></td></tr>
+<tr><th>Affected</th><td>Polar-KEM core construction, all specified parameter sets</td></tr>
+<tr><th>Discovery</th><td>Moderate</td></tr>
+<tr><th>Exploitation</th><td>Polynomial-time exact linear algebra; 0.235 seconds at 128 and 1.169 seconds at 256 in the published experiments</td></tr>
+<tr><th>Credit</th><td>Yuyang Xiao, Long Chen, and Zhenfeng Zhang</td></tr>
+<tr><th>Date</th><td>2026-09-27</td></tr>
+</table></div>
+<p>Reference: <a href="https://eprint.iacr.org/2026/2211">Xiao, Chen, and Zhang, “Structural Cryptanalysis of Polar-KEM,” ePrint 2026/2211</a></p>
+<p>Algorithm 1 constructs a polar-code lattice basis from public parameters, reduces it as <code>B_red=LLL(B)</code>, and publishes the aligned matrix <code>B_pk=O*B_red</code>, where <code>O</code> is the secret isometry. It specifies no private randomness before sampling <code>O</code>. The reduction parameters and tie handling are not fully fixed; candidate reduced bases can be checked against the public Gram matrix <code>B_pkᵀB_pk=B_redᵀB_red</code>. With the corresponding <code>B_red</code>, an attacker computes</p>
+<p><code>O = B_pk * B_red^-1</code>.</p>
+<p>Unlike the general lattice-isomorphism problem, there is no unknown unimodular change of basis: the public matrix exposes the image of every vector in a known complete basis. The paper verifies exact recovery at full 128- and 256-bit dimensions using rational linear algebra. The identity applies to every defined parameter set and recovers the core decapsulation key; a Fujisaki–Okamoto transform cannot hide a secret key that is already a polynomial-time function of the public key.</p>
+<p>Section 6.1.1 says the public basis can be represented in Hermite Normal Form. Publishing a canonical HNF instead of the aligned matrix could hide the column correspondence, but that passage conflicts with Algorithm 1's explicit <code>pk=B_pk=O*B_red</code>; it does not define an HNF conversion in key generation. Moreover, HNF is defined for integer lattice bases, while Algorithm 1 samples a real orthogonal matrix.</p>
+<p>This is distinct from <code>kem-29-1</code>: the submitted implementation has an even simpler public recovery function and does not faithfully implement Algorithm 1, whereas this finding breaks the construction written in the specification.</p>
+<h3 id="reproducing_1">Reproducing</h3>
+<p>Commands below run in a checkout of the <a href="https://github.com/ngcc-dev/ngcc-harness">ngcc-harness repository</a> with the candidate built (see its README).</p>
+<pre><code class="language-sh">python3 kem-29/reproduce_spec_alignment.py
+</code></pre>
+<p>The script extracts text from the archived PDF and checks that Algorithm 1 contains the four relevant assignments. It does not run full-size basis recovery; those experiments and timings are reported in the cited ePrint.</p>
 </main>
 <footer class="site-footer">
 <p>Maintained by: <a href="mailto:markku-juhani.saarinen@tuni.fi">markku-juhani.saarinen@tuni.fi</a></p>

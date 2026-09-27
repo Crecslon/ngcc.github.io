@@ -19,6 +19,7 @@
 <tr><th>Candidate</th><td>Aigis-Sig+</td></tr>
 <tr><th>Family</th><td>Lattice (Module-LWE/SIS, Fiat-Shamir)</td></tr>
 <tr><th>Archive</th><td><a href="https://www.niccs.org.cn/niccs/Proposal/Public-Key%20Cryptographic%20Algorithms/Round%201%20candidates/Aigis-Sig%2B.zip">Aigis-Sig+.zip</a> (SHA-256: <code>88242576a3ae8f9d090b0c9045020f04ee9b5ae828e01b839f25267959e9c7ea</code>)</td></tr>
+<tr><th>Specification</th><td><a href="https://github.com/ngcc-dev/ngcc-harness/raw/refs/heads/main/sign-01/sign-01-spec.pdf" title="Download sign-01-spec.pdf from GitHub">sign-01-spec.pdf</a> <a class="pdf-link" href="https://cdn.jsdelivr.net/gh/ngcc-dev/ngcc-harness@main/sign-01/sign-01-spec.pdf" title="Open the sign-01 specification PDF">PDF</a></td></tr>
 </table></div>
 
 <h2 class="issue-heading issue-heading-first" id="sign-01-1-trivial-signature-malleability-violates-suf-cma">sign-01-1: Trivial signature malleability violates SUF-CMA</h2>
@@ -77,7 +78,7 @@ tools/ngcc_attack sig-malleable sign-01/lib/libAigis-sig1.so
 <tr><th>Affected</th><td>Aigis-Sig+ reference wrappers, all three parameter sets; runtime witness on set I</td></tr>
 <tr><th>Discovery</th><td>Trivial</td></tr>
 <tr><th>Exploitation</th><td>Out-of-bounds read or crash on a caller-supplied short key; no disclosure shown</td></tr>
-<tr><th>Credit</th><td>Askus Operator (Luna High), with human review by Askus Li</td></tr>
+<tr><th>Credit</th><td>Askus Li, with Askus Operator (Luna High) assistance</td></tr>
 <tr><th>Date</th><td>2026-09-23</td></tr>
 </table></div>
 <p>Original source: <a href="https://list.niccs.org.cn/archives/list/pkcforum@list.niccs.org.cn/message/2ZTM3BMRATA6QTPA2OZSSSEBVBCTPHM6/">NGCC PKC Forum post</a>, <a href="https://github.com/ngcc-dev/ngcc-harness/pull/14">GitHub PR #14</a></p>
@@ -96,7 +97,7 @@ tools/ngcc_attack sig-malleable sign-01/lib/libAigis-sig1.so
 <tr><th>Affected</th><td>Aigis-Sig+ reference signers, all three parameter sets; runtime witness on set I</td></tr>
 <tr><th>Discovery</th><td>Trivial</td></tr>
 <tr><th>Exploitation</th><td>2,048-byte stack-buffer write on the signer path; controlled corruption or key disclosure not shown</td></tr>
-<tr><th>Credit</th><td>Askus Operator (Luna High), with human review by Askus Li</td></tr>
+<tr><th>Credit</th><td>Askus Li, with Askus Operator (Luna High) assistance</td></tr>
 <tr><th>Date</th><td>2026-09-23</td></tr>
 </table></div>
 <p>Original source: <a href="https://list.niccs.org.cn/archives/list/pkcforum@list.niccs.org.cn/message/2ZTM3BMRATA6QTPA2OZSSSEBVBCTPHM6/">NGCC PKC Forum post</a>, <a href="https://github.com/ngcc-dev/ngcc-harness/pull/14">GitHub PR #14</a></p>
@@ -106,6 +107,28 @@ tools/ngcc_attack sig-malleable sign-01/lib/libAigis-sig1.so
 <pre><code class="language-sh">bash sign-01/reproduce_memory_safety.sh
 </code></pre>
 <p>The set-I witness invokes the same mask sampler as the signer and requires an AddressSanitizer stack-buffer-overflow diagnostic at <code>polyvecl_uniform_gamma1</code>.</p>
+<h2 class="issue-heading" id="sign-01-5-the-challenge-sampler-collapses-independent-signs-to-one-effective-bit">sign-01-5: The challenge sampler collapses independent signs to one effective bit</h2>
+
+<div class="table-wrap"><table class="meta issue-meta">
+<tr><th>Severity</th><td><span class="sev sev-critical">Critical</span></td></tr>
+<tr><th>Scope</th><td>implementation</td></tr>
+<tr><th>Status</th><td><span class="issue-status status-confirmed">Confirmed</span></td></tr>
+<tr><th>Affected</th><td>Aigis-Sig+-I and -II reference, AVX2, NEON, and AArch64 implementations</td></tr>
+<tr><th>Discovery</th><td>Trivial</td></tr>
+<tr><th>Exploitation</th><td>Most likely challenge costs about 2^213.46 work in set II; Grover cost about 2^68.59 in set I</td></tr>
+<tr><th>Credit</th><td>Yijian Liu, with Doubao assistance</td></tr>
+<tr><th>Date</th><td>2026-09-27</td></tr>
+</table></div>
+<p>Original source: <a href="https://list.niccs.org.cn/archives/list/pkcforum@list.niccs.org.cn/message/PKKXNPUY433TLJHGCS365LENBN75SHAZ/">Liu's PKC Forum post</a>
+Follow-up source: <a href="https://list.niccs.org.cn/archives/list/pkcforum@list.niccs.org.cn/message/2BWLA2SMHII22YXJM6EWHVGE26WKG2PG/">Aigis-Sig+ team's confirmation and fix summary</a></p>
+<p>Algorithm 24 assigns an independent sign to every nonzero challenge coefficient. In the <code>PARAM_C &lt;= 64</code> implementation branch, however, the sampler sets one coefficient from <code>signs &amp; 1</code> and then executes <code>signs = 0</code> instead of shifting to the next bit. This affects both set I (24 nonzero coefficients) and set II (44). For each support, one sign-bit value gives the all-positive challenge; the other leaves one negative coefficient whose position can vary as the sampler swaps coefficients. Thus set II has about <code>45*binomial(512,44) = 2^217.95</code> distinct outputs, but the most likely output has probability <code>1/(2*binomial(512,44))</code>. Its min-entropy, and the corresponding generic challenge-search work, is only <code>213.4609</code> bits. The specification instead defines</p>
+<p><code>binomial(512,44) * 2^44 = 2^256.4609</code> possible uniformly signed challenges.</p>
+<p>The most likely set-II challenge therefore costs about <code>2^213.46</code> work, below its 256-bit claim. Set I similarly has <code>137.17</code> bits of min-entropy: this remains above its 128-bit classical claim, but Grover search costs about <code>2^68.59</code>, below its claimed 80-bit quantum level. Set III uses a separate branch and is unaffected. The team confirms the error and reports replacing it in updated REF, AVX2, and ARM code.</p>
+<h3 id="reproducing_4">Reproducing</h3>
+<p>Commands below run in a checkout of the <a href="https://github.com/ngcc-dev/ngcc-harness">ngcc-harness repository</a> with the candidate built (see its README).</p>
+<pre><code class="language-sh">python3 sign-01/reproduce_challenge_entropy.py
+</code></pre>
+<p>The script checks the defective assignment in eight archived implementation copies across sets I and II. It computes the number of distinct outputs and the maximum output probability separately, since the outputs are not equally likely.</p>
 </main>
 <footer class="site-footer">
 <p>Maintained by: <a href="mailto:markku-juhani.saarinen@tuni.fi">markku-juhani.saarinen@tuni.fi</a></p>

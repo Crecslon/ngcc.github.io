@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lynxer (sign-14) · ngcc.dev</title>
+<link rel="stylesheet" href="../assets/style.css?v=15e56c79">
+</head>
+<body>
+<header class="site-header">
+<a class="brand" href="../index.html">ngcc.dev</a>
+<nav><a href="../index.html">Home</a><a href="../reports/index.html">Reports</a><a href="../constant-time/index.html">Constant-Time</a></nav>
+</header>
+<main>
+<p class="crumb"><a href="../reports/index.html">Reports</a> › <code>sign-14</code> · <a href="../constant-time/sign-14.html">Constant-time review</a></p>
+
+<h1 id="lynxer-sign-14">Lynxer (sign-14)</h1>
+<div class="table-wrap"><table class="meta">
+<tr><th>Candidate</th><td>Lynxer</td></tr>
+<tr><th>Family</th><td>VOLE-in-the-head signature</td></tr>
+<tr><th>Archive</th><td><a href="https://www.niccs.org.cn/niccs/Proposal/Public-Key%20Cryptographic%20Algorithms/Round%201%20candidates/Lynxer.zip">Lynxer.zip</a> (SHA-256: <code>34d863f7df8979c4a5e27fcfe657ed54e81905115c0afc8ef749f50af432f928</code>)</td></tr>
+<tr><th>Specification</th><td><a href="https://github.com/ngcc-dev/ngcc-harness/raw/refs/heads/main/sign-14/sign-14-spec.pdf" title="Download sign-14-spec.pdf from GitHub">sign-14-spec.pdf</a> <a class="pdf-link" href="https://cdn.jsdelivr.net/gh/ngcc-dev/ngcc-harness@main/sign-14/sign-14-spec.pdf" title="Open the sign-14 specification PDF">PDF</a></td></tr>
+</table></div>
+
+<h2 class="issue-heading issue-heading-first" id="sign-14-1-a-degenerate-quicksilver-witness-gives-universal-public-key-only-forgeries">sign-14-1: A degenerate QuickSilver witness gives universal public-key-only forgeries</h2>
+
+<div class="table-wrap"><table class="meta issue-meta">
+<tr><th>Severity</th><td><span class="sev sev-critical">Critical</span></td></tr>
+<tr><th>Scope</th><td>design</td></tr>
+<tr><th>Status</th><td><span class="issue-status status-confirmed">Confirmed</span></td></tr>
+<tr><th>Affected</th><td>Lynxer-256s/f, -384s/f, and -512s/f; the 160-bit sets use different constraints</td></tr>
+<tr><th>Discovery</th><td>Non-trivial</td></tr>
+<tr><th>Exploitation</th><td>Comparable to one honest signature; full-size forgeries reproduced at all six affected parameter sets</td></tr>
+<tr><th>Credit</th><td>Martin Feussner, with OpenAI Codex (Daybreak Blue) assistance</td></tr>
+<tr><th>Date</th><td>2026-09-27</td></tr>
+</table></div>
+<p>Original source: <a href="https://list.niccs.org.cn/archives/list/pkcforum@list.niccs.org.cn/message/JMTZL5V7ROPXSFJQWRHIOKLORGI5AJSN/">Feussner's PKC Forum post</a> and <a href="https://github.com/martinfeussner/NGCC-Signature-Audit/tree/d03848f40a49a1d1d146e33c88ce251ac092439d/Lynxer">pinned public analysis and reproducer</a></p>
+<p>The specified QuickSilver relation fails to enforce two nonzero conditions. Set the purported Lynx key to the public constant <code>c3</code> and the first S-box output <code>v1</code> to zero. Every term in the first constraint then vanishes; the final constraint loses the public target because both its products contain either <code>v1</code> or <code>k+c3</code>. The attacker publicly evaluates the second S-box to satisfy the sole remaining constraint. This gives a false witness for every public key and message without a signing query or Lynx preimage.</p>
+<p>We reran the pinned attack against all six affected full reference parameter sets. Each secret-key buffer was erased before attack construction, direct Lynx evaluation confirmed that the forged key was not a victim preimage, the ordinary submitted verifier accepted the fresh-message signature, and a changed-message control rejected. The 160-bit relations differ and are not claimed to be vulnerable.</p>
+<h3 id="reproducing">Reproducing</h3>
+<p>Commands below run in a checkout of the <a href="https://github.com/ngcc-dev/ngcc-harness">ngcc-harness repository</a> with the candidate built (see its README).</p>
+<pre><code class="language-sh">make -C sign-14 exploit-public-forgery
+</code></pre>
+<p>The wrapper checks out the pinned public reproducer, verifies the official source-archive hash, compiles against the archived reference code, and runs all six positive and changed-message controls. It requires Git, curl, unzip, and a C compiler.</p>
+</main>
+<footer class="site-footer">
+<p>Maintained by: <a href="mailto:markku-juhani.saarinen@tuni.fi">markku-juhani.saarinen@tuni.fi</a></p>
+<p>Submissions are welcome via <a href="https://github.com/ngcc-dev/ngcc-harness/issues">GitHub issues</a>.</p>
+</footer>
+</body>
+</html>

@@ -284,6 +284,12 @@ def pdf_link(c):
     return f'<a class="pdf-link" href="{href}" title="Open the {cid} specification PDF">PDF</a>'
 
 
+def pdf_download_link(cid):
+    filename = f"{cid}-spec.pdf"
+    href = f"{HARNESS}/raw/refs/heads/main/{cid}/{filename}"
+    return f'<a href="{href}" title="Download {filename} from GitHub">{filename}</a>'
+
+
 def constant_time_html(cands, prefix):
     """Link every scoped candidate review without turning it into a vulnerability row."""
     lines = []
@@ -361,6 +367,8 @@ def report_page(r, prefix):
     for k in keys:
         v = markdown.markdown(m[k])[3:-4]
         rows.append(f"<tr><th>{html.escape(k)}</th><td>{v}</td></tr>")
+    cid = r["cid"]
+    rows.append(f'<tr><th>Specification</th><td>{pdf_download_link(cid)} {pdf_link({"id": cid})}</td></tr>')
     meta_table = '<table class="meta">\n' + "\n".join(rows) + "\n</table>"
     title = f"{m.get('Candidate', r['cid'])} ({r['cid']})"
     crumb = f'<p class="crumb"><a href="{prefix}reports/index.html">Reports</a> › <code>{r["cid"]}</code>'

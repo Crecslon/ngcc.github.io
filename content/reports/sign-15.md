@@ -13,6 +13,7 @@ Discovery: Trivial
 Exploitation: Trivial
 Credit: Markku-Juhani O. Saarinen <markku-juhani.saarinen@tuni.fi>, with AI assistance
 Date: 2026-09-21
+Follow-up source: [Song-Anxiao's independent assessment](https://list.niccs.org.cn/archives/list/pkcforum@list.niccs.org.cn/message/QUKIQWX7B5D2UYVTGSZ3JC6IVELQWA2Q/)
 
 `sig_get_sn_len_bytes()` advertises a `CRYPTO_BYTES`-byte output buffer. `sig_sign()` writes exactly that detached signature, but returns `CRYPTO_BYTES + message_length` as though it had also appended the message. A caller that allocates the advertised size and serializes the returned length reads beyond the allocation.
 
@@ -45,6 +46,7 @@ Discovery: Trivial
 Exploitation: Trivial
 Credit: Markku-Juhani O. Saarinen <markku-juhani.saarinen@tuni.fi>, with AI assistance
 Date: 2026-09-21
+Follow-up source: [Song-Anxiao's independent assessment](https://list.niccs.org.cn/archives/list/pkcforum@list.niccs.org.cn/message/QUKIQWX7B5D2UYVTGSZ3JC6IVELQWA2Q/)
 
 The signature decoder stops after the cumulative number of encoded hint indices but does not require the remaining fixed-size hint slots to be canonical. Verification compares only the decoded algebraic values and ignores changes in those unused slots.
 
@@ -78,6 +80,7 @@ Discovery: Trivial
 Exploitation: Exact parameter shortfall; no separate attack required
 Credit: Markku-Juhani O. Saarinen <markku-juhani.saarinen@tuni.fi>, with AI assistance
 Date: 2026-09-21
+Follow-up source: [Song-Anxiao's independent assessment](https://list.niccs.org.cn/archives/list/pkcforum@list.niccs.org.cn/message/QUKIQWX7B5D2UYVTGSZ3JC6IVELQWA2Q/)
 
 The submitted ATLAS-192 implementation uses `n=128` and `kappa=64`. Its challenge space therefore has
 
@@ -106,6 +109,7 @@ Exploitation: Two valid signatures recover `s1` in polynomial time and enable ne
 Credit: Xianhui Lu and Yijian Liu, with AI assistance
 Date: 2026-09-23
 Original source: [Yijian Liu's NGCC PKC Forum post on behalf of Xianhui Lu](https://list.niccs.org.cn/archives/list/pkcforum@list.niccs.org.cn/message/L5UNKA72RZ2TBTCKZYIVJ5KFDU6XTWFB/)
+Follow-up source: [Song-Anxiao's independent assessment and proof-premise check](https://list.niccs.org.cn/archives/list/pkcforum@list.niccs.org.cn/message/QUKIQWX7B5D2UYVTGSZ3JC6IVELQWA2Q/)
 
 In `rej_gamma1m1()`, the second 20-bit decode overwrites `t` before either accepted coefficient is stored. Every masking polynomial therefore has `y[2i] = y[2i+1]`. Since the signature contains `z = y + c*s1` modulo `q`, subtracting each adjacent response pair cancels the mask and gives a noiseless linear equation in the secret `s1`. Two signatures supply a full-rank system for each secret polynomial in all three affected profiles. ATLAS-512 uses a separate three-byte sampler branch.
 
@@ -118,3 +122,72 @@ mamba run -n sage python sign-15/reproduce_mask_key_recovery.py
 ```
 
 The command uses this host's Sage environment; elsewhere, use any Python with `sage.all` importable. The witness compiles only the archived reference and optimized C sources in a temporary directory. It prints six `CONFIRMED sign-15-4` lines, one for each affected implementation/profile combination. The optimized builds require AVX2.
+
+## sign-15-5: Unchecked hint decoding causes out-of-bounds reads and writes
+
+Severity: High
+Status: Confirmed
+Layer: Implementation
+Affected: Reference verifiers, all four parameter sets
+Discovery: Trivial
+Exploitation: Unauthenticated out-of-bounds reads and writes; downstream control is unshown
+Credit: Song-Anxiao, with Xuanzhi CryptoLLM assistance
+Date: 2026-09-27
+Original source: [Song-Anxiao's PKC Forum assessment](https://list.niccs.org.cn/archives/list/pkcforum@list.niccs.org.cn/message/QUKIQWX7B5D2UYVTGSZ3JC6IVELQWA2Q/)
+
+`unpack_sig` takes both its loop limit and coefficient indices from the unauthenticated hint encoding, before checking the signature. In ATLAS-128 (`packing.c:223-224`) and -192 (`:218-219`), it writes `h->vec[i].coeffs[sig[j]] = 1` without checking that a byte-sized position is below `N=128`; a position such as 200 writes beyond the coefficient array. The count is also unchecked. In ATLAS-256, a count of 255 reads beyond the signature buffer. In ATLAS-512, it reads beyond `h_coeffs[OMEGA]` and can use the stray value as an index for a coefficient write.
+
+The local witness links the submitted `packing.c` and calls the decoder used by verification. AddressSanitizer confirms four-byte heap-buffer-overflow writes in the 128- and 192-bit sets, a signature-buffer over-read in the 256-bit set, and an out-of-bounds hint-array read in the 512-bit set. In the submitted verifier the decoded output is on the stack, so the first two writes corrupt its frame.
+
+### Reproducing
+
+```sh
+make -C sign-15 exploit-memory-safety
+```
+
+The target runs all four reference parameter sets.
+
+## sign-15-6: Withdrawn — official NICCS DRNG rotates by the word size
+
+Severity: Info
+Status: Withdrawn
+Layer: Evaluation
+Affected: Shared official NICCS API DRNG, not ATLAS specifically
+Discovery: Trivial
+Exploitation: No ATLAS-specific vulnerability established
+Credit: Song-Anxiao, with Xuanzhi CryptoLLM assistance
+Date: 2026-09-27
+Original source: [Song-Anxiao's PKC Forum assessment](https://list.niccs.org.cn/archives/list/pkcforum@list.niccs.org.cn/message/QUKIQWX7B5D2UYVTGSZ3JC6IVELQWA2Q/)
+
+The undefined shift is real: the SM3 helper in `drng.c:36` evaluates `(a << n) | (a >> (32-n))` with `n=0` reached at line 90. But the candidate's `drng.c` is the official NICCS API file, with only a final-newline difference in the archived copies. The same rotation appears across submissions that use that shared file. ATLAS calls the DRNG during key generation, not signature generation. This is an upstream API portability issue rather than an ATLAS-specific finding, so this report is withdrawn.
+
+### Reproducing
+
+Compare `sign-15/Implementation/Reference_Implementation/lwrdsa128/drng.c` with `api/API_PKC/Implementations/Reference_Implementation/AlgorithmInstance/drng.c` after normalizing the final newline.
+
+## sign-15-7: Finite mask support leaks the specified ATLAS-128 signing key
+
+Severity: Critical
+Status: Confirmed
+Layer: Design
+Affected: ATLAS-128 as specified; the other parameter sets were not claimed or tested
+Discovery: Non-trivial
+Exploitation: 3,000,000 ordinary chosen-message signatures; 996 seconds in our 12-worker rerun, followed by key recovery and forgery
+Credit: Martin Feussner, with OpenAI Codex (Daybreak Blue) assistance
+Date: 2026-09-27
+Original source: [Feussner's PKC Forum post](https://list.niccs.org.cn/archives/list/pkcforum@list.niccs.org.cn/message/3BUUSX5DBW37Y35QAEXA53ZAEU3JBDET/) and [pinned public analysis and reproducer](https://github.com/martinfeussner/NGCC-Signature-Audit/tree/d03848f40a49a1d1d146e33c88ce251ac092439d/MORNING-ATLAS)
+
+The specification samples each mask coefficient from the finite interval `[-(gamma1-1), gamma1-1]`, publishes `z=y+c*s1`, and accepts only `|z| < gamma1-beta1`. Its translated-interval argument on pages 17–18 needs `|c*s1| <= beta1`; ATLAS-128 instead has `gamma1=2^19`, `beta1=51`, and `kappa*eta=31*16=496`. About 34% of coefficients exceed `beta1`, so this is not a rare tail. Intersection with the finite mask support loses `(|c*s1|-51)+` possible values and makes boundary responses secret-dependent. Page 21 itself notes that `beta1` is no longer close to `kappa*eta`.
+
+The published recovery converts those boundary events into exact public half-spaces, combines them with the public Module-LWR relation and hint information, recovers all 768 coefficients of `s1` and all 1,152 coefficients of the omitted `t0`, and constructs an equivalent signing key. It uses corrected samplers matching the written distributions, so it is independent of `sign-15-4`'s repeated-mask implementation bug. A calibration key and a prospectively selected second key each yielded an accepted fresh-message forgery from 3,000,000 signatures.
+
+We reran the hash-pinned public evidence and reconstruction checks, then independently ran the complete 3-million-signature pipeline from raw generation for the prospectively selected deterministic key 4. It retained 1,931,974 support rows, recovered a key satisfying all 1,152 public LWR residual bounds, and produced an accepted fresh-message forgery. The run took 996 seconds with 12 collection workers; the changed-message control rejected.
+
+### Reproducing
+
+```sh
+make -C sign-15 exploit-spec-key-recovery
+ATLAS_FULL=1 NGCC_SAGE_PYTHON=/path/to/python make -C sign-15 exploit-spec-key-recovery
+```
+
+The first command uses stored recovered `s1` and `t0` values to rebuild an equivalent key and forgery, then verifies the fresh-message signature and changed-message control. It does not rederive that key from signatures. The second regenerates three million signatures and performs the full public recovery; it needs NumPy, SciPy, and fpylll. Our 12-worker run took 996 seconds; a smaller CPU may take substantially longer.
