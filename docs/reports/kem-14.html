@@ -35,14 +35,55 @@
 <tr><th>Credit</th><td>Markku-Juhani O. Saarinen <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#109;&#97;&#114;&#107;&#107;&#117;&#45;&#106;&#117;&#104;&#97;&#110;&#105;&#46;&#115;&#97;&#97;&#114;&#105;&#110;&#101;&#110;&#64;&#116;&#117;&#110;&#105;&#46;&#102;&#105;">&#109;&#97;&#114;&#107;&#107;&#117;&#45;&#106;&#117;&#104;&#97;&#110;&#105;&#46;&#115;&#97;&#97;&#114;&#105;&#110;&#101;&#110;&#64;&#116;&#117;&#110;&#105;&#46;&#102;&#105;</a>, with AI assistance</td></tr>
 <tr><th>Date</th><td>2026-09-23</td></tr>
 </table></div>
-
+<p>Follow-up source: <a href="https://list.niccs.org.cn/archives/list/pkcforum@list.niccs.org.cn/message/4R7ZY3HCMZEPEUVGK2F27X4BYP5Z6AZV/">DTRU team's confirmation and fix</a></p>
 <p>The official <code>kem_dec</code> API accepts a caller-supplied <code>ct_len_bytes</code>, but the reference implementation does not verify it against the instance's fixed ciphertext length. It copies that many bytes into a stack buffer sized for the fixed ciphertext plus <code>Z</code> and a short prefix, then writes <code>Z</code> at offset <code>ct_len_bytes</code>. A correctly allocated, longer input therefore causes an out-of-bounds stack write inside decapsulation. The same unchecked loops appear in all seven reference source trees.</p>
 <p>For DTRU-Light, a valid 512-byte ciphertext decapsulates to the honest shared secret; passing those same bytes followed by 48 allocated zero bytes with declared length 560 aborts with stack-smash detection. DTRU-1024 behaves likewise at lengths 1280 and 1360. The effect is memory corruption and availability loss, not a demonstrated confidentiality break. An application that enforces the exact ciphertext length before calling the library can avoid this path, but the submitted API does not enforce that requirement itself.</p>
+<p>The DTRU team confirmed the missing validation and reports adding exact-length checks to every reference, AVX2, resource-optimized, and ARM decapsulation entry point. Its broader review also found that some optimized paths read the fixed ciphertext size even when the caller supplied a shorter allocation; that is the undersized-input manifestation of the same missing API-length validation.</p>
 <h3 id="reproducing">Reproducing</h3>
 <p>Commands below run in a checkout of the <a href="https://github.com/ngcc-dev/ngcc-harness">ngcc-harness repository</a> with the candidate built (see its README).</p>
 <pre><code class="language-sh">make -C kem-14 exploit
 </code></pre>
 <p>The witness tests two independent instances, gives the library an input allocation matching the declared length, checks normal decapsulation first, and isolates each crash in a subprocess. It prints <code>ATTACK kem-14-1 ... CONFIRMED</code> for both.</p>
+<h2 class="issue-heading" id="kem-14-2-decapsulation-return-value-exposes-the-implicit-rejection-branch">kem-14-2: Decapsulation return value exposes the implicit-rejection branch</h2>
+
+<div class="table-wrap"><table class="meta issue-meta">
+<tr><th>Severity</th><td><span class="sev sev-low">Low</span></td></tr>
+<tr><th>Scope</th><td>implementation</td></tr>
+<tr><th>Status</th><td><span class="issue-status status-confirmed">Confirmed</span></td></tr>
+<tr><th>Affected</th><td>All seven reference parameter sets; the DTRU team reports fixing the wider implementation set</td></tr>
+<tr><th>Discovery</th><td>Trivial</td></tr>
+<tr><th>Exploitation</th><td>Ciphertext-validity oracle through the public return value; no standalone IND-CCA break demonstrated</td></tr>
+<tr><th>Credit</th><td>赵运磊 (on behalf of the DTRU team)</td></tr>
+<tr><th>Date</th><td>2026-09-27</td></tr>
+</table></div>
+<p>Original source: <a href="https://list.niccs.org.cn/archives/list/pkcforum@list.niccs.org.cn/message/4R7ZY3HCMZEPEUVGK2F27X4BYP5Z6AZV/">DTRU team's PKC Forum disclosure and fix</a></p>
+<p>The specified FO transform uses implicit rejection: an invalid ciphertext yields a pseudorandom rejection key without revealing which branch was selected. Every reference <code>kem_dec</code> instead ends with <code>return fail;</code>, returning <code>0</code> after successful re-encryption and <code>1</code> after failure even though the shared-secret buffer is selected in constant time. Thus a correctly sized modified ciphertext exposes its validity directly through the API.</p>
+<p>This signal alone is not a demonstrated IND-CCA break: explicit-rejection FO variants can be secure, and the contest API has an error return. The finding is the implementation's violation of DTRU's specified implicit-rejection contract. The DTRU team confirmed the discrepancy and reports changing normal-length decapsulation paths to return <code>0</code>.</p>
+<h3 id="reproducing_1">Reproducing</h3>
+<p>Commands below run in a checkout of the <a href="https://github.com/ngcc-dev/ngcc-harness">ngcc-harness repository</a> with the candidate built (see its README).</p>
+<pre><code class="language-sh">make -C kem-14 exploit-rejection-contract
+</code></pre>
+<p>The witness first checks an honest encapsulation, then changes one ciphertext byte and requires the submitted decapsulator to return <code>1</code> while producing a deterministic rejection key. It also source-checks the same <code>return fail;</code> path in all seven reference trees and prints <code>ATTACK kem-14-2 ... CONFIRMED</code>.</p>
+<h2 class="issue-heading" id="kem-14-3-rejection-key-omits-the-specified-public-key-binding">kem-14-3: Rejection key omits the specified public-key binding</h2>
+
+<div class="table-wrap"><table class="meta issue-meta">
+<tr><th>Severity</th><td><span class="sev sev-low">Low</span></td></tr>
+<tr><th>Scope</th><td>implementation</td></tr>
+<tr><th>Status</th><td><span class="issue-status status-confirmed">Confirmed</span></td></tr>
+<tr><th>Affected</th><td>All seven reference parameter sets</td></tr>
+<tr><th>Discovery</th><td>Trivial</td></tr>
+<tr><th>Exploitation</th><td>Correlated keys with different public keys and equal rejection seeds alias on every rejected ciphertext; no honest-key IND-CCA break demonstrated</td></tr>
+<tr><th>Credit</th><td>赵运磊 (on behalf of the DTRU team)</td></tr>
+<tr><th>Date</th><td>2026-09-27</td></tr>
+</table></div>
+<p>Original source: <a href="https://list.niccs.org.cn/archives/list/pkcforum@list.niccs.org.cn/message/4R7ZY3HCMZEPEUVGK2F27X4BYP5Z6AZV/">DTRU team's PKC Forum disclosure</a></p>
+<p>The specification derives the rejection key as <code>H1(ID(pk), z, c)</code>. All seven reference implementations instead compute <code>pseudohash(512, c || z)</code>: <code>ID(pk)</code> is absent, the operands are reversed, and the ordinary hash is reused without the specified domain separation. Consequently, distinct keys containing the same rejection seed return the same rejection key for a common invalid ciphertext, even when their public keys differ.</p>
+<p>The submitted generator samples <code>z</code> independently, so this correlated-key witness is not an attack on honestly and independently generated keys and does not establish an IND-CCA break. It demonstrates precisely the missing multi-key binding that the specified <code>ID(pk)</code> input is intended to provide. The DTRU team independently identified the omission and announced an update.</p>
+<h3 id="reproducing_2">Reproducing</h3>
+<p>Commands below run in a checkout of the <a href="https://github.com/ngcc-dev/ngcc-harness">ngcc-harness repository</a> with the candidate built (see its README).</p>
+<pre><code class="language-sh">make -C kem-14 exploit-rejection-contract
+</code></pre>
+<p>The witness generates two different keys, copies only the first key's 32-byte rejection seed into the second secret key, and decapsulates one invalid ciphertext under both. The rejection keys become identical; retaining the second key's original seed is a negative control and produces a different value. It prints <code>ATTACK kem-14-3 ... CONFIRMED</code>.</p>
 </main>
 <footer class="site-footer">
 <p>Maintained by: <a href="mailto:markku-juhani.saarinen@tuni.fi">markku-juhani.saarinen@tuni.fi</a></p>

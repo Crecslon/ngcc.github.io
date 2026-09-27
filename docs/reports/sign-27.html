@@ -104,6 +104,27 @@ Follow-up source: <a href="https://list.niccs.org.cn/archives/list/pkcforum@list
 <pre><code class="language-sh">python3 sign-27/reproduce_modular_challenge.py
 </code></pre>
 <p>The script models two distinct prime challenges that accept the same fixed degree and checks the corresponding congruences. It checks the submitted source expressions statically but does not execute <code>verify.c</code>.</p>
+<h2 class="issue-heading" id="sign-27-5-response-rescaling-gives-a-practical-fresh-message-forgery">sign-27-5: Response rescaling gives a practical fresh-message forgery</h2>
+
+<div class="table-wrap"><table class="meta issue-meta">
+<tr><th>Severity</th><td><span class="sev sev-critical">Critical</span></td></tr>
+<tr><th>Scope</th><td>design</td></tr>
+<tr><th>Status</th><td><span class="issue-status status-confirmed">Confirmed</span></td></tr>
+<tr><th>Affected</th><td>All four submitted SQIsignTriangle parameter sets</td></tr>
+<tr><th>Discovery</th><td>Non-trivial</td></tr>
+<tr><th>Exploitation</th><td>One signing query for an eligible response, followed by public verifier-scale work; all 12 full-size trials forged within one second on this host</td></tr>
+<tr><th>Credit</th><td>Martin Feussner, with OpenAI Codex (Daybreak Blue) assistance</td></tr>
+<tr><th>Date</th><td>2026-09-27</td></tr>
+</table></div>
+<p>Original source: <a href="https://list.niccs.org.cn/archives/list/pkcforum@list.niccs.org.cn/message/DYDMQ7SEI5DPVVP6IL27J63YODLVUPE3/">Feussner's PKC Forum post</a> and <a href="https://github.com/martinfeussner/NGCC-Signature-Audit/tree/66c991978995c17d1514825a9e9d2ff6810bb22a/SQIsignTriangle">pinned public analysis and reproducer</a></p>
+<p>The specified response has a scaling symmetry. Verification constructs its kernel from <code>([q]P_pk,P_aux)</code> and <code>([q]Q_pk,Q_aux)</code>. Given an odd replacement <code>q'</code> with the same bit length, set <code>u = q' q^-1 mod 2^e</code> and multiply all four serialized auxiliary-basis coefficients by <code>u mod 2^e</code>. Both reconstructed kernel generators are then multiplied by the same unit, so the subgroup, quotient, and unordered codomain <code>j</code>-invariants are unchanged.</p>
+<p>SQIsignTriangle claims EUF-CMA security (§6.4, Theorem 4), which one signing query suffices to violate. For a fresh target message, the attacker publicly recovers the two codomain factors and their challenges <code>(c1,c2)</code>, then chooses an odd <code>e</code>-bit <code>q'</code> satisfying <code>q' = c2 mod c1</code>. The public condition <code>2^(e-1) &gt; 2c1</code> is sufficient to ensure such a representative. The verifier reconstructs the original kernel but accepts the replacement response against the target challenge. No message search is needed; this is a direct EUF-CMA forgery rather than signature malleability.</p>
+<p>We reran three deterministic fresh-key trials at each of the 128-, 160-, 256-, and 512-bit sets. Every first response met the sufficient condition; every transformed signature was accepted on its unqueried target and rejected on its source, while the genuine signature showed the opposite behavior. The observed response exponents were 219–895 and all 12 public transformations completed in under one second on this host. The submission gives no lower-tail bound for honest response sizes, so this establishes practical success on the tested executions rather than a proof that every first response is eligible; an attacker can request another signature after an ineligible response.</p>
+<h3 id="reproducing_4">Reproducing</h3>
+<p>Commands below run in a checkout of the <a href="https://github.com/ngcc-dev/ngcc-harness">ngcc-harness repository</a> with the candidate built (see its README).</p>
+<pre><code class="language-sh">make -C sign-27 exploit-response-rescaling
+</code></pre>
+<p>The wrapper checks out the pinned public reproducer, which builds the unmodified submitted verifier and runs the four source/target controls for three fresh keys at every level. It requires Git, GNU Make, Python 3, GCC, and GMP development headers.</p>
 </main>
 <footer class="site-footer">
 <p>Maintained by: <a href="mailto:markku-juhani.saarinen@tuni.fi">markku-juhani.saarinen@tuni.fi</a></p>

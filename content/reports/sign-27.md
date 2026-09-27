@@ -95,3 +95,29 @@ python3 sign-27/reproduce_modular_challenge.py
 ```
 
 The script models two distinct prime challenges that accept the same fixed degree and checks the corresponding congruences. It checks the submitted source expressions statically but does not execute `verify.c`.
+
+## sign-27-5: Response rescaling gives a practical fresh-message forgery
+
+Severity: Critical
+Status: Confirmed
+Layer: Design
+Affected: All four submitted SQIsignTriangle parameter sets
+Discovery: Non-trivial
+Exploitation: One signing query for an eligible response, followed by public verifier-scale work; all 12 full-size trials forged within one second on this host
+Credit: Martin Feussner, with OpenAI Codex (Daybreak Blue) assistance
+Date: 2026-09-27
+Original source: [Feussner's PKC Forum post](https://list.niccs.org.cn/archives/list/pkcforum@list.niccs.org.cn/message/DYDMQ7SEI5DPVVP6IL27J63YODLVUPE3/) and [pinned public analysis and reproducer](https://github.com/martinfeussner/NGCC-Signature-Audit/tree/66c991978995c17d1514825a9e9d2ff6810bb22a/SQIsignTriangle)
+
+The specified response has a scaling symmetry. Verification constructs its kernel from `([q]P_pk,P_aux)` and `([q]Q_pk,Q_aux)`. Given an odd replacement `q'` with the same bit length, set `u = q' q^-1 mod 2^e` and multiply all four serialized auxiliary-basis coefficients by `u mod 2^e`. Both reconstructed kernel generators are then multiplied by the same unit, so the subgroup, quotient, and unordered codomain `j`-invariants are unchanged.
+
+SQIsignTriangle claims EUF-CMA security (§6.4, Theorem 4), which one signing query suffices to violate. For a fresh target message, the attacker publicly recovers the two codomain factors and their challenges `(c1,c2)`, then chooses an odd `e`-bit `q'` satisfying `q' = c2 mod c1`. The public condition `2^(e-1) > 2c1` is sufficient to ensure such a representative. The verifier reconstructs the original kernel but accepts the replacement response against the target challenge. No message search is needed; this is a direct EUF-CMA forgery rather than signature malleability.
+
+We reran three deterministic fresh-key trials at each of the 128-, 160-, 256-, and 512-bit sets. Every first response met the sufficient condition; every transformed signature was accepted on its unqueried target and rejected on its source, while the genuine signature showed the opposite behavior. The observed response exponents were 219–895 and all 12 public transformations completed in under one second on this host. The submission gives no lower-tail bound for honest response sizes, so this establishes practical success on the tested executions rather than a proof that every first response is eligible; an attacker can request another signature after an ineligible response.
+
+### Reproducing
+
+```sh
+make -C sign-27 exploit-response-rescaling
+```
+
+The wrapper checks out the pinned public reproducer, which builds the unmodified submitted verifier and runs the four source/target controls for three fresh keys at every level. It requires Git, GNU Make, Python 3, GCC, and GMP development headers.
