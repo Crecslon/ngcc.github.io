@@ -368,7 +368,7 @@ def report_page(r, prefix):
         v = markdown.markdown(m[k])[3:-4]
         rows.append(f"<tr><th>{html.escape(k)}</th><td>{v}</td></tr>")
     cid = r["cid"]
-    rows.append(f'<tr><th>Specification</th><td>{pdf_download_link(cid)} {pdf_link({"id": cid})}</td></tr>')
+    rows.append(f'<tr><th>Specification</th><td>{pdf_download_link(cid)}&nbsp;{pdf_link({"id": cid})}</td></tr>')
     meta_table = '<table class="meta">\n' + "\n".join(rows) + "\n</table>"
     title = f"{m.get('Candidate', r['cid'])} ({r['cid']})"
     crumb = f'<p class="crumb"><a href="{prefix}reports/index.html">Reports</a> › <code>{r["cid"]}</code>'
