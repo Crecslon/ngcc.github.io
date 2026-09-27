@@ -6,8 +6,9 @@ Independent analysis of Chinese
 candidate algorithms.
 This site is not affiliated with NICCS.
 
-- [Reports](reports/index.md) — security findings, one line per issue, each
-  linking to the full report and its reproduction steps.
+- [Reports](reports/index.md) — security findings
+  ([classification policy](report-classification.md)), each linking to the full
+  report and its reproduction steps.
 - [Constant-time review](constant-time/index.md) — scoped source-level notes
   for all 119 candidates, including cases without a finding.
 - [Harness](https://github.com/ngcc-dev/ngcc-harness) — the build and test tooling

@@ -25,7 +25,9 @@ SRC = Path(sys.argv[1]).resolve()
 
 # Nothing is listed here until it has been cleared for publication.
 # Source-relative path -> content-relative destination, e.g. "RESULTS.md": "results.md"
-TOP = {}
+TOP = {
+    "security/REPORT_CLASSIFICATION.md": "report-classification.md",
+}
 # per-candidate file -> content-relative destination template ({id} = candidate id)
 PER_CANDIDATE = {
     "report.md": "reports/{id}.md",

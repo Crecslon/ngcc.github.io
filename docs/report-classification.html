@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ngcc.dev: Vulnerability report classification</title>
+<link rel="icon" type="image/png" href="assets/mag-glass.png">
+<link rel="stylesheet" href="assets/style.css?v=996d5cfd">
+</head>
+<body>
+<header class="site-header">
+<a class="brand" href="index.html"><img class="brand-icon" src="assets/mag-glass.png" alt="" width="28" height="28">ngcc.dev</a>
+<nav><a href="index.html">Home</a><a href="reports/index.html">Reports</a><a href="constant-time/index.html">Constant-Time</a></nav>
+</header>
+<main>
+<!-- synchronized report: security/REPORT_CLASSIFICATION.md -->
+<h1 id="vulnerability-report-classification">Vulnerability report classification</h1>
+<p>This document defines how NGCC findings receive <code>Severity</code>, <code>Status</code>, and
+<code>Layer</code> labels. These labels answer different questions and must be assigned
+independently:</p>
+<ul>
+<li><strong>Severity</strong> describes the demonstrated or bounded security impact.</li>
+<li><strong>Status</strong> describes the strength of the evidence for the stated finding.</li>
+<li><strong>Layer</strong> identifies where the vulnerable behavior enters.</li>
+<li><strong>Remediation burden</strong> describes the cost of removing the behavior. It is
+  normally separate context. For side-channel findings, however, the absence
+  of a portable and reasonably efficient constant-time realization can be
+  evidence that the problem belongs to the design and performance profile.</li>
+</ul>
+<p>A finding can therefore be Critical but easy to fix, or Low but expensive to
+fix. An expensive constant-time implementation is not automatically a design
+flaw, but it becomes design evidence when the construction's claimed software
+performance relies on the leaky operation and no portable competitive
+constant-time path is supplied or known.</p>
+<p>Here <em>supplied</em> means the submitters provide the constant-time code, and
+<em>known</em> means a well-known security-engineering technique exists that the
+report itself can describe (for example masked arithmetic, bitslicing,
+in-register shuffles, AES instructions, Beneš networks, or a published
+constant-time decoder or solver). The same meaning applies to hash functions.</p>
+<h2 id="security-targets">Security targets</h2>
+<p>A finding is judged against the NGCC call as well as the specification's own
+claims. The canonical documents are published by ICCS.</p>
+<p>Public-key algorithms (<a href="https://www.niccs.org.cn/niccs/Notice/pc/content/content_1975896137741635584.html">call</a>):</p>
+<ul>
+<li>Classical security of 128, 256 and 512 bits, with quantum security of at least
+  80, 128 and 256 bits, respectively; an optional 384-bit classical level has a
+  192-bit quantum target
+  (<a href="https://www.niccs.org.cn/niccs/Notice/lDop1mav.pdf">Submission Requirements</a>
+  §2(1)). "Complexity" covers both time and memory
+  (<a href="https://www.niccs.org.cn/niccs/Notice/Xi2xTprH.pdf">ICCS feedback</a> §5).</li>
+<li>Each signature key pair must support at least 2^64 different messages of up
+  to 2^63 bits (§2(2)).</li>
+<li>A KEM's encapsulated key and a key exchange protocol's shared secret key must
+  be at least as long as the corresponding classical security level
+  (<a href="https://www.niccs.org.cn/niccs/Notice/lDop1mav.pdf">Submission Requirements</a>
+  §2(2)). An output shorter than its level is a direct NGCC-target shortfall,
+  even when no separate IND-CCA or key-recovery attack is demonstrated.</li>
+<li>Security is evaluated against an attacker with signatures on up to 2^80
+  chosen messages or decapsulations of up to 2^80 chosen ciphertexts
+  (<a href="https://www.niccs.org.cn/niccs/Notice/tT7TSQiz.pdf">Evaluation Criteria</a> §1(2)). This is an evaluation ceiling
+  for the attacker; the operational per-key requirement remains 2^64 messages.
+  Classify query-budget findings as follows:</li>
+<li><strong>Critical:</strong> a concrete attack costs less than the required level for an
+    attacker using at most 2^80 queries and within the per-key usage model that
+    the candidate claims or supports. A collision probability or loose proof
+    term alone is insufficient: the report must connect it to a primary break,
+    such as forgery, key recovery, or distinguishing.</li>
+<li><strong>High:</strong> despite a broader security claim, the specification's argument or
+    proof bound covers fewer queries (typically 2^64), or becomes too loose at
+    2^80, but no concrete attack below the required level within 2^80 queries
+    has been shown. Use <code>Status: Proof gap</code> unless a specific attack path is
+    identified. Missing or insufficient analysis alone is never Critical.</li>
+<li>No finding solely from the query limit: the argument covers 2^80 queries;
+    the query-dependent terms remain negligible at 2^80; or the candidate
+    explicitly limits each key to at least the required 2^64 uses, makes no
+    broader per-key claim, and no attack is shown within that limit. Record the
+    operational limitation where it matters to interpreting the results.</li>
+<li>Signatures must be EUF-CMA or SUF-CMA; KEMs must be IND-CCA2 (§1(1)).</li>
+</ul>
+<p>Hash algorithms (<a href="https://www.niccs.org.cn/niccs/Notice/pc/content/content_1975892908773478400.html">call</a>):</p>
+<ul>
+<li>Collision security of at least h/2 bits and preimage and second-preimage
+  security of at least h bits for an h-bit digest, with quantum attacks no
+  cheaper than generic ones (<a href="https://www.niccs.org.cn/niccs/Notice/crlRB1ZY.pdf">Evaluation Criteria</a> §1(2)).</li>
+<li>Digest lengths of 512 and 1024 bits (768 optional) and message lengths of at
+  least 2^64 − 1 bits (<a href="https://www.niccs.org.cn/niccs/Notice/52tbw9IQ.pdf">Submission Requirements</a> §2(1)). The targets
+  apply to all supported lengths, whatever the specification claims.</li>
+</ul>
+<h2 id="severity">Severity</h2>
+<p>Rate the strongest consequence supported by the report, including its stated
+preconditions and controls. Do not rate the feared consequence of an
+uncompleted attack.</p>
+<h3 id="critical">Critical</h3>
+<p>The report demonstrates a violation of a primary cryptographic security claim
+or applicable NGCC target, or gives a concrete attack bound below that target.
+Examples include:</p>
+<ul>
+<li>fresh-message forgery, full signing-key recovery, or universal verification;</li>
+<li>challenge-key recovery or a successful IND-CCA, IND-CPA, or key-exchange
+  real-or-random distinguishing attack;</li>
+<li>collisions, preimages, or second preimages below the applicable bound;</li>
+<li>an enumerated key, randomness, or transcript space below the applicable
+  level;</li>
+<li>a KEM or key-exchange output shorter than the classical level required by
+  the call;</li>
+<li>a complete mathematical reduction of the claimed problem to work below the
+  claim, even if that work is not currently practical.</li>
+</ul>
+<p>NGCC requires a 512-bit classical level and permits an optional 384-bit level.
+A demonstrated <code>2^256</code> attack against a 512-bit claim is therefore Critical:
+practical feasibility is not required when the advertised security bound is
+violated.</p>
+<h3 id="high">High</h3>
+<p>The report establishes a serious security failure but stops short of a complete
+primary-claim break. Typical cases are:</p>
+<ul>
+<li>a candidate-specific recovery/forgery method with one clearly identified
+  engineering or scale step still unvalidated;</li>
+<li>a strong proof or parameter failure with a well-supported path to violating
+  the claim, but without a complete end-to-end witness;</li>
+<li>attacker-controlled memory corruption with credible impact beyond process
+  termination;</li>
+<li>a security argument that covers fewer signing or decapsulation queries than
+  the call's 2^80 evaluation budget, without a concrete shortfall (see
+  Security targets);</li>
+<li>a measured, repeatable secret-dependent oracle together with a
+  candidate-specific recovery method, where only the observation channel or
+  full-scale run remains open.</li>
+</ul>
+<p>A demonstrated violation of a claimed property that the NGCC call does not
+require is High rather than Critical. For example, signature malleability that
+violates a claimed SUF-CMA property while leaving EUF-CMA intact is High,
+because the call accepts either EUF-CMA or SUF-CMA. Failing the designed
+security level of a required property is Critical.</p>
+<p>Do not use High merely because a defect is expensive to repair. A side-channel
+finding can nevertheless be High when it exposes secrets directly and the
+construction lacks a portable constant-time realization without a substantial
+and justified loss of its advertised performance.</p>
+<h3 id="medium">Medium</h3>
+<p>The report confirms a security-relevant defect or secret-dependent leakage, but
+does not demonstrate recovery, forgery, or a primary indistinguishability
+break. Examples include:</p>
+<ul>
+<li>a stable decryption-failure or reaction oracle without a completed recovery;</li>
+<li>repeated secret-dependent control flow or memory access for which a plausible
+  local observation model exists;</li>
+<li>a substantive proof, binding, or conformance gap whose concrete attack
+  consequence is unresolved;</li>
+<li>an attacker-supplied public key that forces or repeats an honest party's
+  derived key, without breaking the scheme's honest-key security game;</li>
+<li>a side-channel repair that requires a material algorithmic rewrite or
+  moderate performance/storage cost.</li>
+</ul>
+<h3 id="low">Low</h3>
+<p>The demonstrated impact is narrow and presently separated from a cryptographic
+claim violation. Examples include:</p>
+<ul>
+<li>denial of service, resource exhaustion, or an API contract error without
+  memory disclosure or control-flow impact;</li>
+<li>source-level secret dependence with no measured channel or extraction, when
+  a local mask, fixed-bound loop, small-table replacement, or existing
+  constant-time path removes it;</li>
+<li>a limited robustness or interoperability defect;</li>
+<li>a disclosed internal status whose existence alone does not defeat the
+  claimed transform.</li>
+</ul>
+<p>An easy fix may support Low when the demonstrated consequence is already
+narrow. It must not downgrade a demonstrated key recovery, forgery, or claim
+violation.</p>
+<h3 id="info">Info</h3>
+<p>Use Info for withdrawn records or non-security tracking entries. A live
+security finding should normally be Low or above.</p>
+<h2 id="side-channel-severity">Side-channel severity</h2>
+<p>For timing, cache, branch, division, power, or address-trace findings, answer
+these questions in order:</p>
+<ol>
+<li>Is the varying operand secret or derived from secret data at that point?</li>
+<li>What can observe it: source inspection only, co-resident cache/process,
+   local timing/power, or remote timing/API status?</li>
+<li>Is the channel measured and repeatable, or only visible in source or
+   machine code?</li>
+<li>Is there a candidate-specific map from observations to a key, shared secret,
+   plaintext, or forgery?</li>
+<li>Has that map been executed end to end with the submitted implementation?</li>
+</ol>
+<p>Use the resulting consequence, not the mere presence of a branch or table, as
+the primary severity determinant:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Evidence and consequence</th>
+<th>Usual severity</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Source-level secret branch/address, no measured channel, local repair</td>
+<td>Low</td>
+</tr>
+<tr>
+<td>Repeated secret leakage, measured channel, or material constant-time rewrite; no recovery</td>
+<td>Medium</td>
+</tr>
+<tr>
+<td>Direct fine-grained leakage intrinsic to the advertised fast path, with no competitive constant-time realization supplied or known</td>
+<td>High may be justified</td>
+</tr>
+<tr>
+<td>Stable oracle plus candidate-specific recovery path, one channel/scale gap remains</td>
+<td>High</td>
+</tr>
+<tr>
+<td>End-to-end key/secret recovery or forgery</td>
+<td>Critical</td>
+</tr>
+</tbody>
+</table></div>
+<p>The table is a default, not a substitute for candidate-specific cryptanalysis.
+Public-value branches and lookups are not vulnerabilities.</p>
+<h3 id="hash-function-portability-rule">Hash-function portability rule</h3>
+<p>For this audit, hash inputs and internal states are treated as potentially
+secret. Hash functions are routinely used on passwords, key material,
+transcripts containing secret contributions, and other confidential data.</p>
+<p>A hash side channel is <code>Layer: Design</code> when all of the following hold:</p>
+<ol>
+<li>the fast construction or the submission's advertised performance relies on
+   secret-indexed tables, secret-dependent control flow, or another operation
+   that is not portable constant-time;</li>
+<li>removing that operation requires a different evaluation strategy rather
+   than a local mask or canonical lookup replacement;</li>
+<li>the portable constant-time strategy has a significant demonstrated or
+   technically justified performance cost; and</li>
+<li>no competitive portable constant-time path is supplied by the submitters
+   or known as a well-known technique.</li>
+</ol>
+<p>Hardware instructions may provide a safe fast path on some targets without
+curing the design-portability problem. A primitive that is constant-time only
+where a particular instruction-set extension is available is materially
+different from an ARX-style construction whose ordinary scalar operations are
+naturally constant-time across common processors.</p>
+<p>Under this rule, a large byte-indexed table that is central to a hash's speed
+can support <code>High / Design</code>, even before a complete message-recovery
+experiment, when the address trace directly reveals message or state bytes and
+the only portable repairs impose a substantial performance loss. The report
+must identify the portable repair and measure its cost where feasible; an
+unmeasured slowdown must be labelled as an estimate.</p>
+<h2 id="status">Status</h2>
+<p>Status records confidence in exactly the claim made by the report:</p>
+<ul>
+<li><strong>Confirmed:</strong> directly established by source/specification reasoning, a
+  mathematical certificate, or a reproducible experiment with appropriate
+  controls. <code>Confirmed</code> does not imply end-to-end exploitation; the
+  <code>Exploitation</code> line must state the demonstrated boundary.</li>
+<li><strong>Probable:</strong> the vulnerable path and consequence are strongly supported,
+  but an important source, platform, or experimental step remains unchecked.</li>
+<li><strong>Lead:</strong> a plausible candidate-specific attack or cost reduction still
+  depends on a material unvalidated assumption or experiment.</li>
+<li><strong>Proof gap:</strong> a stated theorem or reduction is invalid, incomplete, or
+  covers an insufficient query range, but no attack of the claimed strength
+  follows yet.</li>
+<li><strong>Withdrawn:</strong> the original finding is false, duplicate, out of scope, or
+  superseded. Keep its stable ID and use <code>Severity: Info</code>.</li>
+</ul>
+<p><code>Confirmed</code> may describe a confirmed source-level leak rated Low, while a High
+or Critical attack can remain a Lead. Severity and status must not be collapsed
+into one axis.</p>
+<h2 id="layer">Layer</h2>
+<p>Assign the layer from the root cause, not from repair difficulty:</p>
+<ul>
+<li><strong>Design:</strong> the normative construction, parameters, proof, or advertised
+  portable performance profile contains the weakness. The finding applies to
+  conforming implementations, or the submission's fast implementation relies
+  on a construction choice whose portable constant-time replacement has a
+  substantial justified cost. For hashes, apply the portability rule above.</li>
+<li><strong>Implementation:</strong> the submitted source deviates from a sounder
+  specification or introduces an ordinary API, parser, memory-safety,
+  arithmetic, or randomness defect.</li>
+<li><strong>Side-channel:</strong> the finding depends on observing timing, branches, cache
+  addresses, division latency, power, faults, or another non-functional
+  execution trace and does not meet the Design criteria above. Use this even
+  when the specification claims the supplied code is constant-time; state that
+  contradiction in the report.</li>
+<li><strong>Evaluation:</strong> the issue concerns KATs, archive provenance, build metadata,
+  reproducibility, or another evaluation artifact rather than the algorithmic
+  security boundary.</li>
+</ul>
+<p>The absence of a constant-time implementation ordinarily proves only that the
+submitted code is not hardened. To label the root cause <code>Design</code>, show that the
+specification mandates the observable behavior, that the advertised fast path
+structurally relies on it under the hash portability rule, or that the claimed
+performance/security profile cannot be retained by a portable constant-time
+implementation.</p>
+<h2 id="remediation-burden">Remediation burden</h2>
+<p>Record remediation in the finding body when it helps evaluation:</p>
+<ul>
+<li><strong>Local:</strong> a mask, fixed bound, canonicality check, small constant-time
+  lookup, or already-supplied build path; limited expected cost.</li>
+<li><strong>Moderate:</strong> a published constant-time decoder/solver, an expanded-key or
+  caching change, or another substantial rewrite with credible moderate cost.</li>
+<li><strong>Architectural:</strong> a change to the key/ciphertext format, core algorithm, or
+  performance profile, or a repair with a measured prohibitive cost.</li>
+</ul>
+<p>Use measurements where possible. Qualify an unmeasured cost as an estimate.
+State tradeoffs: storing an expanded secret changes memory and key handling;
+masked scans, sorting/permutation networks, dense multiplication, and
+constant-time elimination may change asymptotic or concrete cost. Do not call
+such changes local without bounding those costs.</p>
+<p>For hash functions, remediation burden also informs the Design classification:
+a local masked operation or small in-register substitution remains a
+side-channel implementation defect, while replacing a performance-defining
+large table or data-dependent evaluation strategy can be a design-level
+portability defect.</p>
+<h2 id="decision-procedure">Decision procedure</h2>
+<p>For each finding:</p>
+<ol>
+<li>Trace public and secret inputs through the vulnerable operation.</li>
+<li>State the exact observed behavior and attacker model.</li>
+<li>Identify the strongest demonstrated consequence and its controls.</li>
+<li>Compare that consequence with the applicable NGCC target and any explicit
+   specification claim.</li>
+<li>Assign <code>Status</code> from evidence, <code>Severity</code> from consequence, and <code>Layer</code> from
+   root cause independently.</li>
+<li>Describe remediation and its expected cost separately.</li>
+<li>Keep limitations in the report: what was not measured, recovered, forged,
+   or proved.</li>
+</ol>
+<p>For contest <code>pseudohash</code> and <code>pseudoXOF</code>, assume ideal replacement primitives
+with the same external dimensions and parameters. A finding that disappears
+solely on that replacement is not publishable.</p>
+</main>
+<footer class="site-footer">
+<p>Updated 2026-09-27 20:36:07 UTC · Maintained by: <a href="mailto:markku-juhani.saarinen@tuni.fi">markku-juhani.saarinen@tuni.fi</a></p>
+<p>Submissions are welcome via <a href="https://github.com/ngcc-dev/ngcc-harness/issues">GitHub issues</a>.</p>
+</footer>
+</body>
+</html>

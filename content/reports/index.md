@@ -13,7 +13,9 @@ and reproduction steps.
   <span class="sev sev-high">High</span>
   <span class="sev sev-medium">Medium</span>
   <span class="sev sev-low">Low</span>
-  <span class="sev sev-info">Info</span>.
+  <span class="sev sev-info">Info</span>. See the
+  [classification policy](../report-classification.md) for the severity,
+  status, scope, and evidence rules.
 - Scope identifies where the issue lies: **design** concerns the submitted
   construction or specification; **implementation** concerns the submitted
   code, API, or integration; **side-channel** flags secret-dependent execution
