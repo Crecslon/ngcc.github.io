@@ -103,18 +103,35 @@ table.reports td.report-id { white-space: nowrap; text-align: center; }
   border-radius: 3px; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.03em; }
 .pdf-link:hover { background: var(--link); color: var(--bg); text-decoration: none; }
 table.performance-summary { width: max-content; min-width: 100%; }
-main.performance-index { max-width: 118rem; }
+main.performance-index {
+  width: calc(100vw - 2rem);
+  min-width: 72rem;
+  max-width: 118rem;
+}
 main.performance-index .table-wrap { overflow-x: visible; }
 main.performance-index table.performance-summary { width: 100%; min-width: 72rem; }
 table.performance-summary th:first-child,
-table.performance-summary td:first-child { width: 5.5rem; white-space: nowrap; }
+table.performance-summary td:first-child {
+  width: 5.5rem;
+  min-width: 5.5rem;
+  white-space: nowrap;
+}
 table.performance-summary th:nth-child(2),
 table.performance-summary td:nth-child(2) {
-  width: 16rem; max-width: 16rem; overflow-wrap: anywhere;
+  width: 16rem;
+  min-width: 16rem;
+  max-width: 16rem;
+  overflow-wrap: anywhere;
 }
 table.performance-summary td:nth-child(2) .pdf-link { margin-left: 0.25rem; }
 table.performance-summary th:nth-child(3),
-table.performance-summary td:nth-child(3) { white-space: nowrap; }
+table.performance-summary td:nth-child(3) {
+  width: 18rem;
+  min-width: 18rem;
+  max-width: 18rem;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
 table.performance-summary td:nth-child(n+4):not(:last-child) { white-space: nowrap; }
 .issue-heading { scroll-margin-top: 1rem; }
 .issue-heading:not(.issue-heading-first) {
