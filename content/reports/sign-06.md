@@ -50,3 +50,39 @@ python3 security/design_parameter_audit.py
 
 The `sign-06-2` check verifies the KeyGen seed on physical PDF pages 7 and 13
 and the submitted 384- and 512-bit constants.
+
+## sign-06-3: Rejected signatures leak heap memory without bound
+
+Severity: Low
+Status: Confirmed
+Layer: Implementation
+Affected: All four COMPASS-SIG reference and optimized parameter sets
+Discovery: Trivial
+Exploitation: Repeated verifier calls exhaust process memory; no cryptographic break or memory disclosure shown
+Credit: Yamin Liu and Tianyuan Xie, with AI assistance
+Date: 2026-09-28
+Original source: [NGCC PKC Forum post](https://list.niccs.org.cn/archives/list/pkcforum@list.niccs.org.cn/message/ZIYQJY4LKZDNLUMVNX4AXP7BEQNRGQDS/)
+
+The blockwise XOF allocates `squeeze_buf` and `stream_extra` in
+`symmetric-shake.c:21,259–260,281–282`. Its private `state_cleanup` is used by
+the one-shot wrappers, but not by the signing, key-generation, or verification
+owners of blockwise states. In particular, a structurally valid signature with
+an incorrect challenge reaches `sign.c:374,381,408`, is rejected, and leaves
+every allocation behind. The reference and optimized copies of this code are
+identical. Because verification consumes untrusted input, repeated requests can
+exhaust a long-running verifier's memory; this is an availability defect, not a
+forgery or disclosure result.
+
+### Reproducing
+
+```sh
+make -C api harness
+make -C sign-06
+python3 sign-06/reproduce_verify_leak.py sign-06/lib/libCOMPASS-SIG-*.so
+```
+
+For each set, the witness creates a valid signature, changes its public
+challenge so verification traverses the allocating path and rejects it, and
+measures 500 calls in an isolated process. Resident memory grows by tens of
+KiB per call. As a control, the same number of all-zero encodings are rejected
+before that path without per-call growth.

@@ -31,6 +31,11 @@ The same missing domain separation affects the XOF profiles. On the audited shor
 
 Follow-up analysis: the [Iphe Algorithm Group's cross-rate note, posted by 崔灏睿 on 2026-09-23](https://list.niccs.org.cn/archives/list/crypthashforum@list.niccs.org.cn/message/BWXG6OPAIQL32FMWWYJ3C4D6QMRGHGP4/) independently identifies this one-block MOZI-384/MOZI-512 prefix relation.
 
+The [Mozi team's 2026-09-28 response](https://list.niccs.org.cn/archives/list/crypthashforum@list.niccs.org.cn/message/GLMIC7PHESTDBHE76LMHS47QCAI6I2HT/)
+adds a distinct four-bit initialization domain for every revised variant,
+which breaks the shared-state alignment. The archived Round 1 ZIP above is
+unchanged and remains the subject of this report.
+
 ### Reproducing
 
 Build the candidate and the reproducer, then run:
@@ -54,10 +59,16 @@ Exploitation: Moderate
 Credit: Tsinghua Hash Lab <cuihr26@mails.tsinghua.edu.cn>
 Date: 2026-09-22
 Original source: [CryptHashForum report](https://list.niccs.org.cn/archives/list/crypthashforum@list.niccs.org.cn/message/5657BKOE43VZOJSF47X5KAFZ5E6FA6CI/)
+Follow-up source: [Mozi team's correction](https://list.niccs.org.cn/archives/list/crypthashforum@list.niccs.org.cn/message/GLMIC7PHESTDBHE76LMHS47QCAI6I2HT/)
 
 Algorithm 2 places the final marker at the same absolute state bit for every rate. This permits a three-block suffix under one rate to reproduce the same permutation input as a related suffix under another rate. The submitters report 16/16 cross-rate witnesses in an independent model of the specified construction. This is a relation between different MOZI profiles, not a same-profile collision.
 
 The reference code instead places the marker at the first capacity bit, which is bit 1216 for MOZI-768 and bit 960 for MOZI-1024 rather than the specification's common bit 2047. That rate-dependent placement blocks the reported construction, but makes the code deterministically incompatible with Algorithm 2. The public report did not include its 16 witness messages, so the local check confirms the exact marker discrepancy rather than claiming an end-to-end collision reproduction.
+
+The Mozi team reports that its 2026-09-28 revision makes the reference code
+match Algorithm 2, in addition to adding the independent initialization domains
+described above and regenerating the KATs. This does not alter the archived
+submission analyzed here.
 
 ### Reproducing
 

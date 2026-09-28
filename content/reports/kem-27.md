@@ -8,15 +8,21 @@ Archive: [NTRE.zip](https://www.niccs.org.cn/niccs/Proposal/Public-Key%20Cryptog
 Severity: Critical
 Status: Confirmed
 Layer: Implementation
-Affected: NTRE-512 reference implementation
+Affected: NTRE-512 reference and optimized implementations
 Discovery: Moderate
 Exploitation: At most 2^256 seed trials against a public key, versus the 512-bit target
 Credit: Markku-Juhani O. Saarinen <markku-juhani.saarinen@tuni.fi>, with AI assistance
 Date: 2026-09-23
+Follow-up source: [NTRE team's confirmation and correction plan](https://list.niccs.org.cn/archives/list/pkcforum@list.niccs.org.cn/message/OAGYDCAYEJTJ6WE5PHBNNCTAGDZ57LXD/)
 
 NTRE-512's reference key generator samples the private NTRU polynomial `f = 2f' + 1` from a single 32-byte seed through `sample_psi1`. This restricts its nominally 512-bit secret-key space to at most 2^256 possibilities. The public key permits an efficient offline test of each guess: compute `g = h·f` and check whether its coefficients have the required small distribution (`g = 2g'`). A surviving `f` is sufficient to reconstruct the decapsulation key (`f`, the public key, and its public hash). Thus exhaustive seed search recovers a working key in at most 2^256 trials, independent of the claimed hardness of the full-distribution NTRU problem.
 
 This is an implementation-instantiation weakness, not a claim that the specification's ideal `Sample(n)` has only 256 bits of entropy. The full 2^256 search is far beyond available resources. A scaled public-key attack enumerates 2^12 planted seed candidates, finds the unique matching `f`, reconstructs the official secret-key layout and correctly decapsulates ten fresh ciphertexts; ten deliberately wrong-key controls fail.
+
+The NTRE team confirms that `NTRE_SYMBYTES` is 32 in every reference and
+optimized parameter-set copy, while Algorithm 5 requires 64 bytes, and plans
+to correct the macro and regenerate the KATs. The 256-bit root does not miss
+the lower sets' classical targets; this report remains scoped to NTRE-512.
 
 ### Reproducing
 

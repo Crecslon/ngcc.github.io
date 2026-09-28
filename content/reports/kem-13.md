@@ -55,3 +55,41 @@ python3 kem-13/reproduce_malicious_key.py \
 ```
 
 For each parameter set, the witness encapsulates 64 times to an honestly generated public key (control: 64 distinct keys) and 64 times to the same key with its polynomial vector zeroed and `rho` kept. It checks distinct ciphertexts and distinct `c2` values but a single key, and for 32-byte keys that the key equals `sm3hash(256, 0^32)`. The source-level trace, identical in all three `Reference_Implementation/DKEM-*` instances, is Algorithm 11's zero public vector, `dkecpa.c:174–186` (the sender's reconciled secret), `dke_utils.c:97–105,172–176` (signal and raw-secret extraction), and `dkecca.c:65–76` (the final key and `c2`).
+
+## kem-13-3: A 16-bit NTT butterfly silently breaks honest DKEM-512 sessions
+
+Severity: Medium
+Status: Confirmed
+Layer: Implementation
+Affected: DKEM-512 scalar reference implementation; the submitter reports the same failure magnitude for NEON
+Discovery: Moderate
+Exploitation: Honest encapsulation and decapsulation disagree about once per 2^11 trials; no key recovery demonstrated
+Credit: Sun Shuzhou, with GLM-5.3 assistance
+Date: 2026-09-28
+Original source: [NGCC PKC Forum post](https://list.niccs.org.cn/archives/list/pkcforum@list.niccs.org.cn/message/GD3QWKLXKTRIRKCMKCOHTFRLBQN3REES/)
+
+Table 1 and §3.4 claim a DKEM-512 reconciliation-failure probability of at
+most about `2^-167`. The scalar forward NTT instead stores both butterfly sums
+in `int16_t` (`DKEM-512/ntt.c:78–88`). With `q = 7681`, legitimate lazy
+intermediates can exceed the signed 16-bit range and wrap on the submitted
+platform. The corrupted decapsulation transform then fails re-encapsulation
+and selects the implicit-rejection key, but the API still returns success. Sun
+reports an observed honest mismatch rate near `2^-11`; this also invalidates
+the shipped implementation's §5.2.5 failure-boosting estimate. The `q = 3329`
+DKEM-128 and -256 sets have substantially more headroom and are controls.
+
+### Reproducing
+
+```sh
+make -C api harness
+make -C kem-13
+python3 kem-13/reproduce_ntt_overflow.py \
+  kem-13/lib/libDKEM-128.so kem-13/lib/libDKEM-256.so \
+  kem-13/lib/libDKEM-512.so
+```
+
+With a fixed DRNG seed, the witness finds a silent DKEM-512 mismatch within
+2,000 honest sessions while 3,000 sessions in each lower set agree. It checks
+that `kem_dec` returns `0` on the mismatching session. This is a deterministic
+failure witness, not an independent statistical estimate of the `2^-11` rate
+or a failure-oracle key-recovery attack.
