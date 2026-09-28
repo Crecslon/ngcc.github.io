@@ -5,22 +5,22 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>ngcc.dev: Origami (sign-18)</title>
 <link rel="icon" type="image/png" href="../assets/mag-glass.png">
-<link rel="stylesheet" href="../assets/style.css?v=996d5cfd">
+<link rel="stylesheet" href="../assets/style.css?v=1fdb792d">
 </head>
 <body>
 <header class="site-header">
 <a class="brand" href="../index.html"><img class="brand-icon" src="../assets/mag-glass.png" alt="" width="28" height="28">ngcc.dev</a>
-<nav><a href="../index.html">Home</a><a href="../reports/index.html">Reports</a><a href="../constant-time/index.html">Constant-Time</a></nav>
+<nav><a href="../index.html">Home</a><a href="../reports/index.html">Reports</a><a href="../performance/x86_1/index.html">Performance</a><a href="../constant-time/index.html">Constant-Time</a></nav>
 </header>
-<main>
-<p class="crumb"><a href="../reports/index.html">Reports</a> › <code>sign-18</code> · <a href="../constant-time/sign-18.html">Constant-time review</a></p>
+<main class="">
+<p class="crumb"><a href="../reports/index.html">Reports</a> › <code>sign-18</code> · <a href="../constant-time/sign-18.html">Constant-time review</a> · <a href="../performance/x86_1/sign-18.html">Performance</a></p>
 
 <h1 id="origami-sign-18">Origami (sign-18)</h1>
 <div class="table-wrap"><table class="meta">
 <tr><th>Candidate</th><td>Origami</td></tr>
 <tr><th>Family</th><td>Multivariate (layered MQ)</td></tr>
 <tr><th>Archive</th><td><a href="https://www.niccs.org.cn/niccs/Proposal/Public-Key%20Cryptographic%20Algorithms/Round%201%20candidates/Origami.zip">Origami.zip</a> (SHA-256: <code>e34f18832e968681dd0c51ce0d4b29d80e01ad29daa83dfb805718b76fdffa80</code>)</td></tr>
-<tr><th>Specification</th><td><a href="https://github.com/ngcc-dev/ngcc-harness/raw/refs/heads/main/sign-18/sign-18-spec.pdf" title="Download sign-18-spec.pdf from GitHub">sign-18-spec.pdf</a>&nbsp;<a class="pdf-link" href="https://cdn.jsdelivr.net/gh/ngcc-dev/ngcc-harness@main/sign-18/sign-18-spec.pdf" title="Open the sign-18 specification PDF">PDF</a></td></tr>
+<tr><th>Specification</th><td><a href="https://github.com/ngcc-dev/ngcc-harness/raw/dc66c6cb3c06e75bdea0048e21fa4e13c63f00af/sign-18/sign-18-spec.pdf" title="Download sign-18-spec.pdf from GitHub">sign-18-spec.pdf</a>&nbsp;<a class="pdf-link" href="https://cdn.jsdelivr.net/gh/ngcc-dev/ngcc-harness@dc66c6cb3c06e75bdea0048e21fa4e13c63f00af/sign-18/sign-18-spec.pdf" title="Open the sign-18 specification PDF">PDF</a></td></tr>
 </table></div>
 
 <h2 class="issue-heading issue-heading-first" id="sign-18-1-a-fixed-512-bit-message-prehash-caps-forgery-security-at-256-bits">sign-18-1: A fixed 512-bit message prehash caps forgery security at 256 bits</h2>
@@ -80,13 +80,14 @@ python3 sign-18/reproduce_signature_subspace.py
 </table></div>
 
 <p>Signing builds a linear system from the expanded secret zone structure and sampled hidden variables, then solves it with first-nonzero pivot search and data-dependent row skips. The reference <code>origami_ref.c</code> branches on matrix entries at lines 636 and 659, and on the solve result at line 798. Thus a local trace can distinguish properties of intermediate private systems. This does not by itself establish recovery of the master seed or a forgery; see <code>constant_time.md</code> for the secret/public classification.</p>
+<p>Constant-time fix (moderate, hence Medium): use constant-time Gaussian elimination that adds candidate pivot rows under masks, a well-known technique in constant-time UOV and MAYO implementations. It processes every row at every step, a moderate cost; a retry on a singular system is the usual accepted exception.</p>
 <h3 id="reproducing_2">Reproducing</h3>
 <p>Commands below run in a checkout of the <a href="https://github.com/ngcc-dev/ngcc-harness">ngcc-harness repository</a> with the candidate built (see its README).</p>
 <p>In each reference instance, follow <code>sign</code> → <code>build_zone_system</code> → <code>solve_rect_random</code> in <code>origami_ref.c</code>; inspect the pivot test and early break at lines 633–640, row skip at 659, and attempt retry at 794–811. This is a source/dataflow witness, not a measured remote timing exploit.</p>
 <h2 class="issue-heading" id="sign-18-4-signing-indexes-field-tables-and-signature-state-with-private-values">sign-18-4: Signing indexes field tables and signature state with private values</h2>
 
 <div class="table-wrap"><table class="meta issue-meta">
-<tr><th>Severity</th><td><span class="sev sev-medium">Medium</span></td></tr>
+<tr><th>Severity</th><td><span class="sev sev-low">Low</span></td></tr>
 <tr><th>Scope</th><td>side-channel</td></tr>
 <tr><th>Status</th><td><span class="issue-status status-probable">Probable</span></td></tr>
 <tr><th>Affected</th><td>Origami reference signer, all four parameter sets</td></tr>
@@ -97,6 +98,7 @@ python3 sign-18/reproduce_signature_subspace.py
 </table></div>
 
 <p>Origami's <code>gf_mult</code> and <code>gf_inv</code> index 256-byte and 16-byte tables by field operands (<code>origami_gf.h:25,32-37</code>), including private central-map and solver values during signing (<code>origami_ref.c:400,599-601,653-661</code>). The signer also derives <code>w_vars</code> from private permutation <code>rho</code> and writes <code>secret_y[w_vars[i]]</code> (<code>origami_ref.c:421-426,798-800</code>). These addresses can depend on private values even for the same public message. No measured cache channel or EUF-CMA forgery is established; see <code>constant_time.md</code>.</p>
+<p>Constant-time fix (easy, hence Low): replace the <code>gf_mult</code>/<code>gf_inv</code> tables with table-free or <code>pshufb</code>-based GF(2^8) arithmetic, and write <code>secret_y</code> through a masked scan over all positions instead of indexing it by the private permutation. The scan costs about n^2 byte operations for n variables, small next to signing.</p>
 <h3 id="reproducing_3">Reproducing</h3>
 <p>Commands below run in a checkout of the <a href="https://github.com/ngcc-dev/ngcc-harness">ngcc-harness repository</a> with the candidate built (see its README).</p>
 <p>Inspect the cited lookup definitions and signer call sites in <code>Implementations and Test_Vectors/Implementations/Reference_Implementation/Origami-256/</code>; the same pattern is present in the other reference parameter sets. This is a source/dataflow witness, not a measured extraction.</p>
@@ -113,6 +115,7 @@ python3 sign-18/reproduce_signature_subspace.py
 <tr><th>Date</th><td>2026-09-24</td></tr>
 </table></div>
 <p>Original source: <a href="https://list.niccs.org.cn/archives/list/pkcforum@list.niccs.org.cn/message/HTZTMJ42AUXCWEDA3AURP4ZOEGSGSV4Z/">NGCC PKC Forum post</a>, <a href="https://github.com/pi-r2/UnfoldOrigami/tree/defa3405d66e763580729b14d6f81c1300fbb219">UnfoldOrigami code</a></p>
+<p>Additional reference: <a href="https://eprint.iacr.org/2026/2232">Xiong and Wang, ePrint 2026/2232, §12</a></p>
 <p>Origami §2.5.6 explicitly derives the change of variables <code>Π_pub</code> from the <em>public</em> expansion seed and defines <code>P_pub = G ∘ Π_pub^-1</code>. Undoing that permutation exposes the zone order. The public-key expansion supplies each zone's affine coefficients, so an attacker can choose its vinegar coordinates and solve the resulting linear system for oil coordinates, proceeding zone by zone. This reproduces the signer's easy inversion without its secret seed or a signing oracle. It is distinct from <code>sign-18-2</code>'s signature-derived subspace observation.</p>
 <p>Pébereau's Origami-128 implementation forges a signature that the archived <code>sig_verify</code> accepts; a changed-message control rejects. The four submitted sets have byte-identical <code>origami_ref.c</code> evaluators and the same public-permutation construction, but full-size forging runtimes for the higher sets have not been independently measured here. The flaw survives ideal replacement of the contest hash/XOF placeholders: whatever public expansion is used, the public <code>seed_pk</code> still determines <code>Π_pub</code>, so anyone can undo it and expose the triangular zone system.</p>
 <h3 id="reproducing_4">Reproducing</h3>

@@ -5,22 +5,22 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>ngcc.dev: Amoeba (kem-02)</title>
 <link rel="icon" type="image/png" href="../assets/mag-glass.png">
-<link rel="stylesheet" href="../assets/style.css?v=996d5cfd">
+<link rel="stylesheet" href="../assets/style.css?v=1fdb792d">
 </head>
 <body>
 <header class="site-header">
 <a class="brand" href="../index.html"><img class="brand-icon" src="../assets/mag-glass.png" alt="" width="28" height="28">ngcc.dev</a>
-<nav><a href="../index.html">Home</a><a href="../reports/index.html">Reports</a><a href="../constant-time/index.html">Constant-Time</a></nav>
+<nav><a href="../index.html">Home</a><a href="../reports/index.html">Reports</a><a href="../performance/x86_1/index.html">Performance</a><a href="../constant-time/index.html">Constant-Time</a></nav>
 </header>
-<main>
-<p class="crumb"><a href="../reports/index.html">Reports</a> › <code>kem-02</code> · <a href="../constant-time/kem-02.html">Constant-time review</a></p>
+<main class="">
+<p class="crumb"><a href="../reports/index.html">Reports</a> › <code>kem-02</code> · <a href="../constant-time/kem-02.html">Constant-time review</a> · <a href="../performance/x86_1/kem-02.html">Performance</a></p>
 
 <h1 id="amoeba-kem-02">Amoeba (kem-02)</h1>
 <div class="table-wrap"><table class="meta">
 <tr><th>Candidate</th><td>Amoeba</td></tr>
 <tr><th>Family</th><td>Lattice-based (Ring-LWE)</td></tr>
 <tr><th>Archive</th><td><a href="https://www.niccs.org.cn/niccs/Proposal/Public-Key%20Cryptographic%20Algorithms/Round%201%20candidates/Amoeba.zip">Amoeba.zip</a> (SHA-256: <code>719c438a30cccd72c9d83da4b5150fee0c55351f2c13e7a66fd61bf653ca5c24</code>)</td></tr>
-<tr><th>Specification</th><td><a href="https://github.com/ngcc-dev/ngcc-harness/raw/refs/heads/main/kem-02/kem-02-spec.pdf" title="Download kem-02-spec.pdf from GitHub">kem-02-spec.pdf</a>&nbsp;<a class="pdf-link" href="https://cdn.jsdelivr.net/gh/ngcc-dev/ngcc-harness@main/kem-02/kem-02-spec.pdf" title="Open the kem-02 specification PDF">PDF</a></td></tr>
+<tr><th>Specification</th><td><a href="https://github.com/ngcc-dev/ngcc-harness/raw/dc66c6cb3c06e75bdea0048e21fa4e13c63f00af/kem-02/kem-02-spec.pdf" title="Download kem-02-spec.pdf from GitHub">kem-02-spec.pdf</a>&nbsp;<a class="pdf-link" href="https://cdn.jsdelivr.net/gh/ngcc-dev/ngcc-harness@dc66c6cb3c06e75bdea0048e21fa4e13c63f00af/kem-02/kem-02-spec.pdf" title="Open the kem-02 specification PDF">PDF</a></td></tr>
 </table></div>
 
 <h2 class="issue-heading issue-heading-first" id="kem-02-1-the-fo-check-compares-only-every-fourth-ciphertext-byte">kem-02-1: The FO check compares only every fourth ciphertext byte</h2>
@@ -52,7 +52,7 @@
 <h2 class="issue-heading" id="kem-02-2-secret-derived-ecc-decoding-indexes-a-syndrome-table">kem-02-2: Secret-derived ECC decoding indexes a syndrome table</h2>
 
 <div class="table-wrap"><table class="meta issue-meta">
-<tr><th>Severity</th><td><span class="sev sev-medium">Medium</span></td></tr>
+<tr><th>Severity</th><td><span class="sev sev-low">Low</span></td></tr>
 <tr><th>Scope</th><td>side-channel</td></tr>
 <tr><th>Status</th><td><span class="issue-status status-confirmed">Confirmed</span></td></tr>
 <tr><th>Affected</th><td>Reference implementations, all five parameter sets</td></tr>
@@ -62,7 +62,8 @@
 <tr><th>Date</th><td>2026-09-23</td></tr>
 </table></div>
 
-<p>The Amoeba decapsulator decrypts under the private key and ECC-decodes the resulting codeword. Its Hamming decoder branches on each codeword bit and on the syndrome, then loads <code>syndrome_map[s_h_key]</code> (<code>src/backend/hamming.c:131,157-183</code>). Both the branch decisions and the table address derive from secret-key decryption of the ciphertext. This is a local control-flow/cache side channel independent of <code>kem-02-1</code>'s faulty ciphertext comparison. The code also returns an explicit decoder-failure bit (<code>ccakem.c:61-62</code>), but neither that bit nor this trace has been turned into a second demonstrated key-recovery oracle. A candidate-specific chosen-ciphertext recovery argument is still needed; that is why this finding remains Medium.</p>
+<p>The Amoeba decapsulator decrypts under the private key and ECC-decodes the resulting codeword. Its Hamming decoder branches on each codeword bit and on the syndrome, then loads <code>syndrome_map[s_h_key]</code> (<code>src/backend/hamming.c:131,157-183</code>). Both the branch decisions and the table address derive from secret-key decryption of the ciphertext. This is a local control-flow/cache side channel independent of <code>kem-02-1</code>'s faulty ciphertext comparison. The code also returns an explicit decoder-failure bit (<code>ccakem.c:61-62</code>), but neither that bit nor this trace has been turned into a second demonstrated key-recovery oracle. A candidate-specific chosen-ciphertext recovery argument is still needed.</p>
+<p>Constant-time fix (easy, hence Low): compute the syndrome with fixed XORs and correct the codeword by comparing every position with the syndrome under a mask, instead of branching and indexing <code>syndrome_map</code>. For a Hamming code this is a small fixed cost per block.</p>
 <h3 id="reproducing_1">Reproducing</h3>
 <p>Commands below run in a checkout of the <a href="https://github.com/ngcc-dev/ngcc-harness">ngcc-harness repository</a> with the candidate built (see its README).</p>
 <p>Follow <code>src/backend/ccakem.c:60-80</code> → <code>src/backend/cpapke.c:438-447</code> → <code>src/backend/hamming.c:131,157-183</code> under <code>Implementations/Reference_Implementation/Amoeba-576/</code>; the same decoder pattern appears in the other reference sets. This is a source-level witness, not a measured timing benchmark. See <code>constant_time.md</code> for the secret/public classification.</p>
@@ -125,6 +126,27 @@
 <pre><code class="language-sh">make -C kem-02 check-unseeded-keygen
 </code></pre>
 <p>The check launches two fresh child processes per parameter set and compares <code>SHA-256(pk || sk)</code>, then repeats with two explicit distinct seeds as a control. It demonstrates the effect of violating the API's seeding contract.</p>
+<h2 class="issue-heading" id="kem-02-6-pre-fo-decoder-failures-give-a-full-chosen-ciphertext-key-recovery">kem-02-6: Pre-FO decoder failures give a full chosen-ciphertext key recovery</h2>
+
+<div class="table-wrap"><table class="meta issue-meta">
+<tr><th>Severity</th><td><span class="sev sev-critical">Critical</span></td></tr>
+<tr><th>Scope</th><td>implementation</td></tr>
+<tr><th>Status</th><td><span class="issue-status status-confirmed">Confirmed</span></td></tr>
+<tr><th>Affected</th><td>All five Amoeba reference parameter sets share the oracle; full Amoeba-576 recovery demonstrated</td></tr>
+<tr><th>Discovery</th><td>Moderate</td></tr>
+<tr><th>Exploitation</th><td>576/576 Amoeba-576 secret coefficients and a fresh session key recovered in about 24,200 chosen-ciphertext queries</td></tr>
+<tr><th>Credit</th><td>Zhenyu Xiong and Mingsheng Wang</td></tr>
+<tr><th>Date</th><td>2026-09-27</td></tr>
+</table></div>
+<p>Reference: <a href="https://eprint.iacr.org/2026/2232">Xiong and Wang, “Cryptanalysis of the ICCS NGCC Round-1 Public-Key Candidates,” ePrint 2026/2232, §8</a></p>
+<p><code>CCAKEM_Decaps</code> returns <code>-1</code> immediately when <code>CPAPKE_Decrypt</code> reports an ECC failure, before the Fujisaki--Okamoto re-encryption comparison and implicit rejection. An attacker can therefore force and observe a secret-dependent decoding-failure bit. A ciphertext with scalar <code>c1=delta</code>, one pinned pilot bit, and one swept probe bit reveals the threshold <code>q/4+delta*s_i</code>; matching the 32 possible compressed-<code>c2</code> responses recovers that secret coefficient.</p>
+<p>Xiong and Wang's public artifact recovers 517 Amoeba-576 coefficients. Further extension to their analysis initially probes all 522 coefficient positions represented in <code>c2</code>, then uses <code>c1=delta*X^j</code> and multiplication in <code>Z_q[X]/(X^576-X^288+1)</code> to expose the 54 positions outside <code>c2</code> and resolve the four boundary positions 518--521. The local witness thereby recovers all 576 coefficients, serializes them as a new decapsulation key, and recovers the shared secret from a fresh honest encapsulation. The submitted secret key is read only to score the recovered vector; the fresh shared-secret test uses the reconstructed key. Runs use about 24,200 oracle calls and complete in under a minute on this host (about four CPU seconds, with wall time dominated by isolating crashing queries in child processes). A service that exposes the return value or the associated decoder crash provides the oracle directly.</p>
+<p>Do not propagate any decoder result before the constant-time full-ciphertext FO check. Fold all decoding errors into the implicit-rejection mask, and separately bound the correction index to remove the out-of-bounds write.</p>
+<h3 id="reproducing_5">Reproducing</h3>
+<p>Commands below run in a checkout of the <a href="https://github.com/ngcc-dev/ngcc-harness">ngcc-harness repository</a> with the candidate built (see its README).</p>
+<pre><code class="language-sh">sh kem-02/reproduce_dfo_key_recovery.sh
+</code></pre>
+<p>The witness builds against the unmodified Amoeba-576 reference sources, contains crashing oracle calls in child processes, requires exact recovery of all 576 coefficients, and verifies a fresh shared secret with the reconstructed key.</p>
 </main>
 <footer class="site-footer">
 <p>Maintained by: <a href="mailto:markku-juhani.saarinen@tuni.fi">markku-juhani.saarinen@tuni.fi</a></p>

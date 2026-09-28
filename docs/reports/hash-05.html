@@ -5,28 +5,28 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>ngcc.dev: uHash (hash-05)</title>
 <link rel="icon" type="image/png" href="../assets/mag-glass.png">
-<link rel="stylesheet" href="../assets/style.css?v=996d5cfd">
+<link rel="stylesheet" href="../assets/style.css?v=1fdb792d">
 </head>
 <body>
 <header class="site-header">
 <a class="brand" href="../index.html"><img class="brand-icon" src="../assets/mag-glass.png" alt="" width="28" height="28">ngcc.dev</a>
-<nav><a href="../index.html">Home</a><a href="../reports/index.html">Reports</a><a href="../constant-time/index.html">Constant-Time</a></nav>
+<nav><a href="../index.html">Home</a><a href="../reports/index.html">Reports</a><a href="../performance/x86_1/index.html">Performance</a><a href="../constant-time/index.html">Constant-Time</a></nav>
 </header>
-<main>
-<p class="crumb"><a href="../reports/index.html">Reports</a> › <code>hash-05</code> · <a href="../constant-time/hash-05.html">Constant-time review</a></p>
+<main class="">
+<p class="crumb"><a href="../reports/index.html">Reports</a> › <code>hash-05</code> · <a href="../constant-time/hash-05.html">Constant-time review</a> · <a href="../performance/x86_1/hash-05.html">Performance</a></p>
 
 <h1 id="uhash-hash-05">uHash (hash-05)</h1>
 <div class="table-wrap"><table class="meta">
 <tr><th>Candidate</th><td>uHash</td></tr>
 <tr><th>Family</th><td>Symmetric (block-cipher-based hash)</td></tr>
 <tr><th>Archive</th><td><a href="https://www.niccs.org.cn/niccs/Proposal/Cryptographic%20Hash%20Algorithms/Round%201%20candidates/uHash.zip">uHash.zip</a> (SHA-256: <code>c398e49530510c9aa1deffd617855f9b8db448b4e30a35953d88ea0373c7d8e5</code>)</td></tr>
-<tr><th>Specification</th><td><a href="https://github.com/ngcc-dev/ngcc-harness/raw/refs/heads/main/hash-05/hash-05-spec.pdf" title="Download hash-05-spec.pdf from GitHub">hash-05-spec.pdf</a>&nbsp;<a class="pdf-link" href="https://cdn.jsdelivr.net/gh/ngcc-dev/ngcc-harness@main/hash-05/hash-05-spec.pdf" title="Open the hash-05 specification PDF">PDF</a></td></tr>
+<tr><th>Specification</th><td><a href="https://github.com/ngcc-dev/ngcc-harness/raw/dc66c6cb3c06e75bdea0048e21fa4e13c63f00af/hash-05/hash-05-spec.pdf" title="Download hash-05-spec.pdf from GitHub">hash-05-spec.pdf</a>&nbsp;<a class="pdf-link" href="https://cdn.jsdelivr.net/gh/ngcc-dev/ngcc-harness@dc66c6cb3c06e75bdea0048e21fa4e13c63f00af/hash-05/hash-05-spec.pdf" title="Open the hash-05 specification PDF">PDF</a></td></tr>
 </table></div>
 
 <h2 class="issue-heading issue-heading-first" id="hash-05-1-secret-state-indexes-a-256-byte-substitution-table">hash-05-1: Secret state indexes a 256-byte substitution table</h2>
 
 <div class="table-wrap"><table class="meta issue-meta">
-<tr><th>Severity</th><td><span class="sev sev-medium">Medium</span></td></tr>
+<tr><th>Severity</th><td><span class="sev sev-low">Low</span></td></tr>
 <tr><th>Scope</th><td>side-channel</td></tr>
 <tr><th>Status</th><td><span class="issue-status status-confirmed">Confirmed</span></td></tr>
 <tr><th>Affected</th><td>Reference uHash-512/768/1024</td></tr>
@@ -37,13 +37,14 @@
 </table></div>
 
 <p>The reference <code>RoundFunction</code> xors the evolving state with a round key, then reads <code>S[X[i]]</code> and <code>S[Y[i]]</code> (<code>CryptHash_AlgorithmInstance.c:163-174</code>). <code>S</code> contains 256 bytes (<code>:36</code>), spanning cache lines. Equal-length messages can therefore select different lookup addresses during hashing. No complete message-recovery experiment is claimed. See <a href="../constant-time/hash-05.html">constant_time.md</a>.</p>
+<p>Constant-time fix (easy, hence Low): the specified uBlock S-box is 4-bit, so the merged 256-byte table can be replaced by a 16-entry in-register <code>pshufb</code> lookup or a bitsliced circuit, the implementation style uBlock was designed for.</p>
 <h3 id="reproducing">Reproducing</h3>
 <p>Commands below run in a checkout of the <a href="https://github.com/ngcc-dev/ngcc-harness">ngcc-harness repository</a> with the candidate built (see its README).</p>
 <p>Inspect the cited table accesses in any reference variant. The lookup indices are the evolving <code>P[i] ^ RK[i]</code> bytes, not public counters.</p>
 <h2 class="issue-heading" id="hash-05-2-narrow-pipe-iteration-limits-uhash-second-preimage-security-for-long-messages">hash-05-2: Narrow-pipe iteration limits uHash second-preimage security for long messages</h2>
 
 <div class="table-wrap"><table class="meta issue-meta">
-<tr><th>Severity</th><td><span class="sev sev-medium">Medium</span></td></tr>
+<tr><th>Severity</th><td><span class="sev sev-critical">Critical</span></td></tr>
 <tr><th>Scope</th><td>design</td></tr>
 <tr><th>Status</th><td><span class="issue-status status-confirmed">Confirmed</span></td></tr>
 <tr><th>Affected</th><td>uHash-512, uHash-768 and uHash-1024 specifications and implementations</td></tr>
@@ -61,7 +62,7 @@
 <h2 class="issue-heading" id="hash-05-3-unused-partial-byte-bits-cancel-padding-and-give-trivial-collisions">hash-05-3: Unused partial-byte bits cancel padding and give trivial collisions</h2>
 
 <div class="table-wrap"><table class="meta issue-meta">
-<tr><th>Severity</th><td><span class="sev sev-high">High</span></td></tr>
+<tr><th>Severity</th><td><span class="sev sev-critical">Critical</span></td></tr>
 <tr><th>Scope</th><td>implementation</td></tr>
 <tr><th>Status</th><td><span class="issue-status status-confirmed">Confirmed</span></td></tr>
 <tr><th>Affected</th><td>Reference and optimized uHash-512/768/1024 bitstring-input paths</td></tr>
@@ -73,7 +74,7 @@
 
 <p>The API accepts a message pointer and its length in bits, using the most-significant bits of a partial byte. Bits after that declared length are not part of the message, and the supplied API instructions impose no precondition that callers zero them. The specification pads the bitstring injectively as <code>M ∥ 1 ∥ 0*</code> (§1.2.1 and §2.2), but <code>Padding</code> copies the caller's entire partial byte and <strong>adds</strong> the pad bit without first masking the unused bits (<code>CryptHash_AlgorithmInstance.c:442-463</code>; optimized implementation <code>:6178-6199</code>).</p>
 <p>This gives deterministic collisions between distinct bitstrings. The one-bit message <code>0</code>, supplied as byte <code>00</code> with length 1, is padded to byte <code>40</code>. The two-bit message <code>00</code>, supplied as byte <code>20</code> with length 2, is also padded to <code>40</code>: the <code>20</code> bit is outside the declared two-bit message and the implementation adds the two-bit padding marker <code>20</code>. The complete padded inputs are identical, so all subsequent full-round computation is identical. The submitted uHash-512, uHash-768 and uHash-1024 libraries all return equal digests for this pair; canonical encoding of the two-bit message and a changed meaningful bit are non-colliding controls.</p>
-<p>The collision requires nonzero unused bits in the caller's final byte. Canonically encoded inputs do not collide under this witness, which limits its severity to High; <code>hash-09-1</code> does not have that input-encoding precondition.</p>
+<p>The collision requires nonzero unused bits in the caller's final byte, but the API assigns no meaning to those bits and imposes no requirement that callers clear them. The two declared bitstrings are therefore distinct valid inputs. This immediate collision violates the NGCC requirement of at least <code>h/2</code>-bit collision security (<a href="https://www.niccs.org.cn/niccs/Notice/crlRB1ZY.pdf">Evaluation Criteria</a> §1(2)) and is Critical. Canonically zeroed backing bytes avoid this particular witness but do not repair the API implementation.</p>
 <p>The implementation must mask the unused low bits before setting the padding bit, for example <code>M[k] = (msg[k] &amp; (0xff &lt;&lt; (8-r))) | (1 &lt;&lt; (7-r))</code> for <code>r = msg_len_bits mod 8</code>.</p>
 <h3 id="reproducing_2">Reproducing</h3>
 <p>Commands below run in a checkout of the <a href="https://github.com/ngcc-dev/ngcc-harness">ngcc-harness repository</a> with the candidate built (see its README).</p>

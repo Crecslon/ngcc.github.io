@@ -6,7 +6,17 @@ Jekyll). Requires Python 3 and the `markdown` package.
 
     make build      # content/ -> docs/
     make serve      # preview on http://localhost:8000
+    make sync-performance PERF_SOURCE=../ngcc-harness
     git commit -a && git push   # deploy
+
+The performance sync validates that every registered candidate has a generated
+page, copies the harness summaries into `content/performance/`, and rewrites
+their internal links. Run `make check` afterward to rebuild and validate the
+published `docs/` tree.
+
+`tools/build.py` also gives every official candidate a stable `reports/<id>.html`
+page. Candidates without a report source get a generated “No finding” review
+page; these pages do not create issue IDs or change the vulnerability totals.
 
 Both `content/` and the rendered `docs/` are committed, so what is pushed is
 exactly what is served. Everything in this repository is public, including

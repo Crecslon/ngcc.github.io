@@ -69,6 +69,8 @@ Credit: Mounir Idrassi <mounir@amcrypto.jp>
 Date: 2026-09-26
 Original source: [GitHub issue #19](https://github.com/ngcc-dev/ngcc-harness/issues/19)
 
+Additional reference: [Idrassi, “A Complete Classification of Whole-Output Linear Structures in FEILIAN-Type Components,” ePrint 2026/2236, Appendix](https://eprint.iacr.org/2026/2236)
+
 Several definitions conflict. Chapter 2 prints IV word 7 as `3D84...` (line 101), while its stated pi derivation, C and RTL give `3F84...`. The AddConstant diagram places the tweak in row 1 and constants in row 3, while Appendix A, C and RTL reverse them. C and 2SC encode the 128-bit counter high word first, while 1SC/4SC/8SC encode it low word first. All four RTL packages hard-code version `0x400` and a 1024-bit digest even though the submitted `FEILIAN/Implementations/README.txt:21,23` labels 1SC and 4SC as 512-bit designs.
 
 Appendix B is internally mixed as well. Independent evaluation of all six examples shows that the 1024-bit examples use the true cumulative message lengths, while the 512- and 768-bit examples use cumulative padded-block lengths. The latter convention loses the logical-length binding on which zero padding relies. The ordinary C implementations and their KATs use true lengths, so this is an ambiguity and conformance defect rather than a full-round attack on those implementations.

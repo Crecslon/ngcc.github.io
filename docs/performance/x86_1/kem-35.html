@@ -1,0 +1,1976 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ngcc.dev: kem-35 Scloud+ — performance on x86-64 (system x861)</title>
+<link rel="icon" type="image/png" href="../../assets/mag-glass.png">
+<link rel="stylesheet" href="../../assets/style.css?v=1fdb792d">
+</head>
+<body>
+<header class="site-header">
+<a class="brand" href="../../index.html"><img class="brand-icon" src="../../assets/mag-glass.png" alt="" width="28" height="28">ngcc.dev</a>
+<nav><a href="../../index.html">Home</a><a href="../../reports/index.html">Reports</a><a href="../../performance/x86_1/index.html">Performance</a><a href="../../constant-time/index.html">Constant-Time</a></nav>
+</header>
+<main class="">
+<!-- synchronized from harness: kem-35/perf_x86_1.md -->
+<h1 id="kem-35-scloud-performance-on-x86-64-system-x86_1">kem-35 Scloud+ — performance on x86-64 (system x86_1)</h1>
+<p><a href="index.html">Performance x86_1</a> › <code>kem-35</code> · <a href="method.html">method</a> · <a href="https://www.niccs.org.cn/niccs/Round1Additional/pc/content/content_2101560881269264384.html">NICCS page</a></p>
+<p>Independent measurement following the structure of the NICCS x86 self-assessment guide, §3.5 (1)–(7). Not a submitter self-assessment.</p>
+<h2 id="1-basic-information">1. Basic information</h2>
+<ul>
+<li>Category: public-key algorithm; function: key encapsulation</li>
+<li>Algorithm: Scloud+</li>
+<li>Implementation versions measured: optimized (AVX2), reference</li>
+<li>Parameter sets: <code>Scloudplus-128-AES-packed10</code>, <code>Scloudplus-128-SHAKE-avx2</code>, <code>Scloudplus-128-SHAKE-packed10</code>, <code>Scloudplus-128-SM3-packed10</code>, <code>Scloudplus-192-AES-packed10</code>, <code>Scloudplus-192-SHAKE-packed10</code>, <code>Scloudplus-192-SM3-packed10</code>, <code>Scloudplus-256-AES-packed10</code>, <code>Scloudplus-256-SHAKE-packed10</code>, <code>Scloudplus-256-SM3-packed10</code>, <code>Scloudplus-384-AES-packed10</code>, <code>Scloudplus-384-SHAKE-packed10</code>, <code>Scloudplus-384-SM3-packed10</code>, <code>Scloudplus-512-AES-packed10</code>, <code>Scloudplus-512-SHAKE-packed10</code>, <code>Scloudplus-512-SM3-packed10</code></li>
+</ul>
+<h2 id="2-assessment-environment">2. Assessment environment</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>item</th>
+<th>value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>processor</td>
+<td>12th Gen Intel(R) Core(TM) i7-12700 (CPU 2, one core)</td>
+</tr>
+<tr>
+<td>clock</td>
+<td>max 2.10 GHz, governor performance, turbo off, SMT off</td>
+</tr>
+<tr>
+<td>memory</td>
+<td>31788 MiB</td>
+</tr>
+<tr>
+<td>OS / kernel</td>
+<td>Debian GNU/Linux 13 (trixie) / 6.12.107+deb13-amd64</td>
+</tr>
+<tr>
+<td>compiler / build tool</td>
+<td>gcc (Debian 14.2.0-19) 14.2.0 / cmake version 3.31.6</td>
+</tr>
+<tr>
+<td>campaign start / end (UTC)</td>
+<td>2026-09-25T10:02:21 / 2026-09-28T04:35:59</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="3-functional-testing-kat">3. Functional testing (KAT)</h2>
+<p>Each library was checked against the submitted KAT vectors (SHA-256 manifest <code>kem-35/kat.sha256</code> in the harness) before timing.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>build flags</th>
+<th>KAT</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Scloudplus-128-AES-packed10</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>Scloudplus-128-SHAKE-avx2</code></td>
+<td>guide-performance</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>Scloudplus-128-SHAKE-packed10</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>Scloudplus-128-SM3-packed10</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>Scloudplus-192-AES-packed10</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>Scloudplus-192-SHAKE-packed10</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>Scloudplus-192-SM3-packed10</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>Scloudplus-256-AES-packed10</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>Scloudplus-256-SHAKE-packed10</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>Scloudplus-256-SM3-packed10</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>Scloudplus-384-AES-packed10</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>Scloudplus-384-SHAKE-packed10</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>Scloudplus-384-SM3-packed10</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>Scloudplus-512-AES-packed10</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>Scloudplus-512-SHAKE-packed10</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>Scloudplus-512-SM3-packed10</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="4-performance">4. Performance</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>operation</th>
+<th>mean cycles</th>
+<th>mean time</th>
+<th>ops/s</th>
+<th>median trial</th>
+<th>n (trials × iters)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Scloudplus-128-AES-packed10</code></td>
+<td>keygen</td>
+<td>41.90 M</td>
+<td>20 ms</td>
+<td>50</td>
+<td>20 ms</td>
+<td>250 (5 × 50)</td>
+</tr>
+<tr>
+<td><code>Scloudplus-128-AES-packed10</code></td>
+<td>enc</td>
+<td>42.02 M</td>
+<td>20.1 ms</td>
+<td>49.8</td>
+<td>20.1 ms</td>
+<td>250 (5 × 50)</td>
+</tr>
+<tr>
+<td><code>Scloudplus-128-AES-packed10</code></td>
+<td>dec</td>
+<td>42.02 M</td>
+<td>20.1 ms</td>
+<td>49.8</td>
+<td>20.1 ms</td>
+<td>250 (5 × 50)</td>
+</tr>
+<tr>
+<td><code>Scloudplus-128-SHAKE-avx2</code></td>
+<td>keygen</td>
+<td>1.68 M</td>
+<td>804 µs</td>
+<td>1.24e+03</td>
+<td>804 µs</td>
+<td>5930 (5 × 1186)</td>
+</tr>
+<tr>
+<td><code>Scloudplus-128-SHAKE-avx2</code></td>
+<td>enc</td>
+<td>1.73 M</td>
+<td>830 µs</td>
+<td>1.21e+03</td>
+<td>829 µs</td>
+<td>5970 (5 × 1194)</td>
+</tr>
+<tr>
+<td><code>Scloudplus-128-SHAKE-avx2</code></td>
+<td>dec</td>
+<td>1.64 M</td>
+<td>785 µs</td>
+<td>1.27e+03</td>
+<td>785 µs</td>
+<td>6305 (5 × 1261)</td>
+</tr>
+<tr>
+<td><code>Scloudplus-128-SHAKE-packed10</code></td>
+<td>keygen</td>
+<td>6.31 M</td>
+<td>3.01 ms</td>
+<td>332</td>
+<td>3.02 ms</td>
+<td>1655 (5 × 331)</td>
+</tr>
+<tr>
+<td><code>Scloudplus-128-SHAKE-packed10</code></td>
+<td>enc</td>
+<td>6.43 M</td>
+<td>3.07 ms</td>
+<td>325</td>
+<td>3.08 ms</td>
+<td>1565 (5 × 313)</td>
+</tr>
+<tr>
+<td><code>Scloudplus-128-SHAKE-packed10</code></td>
+<td>dec</td>
+<td>6.44 M</td>
+<td>3.08 ms</td>
+<td>325</td>
+<td>3.08 ms</td>
+<td>1630 (5 × 326)</td>
+</tr>
+<tr>
+<td><code>Scloudplus-128-SM3-packed10</code></td>
+<td>keygen</td>
+<td>23.68 M</td>
+<td>11.3 ms</td>
+<td>88.4</td>
+<td>11.3 ms</td>
+<td>440 (5 × 88)</td>
+</tr>
+<tr>
+<td><code>Scloudplus-128-SM3-packed10</code></td>
+<td>enc</td>
+<td>23.93 M</td>
+<td>11.4 ms</td>
+<td>87.5</td>
+<td>11.4 ms</td>
+<td>440 (5 × 88)</td>
+</tr>
+<tr>
+<td><code>Scloudplus-128-SM3-packed10</code></td>
+<td>dec</td>
+<td>23.78 M</td>
+<td>11.4 ms</td>
+<td>88</td>
+<td>11.3 ms</td>
+<td>445 (5 × 89)</td>
+</tr>
+<tr>
+<td><code>Scloudplus-192-AES-packed10</code></td>
+<td>keygen</td>
+<td>77.94 M</td>
+<td>37.2 ms</td>
+<td>26.9</td>
+<td>37.2 ms</td>
+<td>135 (5 × 27)</td>
+</tr>
+<tr>
+<td><code>Scloudplus-192-AES-packed10</code></td>
+<td>enc</td>
+<td>78.49 M</td>
+<td>37.5 ms</td>
+<td>26.7</td>
+<td>37.5 ms</td>
+<td>135 (5 × 27)</td>
+</tr>
+<tr>
+<td><code>Scloudplus-192-AES-packed10</code></td>
+<td>dec</td>
+<td>78.61 M</td>
+<td>37.5 ms</td>
+<td>26.6</td>
+<td>37.6 ms</td>
+<td>135 (5 × 27)</td>
+</tr>
+<tr>
+<td><code>Scloudplus-192-SHAKE-packed10</code></td>
+<td>keygen</td>
+<td>10.50 M</td>
+<td>5.02 ms</td>
+<td>199</td>
+<td>5.01 ms</td>
+<td>840 (5 × 168)</td>
+</tr>
+<tr>
+<td><code>Scloudplus-192-SHAKE-packed10</code></td>
+<td>enc</td>
+<td>11.04 M</td>
+<td>5.27 ms</td>
+<td>190</td>
+<td>5.27 ms</td>
+<td>905 (5 × 181)</td>
+</tr>
+<tr>
+<td><code>Scloudplus-192-SHAKE-packed10</code></td>
+<td>dec</td>
+<td>11.28 M</td>
+<td>5.39 ms</td>
+<td>185</td>
+<td>5.38 ms</td>
+<td>770 (5 × 154)</td>
+</tr>
+<tr>
+<td><code>Scloudplus-192-SM3-packed10</code></td>
+<td>keygen</td>
+<td>44.44 M</td>
+<td>21.2 ms</td>
+<td>47.1</td>
+<td>21.2 ms</td>
+<td>235 (5 × 47)</td>
+</tr>
+<tr>
+<td><code>Scloudplus-192-SM3-packed10</code></td>
+<td>enc</td>
+<td>45.14 M</td>
+<td>21.6 ms</td>
+<td>46.4</td>
+<td>21.6 ms</td>
+<td>235 (5 × 47)</td>
+</tr>
+<tr>
+<td><code>Scloudplus-192-SM3-packed10</code></td>
+<td>dec</td>
+<td>45.03 M</td>
+<td>21.5 ms</td>
+<td>46.5</td>
+<td>21.5 ms</td>
+<td>235 (5 × 47)</td>
+</tr>
+<tr>
+<td><code>Scloudplus-256-AES-packed10</code></td>
+<td>keygen</td>
+<td>158.93 M</td>
+<td>75.9 ms</td>
+<td>13.2</td>
+<td>75.9 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>Scloudplus-256-AES-packed10</code></td>
+<td>enc</td>
+<td>159.85 M</td>
+<td>76.4 ms</td>
+<td>13.1</td>
+<td>76.4 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>Scloudplus-256-AES-packed10</code></td>
+<td>dec</td>
+<td>159.98 M</td>
+<td>76.4 ms</td>
+<td>13.1</td>
+<td>76.4 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>Scloudplus-256-SHAKE-packed10</code></td>
+<td>keygen</td>
+<td>23.56 M</td>
+<td>11.3 ms</td>
+<td>88.9</td>
+<td>11.3 ms</td>
+<td>435 (5 × 87)</td>
+</tr>
+<tr>
+<td><code>Scloudplus-256-SHAKE-packed10</code></td>
+<td>enc</td>
+<td>24.61 M</td>
+<td>11.8 ms</td>
+<td>85.1</td>
+<td>11.8 ms</td>
+<td>420 (5 × 84)</td>
+</tr>
+<tr>
+<td><code>Scloudplus-256-SHAKE-packed10</code></td>
+<td>dec</td>
+<td>24.83 M</td>
+<td>11.9 ms</td>
+<td>84.3</td>
+<td>11.9 ms</td>
+<td>400 (5 × 80)</td>
+</tr>
+<tr>
+<td><code>Scloudplus-256-SM3-packed10</code></td>
+<td>keygen</td>
+<td>90.93 M</td>
+<td>43.4 ms</td>
+<td>23</td>
+<td>43.4 ms</td>
+<td>115 (5 × 23)</td>
+</tr>
+<tr>
+<td><code>Scloudplus-256-SM3-packed10</code></td>
+<td>enc</td>
+<td>92.25 M</td>
+<td>44.1 ms</td>
+<td>22.7</td>
+<td>44.1 ms</td>
+<td>115 (5 × 23)</td>
+</tr>
+<tr>
+<td><code>Scloudplus-256-SM3-packed10</code></td>
+<td>dec</td>
+<td>92.03 M</td>
+<td>44 ms</td>
+<td>22.7</td>
+<td>44 ms</td>
+<td>115 (5 × 23)</td>
+</tr>
+<tr>
+<td><code>Scloudplus-384-AES-packed10</code></td>
+<td>keygen</td>
+<td>315.05 M</td>
+<td>152 ms</td>
+<td>6.59</td>
+<td>151 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>Scloudplus-384-AES-packed10</code></td>
+<td>enc</td>
+<td>316.43 M</td>
+<td>151 ms</td>
+<td>6.62</td>
+<td>151 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>Scloudplus-384-AES-packed10</code></td>
+<td>dec</td>
+<td>317.13 M</td>
+<td>153 ms</td>
+<td>6.54</td>
+<td>151 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>Scloudplus-384-SHAKE-packed10</code></td>
+<td>keygen</td>
+<td>46.78 M</td>
+<td>22.3 ms</td>
+<td>44.8</td>
+<td>22.3 ms</td>
+<td>215 (5 × 43)</td>
+</tr>
+<tr>
+<td><code>Scloudplus-384-SHAKE-packed10</code></td>
+<td>enc</td>
+<td>48.27 M</td>
+<td>23.1 ms</td>
+<td>43.4</td>
+<td>23.1 ms</td>
+<td>205 (5 × 41)</td>
+</tr>
+<tr>
+<td><code>Scloudplus-384-SHAKE-packed10</code></td>
+<td>dec</td>
+<td>49.53 M</td>
+<td>23.7 ms</td>
+<td>42.2</td>
+<td>23.8 ms</td>
+<td>205 (5 × 41)</td>
+</tr>
+<tr>
+<td><code>Scloudplus-384-SM3-packed10</code></td>
+<td>keygen</td>
+<td>179.31 M</td>
+<td>85.7 ms</td>
+<td>11.7</td>
+<td>85.7 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>Scloudplus-384-SM3-packed10</code></td>
+<td>enc</td>
+<td>182.22 M</td>
+<td>87.1 ms</td>
+<td>11.5</td>
+<td>87 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>Scloudplus-384-SM3-packed10</code></td>
+<td>dec</td>
+<td>181.76 M</td>
+<td>86.8 ms</td>
+<td>11.5</td>
+<td>86.8 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>Scloudplus-512-AES-packed10</code></td>
+<td>keygen</td>
+<td>656.92 M</td>
+<td>315 ms</td>
+<td>3.17</td>
+<td>314 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>Scloudplus-512-AES-packed10</code></td>
+<td>enc</td>
+<td>657.55 M</td>
+<td>315 ms</td>
+<td>3.17</td>
+<td>314 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>Scloudplus-512-AES-packed10</code></td>
+<td>dec</td>
+<td>658.67 M</td>
+<td>316 ms</td>
+<td>3.16</td>
+<td>315 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>Scloudplus-512-SHAKE-packed10</code></td>
+<td>keygen</td>
+<td>99.62 M</td>
+<td>47.6 ms</td>
+<td>21</td>
+<td>47.6 ms</td>
+<td>105 (5 × 21)</td>
+</tr>
+<tr>
+<td><code>Scloudplus-512-SHAKE-packed10</code></td>
+<td>enc</td>
+<td>101.20 M</td>
+<td>48.4 ms</td>
+<td>20.7</td>
+<td>48.4 ms</td>
+<td>110 (5 × 22)</td>
+</tr>
+<tr>
+<td><code>Scloudplus-512-SHAKE-packed10</code></td>
+<td>dec</td>
+<td>102.35 M</td>
+<td>48.9 ms</td>
+<td>20.4</td>
+<td>49 ms</td>
+<td>105 (5 × 21)</td>
+</tr>
+<tr>
+<td><code>Scloudplus-512-SM3-packed10</code></td>
+<td>keygen</td>
+<td>376.23 M</td>
+<td>181 ms</td>
+<td>5.52</td>
+<td>180 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>Scloudplus-512-SM3-packed10</code></td>
+<td>enc</td>
+<td>379.05 M</td>
+<td>181 ms</td>
+<td>5.52</td>
+<td>181 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>Scloudplus-512-SM3-packed10</code></td>
+<td>dec</td>
+<td>377.95 M</td>
+<td>181 ms</td>
+<td>5.54</td>
+<td>181 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="5-resource-consumption">5. Resource consumption</h2>
+<p>Static memory is approximated by the library's loadable ELF segments; peak memory is the process high-water mark (VmHWM) including the benchmark driver and libc, so both are upper-bound proxies rather than isolated algorithm memory.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>operation</th>
+<th>static: ELF image (bytes)</th>
+<th>baseline RSS</th>
+<th>peak RSS</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Scloudplus-128-AES-packed10</code></td>
+<td>keygen</td>
+<td>28569</td>
+<td>1728 KiB</td>
+<td>1812 KiB</td>
+</tr>
+<tr>
+<td><code>Scloudplus-128-AES-packed10</code></td>
+<td>enc</td>
+<td>28569</td>
+<td>1748 KiB</td>
+<td>1816 KiB</td>
+</tr>
+<tr>
+<td><code>Scloudplus-128-AES-packed10</code></td>
+<td>dec</td>
+<td>28569</td>
+<td>1748 KiB</td>
+<td>1812 KiB</td>
+</tr>
+<tr>
+<td><code>Scloudplus-128-SHAKE-avx2</code></td>
+<td>keygen</td>
+<td>82413</td>
+<td>1772 KiB</td>
+<td>1868 KiB</td>
+</tr>
+<tr>
+<td><code>Scloudplus-128-SHAKE-avx2</code></td>
+<td>enc</td>
+<td>82413</td>
+<td>1784 KiB</td>
+<td>1908 KiB</td>
+</tr>
+<tr>
+<td><code>Scloudplus-128-SHAKE-avx2</code></td>
+<td>dec</td>
+<td>82413</td>
+<td>1820 KiB</td>
+<td>1884 KiB</td>
+</tr>
+<tr>
+<td><code>Scloudplus-128-SHAKE-packed10</code></td>
+<td>keygen</td>
+<td>26793</td>
+<td>1724 KiB</td>
+<td>1812 KiB</td>
+</tr>
+<tr>
+<td><code>Scloudplus-128-SHAKE-packed10</code></td>
+<td>enc</td>
+<td>26793</td>
+<td>1748 KiB</td>
+<td>1832 KiB</td>
+</tr>
+<tr>
+<td><code>Scloudplus-128-SHAKE-packed10</code></td>
+<td>dec</td>
+<td>26793</td>
+<td>1744 KiB</td>
+<td>1808 KiB</td>
+</tr>
+<tr>
+<td><code>Scloudplus-128-SM3-packed10</code></td>
+<td>keygen</td>
+<td>31705</td>
+<td>1728 KiB</td>
+<td>1828 KiB</td>
+</tr>
+<tr>
+<td><code>Scloudplus-128-SM3-packed10</code></td>
+<td>enc</td>
+<td>31705</td>
+<td>1732 KiB</td>
+<td>1864 KiB</td>
+</tr>
+<tr>
+<td><code>Scloudplus-128-SM3-packed10</code></td>
+<td>dec</td>
+<td>31705</td>
+<td>1732 KiB</td>
+<td>1856 KiB</td>
+</tr>
+<tr>
+<td><code>Scloudplus-192-AES-packed10</code></td>
+<td>keygen</td>
+<td>28185</td>
+<td>1720 KiB</td>
+<td>1864 KiB</td>
+</tr>
+<tr>
+<td><code>Scloudplus-192-AES-packed10</code></td>
+<td>enc</td>
+<td>28185</td>
+<td>1780 KiB</td>
+<td>1872 KiB</td>
+</tr>
+<tr>
+<td><code>Scloudplus-192-AES-packed10</code></td>
+<td>dec</td>
+<td>28185</td>
+<td>1744 KiB</td>
+<td>1872 KiB</td>
+</tr>
+<tr>
+<td><code>Scloudplus-192-SHAKE-packed10</code></td>
+<td>keygen</td>
+<td>26473</td>
+<td>1724 KiB</td>
+<td>1856 KiB</td>
+</tr>
+<tr>
+<td><code>Scloudplus-192-SHAKE-packed10</code></td>
+<td>enc</td>
+<td>26473</td>
+<td>1784 KiB</td>
+<td>1848 KiB</td>
+</tr>
+<tr>
+<td><code>Scloudplus-192-SHAKE-packed10</code></td>
+<td>dec</td>
+<td>26473</td>
+<td>1752 KiB</td>
+<td>1876 KiB</td>
+</tr>
+<tr>
+<td><code>Scloudplus-192-SM3-packed10</code></td>
+<td>keygen</td>
+<td>31449</td>
+<td>1724 KiB</td>
+<td>1904 KiB</td>
+</tr>
+<tr>
+<td><code>Scloudplus-192-SM3-packed10</code></td>
+<td>enc</td>
+<td>31449</td>
+<td>1812 KiB</td>
+<td>1916 KiB</td>
+</tr>
+<tr>
+<td><code>Scloudplus-192-SM3-packed10</code></td>
+<td>dec</td>
+<td>31449</td>
+<td>1824 KiB</td>
+<td>1912 KiB</td>
+</tr>
+<tr>
+<td><code>Scloudplus-256-AES-packed10</code></td>
+<td>keygen</td>
+<td>29057</td>
+<td>1756 KiB</td>
+<td>1900 KiB</td>
+</tr>
+<tr>
+<td><code>Scloudplus-256-AES-packed10</code></td>
+<td>enc</td>
+<td>29057</td>
+<td>1828 KiB</td>
+<td>1892 KiB</td>
+</tr>
+<tr>
+<td><code>Scloudplus-256-AES-packed10</code></td>
+<td>dec</td>
+<td>29057</td>
+<td>1808 KiB</td>
+<td>1920 KiB</td>
+</tr>
+<tr>
+<td><code>Scloudplus-256-SHAKE-packed10</code></td>
+<td>keygen</td>
+<td>27281</td>
+<td>1756 KiB</td>
+<td>1872 KiB</td>
+</tr>
+<tr>
+<td><code>Scloudplus-256-SHAKE-packed10</code></td>
+<td>enc</td>
+<td>27281</td>
+<td>1812 KiB</td>
+<td>1912 KiB</td>
+</tr>
+<tr>
+<td><code>Scloudplus-256-SHAKE-packed10</code></td>
+<td>dec</td>
+<td>27281</td>
+<td>1808 KiB</td>
+<td>1904 KiB</td>
+</tr>
+<tr>
+<td><code>Scloudplus-256-SM3-packed10</code></td>
+<td>keygen</td>
+<td>32257</td>
+<td>1752 KiB</td>
+<td>1916 KiB</td>
+</tr>
+<tr>
+<td><code>Scloudplus-256-SM3-packed10</code></td>
+<td>enc</td>
+<td>32257</td>
+<td>1880 KiB</td>
+<td>1956 KiB</td>
+</tr>
+<tr>
+<td><code>Scloudplus-256-SM3-packed10</code></td>
+<td>dec</td>
+<td>32257</td>
+<td>1868 KiB</td>
+<td>1932 KiB</td>
+</tr>
+<tr>
+<td><code>Scloudplus-384-AES-packed10</code></td>
+<td>keygen</td>
+<td>28761</td>
+<td>1812 KiB</td>
+<td>1984 KiB</td>
+</tr>
+<tr>
+<td><code>Scloudplus-384-AES-packed10</code></td>
+<td>enc</td>
+<td>28761</td>
+<td>1948 KiB</td>
+<td>2020 KiB</td>
+</tr>
+<tr>
+<td><code>Scloudplus-384-AES-packed10</code></td>
+<td>dec</td>
+<td>28761</td>
+<td>1956 KiB</td>
+<td>2020 KiB</td>
+</tr>
+<tr>
+<td><code>Scloudplus-384-SHAKE-packed10</code></td>
+<td>keygen</td>
+<td>26985</td>
+<td>1808 KiB</td>
+<td>1980 KiB</td>
+</tr>
+<tr>
+<td><code>Scloudplus-384-SHAKE-packed10</code></td>
+<td>enc</td>
+<td>26985</td>
+<td>1924 KiB</td>
+<td>2016 KiB</td>
+</tr>
+<tr>
+<td><code>Scloudplus-384-SHAKE-packed10</code></td>
+<td>dec</td>
+<td>26985</td>
+<td>1952 KiB</td>
+<td>2040 KiB</td>
+</tr>
+<tr>
+<td><code>Scloudplus-384-SM3-packed10</code></td>
+<td>keygen</td>
+<td>32025</td>
+<td>1792 KiB</td>
+<td>2064 KiB</td>
+</tr>
+<tr>
+<td><code>Scloudplus-384-SM3-packed10</code></td>
+<td>enc</td>
+<td>32025</td>
+<td>2044 KiB</td>
+<td>2124 KiB</td>
+</tr>
+<tr>
+<td><code>Scloudplus-384-SM3-packed10</code></td>
+<td>dec</td>
+<td>32025</td>
+<td>2040 KiB</td>
+<td>2104 KiB</td>
+</tr>
+<tr>
+<td><code>Scloudplus-512-AES-packed10</code></td>
+<td>keygen</td>
+<td>28953</td>
+<td>1832 KiB</td>
+<td>2084 KiB</td>
+</tr>
+<tr>
+<td><code>Scloudplus-512-AES-packed10</code></td>
+<td>enc</td>
+<td>28953</td>
+<td>2032 KiB</td>
+<td>2148 KiB</td>
+</tr>
+<tr>
+<td><code>Scloudplus-512-AES-packed10</code></td>
+<td>dec</td>
+<td>28953</td>
+<td>2060 KiB</td>
+<td>2124 KiB</td>
+</tr>
+<tr>
+<td><code>Scloudplus-512-SHAKE-packed10</code></td>
+<td>keygen</td>
+<td>27177</td>
+<td>1824 KiB</td>
+<td>2076 KiB</td>
+</tr>
+<tr>
+<td><code>Scloudplus-512-SHAKE-packed10</code></td>
+<td>enc</td>
+<td>27177</td>
+<td>2044 KiB</td>
+<td>2144 KiB</td>
+</tr>
+<tr>
+<td><code>Scloudplus-512-SHAKE-packed10</code></td>
+<td>dec</td>
+<td>27177</td>
+<td>2040 KiB</td>
+<td>2152 KiB</td>
+</tr>
+<tr>
+<td><code>Scloudplus-512-SM3-packed10</code></td>
+<td>keygen</td>
+<td>32281</td>
+<td>1836 KiB</td>
+<td>2256 KiB</td>
+</tr>
+<tr>
+<td><code>Scloudplus-512-SM3-packed10</code></td>
+<td>enc</td>
+<td>32281</td>
+<td>2248 KiB</td>
+<td>2324 KiB</td>
+</tr>
+<tr>
+<td><code>Scloudplus-512-SM3-packed10</code></td>
+<td>dec</td>
+<td>32281</td>
+<td>2232 KiB</td>
+<td>2328 KiB</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="6-transmission-and-storage-overhead">6. Transmission and storage overhead</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>public key</th>
+<th>secret key</th>
+<th>ciphertext</th>
+<th>shared secret</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Scloudplus-128-AES-packed10</code></td>
+<td>6096</td>
+<td>7440</td>
+<td>6160</td>
+<td>16</td>
+</tr>
+<tr>
+<td><code>Scloudplus-128-SHAKE-avx2</code></td>
+<td>6096</td>
+<td>7440</td>
+<td>6160</td>
+<td>16</td>
+</tr>
+<tr>
+<td><code>Scloudplus-128-SHAKE-packed10</code></td>
+<td>6096</td>
+<td>7440</td>
+<td>6160</td>
+<td>16</td>
+</tr>
+<tr>
+<td><code>Scloudplus-128-SM3-packed10</code></td>
+<td>6096</td>
+<td>7440</td>
+<td>6160</td>
+<td>16</td>
+</tr>
+<tr>
+<td><code>Scloudplus-192-AES-packed10</code></td>
+<td>11456</td>
+<td>13872</td>
+<td>12645</td>
+<td>24</td>
+</tr>
+<tr>
+<td><code>Scloudplus-192-SHAKE-packed10</code></td>
+<td>11456</td>
+<td>13872</td>
+<td>12645</td>
+<td>24</td>
+</tr>
+<tr>
+<td><code>Scloudplus-192-SM3-packed10</code></td>
+<td>11456</td>
+<td>13872</td>
+<td>12645</td>
+<td>24</td>
+</tr>
+<tr>
+<td><code>Scloudplus-256-AES-packed10</code></td>
+<td>16296</td>
+<td>19680</td>
+<td>17925</td>
+<td>32</td>
+</tr>
+<tr>
+<td><code>Scloudplus-256-SHAKE-packed10</code></td>
+<td>16296</td>
+<td>19680</td>
+<td>17925</td>
+<td>32</td>
+</tr>
+<tr>
+<td><code>Scloudplus-256-SM3-packed10</code></td>
+<td>16296</td>
+<td>19680</td>
+<td>17925</td>
+<td>32</td>
+</tr>
+<tr>
+<td><code>Scloudplus-384-AES-packed10</code></td>
+<td>33296</td>
+<td>40144</td>
+<td>33600</td>
+<td>48</td>
+</tr>
+<tr>
+<td><code>Scloudplus-384-SHAKE-packed10</code></td>
+<td>33296</td>
+<td>40144</td>
+<td>33600</td>
+<td>48</td>
+</tr>
+<tr>
+<td><code>Scloudplus-384-SM3-packed10</code></td>
+<td>33296</td>
+<td>40144</td>
+<td>33600</td>
+<td>48</td>
+</tr>
+<tr>
+<td><code>Scloudplus-512-AES-packed10</code></td>
+<td>48016</td>
+<td>57872</td>
+<td>48320</td>
+<td>64</td>
+</tr>
+<tr>
+<td><code>Scloudplus-512-SHAKE-packed10</code></td>
+<td>48016</td>
+<td>57872</td>
+<td>48320</td>
+<td>64</td>
+</tr>
+<tr>
+<td><code>Scloudplus-512-SM3-packed10</code></td>
+<td>48016</td>
+<td>57872</td>
+<td>48320</td>
+<td>64</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="symmetric-primitives">Symmetric primitives</h2>
+<p><a href="../symmetric-survey.html">Survey</a> verdict: <strong>instance-dependent</strong> — SM3 sets: private modified copy of auxfunc (official not linked); AES/SHAKE sets: own AES/Keccak (bypass); benchmark pilot uses SHAKE</p>
+<p>Share of each operation spent in the ICCS placeholder hash functions and in the ICCS DRNG (reference build, measured in the same run with link-time wrappers):</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>operation</th>
+<th>pseudohash/XOF/sm3</th>
+<th>DRNG</th>
+<th>calls per operation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Scloudplus-128-AES-packed10</code></td>
+<td>keygen</td>
+<td>0.0%</td>
+<td>0.0%</td>
+<td>drng 2</td>
+</tr>
+<tr>
+<td><code>Scloudplus-128-AES-packed10</code></td>
+<td>enc</td>
+<td>0.0%</td>
+<td>0.0%</td>
+<td>drng 1</td>
+</tr>
+<tr>
+<td><code>Scloudplus-128-AES-packed10</code></td>
+<td>dec</td>
+<td>0.0%</td>
+<td>0.0%</td>
+<td>–</td>
+</tr>
+<tr>
+<td><code>Scloudplus-128-SHAKE-packed10</code></td>
+<td>keygen</td>
+<td>0.0%</td>
+<td>0.2%</td>
+<td>drng 2</td>
+</tr>
+<tr>
+<td><code>Scloudplus-128-SHAKE-packed10</code></td>
+<td>enc</td>
+<td>0.0%</td>
+<td>0.1%</td>
+<td>drng 1</td>
+</tr>
+<tr>
+<td><code>Scloudplus-128-SHAKE-packed10</code></td>
+<td>dec</td>
+<td>0.0%</td>
+<td>0.0%</td>
+<td>–</td>
+</tr>
+<tr>
+<td><code>Scloudplus-128-SM3-packed10</code></td>
+<td>keygen</td>
+<td>92%</td>
+<td>0.1%</td>
+<td>drng 2, pseudoXOF 609, pseudohash 1</td>
+</tr>
+<tr>
+<td><code>Scloudplus-128-SM3-packed10</code></td>
+<td>enc</td>
+<td>92%</td>
+<td>0.0%</td>
+<td>drng 1, pseudoXOF 611, pseudohash 1</td>
+</tr>
+<tr>
+<td><code>Scloudplus-128-SM3-packed10</code></td>
+<td>dec</td>
+<td>92%</td>
+<td>0.0%</td>
+<td>pseudoXOF 611</td>
+</tr>
+<tr>
+<td><code>Scloudplus-192-AES-packed10</code></td>
+<td>keygen</td>
+<td>0.0%</td>
+<td>0.0%</td>
+<td>drng 2</td>
+</tr>
+<tr>
+<td><code>Scloudplus-192-AES-packed10</code></td>
+<td>enc</td>
+<td>0.0%</td>
+<td>0.0%</td>
+<td>drng 1</td>
+</tr>
+<tr>
+<td><code>Scloudplus-192-AES-packed10</code></td>
+<td>dec</td>
+<td>0.0%</td>
+<td>0.0%</td>
+<td>–</td>
+</tr>
+<tr>
+<td><code>Scloudplus-192-SHAKE-packed10</code></td>
+<td>keygen</td>
+<td>0.0%</td>
+<td>0.1%</td>
+<td>drng 2</td>
+</tr>
+<tr>
+<td><code>Scloudplus-192-SHAKE-packed10</code></td>
+<td>enc</td>
+<td>0.0%</td>
+<td>0.0%</td>
+<td>drng 1</td>
+</tr>
+<tr>
+<td><code>Scloudplus-192-SHAKE-packed10</code></td>
+<td>dec</td>
+<td>0.0%</td>
+<td>0.0%</td>
+<td>–</td>
+</tr>
+<tr>
+<td><code>Scloudplus-192-SM3-packed10</code></td>
+<td>keygen</td>
+<td>93%</td>
+<td>0.0%</td>
+<td>drng 2, pseudoXOF 833, pseudohash 1</td>
+</tr>
+<tr>
+<td><code>Scloudplus-192-SM3-packed10</code></td>
+<td>enc</td>
+<td>92%</td>
+<td>0.0%</td>
+<td>drng 1, pseudoXOF 835, pseudohash 1</td>
+</tr>
+<tr>
+<td><code>Scloudplus-192-SM3-packed10</code></td>
+<td>dec</td>
+<td>91%</td>
+<td>0.0%</td>
+<td>pseudoXOF 835</td>
+</tr>
+<tr>
+<td><code>Scloudplus-256-AES-packed10</code></td>
+<td>keygen</td>
+<td>0.0%</td>
+<td>0.0%</td>
+<td>drng 2</td>
+</tr>
+<tr>
+<td><code>Scloudplus-256-AES-packed10</code></td>
+<td>enc</td>
+<td>0.0%</td>
+<td>0.0%</td>
+<td>drng 1</td>
+</tr>
+<tr>
+<td><code>Scloudplus-256-AES-packed10</code></td>
+<td>dec</td>
+<td>0.0%</td>
+<td>0.0%</td>
+<td>–</td>
+</tr>
+<tr>
+<td><code>Scloudplus-256-SHAKE-packed10</code></td>
+<td>keygen</td>
+<td>0.0%</td>
+<td>0.1%</td>
+<td>drng 2</td>
+</tr>
+<tr>
+<td><code>Scloudplus-256-SHAKE-packed10</code></td>
+<td>enc</td>
+<td>0.0%</td>
+<td>0.0%</td>
+<td>drng 1</td>
+</tr>
+<tr>
+<td><code>Scloudplus-256-SHAKE-packed10</code></td>
+<td>dec</td>
+<td>0.0%</td>
+<td>0.0%</td>
+<td>–</td>
+</tr>
+<tr>
+<td><code>Scloudplus-256-SM3-packed10</code></td>
+<td>keygen</td>
+<td>91%</td>
+<td>0.0%</td>
+<td>drng 2, pseudoXOF 1.18e+03, pseudohash 1</td>
+</tr>
+<tr>
+<td><code>Scloudplus-256-SM3-packed10</code></td>
+<td>enc</td>
+<td>91%</td>
+<td>0.0%</td>
+<td>drng 1, pseudoXOF 1.19e+03, pseudohash 1</td>
+</tr>
+<tr>
+<td><code>Scloudplus-256-SM3-packed10</code></td>
+<td>dec</td>
+<td>90%</td>
+<td>0.0%</td>
+<td>pseudoXOF 1.19e+03</td>
+</tr>
+<tr>
+<td><code>Scloudplus-384-AES-packed10</code></td>
+<td>keygen</td>
+<td>0.0%</td>
+<td>0.0%</td>
+<td>drng 2</td>
+</tr>
+<tr>
+<td><code>Scloudplus-384-AES-packed10</code></td>
+<td>enc</td>
+<td>0.0%</td>
+<td>0.0%</td>
+<td>drng 1</td>
+</tr>
+<tr>
+<td><code>Scloudplus-384-AES-packed10</code></td>
+<td>dec</td>
+<td>0.0%</td>
+<td>0.0%</td>
+<td>–</td>
+</tr>
+<tr>
+<td><code>Scloudplus-384-SHAKE-packed10</code></td>
+<td>keygen</td>
+<td>0.0%</td>
+<td>0.0%</td>
+<td>drng 2</td>
+</tr>
+<tr>
+<td><code>Scloudplus-384-SHAKE-packed10</code></td>
+<td>enc</td>
+<td>0.0%</td>
+<td>0.0%</td>
+<td>drng 1</td>
+</tr>
+<tr>
+<td><code>Scloudplus-384-SHAKE-packed10</code></td>
+<td>dec</td>
+<td>0.0%</td>
+<td>0.0%</td>
+<td>–</td>
+</tr>
+<tr>
+<td><code>Scloudplus-384-SM3-packed10</code></td>
+<td>keygen</td>
+<td>90%</td>
+<td>0.0%</td>
+<td>drng 2, pseudoXOF 1.66e+03, pseudohash 1</td>
+</tr>
+<tr>
+<td><code>Scloudplus-384-SM3-packed10</code></td>
+<td>enc</td>
+<td>90%</td>
+<td>0.0%</td>
+<td>drng 1, pseudoXOF 1.67e+03, pseudohash 1</td>
+</tr>
+<tr>
+<td><code>Scloudplus-384-SM3-packed10</code></td>
+<td>dec</td>
+<td>89%</td>
+<td>0.0%</td>
+<td>pseudoXOF 1.67e+03</td>
+</tr>
+<tr>
+<td><code>Scloudplus-512-AES-packed10</code></td>
+<td>keygen</td>
+<td>0.0%</td>
+<td>0.0%</td>
+<td>drng 2</td>
+</tr>
+<tr>
+<td><code>Scloudplus-512-AES-packed10</code></td>
+<td>enc</td>
+<td>0.0%</td>
+<td>0.0%</td>
+<td>drng 1</td>
+</tr>
+<tr>
+<td><code>Scloudplus-512-AES-packed10</code></td>
+<td>dec</td>
+<td>0.0%</td>
+<td>0.0%</td>
+<td>–</td>
+</tr>
+<tr>
+<td><code>Scloudplus-512-SHAKE-packed10</code></td>
+<td>keygen</td>
+<td>0.0%</td>
+<td>0.0%</td>
+<td>drng 2</td>
+</tr>
+<tr>
+<td><code>Scloudplus-512-SHAKE-packed10</code></td>
+<td>enc</td>
+<td>0.0%</td>
+<td>0.0%</td>
+<td>drng 1</td>
+</tr>
+<tr>
+<td><code>Scloudplus-512-SHAKE-packed10</code></td>
+<td>dec</td>
+<td>0.0%</td>
+<td>0.0%</td>
+<td>–</td>
+</tr>
+<tr>
+<td><code>Scloudplus-512-SM3-packed10</code></td>
+<td>keygen</td>
+<td>89%</td>
+<td>0.0%</td>
+<td>drng 2, pseudoXOF 2.4e+03, pseudohash 1</td>
+</tr>
+<tr>
+<td><code>Scloudplus-512-SM3-packed10</code></td>
+<td>enc</td>
+<td>89%</td>
+<td>0.0%</td>
+<td>drng 1, pseudoXOF 2.4e+03, pseudohash 1</td>
+</tr>
+<tr>
+<td><code>Scloudplus-512-SM3-packed10</code></td>
+<td>dec</td>
+<td>89%</td>
+<td>0.0%</td>
+<td>pseudoXOF 2.4e+03</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="7-raw-evidence-index">7. Raw evidence index</h2>
+<p>Paths are relative to <code>performance/data/x86_1/</code> in the <a href="https://github.com/ngcc-dev/ngcc-harness">harness</a>; each JSON file records its commands, environment and trials.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>item</th>
+<th>file</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Scloudplus-128-AES-packed10</code></td>
+<td>KAT log (sha256 <code>c672e793e6304494…</code>)</td>
+<td><code>kat/kem-35/Scloudplus-128-AES-packed10.log</code></td>
+</tr>
+<tr>
+<td><code>Scloudplus-128-AES-packed10</code></td>
+<td>timing dec</td>
+<td><code>records/kem-35/Scloudplus-128-AES-packed10__dec.json</code></td>
+</tr>
+<tr>
+<td><code>Scloudplus-128-AES-packed10</code></td>
+<td>timing enc</td>
+<td><code>records/kem-35/Scloudplus-128-AES-packed10__enc.json</code></td>
+</tr>
+<tr>
+<td><code>Scloudplus-128-AES-packed10</code></td>
+<td>timing keygen</td>
+<td><code>records/kem-35/Scloudplus-128-AES-packed10__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>Scloudplus-128-AES-packed10</code></td>
+<td>hash profile dec</td>
+<td><code>profile/kem-35/Scloudplus-128-AES-packed10__dec.json</code></td>
+</tr>
+<tr>
+<td><code>Scloudplus-128-AES-packed10</code></td>
+<td>hash profile enc</td>
+<td><code>profile/kem-35/Scloudplus-128-AES-packed10__enc.json</code></td>
+</tr>
+<tr>
+<td><code>Scloudplus-128-AES-packed10</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/kem-35/Scloudplus-128-AES-packed10__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>Scloudplus-128-SHAKE-avx2</code></td>
+<td>KAT log (sha256 <code>2a192259d13d6f43…</code>)</td>
+<td><code>kat/kem-35/Scloudplus-128-SHAKE-avx2.log</code></td>
+</tr>
+<tr>
+<td><code>Scloudplus-128-SHAKE-avx2</code></td>
+<td>timing dec</td>
+<td><code>records/kem-35/Scloudplus-128-SHAKE-avx2__dec.json</code></td>
+</tr>
+<tr>
+<td><code>Scloudplus-128-SHAKE-avx2</code></td>
+<td>timing enc</td>
+<td><code>records/kem-35/Scloudplus-128-SHAKE-avx2__enc.json</code></td>
+</tr>
+<tr>
+<td><code>Scloudplus-128-SHAKE-avx2</code></td>
+<td>timing keygen</td>
+<td><code>records/kem-35/Scloudplus-128-SHAKE-avx2__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>Scloudplus-128-SHAKE-packed10</code></td>
+<td>KAT log (sha256 <code>271091ceb6e314e6…</code>)</td>
+<td><code>kat/kem-35/Scloudplus-128-SHAKE-packed10.log</code></td>
+</tr>
+<tr>
+<td><code>Scloudplus-128-SHAKE-packed10</code></td>
+<td>timing dec</td>
+<td><code>records/kem-35/Scloudplus-128-SHAKE-packed10__dec.json</code></td>
+</tr>
+<tr>
+<td><code>Scloudplus-128-SHAKE-packed10</code></td>
+<td>timing enc</td>
+<td><code>records/kem-35/Scloudplus-128-SHAKE-packed10__enc.json</code></td>
+</tr>
+<tr>
+<td><code>Scloudplus-128-SHAKE-packed10</code></td>
+<td>timing keygen</td>
+<td><code>records/kem-35/Scloudplus-128-SHAKE-packed10__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>Scloudplus-128-SHAKE-packed10</code></td>
+<td>hash profile dec</td>
+<td><code>profile/kem-35/Scloudplus-128-SHAKE-packed10__dec.json</code></td>
+</tr>
+<tr>
+<td><code>Scloudplus-128-SHAKE-packed10</code></td>
+<td>hash profile enc</td>
+<td><code>profile/kem-35/Scloudplus-128-SHAKE-packed10__enc.json</code></td>
+</tr>
+<tr>
+<td><code>Scloudplus-128-SHAKE-packed10</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/kem-35/Scloudplus-128-SHAKE-packed10__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>Scloudplus-128-SM3-packed10</code></td>
+<td>KAT log (sha256 <code>f4c6078f9a047790…</code>)</td>
+<td><code>kat/kem-35/Scloudplus-128-SM3-packed10.log</code></td>
+</tr>
+<tr>
+<td><code>Scloudplus-128-SM3-packed10</code></td>
+<td>timing dec</td>
+<td><code>records/kem-35/Scloudplus-128-SM3-packed10__dec.json</code></td>
+</tr>
+<tr>
+<td><code>Scloudplus-128-SM3-packed10</code></td>
+<td>timing enc</td>
+<td><code>records/kem-35/Scloudplus-128-SM3-packed10__enc.json</code></td>
+</tr>
+<tr>
+<td><code>Scloudplus-128-SM3-packed10</code></td>
+<td>timing keygen</td>
+<td><code>records/kem-35/Scloudplus-128-SM3-packed10__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>Scloudplus-128-SM3-packed10</code></td>
+<td>hash profile dec</td>
+<td><code>profile/kem-35/Scloudplus-128-SM3-packed10__dec.json</code></td>
+</tr>
+<tr>
+<td><code>Scloudplus-128-SM3-packed10</code></td>
+<td>hash profile enc</td>
+<td><code>profile/kem-35/Scloudplus-128-SM3-packed10__enc.json</code></td>
+</tr>
+<tr>
+<td><code>Scloudplus-128-SM3-packed10</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/kem-35/Scloudplus-128-SM3-packed10__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>Scloudplus-192-AES-packed10</code></td>
+<td>KAT log (sha256 <code>891ea624590a8526…</code>)</td>
+<td><code>kat/kem-35/Scloudplus-192-AES-packed10.log</code></td>
+</tr>
+<tr>
+<td><code>Scloudplus-192-AES-packed10</code></td>
+<td>timing dec</td>
+<td><code>records/kem-35/Scloudplus-192-AES-packed10__dec.json</code></td>
+</tr>
+<tr>
+<td><code>Scloudplus-192-AES-packed10</code></td>
+<td>timing enc</td>
+<td><code>records/kem-35/Scloudplus-192-AES-packed10__enc.json</code></td>
+</tr>
+<tr>
+<td><code>Scloudplus-192-AES-packed10</code></td>
+<td>timing keygen</td>
+<td><code>records/kem-35/Scloudplus-192-AES-packed10__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>Scloudplus-192-AES-packed10</code></td>
+<td>hash profile dec</td>
+<td><code>profile/kem-35/Scloudplus-192-AES-packed10__dec.json</code></td>
+</tr>
+<tr>
+<td><code>Scloudplus-192-AES-packed10</code></td>
+<td>hash profile enc</td>
+<td><code>profile/kem-35/Scloudplus-192-AES-packed10__enc.json</code></td>
+</tr>
+<tr>
+<td><code>Scloudplus-192-AES-packed10</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/kem-35/Scloudplus-192-AES-packed10__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>Scloudplus-192-SHAKE-packed10</code></td>
+<td>KAT log (sha256 <code>8d30f5452fd61110…</code>)</td>
+<td><code>kat/kem-35/Scloudplus-192-SHAKE-packed10.log</code></td>
+</tr>
+<tr>
+<td><code>Scloudplus-192-SHAKE-packed10</code></td>
+<td>timing dec</td>
+<td><code>records/kem-35/Scloudplus-192-SHAKE-packed10__dec.json</code></td>
+</tr>
+<tr>
+<td><code>Scloudplus-192-SHAKE-packed10</code></td>
+<td>timing enc</td>
+<td><code>records/kem-35/Scloudplus-192-SHAKE-packed10__enc.json</code></td>
+</tr>
+<tr>
+<td><code>Scloudplus-192-SHAKE-packed10</code></td>
+<td>timing keygen</td>
+<td><code>records/kem-35/Scloudplus-192-SHAKE-packed10__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>Scloudplus-192-SHAKE-packed10</code></td>
+<td>hash profile dec</td>
+<td><code>profile/kem-35/Scloudplus-192-SHAKE-packed10__dec.json</code></td>
+</tr>
+<tr>
+<td><code>Scloudplus-192-SHAKE-packed10</code></td>
+<td>hash profile enc</td>
+<td><code>profile/kem-35/Scloudplus-192-SHAKE-packed10__enc.json</code></td>
+</tr>
+<tr>
+<td><code>Scloudplus-192-SHAKE-packed10</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/kem-35/Scloudplus-192-SHAKE-packed10__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>Scloudplus-192-SM3-packed10</code></td>
+<td>KAT log (sha256 <code>0bbc1ca140f5fbf2…</code>)</td>
+<td><code>kat/kem-35/Scloudplus-192-SM3-packed10.log</code></td>
+</tr>
+<tr>
+<td><code>Scloudplus-192-SM3-packed10</code></td>
+<td>timing dec</td>
+<td><code>records/kem-35/Scloudplus-192-SM3-packed10__dec.json</code></td>
+</tr>
+<tr>
+<td><code>Scloudplus-192-SM3-packed10</code></td>
+<td>timing enc</td>
+<td><code>records/kem-35/Scloudplus-192-SM3-packed10__enc.json</code></td>
+</tr>
+<tr>
+<td><code>Scloudplus-192-SM3-packed10</code></td>
+<td>timing keygen</td>
+<td><code>records/kem-35/Scloudplus-192-SM3-packed10__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>Scloudplus-192-SM3-packed10</code></td>
+<td>hash profile dec</td>
+<td><code>profile/kem-35/Scloudplus-192-SM3-packed10__dec.json</code></td>
+</tr>
+<tr>
+<td><code>Scloudplus-192-SM3-packed10</code></td>
+<td>hash profile enc</td>
+<td><code>profile/kem-35/Scloudplus-192-SM3-packed10__enc.json</code></td>
+</tr>
+<tr>
+<td><code>Scloudplus-192-SM3-packed10</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/kem-35/Scloudplus-192-SM3-packed10__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>Scloudplus-256-AES-packed10</code></td>
+<td>KAT log (sha256 <code>01d9fc265d46ecf3…</code>)</td>
+<td><code>kat/kem-35/Scloudplus-256-AES-packed10.log</code></td>
+</tr>
+<tr>
+<td><code>Scloudplus-256-AES-packed10</code></td>
+<td>timing dec</td>
+<td><code>records/kem-35/Scloudplus-256-AES-packed10__dec.json</code></td>
+</tr>
+<tr>
+<td><code>Scloudplus-256-AES-packed10</code></td>
+<td>timing enc</td>
+<td><code>records/kem-35/Scloudplus-256-AES-packed10__enc.json</code></td>
+</tr>
+<tr>
+<td><code>Scloudplus-256-AES-packed10</code></td>
+<td>timing keygen</td>
+<td><code>records/kem-35/Scloudplus-256-AES-packed10__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>Scloudplus-256-AES-packed10</code></td>
+<td>hash profile dec</td>
+<td><code>profile/kem-35/Scloudplus-256-AES-packed10__dec.json</code></td>
+</tr>
+<tr>
+<td><code>Scloudplus-256-AES-packed10</code></td>
+<td>hash profile enc</td>
+<td><code>profile/kem-35/Scloudplus-256-AES-packed10__enc.json</code></td>
+</tr>
+<tr>
+<td><code>Scloudplus-256-AES-packed10</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/kem-35/Scloudplus-256-AES-packed10__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>Scloudplus-256-SHAKE-packed10</code></td>
+<td>KAT log (sha256 <code>95d3c6850fcaa633…</code>)</td>
+<td><code>kat/kem-35/Scloudplus-256-SHAKE-packed10.log</code></td>
+</tr>
+<tr>
+<td><code>Scloudplus-256-SHAKE-packed10</code></td>
+<td>timing dec</td>
+<td><code>records/kem-35/Scloudplus-256-SHAKE-packed10__dec.json</code></td>
+</tr>
+<tr>
+<td><code>Scloudplus-256-SHAKE-packed10</code></td>
+<td>timing enc</td>
+<td><code>records/kem-35/Scloudplus-256-SHAKE-packed10__enc.json</code></td>
+</tr>
+<tr>
+<td><code>Scloudplus-256-SHAKE-packed10</code></td>
+<td>timing keygen</td>
+<td><code>records/kem-35/Scloudplus-256-SHAKE-packed10__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>Scloudplus-256-SHAKE-packed10</code></td>
+<td>hash profile dec</td>
+<td><code>profile/kem-35/Scloudplus-256-SHAKE-packed10__dec.json</code></td>
+</tr>
+<tr>
+<td><code>Scloudplus-256-SHAKE-packed10</code></td>
+<td>hash profile enc</td>
+<td><code>profile/kem-35/Scloudplus-256-SHAKE-packed10__enc.json</code></td>
+</tr>
+<tr>
+<td><code>Scloudplus-256-SHAKE-packed10</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/kem-35/Scloudplus-256-SHAKE-packed10__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>Scloudplus-256-SM3-packed10</code></td>
+<td>KAT log (sha256 <code>9f5ce88c00b2e829…</code>)</td>
+<td><code>kat/kem-35/Scloudplus-256-SM3-packed10.log</code></td>
+</tr>
+<tr>
+<td><code>Scloudplus-256-SM3-packed10</code></td>
+<td>timing dec</td>
+<td><code>records/kem-35/Scloudplus-256-SM3-packed10__dec.json</code></td>
+</tr>
+<tr>
+<td><code>Scloudplus-256-SM3-packed10</code></td>
+<td>timing enc</td>
+<td><code>records/kem-35/Scloudplus-256-SM3-packed10__enc.json</code></td>
+</tr>
+<tr>
+<td><code>Scloudplus-256-SM3-packed10</code></td>
+<td>timing keygen</td>
+<td><code>records/kem-35/Scloudplus-256-SM3-packed10__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>Scloudplus-256-SM3-packed10</code></td>
+<td>hash profile dec</td>
+<td><code>profile/kem-35/Scloudplus-256-SM3-packed10__dec.json</code></td>
+</tr>
+<tr>
+<td><code>Scloudplus-256-SM3-packed10</code></td>
+<td>hash profile enc</td>
+<td><code>profile/kem-35/Scloudplus-256-SM3-packed10__enc.json</code></td>
+</tr>
+<tr>
+<td><code>Scloudplus-256-SM3-packed10</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/kem-35/Scloudplus-256-SM3-packed10__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>Scloudplus-384-AES-packed10</code></td>
+<td>KAT log (sha256 <code>59e72d0f0c025811…</code>)</td>
+<td><code>kat/kem-35/Scloudplus-384-AES-packed10.log</code></td>
+</tr>
+<tr>
+<td><code>Scloudplus-384-AES-packed10</code></td>
+<td>timing dec</td>
+<td><code>records/kem-35/Scloudplus-384-AES-packed10__dec.json</code></td>
+</tr>
+<tr>
+<td><code>Scloudplus-384-AES-packed10</code></td>
+<td>timing enc</td>
+<td><code>records/kem-35/Scloudplus-384-AES-packed10__enc.json</code></td>
+</tr>
+<tr>
+<td><code>Scloudplus-384-AES-packed10</code></td>
+<td>timing keygen</td>
+<td><code>records/kem-35/Scloudplus-384-AES-packed10__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>Scloudplus-384-AES-packed10</code></td>
+<td>hash profile dec</td>
+<td><code>profile/kem-35/Scloudplus-384-AES-packed10__dec.json</code></td>
+</tr>
+<tr>
+<td><code>Scloudplus-384-AES-packed10</code></td>
+<td>hash profile enc</td>
+<td><code>profile/kem-35/Scloudplus-384-AES-packed10__enc.json</code></td>
+</tr>
+<tr>
+<td><code>Scloudplus-384-AES-packed10</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/kem-35/Scloudplus-384-AES-packed10__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>Scloudplus-384-SHAKE-packed10</code></td>
+<td>KAT log (sha256 <code>7d5251c696676bd8…</code>)</td>
+<td><code>kat/kem-35/Scloudplus-384-SHAKE-packed10.log</code></td>
+</tr>
+<tr>
+<td><code>Scloudplus-384-SHAKE-packed10</code></td>
+<td>timing dec</td>
+<td><code>records/kem-35/Scloudplus-384-SHAKE-packed10__dec.json</code></td>
+</tr>
+<tr>
+<td><code>Scloudplus-384-SHAKE-packed10</code></td>
+<td>timing enc</td>
+<td><code>records/kem-35/Scloudplus-384-SHAKE-packed10__enc.json</code></td>
+</tr>
+<tr>
+<td><code>Scloudplus-384-SHAKE-packed10</code></td>
+<td>timing keygen</td>
+<td><code>records/kem-35/Scloudplus-384-SHAKE-packed10__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>Scloudplus-384-SHAKE-packed10</code></td>
+<td>hash profile dec</td>
+<td><code>profile/kem-35/Scloudplus-384-SHAKE-packed10__dec.json</code></td>
+</tr>
+<tr>
+<td><code>Scloudplus-384-SHAKE-packed10</code></td>
+<td>hash profile enc</td>
+<td><code>profile/kem-35/Scloudplus-384-SHAKE-packed10__enc.json</code></td>
+</tr>
+<tr>
+<td><code>Scloudplus-384-SHAKE-packed10</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/kem-35/Scloudplus-384-SHAKE-packed10__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>Scloudplus-384-SM3-packed10</code></td>
+<td>KAT log (sha256 <code>d944b6f3f6f6f404…</code>)</td>
+<td><code>kat/kem-35/Scloudplus-384-SM3-packed10.log</code></td>
+</tr>
+<tr>
+<td><code>Scloudplus-384-SM3-packed10</code></td>
+<td>timing dec</td>
+<td><code>records/kem-35/Scloudplus-384-SM3-packed10__dec.json</code></td>
+</tr>
+<tr>
+<td><code>Scloudplus-384-SM3-packed10</code></td>
+<td>timing enc</td>
+<td><code>records/kem-35/Scloudplus-384-SM3-packed10__enc.json</code></td>
+</tr>
+<tr>
+<td><code>Scloudplus-384-SM3-packed10</code></td>
+<td>timing keygen</td>
+<td><code>records/kem-35/Scloudplus-384-SM3-packed10__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>Scloudplus-384-SM3-packed10</code></td>
+<td>hash profile dec</td>
+<td><code>profile/kem-35/Scloudplus-384-SM3-packed10__dec.json</code></td>
+</tr>
+<tr>
+<td><code>Scloudplus-384-SM3-packed10</code></td>
+<td>hash profile enc</td>
+<td><code>profile/kem-35/Scloudplus-384-SM3-packed10__enc.json</code></td>
+</tr>
+<tr>
+<td><code>Scloudplus-384-SM3-packed10</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/kem-35/Scloudplus-384-SM3-packed10__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>Scloudplus-512-AES-packed10</code></td>
+<td>KAT log (sha256 <code>0f0aeee32d69d6ec…</code>)</td>
+<td><code>kat/kem-35/Scloudplus-512-AES-packed10.log</code></td>
+</tr>
+<tr>
+<td><code>Scloudplus-512-AES-packed10</code></td>
+<td>timing dec</td>
+<td><code>records/kem-35/Scloudplus-512-AES-packed10__dec.json</code></td>
+</tr>
+<tr>
+<td><code>Scloudplus-512-AES-packed10</code></td>
+<td>timing enc</td>
+<td><code>records/kem-35/Scloudplus-512-AES-packed10__enc.json</code></td>
+</tr>
+<tr>
+<td><code>Scloudplus-512-AES-packed10</code></td>
+<td>timing keygen</td>
+<td><code>records/kem-35/Scloudplus-512-AES-packed10__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>Scloudplus-512-AES-packed10</code></td>
+<td>hash profile dec</td>
+<td><code>profile/kem-35/Scloudplus-512-AES-packed10__dec.json</code></td>
+</tr>
+<tr>
+<td><code>Scloudplus-512-AES-packed10</code></td>
+<td>hash profile enc</td>
+<td><code>profile/kem-35/Scloudplus-512-AES-packed10__enc.json</code></td>
+</tr>
+<tr>
+<td><code>Scloudplus-512-AES-packed10</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/kem-35/Scloudplus-512-AES-packed10__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>Scloudplus-512-SHAKE-packed10</code></td>
+<td>KAT log (sha256 <code>8864cfbb83401c4b…</code>)</td>
+<td><code>kat/kem-35/Scloudplus-512-SHAKE-packed10.log</code></td>
+</tr>
+<tr>
+<td><code>Scloudplus-512-SHAKE-packed10</code></td>
+<td>timing dec</td>
+<td><code>records/kem-35/Scloudplus-512-SHAKE-packed10__dec.json</code></td>
+</tr>
+<tr>
+<td><code>Scloudplus-512-SHAKE-packed10</code></td>
+<td>timing enc</td>
+<td><code>records/kem-35/Scloudplus-512-SHAKE-packed10__enc.json</code></td>
+</tr>
+<tr>
+<td><code>Scloudplus-512-SHAKE-packed10</code></td>
+<td>timing keygen</td>
+<td><code>records/kem-35/Scloudplus-512-SHAKE-packed10__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>Scloudplus-512-SHAKE-packed10</code></td>
+<td>hash profile dec</td>
+<td><code>profile/kem-35/Scloudplus-512-SHAKE-packed10__dec.json</code></td>
+</tr>
+<tr>
+<td><code>Scloudplus-512-SHAKE-packed10</code></td>
+<td>hash profile enc</td>
+<td><code>profile/kem-35/Scloudplus-512-SHAKE-packed10__enc.json</code></td>
+</tr>
+<tr>
+<td><code>Scloudplus-512-SHAKE-packed10</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/kem-35/Scloudplus-512-SHAKE-packed10__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>Scloudplus-512-SM3-packed10</code></td>
+<td>KAT log (sha256 <code>e3a7622501060e31…</code>)</td>
+<td><code>kat/kem-35/Scloudplus-512-SM3-packed10.log</code></td>
+</tr>
+<tr>
+<td><code>Scloudplus-512-SM3-packed10</code></td>
+<td>timing dec</td>
+<td><code>records/kem-35/Scloudplus-512-SM3-packed10__dec.json</code></td>
+</tr>
+<tr>
+<td><code>Scloudplus-512-SM3-packed10</code></td>
+<td>timing enc</td>
+<td><code>records/kem-35/Scloudplus-512-SM3-packed10__enc.json</code></td>
+</tr>
+<tr>
+<td><code>Scloudplus-512-SM3-packed10</code></td>
+<td>timing keygen</td>
+<td><code>records/kem-35/Scloudplus-512-SM3-packed10__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>Scloudplus-512-SM3-packed10</code></td>
+<td>hash profile dec</td>
+<td><code>profile/kem-35/Scloudplus-512-SM3-packed10__dec.json</code></td>
+</tr>
+<tr>
+<td><code>Scloudplus-512-SM3-packed10</code></td>
+<td>hash profile enc</td>
+<td><code>profile/kem-35/Scloudplus-512-SM3-packed10__enc.json</code></td>
+</tr>
+<tr>
+<td><code>Scloudplus-512-SM3-packed10</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/kem-35/Scloudplus-512-SM3-packed10__keygen.json</code></td>
+</tr>
+</tbody>
+</table></div>
+<p>Scripts: <code>performance/campaign.py</code>, <code>performance/ngcc_perf.c</code>, <code>performance/hashprof/</code> in the <a href="https://github.com/ngcc-dev/ngcc-harness">harness</a>.</p>
+</main>
+<footer class="site-footer">
+<p>Maintained by: <a href="mailto:markku-juhani.saarinen@tuni.fi">markku-juhani.saarinen@tuni.fi</a></p>
+<p>Submissions are welcome via <a href="https://github.com/ngcc-dev/ngcc-harness/issues">GitHub issues</a>.</p>
+</footer>
+</body>
+</html>

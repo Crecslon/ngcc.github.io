@@ -72,7 +72,7 @@ overwrites, and requires the byte-distinct signature to verify.
 
 ## sign-15-3: The ATLAS-192 challenge space is below 192 bits
 
-Severity: High
+Severity: Critical
 Status: Confirmed
 Layer: Implementation
 Affected: ATLAS-192 reference implementation and specification

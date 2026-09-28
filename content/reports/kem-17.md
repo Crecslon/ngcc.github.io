@@ -128,6 +128,8 @@ HEP-QC decapsulation regenerates private `y`, mixing matrix `t`, and column perm
 
 The same decapsulation key expansion also runs secret-seed rejection sampling, retry-until-invertible matrix generation, and a Fisher–Yates `x % bound` with hardware division in the reviewed GCC `-O2` build (`common/parsing.c:23-31`, `common/vector.c:64-76,343-357,416-423`). These are additional paths within this finding, not separate demonstrated key-recovery attacks.
 
+Constant-time fix (moderate, hence Medium): apply the secret permutation obliviously with a Beneš network, as Classic McEliece does, invert the mixing matrix with masked-pivot constant-time elimination, and replace the rejection sampling, the retry-until-invertible loop and the division-based Fisher–Yates shuffle with fixed-work constant-time equivalents. These are well-known techniques with moderate cost, although several components change.
+
 ### Reproducing
 
 The source-level witness is `ref/KEM_HEP_QC.c:165-212` → `ref/PKE_HEP_QC.c:185-220` → `common/vector.c:369-408,477-503` under `Implementations/Implementations/`; the x86_64 PKE source calls the same shared routines. See `constant_time.md` for the secret/public mapping. This is not a measured timing benchmark.

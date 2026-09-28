@@ -1,0 +1,1378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ngcc.dev: hash-11 Garnet — performance on x86-64 (system x861)</title>
+<link rel="icon" type="image/png" href="../../assets/mag-glass.png">
+<link rel="stylesheet" href="../../assets/style.css?v=1fdb792d">
+</head>
+<body>
+<header class="site-header">
+<a class="brand" href="../../index.html"><img class="brand-icon" src="../../assets/mag-glass.png" alt="" width="28" height="28">ngcc.dev</a>
+<nav><a href="../../index.html">Home</a><a href="../../reports/index.html">Reports</a><a href="../../performance/x86_1/index.html">Performance</a><a href="../../constant-time/index.html">Constant-Time</a></nav>
+</header>
+<main class="">
+<!-- synchronized from harness: hash-11/perf_x86_1.md -->
+<h1 id="hash-11-garnet-performance-on-x86-64-system-x86_1">hash-11 Garnet — performance on x86-64 (system x86_1)</h1>
+<p><a href="index.html">Performance x86_1</a> › <code>hash-11</code> · <a href="method.html">method</a> · <a href="https://www.niccs.org.cn/niccs/Round1Submissions4/pc/content/content_2101538925484527616.html">NICCS page</a></p>
+<p>Independent measurement following the structure of the NICCS x86 self-assessment guide, §3.5 (1)–(7). Not a submitter self-assessment.</p>
+<h2 id="1-basic-information">1. Basic information</h2>
+<ul>
+<li>Category: cryptographic hash algorithm; function: hash</li>
+<li>Algorithm: Garnet</li>
+<li>Implementation versions measured: reference</li>
+<li>Parameter sets: <code>Garnet_512_Cap512</code>, <code>Garnet_512_Cap640</code>, <code>Garnet_512_Cap768</code>, <code>Garnet_512_Cap896</code>, <code>Garnet_512_Cap1024</code>, <code>Garnet_768</code>, <code>Garnet_1024</code>, <code>Garnet_1024_DM4x4</code></li>
+</ul>
+<h2 id="2-assessment-environment">2. Assessment environment</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>item</th>
+<th>value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>processor</td>
+<td>12th Gen Intel(R) Core(TM) i7-12700 (CPU 2, one core)</td>
+</tr>
+<tr>
+<td>clock</td>
+<td>max 2.10 GHz, governor performance, turbo off, SMT off</td>
+</tr>
+<tr>
+<td>memory</td>
+<td>31788 MiB</td>
+</tr>
+<tr>
+<td>OS / kernel</td>
+<td>Debian GNU/Linux 13 (trixie) / 6.12.107+deb13-amd64</td>
+</tr>
+<tr>
+<td>compiler / build tool</td>
+<td>gcc (Debian 14.2.0-19) 14.2.0 / cmake version 3.31.6</td>
+</tr>
+<tr>
+<td>campaign start / end (UTC)</td>
+<td>2026-09-25T10:02:21 / 2026-09-28T04:35:59</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="3-functional-testing-kat">3. Functional testing (KAT)</h2>
+<p>Each library was checked against the submitted KAT vectors (SHA-256 manifest <code>hash-11/kat.sha256</code> in the harness) before timing.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>build flags</th>
+<th>KAT</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Garnet_512_Cap512</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>Garnet_512_Cap640</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>Garnet_512_Cap768</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>Garnet_512_Cap896</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>Garnet_512_Cap1024</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>Garnet_768</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>Garnet_1024</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>Garnet_1024_DM4x4</code></td>
+<td>harness-default</td>
+<td class="st bad">MISMATCH [1] (not timed)</td>
+</tr>
+</tbody>
+</table></div>
+<p>[1] No reference source: the submission ships a second 1024-bit KAT set (DM4x4, apparently a 512-bit-rate variant) whose only code is x86-64 assembly in the optimized tree</p>
+<h2 id="4-performance">4. Performance</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>message</th>
+<th>mean cycles</th>
+<th>cycles/byte</th>
+<th>mean time</th>
+<th>MB/s</th>
+<th>n</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Garnet_512_Cap512</code></td>
+<td>32 B</td>
+<td>18.6 k</td>
+<td>582.6</td>
+<td>8.91 µs</td>
+<td>3.6</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>Garnet_512_Cap512</code></td>
+<td>128 B</td>
+<td>29.6 k</td>
+<td>231.1</td>
+<td>14.1 µs</td>
+<td>9.1</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>Garnet_512_Cap512</code></td>
+<td>512 B</td>
+<td>62.3 k</td>
+<td>121.6</td>
+<td>29.7 µs</td>
+<td>17.2</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>Garnet_512_Cap512</code></td>
+<td>1024 B</td>
+<td>105.9 k</td>
+<td>103.5</td>
+<td>50.6 µs</td>
+<td>20.2</td>
+<td>83600 (5 × 16720)</td>
+</tr>
+<tr>
+<td><code>Garnet_512_Cap512</code></td>
+<td>4096 B</td>
+<td>367.3 k</td>
+<td>89.7</td>
+<td>175 µs</td>
+<td>23.3</td>
+<td>27125 (5 × 5425)</td>
+</tr>
+<tr>
+<td><code>Garnet_512_Cap512</code></td>
+<td>8192 B</td>
+<td>715.9 k</td>
+<td>87.4</td>
+<td>342 µs</td>
+<td>24.0</td>
+<td>14190 (5 × 2838)</td>
+</tr>
+<tr>
+<td><code>Garnet_512_Cap512</code></td>
+<td>16384 B</td>
+<td>1.41 M</td>
+<td>86.3</td>
+<td>675 µs</td>
+<td>24.3</td>
+<td>7255 (5 × 1451)</td>
+</tr>
+<tr>
+<td><code>Garnet_512_Cap512</code></td>
+<td>65536 B</td>
+<td>5.61 M</td>
+<td>85.5</td>
+<td>2.68 ms</td>
+<td>24.5</td>
+<td>1845 (5 × 369)</td>
+</tr>
+<tr>
+<td><code>Garnet_512_Cap640</code></td>
+<td>32 B</td>
+<td>19.0 k</td>
+<td>594.7</td>
+<td>9.09 µs</td>
+<td>3.5</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>Garnet_512_Cap640</code></td>
+<td>128 B</td>
+<td>24.1 k</td>
+<td>188.4</td>
+<td>11.5 µs</td>
+<td>11.1</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>Garnet_512_Cap640</code></td>
+<td>512 B</td>
+<td>51.4 k</td>
+<td>100.4</td>
+<td>24.5 µs</td>
+<td>20.9</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>Garnet_512_Cap640</code></td>
+<td>1024 B</td>
+<td>84.2 k</td>
+<td>82.2</td>
+<td>40.2 µs</td>
+<td>25.5</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>Garnet_512_Cap640</code></td>
+<td>4096 B</td>
+<td>296.6 k</td>
+<td>72.4</td>
+<td>142 µs</td>
+<td>28.9</td>
+<td>33220 (5 × 6644)</td>
+</tr>
+<tr>
+<td><code>Garnet_512_Cap640</code></td>
+<td>8192 B</td>
+<td>574.5 k</td>
+<td>70.1</td>
+<td>274 µs</td>
+<td>29.9</td>
+<td>17550 (5 × 3510)</td>
+</tr>
+<tr>
+<td><code>Garnet_512_Cap640</code></td>
+<td>16384 B</td>
+<td>1.13 M</td>
+<td>69.0</td>
+<td>540 µs</td>
+<td>30.3</td>
+<td>9025 (5 × 1805)</td>
+</tr>
+<tr>
+<td><code>Garnet_512_Cap640</code></td>
+<td>65536 B</td>
+<td>4.58 M</td>
+<td>70.0</td>
+<td>2.19 ms</td>
+<td>29.9</td>
+<td>2290 (5 × 458)</td>
+</tr>
+<tr>
+<td><code>Garnet_512_Cap768</code></td>
+<td>32 B</td>
+<td>18.6 k</td>
+<td>582.7</td>
+<td>8.91 µs</td>
+<td>3.6</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>Garnet_512_Cap768</code></td>
+<td>128 B</td>
+<td>24.1 k</td>
+<td>188.4</td>
+<td>11.5 µs</td>
+<td>11.1</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>Garnet_512_Cap768</code></td>
+<td>512 B</td>
+<td>46.0 k</td>
+<td>89.8</td>
+<td>22 µs</td>
+<td>23.3</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>Garnet_512_Cap768</code></td>
+<td>1024 B</td>
+<td>73.2 k</td>
+<td>71.5</td>
+<td>35 µs</td>
+<td>29.3</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>Garnet_512_Cap768</code></td>
+<td>4096 B</td>
+<td>247.7 k</td>
+<td>60.5</td>
+<td>119 µs</td>
+<td>34.3</td>
+<td>39320 (5 × 7864)</td>
+</tr>
+<tr>
+<td><code>Garnet_512_Cap768</code></td>
+<td>8192 B</td>
+<td>482.2 k</td>
+<td>58.9</td>
+<td>230 µs</td>
+<td>35.6</td>
+<td>20765 (5 × 4153)</td>
+</tr>
+<tr>
+<td><code>Garnet_512_Cap768</code></td>
+<td>16384 B</td>
+<td>945.7 k</td>
+<td>57.7</td>
+<td>452 µs</td>
+<td>36.3</td>
+<td>10755 (5 × 2151)</td>
+</tr>
+<tr>
+<td><code>Garnet_512_Cap768</code></td>
+<td>65536 B</td>
+<td>3.74 M</td>
+<td>57.1</td>
+<td>1.79 ms</td>
+<td>36.6</td>
+<td>2715 (5 × 543)</td>
+</tr>
+<tr>
+<td><code>Garnet_512_Cap896</code></td>
+<td>32 B</td>
+<td>18.6 k</td>
+<td>582.2</td>
+<td>8.9 µs</td>
+<td>3.6</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>Garnet_512_Cap896</code></td>
+<td>128 B</td>
+<td>24.1 k</td>
+<td>188.4</td>
+<td>11.5 µs</td>
+<td>11.1</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>Garnet_512_Cap896</code></td>
+<td>512 B</td>
+<td>40.5 k</td>
+<td>79.1</td>
+<td>19.4 µs</td>
+<td>26.5</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>Garnet_512_Cap896</code></td>
+<td>1024 B</td>
+<td>67.8 k</td>
+<td>66.2</td>
+<td>32.4 µs</td>
+<td>31.6</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>Garnet_512_Cap896</code></td>
+<td>4096 B</td>
+<td>215.1 k</td>
+<td>52.5</td>
+<td>103 µs</td>
+<td>39.9</td>
+<td>44750 (5 × 8950)</td>
+</tr>
+<tr>
+<td><code>Garnet_512_Cap896</code></td>
+<td>8192 B</td>
+<td>416.9 k</td>
+<td>50.9</td>
+<td>199 µs</td>
+<td>41.1</td>
+<td>23855 (5 × 4771)</td>
+</tr>
+<tr>
+<td><code>Garnet_512_Cap896</code></td>
+<td>16384 B</td>
+<td>826.0 k</td>
+<td>50.4</td>
+<td>395 µs</td>
+<td>41.5</td>
+<td>12380 (5 × 2476)</td>
+</tr>
+<tr>
+<td><code>Garnet_512_Cap896</code></td>
+<td>65536 B</td>
+<td>3.22 M</td>
+<td>49.1</td>
+<td>1.54 ms</td>
+<td>42.6</td>
+<td>3170 (5 × 634)</td>
+</tr>
+<tr>
+<td><code>Garnet_512_Cap1024</code></td>
+<td>32 B</td>
+<td>11.3 k</td>
+<td>353.0</td>
+<td>5.4 µs</td>
+<td>5.9</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>Garnet_512_Cap1024</code></td>
+<td>128 B</td>
+<td>14.6 k</td>
+<td>114.0</td>
+<td>6.97 µs</td>
+<td>18.4</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>Garnet_512_Cap1024</code></td>
+<td>512 B</td>
+<td>24.5 k</td>
+<td>47.9</td>
+<td>11.7 µs</td>
+<td>43.7</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>Garnet_512_Cap1024</code></td>
+<td>1024 B</td>
+<td>37.7 k</td>
+<td>36.8</td>
+<td>18 µs</td>
+<td>56.8</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>Garnet_512_Cap1024</code></td>
+<td>4096 B</td>
+<td>116.8 k</td>
+<td>28.5</td>
+<td>55.8 µs</td>
+<td>73.4</td>
+<td>76835 (5 × 15367)</td>
+</tr>
+<tr>
+<td><code>Garnet_512_Cap1024</code></td>
+<td>8192 B</td>
+<td>222.1 k</td>
+<td>27.1</td>
+<td>106 µs</td>
+<td>77.2</td>
+<td>42930 (5 × 8586)</td>
+</tr>
+<tr>
+<td><code>Garnet_512_Cap1024</code></td>
+<td>16384 B</td>
+<td>432.9 k</td>
+<td>26.4</td>
+<td>207 µs</td>
+<td>79.2</td>
+<td>22475 (5 × 4495)</td>
+</tr>
+<tr>
+<td><code>Garnet_512_Cap1024</code></td>
+<td>65536 B</td>
+<td>1.70 M</td>
+<td>26.0</td>
+<td>813 µs</td>
+<td>80.6</td>
+<td>5855 (5 × 1171)</td>
+</tr>
+<tr>
+<td><code>Garnet_768</code></td>
+<td>32 B</td>
+<td>10.9 k</td>
+<td>339.4</td>
+<td>5.19 µs</td>
+<td>6.2</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>Garnet_768</code></td>
+<td>128 B</td>
+<td>17.3 k</td>
+<td>135.0</td>
+<td>8.26 µs</td>
+<td>15.5</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>Garnet_768</code></td>
+<td>512 B</td>
+<td>36.5 k</td>
+<td>71.3</td>
+<td>17.4 µs</td>
+<td>29.3</td>
+<td>37005 (5 × 7401)</td>
+</tr>
+<tr>
+<td><code>Garnet_768</code></td>
+<td>1024 B</td>
+<td>62.1 k</td>
+<td>60.6</td>
+<td>29.7 µs</td>
+<td>34.5</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>Garnet_768</code></td>
+<td>4096 B</td>
+<td>215.4 k</td>
+<td>52.6</td>
+<td>103 µs</td>
+<td>39.8</td>
+<td>44855 (5 × 8971)</td>
+</tr>
+<tr>
+<td><code>Garnet_768</code></td>
+<td>8192 B</td>
+<td>419.7 k</td>
+<td>51.2</td>
+<td>200 µs</td>
+<td>40.9</td>
+<td>23645 (5 × 4729)</td>
+</tr>
+<tr>
+<td><code>Garnet_768</code></td>
+<td>16384 B</td>
+<td>828.4 k</td>
+<td>50.6</td>
+<td>396 µs</td>
+<td>41.4</td>
+<td>12225 (5 × 2445)</td>
+</tr>
+<tr>
+<td><code>Garnet_768</code></td>
+<td>65536 B</td>
+<td>3.29 M</td>
+<td>50.3</td>
+<td>1.57 ms</td>
+<td>41.7</td>
+<td>3080 (5 × 616)</td>
+</tr>
+<tr>
+<td><code>Garnet_1024</code></td>
+<td>32 B</td>
+<td>48.4 k</td>
+<td>1511.6</td>
+<td>23.1 µs</td>
+<td>1.4</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>Garnet_1024</code></td>
+<td>128 B</td>
+<td>62.7 k</td>
+<td>489.5</td>
+<td>29.9 µs</td>
+<td>4.3</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>Garnet_1024</code></td>
+<td>512 B</td>
+<td>106.1 k</td>
+<td>207.2</td>
+<td>50.7 µs</td>
+<td>10.1</td>
+<td>80645 (5 × 16129)</td>
+</tr>
+<tr>
+<td><code>Garnet_1024</code></td>
+<td>1024 B</td>
+<td>179.7 k</td>
+<td>175.5</td>
+<td>85.8 µs</td>
+<td>11.9</td>
+<td>50230 (5 × 10046)</td>
+</tr>
+<tr>
+<td><code>Garnet_1024</code></td>
+<td>4096 B</td>
+<td>574.6 k</td>
+<td>140.3</td>
+<td>274 µs</td>
+<td>14.9</td>
+<td>17020 (5 × 3404)</td>
+</tr>
+<tr>
+<td><code>Garnet_1024</code></td>
+<td>8192 B</td>
+<td>1.12 M</td>
+<td>136.3</td>
+<td>533 µs</td>
+<td>15.4</td>
+<td>8890 (5 × 1778)</td>
+</tr>
+<tr>
+<td><code>Garnet_1024</code></td>
+<td>16384 B</td>
+<td>2.18 M</td>
+<td>132.9</td>
+<td>1.04 ms</td>
+<td>15.7</td>
+<td>4580 (5 × 916)</td>
+</tr>
+<tr>
+<td><code>Garnet_1024</code></td>
+<td>65536 B</td>
+<td>8.63 M</td>
+<td>131.6</td>
+<td>4.12 ms</td>
+<td>15.9</td>
+<td>1170 (5 × 234)</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="5-resource-consumption">5. Resource consumption</h2>
+<p>Static memory is approximated by the library's loadable ELF segments; peak memory is the process high-water mark (VmHWM) including the benchmark driver and libc, so both are upper-bound proxies rather than isolated algorithm memory.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>operation</th>
+<th>static: ELF image (bytes)</th>
+<th>baseline RSS</th>
+<th>peak RSS</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Garnet_512_Cap512</code></td>
+<td>hash_32</td>
+<td>42481</td>
+<td>1720 KiB</td>
+<td>1788 KiB</td>
+</tr>
+<tr>
+<td><code>Garnet_512_Cap512</code></td>
+<td>hash_128</td>
+<td>42481</td>
+<td>1712 KiB</td>
+<td>1776 KiB</td>
+</tr>
+<tr>
+<td><code>Garnet_512_Cap512</code></td>
+<td>hash_512</td>
+<td>42481</td>
+<td>1716 KiB</td>
+<td>1800 KiB</td>
+</tr>
+<tr>
+<td><code>Garnet_512_Cap512</code></td>
+<td>hash_1024</td>
+<td>42481</td>
+<td>1724 KiB</td>
+<td>1812 KiB</td>
+</tr>
+<tr>
+<td><code>Garnet_512_Cap512</code></td>
+<td>hash_4096</td>
+<td>42481</td>
+<td>1696 KiB</td>
+<td>1764 KiB</td>
+</tr>
+<tr>
+<td><code>Garnet_512_Cap512</code></td>
+<td>hash_8192</td>
+<td>42481</td>
+<td>1708 KiB</td>
+<td>1816 KiB</td>
+</tr>
+<tr>
+<td><code>Garnet_512_Cap512</code></td>
+<td>hash_16384</td>
+<td>42481</td>
+<td>1728 KiB</td>
+<td>1820 KiB</td>
+</tr>
+<tr>
+<td><code>Garnet_512_Cap512</code></td>
+<td>hash_65536</td>
+<td>42481</td>
+<td>1764 KiB</td>
+<td>1936 KiB</td>
+</tr>
+<tr>
+<td><code>Garnet_512_Cap640</code></td>
+<td>hash_32</td>
+<td>42481</td>
+<td>1720 KiB</td>
+<td>1784 KiB</td>
+</tr>
+<tr>
+<td><code>Garnet_512_Cap640</code></td>
+<td>hash_128</td>
+<td>42481</td>
+<td>1696 KiB</td>
+<td>1760 KiB</td>
+</tr>
+<tr>
+<td><code>Garnet_512_Cap640</code></td>
+<td>hash_512</td>
+<td>42481</td>
+<td>1692 KiB</td>
+<td>1788 KiB</td>
+</tr>
+<tr>
+<td><code>Garnet_512_Cap640</code></td>
+<td>hash_1024</td>
+<td>42481</td>
+<td>1704 KiB</td>
+<td>1804 KiB</td>
+</tr>
+<tr>
+<td><code>Garnet_512_Cap640</code></td>
+<td>hash_4096</td>
+<td>42481</td>
+<td>1728 KiB</td>
+<td>1796 KiB</td>
+</tr>
+<tr>
+<td><code>Garnet_512_Cap640</code></td>
+<td>hash_8192</td>
+<td>42481</td>
+<td>1728 KiB</td>
+<td>1816 KiB</td>
+</tr>
+<tr>
+<td><code>Garnet_512_Cap640</code></td>
+<td>hash_16384</td>
+<td>42481</td>
+<td>1740 KiB</td>
+<td>1844 KiB</td>
+</tr>
+<tr>
+<td><code>Garnet_512_Cap640</code></td>
+<td>hash_65536</td>
+<td>42481</td>
+<td>1780 KiB</td>
+<td>1908 KiB</td>
+</tr>
+<tr>
+<td><code>Garnet_512_Cap768</code></td>
+<td>hash_32</td>
+<td>42609</td>
+<td>1720 KiB</td>
+<td>1800 KiB</td>
+</tr>
+<tr>
+<td><code>Garnet_512_Cap768</code></td>
+<td>hash_128</td>
+<td>42609</td>
+<td>1696 KiB</td>
+<td>1804 KiB</td>
+</tr>
+<tr>
+<td><code>Garnet_512_Cap768</code></td>
+<td>hash_512</td>
+<td>42609</td>
+<td>1724 KiB</td>
+<td>1808 KiB</td>
+</tr>
+<tr>
+<td><code>Garnet_512_Cap768</code></td>
+<td>hash_1024</td>
+<td>42609</td>
+<td>1704 KiB</td>
+<td>1816 KiB</td>
+</tr>
+<tr>
+<td><code>Garnet_512_Cap768</code></td>
+<td>hash_4096</td>
+<td>42609</td>
+<td>1720 KiB</td>
+<td>1788 KiB</td>
+</tr>
+<tr>
+<td><code>Garnet_512_Cap768</code></td>
+<td>hash_8192</td>
+<td>42609</td>
+<td>1716 KiB</td>
+<td>1788 KiB</td>
+</tr>
+<tr>
+<td><code>Garnet_512_Cap768</code></td>
+<td>hash_16384</td>
+<td>42609</td>
+<td>1712 KiB</td>
+<td>1792 KiB</td>
+</tr>
+<tr>
+<td><code>Garnet_512_Cap768</code></td>
+<td>hash_65536</td>
+<td>42609</td>
+<td>1788 KiB</td>
+<td>1916 KiB</td>
+</tr>
+<tr>
+<td><code>Garnet_512_Cap896</code></td>
+<td>hash_32</td>
+<td>42673</td>
+<td>1712 KiB</td>
+<td>1788 KiB</td>
+</tr>
+<tr>
+<td><code>Garnet_512_Cap896</code></td>
+<td>hash_128</td>
+<td>42673</td>
+<td>1684 KiB</td>
+<td>1808 KiB</td>
+</tr>
+<tr>
+<td><code>Garnet_512_Cap896</code></td>
+<td>hash_512</td>
+<td>42673</td>
+<td>1712 KiB</td>
+<td>1776 KiB</td>
+</tr>
+<tr>
+<td><code>Garnet_512_Cap896</code></td>
+<td>hash_1024</td>
+<td>42673</td>
+<td>1720 KiB</td>
+<td>1804 KiB</td>
+</tr>
+<tr>
+<td><code>Garnet_512_Cap896</code></td>
+<td>hash_4096</td>
+<td>42673</td>
+<td>1704 KiB</td>
+<td>1808 KiB</td>
+</tr>
+<tr>
+<td><code>Garnet_512_Cap896</code></td>
+<td>hash_8192</td>
+<td>42673</td>
+<td>1708 KiB</td>
+<td>1824 KiB</td>
+</tr>
+<tr>
+<td><code>Garnet_512_Cap896</code></td>
+<td>hash_16384</td>
+<td>42673</td>
+<td>1732 KiB</td>
+<td>1812 KiB</td>
+</tr>
+<tr>
+<td><code>Garnet_512_Cap896</code></td>
+<td>hash_65536</td>
+<td>42673</td>
+<td>1764 KiB</td>
+<td>1940 KiB</td>
+</tr>
+<tr>
+<td><code>Garnet_512_Cap1024</code></td>
+<td>hash_32</td>
+<td>41585</td>
+<td>1700 KiB</td>
+<td>1764 KiB</td>
+</tr>
+<tr>
+<td><code>Garnet_512_Cap1024</code></td>
+<td>hash_128</td>
+<td>41585</td>
+<td>1708 KiB</td>
+<td>1800 KiB</td>
+</tr>
+<tr>
+<td><code>Garnet_512_Cap1024</code></td>
+<td>hash_512</td>
+<td>41585</td>
+<td>1684 KiB</td>
+<td>1808 KiB</td>
+</tr>
+<tr>
+<td><code>Garnet_512_Cap1024</code></td>
+<td>hash_1024</td>
+<td>41585</td>
+<td>1716 KiB</td>
+<td>1792 KiB</td>
+</tr>
+<tr>
+<td><code>Garnet_512_Cap1024</code></td>
+<td>hash_4096</td>
+<td>41585</td>
+<td>1688 KiB</td>
+<td>1816 KiB</td>
+</tr>
+<tr>
+<td><code>Garnet_512_Cap1024</code></td>
+<td>hash_8192</td>
+<td>41585</td>
+<td>1720 KiB</td>
+<td>1792 KiB</td>
+</tr>
+<tr>
+<td><code>Garnet_512_Cap1024</code></td>
+<td>hash_16384</td>
+<td>41585</td>
+<td>1732 KiB</td>
+<td>1844 KiB</td>
+</tr>
+<tr>
+<td><code>Garnet_512_Cap1024</code></td>
+<td>hash_65536</td>
+<td>41585</td>
+<td>1764 KiB</td>
+<td>1928 KiB</td>
+</tr>
+<tr>
+<td><code>Garnet_768</code></td>
+<td>hash_32</td>
+<td>41537</td>
+<td>1724 KiB</td>
+<td>1792 KiB</td>
+</tr>
+<tr>
+<td><code>Garnet_768</code></td>
+<td>hash_128</td>
+<td>41537</td>
+<td>1712 KiB</td>
+<td>1776 KiB</td>
+</tr>
+<tr>
+<td><code>Garnet_768</code></td>
+<td>hash_512</td>
+<td>41537</td>
+<td>1676 KiB</td>
+<td>1804 KiB</td>
+</tr>
+<tr>
+<td><code>Garnet_768</code></td>
+<td>hash_1024</td>
+<td>41537</td>
+<td>1708 KiB</td>
+<td>1776 KiB</td>
+</tr>
+<tr>
+<td><code>Garnet_768</code></td>
+<td>hash_4096</td>
+<td>41537</td>
+<td>1728 KiB</td>
+<td>1796 KiB</td>
+</tr>
+<tr>
+<td><code>Garnet_768</code></td>
+<td>hash_8192</td>
+<td>41537</td>
+<td>1692 KiB</td>
+<td>1824 KiB</td>
+</tr>
+<tr>
+<td><code>Garnet_768</code></td>
+<td>hash_16384</td>
+<td>41537</td>
+<td>1736 KiB</td>
+<td>1836 KiB</td>
+</tr>
+<tr>
+<td><code>Garnet_768</code></td>
+<td>hash_65536</td>
+<td>41537</td>
+<td>1692 KiB</td>
+<td>1884 KiB</td>
+</tr>
+<tr>
+<td><code>Garnet_1024</code></td>
+<td>hash_32</td>
+<td>41537</td>
+<td>1704 KiB</td>
+<td>1800 KiB</td>
+</tr>
+<tr>
+<td><code>Garnet_1024</code></td>
+<td>hash_128</td>
+<td>41537</td>
+<td>1712 KiB</td>
+<td>1804 KiB</td>
+</tr>
+<tr>
+<td><code>Garnet_1024</code></td>
+<td>hash_512</td>
+<td>41537</td>
+<td>1676 KiB</td>
+<td>1804 KiB</td>
+</tr>
+<tr>
+<td><code>Garnet_1024</code></td>
+<td>hash_1024</td>
+<td>41537</td>
+<td>1720 KiB</td>
+<td>1812 KiB</td>
+</tr>
+<tr>
+<td><code>Garnet_1024</code></td>
+<td>hash_4096</td>
+<td>41537</td>
+<td>1708 KiB</td>
+<td>1812 KiB</td>
+</tr>
+<tr>
+<td><code>Garnet_1024</code></td>
+<td>hash_8192</td>
+<td>41537</td>
+<td>1724 KiB</td>
+<td>1828 KiB</td>
+</tr>
+<tr>
+<td><code>Garnet_1024</code></td>
+<td>hash_16384</td>
+<td>41537</td>
+<td>1736 KiB</td>
+<td>1816 KiB</td>
+</tr>
+<tr>
+<td><code>Garnet_1024</code></td>
+<td>hash_65536</td>
+<td>41537</td>
+<td>1768 KiB</td>
+<td>1928 KiB</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="7-raw-evidence-index">7. Raw evidence index</h2>
+<p>Paths are relative to <code>performance/data/x86_1/</code> in the <a href="https://github.com/ngcc-dev/ngcc-harness">harness</a>; each JSON file records its commands, environment and trials.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>item</th>
+<th>file</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Garnet_512_Cap512</code></td>
+<td>KAT log (sha256 <code>da167e6706232940…</code>)</td>
+<td><code>kat/hash-11/Garnet_512_Cap512.log</code></td>
+</tr>
+<tr>
+<td><code>Garnet_512_Cap512</code></td>
+<td>timing hash_1024</td>
+<td><code>records/hash-11/Garnet_512_Cap512__hash_1024.json</code></td>
+</tr>
+<tr>
+<td><code>Garnet_512_Cap512</code></td>
+<td>timing hash_128</td>
+<td><code>records/hash-11/Garnet_512_Cap512__hash_128.json</code></td>
+</tr>
+<tr>
+<td><code>Garnet_512_Cap512</code></td>
+<td>timing hash_16384</td>
+<td><code>records/hash-11/Garnet_512_Cap512__hash_16384.json</code></td>
+</tr>
+<tr>
+<td><code>Garnet_512_Cap512</code></td>
+<td>timing hash_32</td>
+<td><code>records/hash-11/Garnet_512_Cap512__hash_32.json</code></td>
+</tr>
+<tr>
+<td><code>Garnet_512_Cap512</code></td>
+<td>timing hash_4096</td>
+<td><code>records/hash-11/Garnet_512_Cap512__hash_4096.json</code></td>
+</tr>
+<tr>
+<td><code>Garnet_512_Cap512</code></td>
+<td>timing hash_512</td>
+<td><code>records/hash-11/Garnet_512_Cap512__hash_512.json</code></td>
+</tr>
+<tr>
+<td><code>Garnet_512_Cap512</code></td>
+<td>timing hash_65536</td>
+<td><code>records/hash-11/Garnet_512_Cap512__hash_65536.json</code></td>
+</tr>
+<tr>
+<td><code>Garnet_512_Cap512</code></td>
+<td>timing hash_8192</td>
+<td><code>records/hash-11/Garnet_512_Cap512__hash_8192.json</code></td>
+</tr>
+<tr>
+<td><code>Garnet_512_Cap640</code></td>
+<td>KAT log (sha256 <code>0d2d3d1c890af10e…</code>)</td>
+<td><code>kat/hash-11/Garnet_512_Cap640.log</code></td>
+</tr>
+<tr>
+<td><code>Garnet_512_Cap640</code></td>
+<td>timing hash_1024</td>
+<td><code>records/hash-11/Garnet_512_Cap640__hash_1024.json</code></td>
+</tr>
+<tr>
+<td><code>Garnet_512_Cap640</code></td>
+<td>timing hash_128</td>
+<td><code>records/hash-11/Garnet_512_Cap640__hash_128.json</code></td>
+</tr>
+<tr>
+<td><code>Garnet_512_Cap640</code></td>
+<td>timing hash_16384</td>
+<td><code>records/hash-11/Garnet_512_Cap640__hash_16384.json</code></td>
+</tr>
+<tr>
+<td><code>Garnet_512_Cap640</code></td>
+<td>timing hash_32</td>
+<td><code>records/hash-11/Garnet_512_Cap640__hash_32.json</code></td>
+</tr>
+<tr>
+<td><code>Garnet_512_Cap640</code></td>
+<td>timing hash_4096</td>
+<td><code>records/hash-11/Garnet_512_Cap640__hash_4096.json</code></td>
+</tr>
+<tr>
+<td><code>Garnet_512_Cap640</code></td>
+<td>timing hash_512</td>
+<td><code>records/hash-11/Garnet_512_Cap640__hash_512.json</code></td>
+</tr>
+<tr>
+<td><code>Garnet_512_Cap640</code></td>
+<td>timing hash_65536</td>
+<td><code>records/hash-11/Garnet_512_Cap640__hash_65536.json</code></td>
+</tr>
+<tr>
+<td><code>Garnet_512_Cap640</code></td>
+<td>timing hash_8192</td>
+<td><code>records/hash-11/Garnet_512_Cap640__hash_8192.json</code></td>
+</tr>
+<tr>
+<td><code>Garnet_512_Cap768</code></td>
+<td>KAT log (sha256 <code>bf719ede6d88022e…</code>)</td>
+<td><code>kat/hash-11/Garnet_512_Cap768.log</code></td>
+</tr>
+<tr>
+<td><code>Garnet_512_Cap768</code></td>
+<td>timing hash_1024</td>
+<td><code>records/hash-11/Garnet_512_Cap768__hash_1024.json</code></td>
+</tr>
+<tr>
+<td><code>Garnet_512_Cap768</code></td>
+<td>timing hash_128</td>
+<td><code>records/hash-11/Garnet_512_Cap768__hash_128.json</code></td>
+</tr>
+<tr>
+<td><code>Garnet_512_Cap768</code></td>
+<td>timing hash_16384</td>
+<td><code>records/hash-11/Garnet_512_Cap768__hash_16384.json</code></td>
+</tr>
+<tr>
+<td><code>Garnet_512_Cap768</code></td>
+<td>timing hash_32</td>
+<td><code>records/hash-11/Garnet_512_Cap768__hash_32.json</code></td>
+</tr>
+<tr>
+<td><code>Garnet_512_Cap768</code></td>
+<td>timing hash_4096</td>
+<td><code>records/hash-11/Garnet_512_Cap768__hash_4096.json</code></td>
+</tr>
+<tr>
+<td><code>Garnet_512_Cap768</code></td>
+<td>timing hash_512</td>
+<td><code>records/hash-11/Garnet_512_Cap768__hash_512.json</code></td>
+</tr>
+<tr>
+<td><code>Garnet_512_Cap768</code></td>
+<td>timing hash_65536</td>
+<td><code>records/hash-11/Garnet_512_Cap768__hash_65536.json</code></td>
+</tr>
+<tr>
+<td><code>Garnet_512_Cap768</code></td>
+<td>timing hash_8192</td>
+<td><code>records/hash-11/Garnet_512_Cap768__hash_8192.json</code></td>
+</tr>
+<tr>
+<td><code>Garnet_512_Cap896</code></td>
+<td>KAT log (sha256 <code>d0fd2e725b7e4aa7…</code>)</td>
+<td><code>kat/hash-11/Garnet_512_Cap896.log</code></td>
+</tr>
+<tr>
+<td><code>Garnet_512_Cap896</code></td>
+<td>timing hash_1024</td>
+<td><code>records/hash-11/Garnet_512_Cap896__hash_1024.json</code></td>
+</tr>
+<tr>
+<td><code>Garnet_512_Cap896</code></td>
+<td>timing hash_128</td>
+<td><code>records/hash-11/Garnet_512_Cap896__hash_128.json</code></td>
+</tr>
+<tr>
+<td><code>Garnet_512_Cap896</code></td>
+<td>timing hash_16384</td>
+<td><code>records/hash-11/Garnet_512_Cap896__hash_16384.json</code></td>
+</tr>
+<tr>
+<td><code>Garnet_512_Cap896</code></td>
+<td>timing hash_32</td>
+<td><code>records/hash-11/Garnet_512_Cap896__hash_32.json</code></td>
+</tr>
+<tr>
+<td><code>Garnet_512_Cap896</code></td>
+<td>timing hash_4096</td>
+<td><code>records/hash-11/Garnet_512_Cap896__hash_4096.json</code></td>
+</tr>
+<tr>
+<td><code>Garnet_512_Cap896</code></td>
+<td>timing hash_512</td>
+<td><code>records/hash-11/Garnet_512_Cap896__hash_512.json</code></td>
+</tr>
+<tr>
+<td><code>Garnet_512_Cap896</code></td>
+<td>timing hash_65536</td>
+<td><code>records/hash-11/Garnet_512_Cap896__hash_65536.json</code></td>
+</tr>
+<tr>
+<td><code>Garnet_512_Cap896</code></td>
+<td>timing hash_8192</td>
+<td><code>records/hash-11/Garnet_512_Cap896__hash_8192.json</code></td>
+</tr>
+<tr>
+<td><code>Garnet_512_Cap1024</code></td>
+<td>KAT log (sha256 <code>ef0dc35f24546151…</code>)</td>
+<td><code>kat/hash-11/Garnet_512_Cap1024.log</code></td>
+</tr>
+<tr>
+<td><code>Garnet_512_Cap1024</code></td>
+<td>timing hash_1024</td>
+<td><code>records/hash-11/Garnet_512_Cap1024__hash_1024.json</code></td>
+</tr>
+<tr>
+<td><code>Garnet_512_Cap1024</code></td>
+<td>timing hash_128</td>
+<td><code>records/hash-11/Garnet_512_Cap1024__hash_128.json</code></td>
+</tr>
+<tr>
+<td><code>Garnet_512_Cap1024</code></td>
+<td>timing hash_16384</td>
+<td><code>records/hash-11/Garnet_512_Cap1024__hash_16384.json</code></td>
+</tr>
+<tr>
+<td><code>Garnet_512_Cap1024</code></td>
+<td>timing hash_32</td>
+<td><code>records/hash-11/Garnet_512_Cap1024__hash_32.json</code></td>
+</tr>
+<tr>
+<td><code>Garnet_512_Cap1024</code></td>
+<td>timing hash_4096</td>
+<td><code>records/hash-11/Garnet_512_Cap1024__hash_4096.json</code></td>
+</tr>
+<tr>
+<td><code>Garnet_512_Cap1024</code></td>
+<td>timing hash_512</td>
+<td><code>records/hash-11/Garnet_512_Cap1024__hash_512.json</code></td>
+</tr>
+<tr>
+<td><code>Garnet_512_Cap1024</code></td>
+<td>timing hash_65536</td>
+<td><code>records/hash-11/Garnet_512_Cap1024__hash_65536.json</code></td>
+</tr>
+<tr>
+<td><code>Garnet_512_Cap1024</code></td>
+<td>timing hash_8192</td>
+<td><code>records/hash-11/Garnet_512_Cap1024__hash_8192.json</code></td>
+</tr>
+<tr>
+<td><code>Garnet_768</code></td>
+<td>KAT log (sha256 <code>e0175efed77b1aea…</code>)</td>
+<td><code>kat/hash-11/Garnet_768.log</code></td>
+</tr>
+<tr>
+<td><code>Garnet_768</code></td>
+<td>timing hash_1024</td>
+<td><code>records/hash-11/Garnet_768__hash_1024.json</code></td>
+</tr>
+<tr>
+<td><code>Garnet_768</code></td>
+<td>timing hash_128</td>
+<td><code>records/hash-11/Garnet_768__hash_128.json</code></td>
+</tr>
+<tr>
+<td><code>Garnet_768</code></td>
+<td>timing hash_16384</td>
+<td><code>records/hash-11/Garnet_768__hash_16384.json</code></td>
+</tr>
+<tr>
+<td><code>Garnet_768</code></td>
+<td>timing hash_32</td>
+<td><code>records/hash-11/Garnet_768__hash_32.json</code></td>
+</tr>
+<tr>
+<td><code>Garnet_768</code></td>
+<td>timing hash_4096</td>
+<td><code>records/hash-11/Garnet_768__hash_4096.json</code></td>
+</tr>
+<tr>
+<td><code>Garnet_768</code></td>
+<td>timing hash_512</td>
+<td><code>records/hash-11/Garnet_768__hash_512.json</code></td>
+</tr>
+<tr>
+<td><code>Garnet_768</code></td>
+<td>timing hash_65536</td>
+<td><code>records/hash-11/Garnet_768__hash_65536.json</code></td>
+</tr>
+<tr>
+<td><code>Garnet_768</code></td>
+<td>timing hash_8192</td>
+<td><code>records/hash-11/Garnet_768__hash_8192.json</code></td>
+</tr>
+<tr>
+<td><code>Garnet_1024</code></td>
+<td>KAT log (sha256 <code>ae9f836b30a461d6…</code>)</td>
+<td><code>kat/hash-11/Garnet_1024.log</code></td>
+</tr>
+<tr>
+<td><code>Garnet_1024</code></td>
+<td>timing hash_1024</td>
+<td><code>records/hash-11/Garnet_1024__hash_1024.json</code></td>
+</tr>
+<tr>
+<td><code>Garnet_1024</code></td>
+<td>timing hash_128</td>
+<td><code>records/hash-11/Garnet_1024__hash_128.json</code></td>
+</tr>
+<tr>
+<td><code>Garnet_1024</code></td>
+<td>timing hash_16384</td>
+<td><code>records/hash-11/Garnet_1024__hash_16384.json</code></td>
+</tr>
+<tr>
+<td><code>Garnet_1024</code></td>
+<td>timing hash_32</td>
+<td><code>records/hash-11/Garnet_1024__hash_32.json</code></td>
+</tr>
+<tr>
+<td><code>Garnet_1024</code></td>
+<td>timing hash_4096</td>
+<td><code>records/hash-11/Garnet_1024__hash_4096.json</code></td>
+</tr>
+<tr>
+<td><code>Garnet_1024</code></td>
+<td>timing hash_512</td>
+<td><code>records/hash-11/Garnet_1024__hash_512.json</code></td>
+</tr>
+<tr>
+<td><code>Garnet_1024</code></td>
+<td>timing hash_65536</td>
+<td><code>records/hash-11/Garnet_1024__hash_65536.json</code></td>
+</tr>
+<tr>
+<td><code>Garnet_1024</code></td>
+<td>timing hash_8192</td>
+<td><code>records/hash-11/Garnet_1024__hash_8192.json</code></td>
+</tr>
+</tbody>
+</table></div>
+<p>Scripts: <code>performance/campaign.py</code>, <code>performance/ngcc_perf.c</code>, <code>performance/hashprof/</code> in the <a href="https://github.com/ngcc-dev/ngcc-harness">harness</a>.</p>
+</main>
+<footer class="site-footer">
+<p>Maintained by: <a href="mailto:markku-juhani.saarinen@tuni.fi">markku-juhani.saarinen@tuni.fi</a></p>
+<p>Submissions are welcome via <a href="https://github.com/ngcc-dev/ngcc-harness/issues">GitHub issues</a>.</p>
+</footer>
+</body>
+</html>

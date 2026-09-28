@@ -36,7 +36,7 @@ witnesses and their controls. See `tools/README.md`.
 
 ## sign-01-2: Malformed hint counts cause an attacker-controlled stack write
 
-Severity: Critical
+Severity: High
 Status: Confirmed
 Layer: Implementation
 Affected: Reference implementation, all three parameter sets

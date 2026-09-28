@@ -29,7 +29,7 @@ The static witness checks all three independent implementation copies and fails 
 
 ## kem-40-2: Decapsulation addresses a private array with a secret-derived index
 
-Severity: Medium
+Severity: Low
 Status: Probable
 Layer: Side-channel
 Affected: Reference decapsulation, all three parameter sets
@@ -39,6 +39,8 @@ Credit: Markku-Juhani O. Saarinen <markku-juhani.saarinen@tuni.fi>, with AI assi
 Date: 2026-09-23
 
 During decapsulation, `yy_decrypt_ciphertext` computes `hamming` and `overflow` from the ciphertext multiplied by the private key (`kem.c:181-220`). It then reads the private inverse polynomial at `sk->finvint[(i-overflow+h)%h]` for each `i` (`kem.c:224`). The address pattern rotates with the secret-derived `overflow`, creating a cache/address side channel even though the surrounding loops have fixed bounds. No full secret-key or shared-secret recovery is claimed; see `constant_time.md`.
+
+Constant-time fix (easy, hence Low): read `finvint` at fixed addresses and apply the rotation by `overflow` with a constant-time barrel shifter (log2 h masked conditional rotations). This multiplies the cost of that one h-coefficient loop by about log2 h, which is small next to the polynomial multiplication in decryption.
 
 ### Reproducing
 

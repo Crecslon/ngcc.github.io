@@ -60,7 +60,7 @@ The `sign-33-2` check traces the 32-byte wrapper prehash in the VDOO-256 and VDO
 
 ## sign-33-3: The VDOO-256 and -512 proof bound contains a 128-bit salt term
 
-Severity: Medium
+Severity: High
 Status: Proof gap
 Layer: Design
 Affected: VDOO-256 and VDOO-512 specification and proof
@@ -69,7 +69,7 @@ Exploitation: Proof gap; not by itself a concrete forgery
 Credit: Markku-Juhani O. Saarinen <markku-juhani.saarinen@tuni.fi>, with AI assistance
 Date: 2026-09-21
 
-The VDOO specification fixes the salt at 16 bytes for both VDOO-256 and VDOO-512. Its own EUF-CMA bound contains the term `(q_s+q_h)q_s 2^-128`: it is already `2^-127` for one signing and one hash query and becomes order one around `2^64` signing queries.
+The VDOO specification fixes the salt at 16 bytes for both VDOO-256 and VDOO-512. Its own EUF-CMA bound contains the term `(q_s+q_h)q_s 2^-128`: it is already `2^-127` for one signing and one hash query and becomes order one around `2^64` signing queries. The [NGCC Evaluation Criteria](https://www.niccs.org.cn/niccs/Notice/tT7TSQiz.pdf) §1(2) permits up to `2^80` chosen-message signatures, so the submitted reduction fails to cover the evaluation budget by an even wider margin.
 
 This is a specification-level parameter and proof gap: the stated reduction cannot substantiate either the 256- or 512-bit EUF-CMA claim. It is not, by itself, a concrete forgery and is reported separately from `sign-33-2`.
 
@@ -122,6 +122,8 @@ Date: 2026-09-23
 
 `vdoo_sign.c` reads coefficients from the private central map `sk->F` and branches on whether each is zero (lines 21–35 and 85–103). Secret-derived diagonal and Gaussian pivots also control retries. Consequently the instruction/power trace depends directly on private key values. This is separate from the already stronger predictable-key defect `sign-33-1`; it matters if that RNG defect is repaired without making signing constant-time. No side-channel key-recovery experiment is claimed.
 
+Constant-time fix (moderate, hence Medium): process every central-map coefficient unconditionally instead of skipping zeros, and use constant-time Gaussian elimination that adds candidate pivot rows under masks, a well-known technique in constant-time UOV and MAYO implementations. It processes every row at every step, a moderate cost; a retry on a singular system is the usual accepted exception.
+
 ### Reproducing
 
 Inspect `vdoo_sign.c` lines 7–35, 82–105, and 127–159 in any reference parameter set. The `coeff` and `c` branch operands are obtained directly from `gfv_get_ele(sk->F, …)`. See `constant_time.md` for the secret/public review. This is a source/dataflow witness, not a measured remote timing exploit.
@@ -147,4 +149,4 @@ make -C sign-33 replay-forgery
 sign-33/bin/replay_public_forgery
 ```
 
-The replay checks the published public-key, message, and signature hashes before verifying the signature and two negative controls; it does not reproduce the public-key-only attack. Compare the specification's oil-layer sums with `is_allowed_oil1` and `is_allowed_oil2` in `vdoo_keypair.c` for the structural defect. The [original analysis](https://groups.google.com/a/list.nist.gov/g/pqc-forum/c/mYN9Br_C8dg/m/BDmmwIE6BAAJ) describes the unreproduced public-key search.
+The [replay](https://github.com/ngcc-dev/ngcc-harness/blob/dc66c6cb3c06e75bdea0048e21fa4e13c63f00af/security/vdoo_public_forgery_replay.c) checks the published public-key, message, and signature hashes before verifying the signature and two negative controls; it does not reproduce the public-key-only attack. Compare the specification's oil-layer sums with `is_allowed_oil1` and `is_allowed_oil2` in `vdoo_keypair.c` for the structural defect. The [original analysis](https://groups.google.com/a/list.nist.gov/g/pqc-forum/c/mYN9Br_C8dg/m/BDmmwIE6BAAJ) describes the unreproduced public-key search.

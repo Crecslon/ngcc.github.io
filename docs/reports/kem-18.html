@@ -5,22 +5,22 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>ngcc.dev: LoongKEM (kem-18)</title>
 <link rel="icon" type="image/png" href="../assets/mag-glass.png">
-<link rel="stylesheet" href="../assets/style.css?v=996d5cfd">
+<link rel="stylesheet" href="../assets/style.css?v=1fdb792d">
 </head>
 <body>
 <header class="site-header">
 <a class="brand" href="../index.html"><img class="brand-icon" src="../assets/mag-glass.png" alt="" width="28" height="28">ngcc.dev</a>
-<nav><a href="../index.html">Home</a><a href="../reports/index.html">Reports</a><a href="../constant-time/index.html">Constant-Time</a></nav>
+<nav><a href="../index.html">Home</a><a href="../reports/index.html">Reports</a><a href="../performance/x86_1/index.html">Performance</a><a href="../constant-time/index.html">Constant-Time</a></nav>
 </header>
-<main>
-<p class="crumb"><a href="../reports/index.html">Reports</a> › <code>kem-18</code> · <a href="../constant-time/kem-18.html">Constant-time review</a></p>
+<main class="">
+<p class="crumb"><a href="../reports/index.html">Reports</a> › <code>kem-18</code> · <a href="../constant-time/kem-18.html">Constant-time review</a> · <a href="../performance/x86_1/kem-18.html">Performance</a></p>
 
 <h1 id="loongkem-kem-18">LoongKEM (kem-18)</h1>
 <div class="table-wrap"><table class="meta">
 <tr><th>Candidate</th><td>LoongKEM</td></tr>
 <tr><th>Family</th><td>Lattice (LWE)</td></tr>
 <tr><th>Archive</th><td><a href="https://www.niccs.org.cn/niccs/Proposal/Public-Key%20Cryptographic%20Algorithms/Round%201%20candidates/LoongKEM.zip">LoongKEM.zip</a> (SHA-256: <code>a6e5070647a40e7de1bf6e5b085dc1d6423c003a409864fdb303d87f881cec0b</code>)</td></tr>
-<tr><th>Specification</th><td><a href="https://github.com/ngcc-dev/ngcc-harness/raw/refs/heads/main/kem-18/kem-18-spec.pdf" title="Download kem-18-spec.pdf from GitHub">kem-18-spec.pdf</a>&nbsp;<a class="pdf-link" href="https://cdn.jsdelivr.net/gh/ngcc-dev/ngcc-harness@main/kem-18/kem-18-spec.pdf" title="Open the kem-18 specification PDF">PDF</a></td></tr>
+<tr><th>Specification</th><td><a href="https://github.com/ngcc-dev/ngcc-harness/raw/dc66c6cb3c06e75bdea0048e21fa4e13c63f00af/kem-18/kem-18-spec.pdf" title="Download kem-18-spec.pdf from GitHub">kem-18-spec.pdf</a>&nbsp;<a class="pdf-link" href="https://cdn.jsdelivr.net/gh/ngcc-dev/ngcc-harness@dc66c6cb3c06e75bdea0048e21fa4e13c63f00af/kem-18/kem-18-spec.pdf" title="Open the kem-18 specification PDF">PDF</a></td></tr>
 </table></div>
 
 <h2 class="issue-heading issue-heading-first" id="kem-18-1-partial-rejection-mask-leaks-the-candidate-shared-secret">kem-18-1: Partial rejection mask leaks the candidate shared secret</h2>
@@ -48,6 +48,35 @@ tools/ngcc_attack kem-reject-mask kem-18/lib/libLoong128.so
 </code></pre>
 <p><code>tools/reproduce.sh</code> runs this together with the other supported runtime
 witnesses and their controls. See <code>tools/README.md</code>.</p>
+<h2 class="issue-heading" id="kem-18-2-reducible-rings-project-loongkem-into-much-smaller-slwe-instances">kem-18-2: Reducible rings project LoongKEM into much smaller SLWE instances</h2>
+
+<div class="table-wrap"><table class="meta issue-meta">
+<tr><th>Severity</th><td><span class="sev sev-high">High</span></td></tr>
+<tr><th>Scope</th><td>design</td></tr>
+<tr><th>Status</th><td><span class="issue-status status-lead">Lead</span></td></tr>
+<tr><th>Affected</th><td>Loong128, Loong384, and Loong512; Loong256's <code>X^16+1</code> is integer-irreducible</td></tr>
+<tr><th>Discovery</th><td>Moderate</td></tr>
+<tr><th>Exploitation</th><td>Projected-secret recovery is estimated at 2^73.06, 2^103.34, and 2^203.74 operations; full key recovery remains estimator-only</td></tr>
+<tr><th>Credit</th><td>Sun Shuzhou, with GLM-5.3 assistance</td></tr>
+<tr><th>Date</th><td>2026-09-28</td></tr>
+</table></div>
+<p>Original source: <a href="https://list.niccs.org.cn/archives/list/pkcforum@list.niccs.org.cn/message/JHXFAJR6JLACWVD5ZIWPNP3H7N5OJOGG/">Sun's PKC Forum post</a></p>
+<p>Additional reference: <a href="https://eprint.iacr.org/2026/2232">Xiong and Wang, ePrint 2026/2232, §10</a></p>
+<p>The specified rings split over the integers:</p>
+<pre><code class="language-text">X^12+1 = (X^4+1)(X^8-X^4+1)
+X^20+1 = (X^4+1)(X^16-X^12+X^8-X^4+1)
+X^24+1 = (X^8+1)(X^16-X^8+1).
+</code></pre>
+<p>The respective resultants are 81, 625, and 6561, all units modulo <code>q=8191</code>, so the two factors are also coprime over the scheme's field. The first public-key block row is entirely over this ring. Reducing it modulo either factor is therefore a public ring homomorphism that preserves shortness, while solving both quotient instances reconstructs the full PKE secret by CRT.</p>
+<p>Using the exact alternating-fold secret distribution and a variance-matched model for the folded error and public-key rounding, the current MATZOV BDD estimator gives 73.06, 103.34, and 203.74 bits for the smaller components. These are far below Table 4's 147-, 398-, and 521-bit estimates, whose §5.3 analysis explicitly ignores the algebraic structure. Applying the same marginal model to the complementary components gives full-recovery estimates of 128.59, 365.51, and 399.31 bits; the latter two are below the named 384- and 512-bit targets.</p>
+<p>This remains a Lead because coordinates in each complementary quotient have known correlations of magnitude <code>1/2</code>, while the standard estimator treats their marginals as independent. The exact decomposition, CRT reconstruction, covariance, and quoted estimator outputs are reproduced, but no covariance-aware full-size key recovery has yet validated the decisive complementary-component step. Under the classification policy, that missing step keeps this candidate-specific recovery path at High rather than Critical.</p>
+<h3 id="reproducing_1">Reproducing</h3>
+<p>Commands below run in a checkout of the <a href="https://github.com/ngcc-dev/ngcc-harness">ngcc-harness repository</a> with the candidate built (see its README).</p>
+<p>Install Martin Albrecht's <a href="https://github.com/malb/lattice-estimator">lattice-estimator</a> at audited commit <code>53da5982597709ba0fdf94ea37a84d822310fd84</code>, then run with a Python interpreter that provides <code>sage.all</code>:</p>
+<pre><code class="language-sh">LATTICE_ESTIMATOR_PATH=/path/to/lattice-estimator \
+  mamba run -n sage python kem-18/reproduce_reducible_ring.py
+</code></pre>
+<p>The script checks the integer factorizations, coprimality modulo 8191, quotient homomorphisms, CRT reconstruction, and exact covariance matrices before reproducing the six MATZOV BDD estimates. Its final <code>LIMITATION</code> line records the correlation not modeled by those estimates.</p>
 </main>
 <footer class="site-footer">
 <p>Maintained by: <a href="mailto:markku-juhani.saarinen@tuni.fi">markku-juhani.saarinen@tuni.fi</a></p>

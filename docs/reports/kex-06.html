@@ -5,22 +5,22 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>ngcc.dev: MAMBA-NIKE (kex-06)</title>
 <link rel="icon" type="image/png" href="../assets/mag-glass.png">
-<link rel="stylesheet" href="../assets/style.css?v=996d5cfd">
+<link rel="stylesheet" href="../assets/style.css?v=1fdb792d">
 </head>
 <body>
 <header class="site-header">
 <a class="brand" href="../index.html"><img class="brand-icon" src="../assets/mag-glass.png" alt="" width="28" height="28">ngcc.dev</a>
-<nav><a href="../index.html">Home</a><a href="../reports/index.html">Reports</a><a href="../constant-time/index.html">Constant-Time</a></nav>
+<nav><a href="../index.html">Home</a><a href="../reports/index.html">Reports</a><a href="../performance/x86_1/index.html">Performance</a><a href="../constant-time/index.html">Constant-Time</a></nav>
 </header>
-<main>
-<p class="crumb"><a href="../reports/index.html">Reports</a> › <code>kex-06</code> · <a href="../constant-time/kex-06.html">Constant-time review</a></p>
+<main class="">
+<p class="crumb"><a href="../reports/index.html">Reports</a> › <code>kex-06</code> · <a href="../constant-time/kex-06.html">Constant-time review</a> · <a href="../performance/x86_1/kex-06.html">Performance</a></p>
 
 <h1 id="mamba-nike-kex-06">MAMBA-NIKE (kex-06)</h1>
 <div class="table-wrap"><table class="meta">
 <tr><th>Candidate</th><td>MAMBA-NIKE</td></tr>
 <tr><th>Family</th><td>Lattice-based NIKE</td></tr>
 <tr><th>Archive</th><td><a href="https://www.niccs.org.cn/niccs/Proposal/Public-Key%20Cryptographic%20Algorithms/Round%201%20candidates/MAMBA-NIKE.zip">MAMBA-NIKE.zip</a> (SHA-256: <code>79b53ff726121ccb1ce970003c06b605e973c4e4f452dbe780e70cd4c40ca018</code>)</td></tr>
-<tr><th>Specification</th><td><a href="https://github.com/ngcc-dev/ngcc-harness/raw/refs/heads/main/kex-06/kex-06-spec.pdf" title="Download kex-06-spec.pdf from GitHub">kex-06-spec.pdf</a>&nbsp;<a class="pdf-link" href="https://cdn.jsdelivr.net/gh/ngcc-dev/ngcc-harness@main/kex-06/kex-06-spec.pdf" title="Open the kex-06 specification PDF">PDF</a></td></tr>
+<tr><th>Specification</th><td><a href="https://github.com/ngcc-dev/ngcc-harness/raw/dc66c6cb3c06e75bdea0048e21fa4e13c63f00af/kex-06/kex-06-spec.pdf" title="Download kex-06-spec.pdf from GitHub">kex-06-spec.pdf</a>&nbsp;<a class="pdf-link" href="https://cdn.jsdelivr.net/gh/ngcc-dev/ngcc-harness@dc66c6cb3c06e75bdea0048e21fa4e13c63f00af/kex-06/kex-06-spec.pdf" title="Open the kex-06 specification PDF">PDF</a></td></tr>
 </table></div>
 
 <h2 class="issue-heading issue-heading-first" id="kex-06-1-mamba-nike-384-and-512-use-only-256-secret-seed-bits">kex-06-1: MAMBA-NIKE-384 and -512 use only 256 secret-seed bits</h2>
@@ -44,6 +44,27 @@
 <pre><code class="language-sh">python3 security/design_parameter_audit.py
 </code></pre>
 <p>The check traces <code>noiseseed[32]</code> through <code>poly_getnoise</code> and checks the normative KeyGen description on physical PDF pages 7–15.</p>
+<h2 class="issue-heading" id="kex-06-2-static-key-reconciliation-admits-an-active-reaction-recovery-path">kex-06-2: Static-key reconciliation admits an active reaction-recovery path</h2>
+
+<div class="table-wrap"><table class="meta issue-meta">
+<tr><th>Severity</th><td><span class="sev sev-high">High</span></td></tr>
+<tr><th>Scope</th><td>design</td></tr>
+<tr><th>Status</th><td><span class="issue-status status-lead">Lead</span></td></tr>
+<tr><th>Affected</th><td>MAMBA-NIKE-128 and -384 recovered with the raw-reconciliation oracle; the same unvalidated static-key path is present in all sets</td></tr>
+<tr><th>Discovery</th><td>Hard</td></tr>
+<tr><th>Exploitation</th><td>Complete MAMBA-NIKE-128 and -384 static-key recovery in 71 raw-reconciliation queries; the deployed hashed-key route is estimated at about 2^15 reactions but is not implemented or benchmarked</td></tr>
+<tr><th>Credit</th><td>Zhenyu Xiong and Mingsheng Wang</td></tr>
+<tr><th>Date</th><td>2026-09-27</td></tr>
+</table></div>
+<p>Reference: <a href="https://eprint.iacr.org/2026/2232">Xiong and Wang, “Cryptanalysis of the ICCS NGCC Round-1 Public-Key Candidates,” ePrint 2026/2232, §9</a></p>
+<p>The static responder applies D4 reconciliation to an unvalidated attacker-chosen one-pass message under the same long-term secret. Its intermediate product is linear in that secret, while the dither is derived from the attacker's public <code>mu</code>. Chosen monomial messages therefore turn each reconciliation group into a small lookup problem over four secret coefficients.</p>
+<p>The pinned artifact uses the reference implementation's <code>STATISTICAL_TEST</code> path, which returns the raw reconciliation bits rather than their hash. A fixed 71-query probe set recovers complete MAMBA-NIKE-128 and -384 secrets; local runs recovered 1/1 and 5/5 keys. That validates the candidate-specific algebra and raw reaction oracle. It does <strong>not</strong> validate the artifact's claimed roughly <code>2^15</code> route from the deployed API's single hashed-key confirmation bit, and the specification's Appendix B explicitly limits its theorem to passive security and disclaims active/key-reuse security. The NGCC <a href="https://www.niccs.org.cn/niccs/Notice/tT7TSQiz.pdf">Evaluation Criteria</a> §1(1), however, require key-exchange protocols to satisfy a suitable security model such as CK, CK+, eCK, or eCK-PFS. For those reasons this is a High Lead and a NIKE category/security-model mismatch, not a claimed break of the stated passive theorem.</p>
+<p>An actively secure static NIKE cannot reconcile arbitrary unauthenticated peer input under a reused secret and then expose key confirmation. The construction needs transcript binding and an active-security transform rather than only the passive theorem it currently supplies.</p>
+<h3 id="reproducing_1">Reproducing</h3>
+<p>Commands below run in a checkout of the <a href="https://github.com/ngcc-dev/ngcc-harness">ngcc-harness repository</a> with the candidate built (see its README).</p>
+<pre><code class="language-sh">sh kex-06/reproduce_reaction_recovery.sh
+</code></pre>
+<p>The wrapper fetches the <a href="https://github.com/acprk/ngcc-round1-cryptanalysis/tree/e724a12a834bfc063dc0d2959d864842f269eb1e/mamba-nike-key-recovery">pinned artifact</a>, builds it against the archived reference sources here, and runs the demonstrated 128- and 384-bit raw-oracle recoveries.</p>
 </main>
 <footer class="site-footer">
 <p>Maintained by: <a href="mailto:markku-juhani.saarinen@tuni.fi">markku-juhani.saarinen@tuni.fi</a></p>

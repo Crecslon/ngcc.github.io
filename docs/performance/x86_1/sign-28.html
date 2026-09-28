@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ngcc.dev: sign-28 SYDO — performance on x86-64 (system x861)</title>
+<link rel="icon" type="image/png" href="../../assets/mag-glass.png">
+<link rel="stylesheet" href="../../assets/style.css?v=1fdb792d">
+</head>
+<body>
+<header class="site-header">
+<a class="brand" href="../../index.html"><img class="brand-icon" src="../../assets/mag-glass.png" alt="" width="28" height="28">ngcc.dev</a>
+<nav><a href="../../index.html">Home</a><a href="../../reports/index.html">Reports</a><a href="../../performance/x86_1/index.html">Performance</a><a href="../../constant-time/index.html">Constant-Time</a></nav>
+</header>
+<main class="">
+<!-- synchronized from harness: sign-28/perf_x86_1.md -->
+<h1 id="sign-28-sydo-performance-on-x86-64-system-x86_1">sign-28 SYDO — performance on x86-64 (system x86_1)</h1>
+<p><a href="index.html">Performance x86_1</a> › <code>sign-28</code> · <a href="method.html">method</a> · <a href="https://www.niccs.org.cn/niccs/Round1Additional/pc/content/content_2101561105194766336.html">NICCS page</a></p>
+<p>Independent measurement following the structure of the NICCS x86 self-assessment guide, §3.5 (1)–(7). Not a submitter self-assessment.</p>
+<h2 id="1-basic-information">1. Basic information</h2>
+<ul>
+<li>Category: public-key algorithm; function: digital signature</li>
+<li>Algorithm: SYDO</li>
+<li>Implementation versions measured: reference</li>
+<li>Parameter sets: <code>sydo_160f</code>, <code>sydo_160s</code>, <code>sydo_256f</code>, <code>sydo_256s</code>, <code>sydo_512f</code>, <code>sydo_512s</code></li>
+</ul>
+<h2 id="2-assessment-environment">2. Assessment environment</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>item</th>
+<th>value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>processor</td>
+<td>12th Gen Intel(R) Core(TM) i7-12700 (CPU 2, one core)</td>
+</tr>
+<tr>
+<td>clock</td>
+<td>max 2.10 GHz, governor performance, turbo off, SMT off</td>
+</tr>
+<tr>
+<td>memory</td>
+<td>31788 MiB</td>
+</tr>
+<tr>
+<td>OS / kernel</td>
+<td>Debian GNU/Linux 13 (trixie) / 6.12.107+deb13-amd64</td>
+</tr>
+<tr>
+<td>compiler / build tool</td>
+<td>gcc (Debian 14.2.0-19) 14.2.0 / cmake version 3.31.6</td>
+</tr>
+<tr>
+<td>campaign start / end (UTC)</td>
+<td>2026-09-25T10:02:21 / 2026-09-28T04:35:59</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="3-functional-testing-kat">3. Functional testing (KAT)</h2>
+<p>Each library was checked against the submitted KAT vectors (SHA-256 manifest <code>sign-28/kat.sha256</code> in the harness) before timing.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>build flags</th>
+<th>KAT</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>sydo_160f</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>sydo_160s</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>sydo_256f</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>sydo_256s</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>sydo_512f</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>sydo_512s</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="4-performance">4. Performance</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>operation</th>
+<th>mean cycles</th>
+<th>mean time</th>
+<th>ops/s</th>
+<th>median trial</th>
+<th>n (trials × iters)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>sydo_160f</code></td>
+<td>keygen</td>
+<td>901.2 k</td>
+<td>430 µs</td>
+<td>2.32e+03</td>
+<td>430 µs</td>
+<td>11240 (5 × 2248)</td>
+</tr>
+<tr>
+<td><code>sydo_160f</code></td>
+<td>sign</td>
+<td>443.76 M</td>
+<td>212 ms</td>
+<td>4.71</td>
+<td>212 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>sydo_160f</code></td>
+<td>verify</td>
+<td>449.76 M</td>
+<td>217 ms</td>
+<td>4.62</td>
+<td>215 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>sydo_160s</code></td>
+<td>keygen</td>
+<td>901.6 k</td>
+<td>431 µs</td>
+<td>2.32e+03</td>
+<td>431 µs</td>
+<td>11195 (5 × 2239)</td>
+</tr>
+<tr>
+<td><code>sydo_160s</code></td>
+<td>sign</td>
+<td>1.12 G</td>
+<td>537 ms</td>
+<td>1.86</td>
+<td>537 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>sydo_160s</code></td>
+<td>verify</td>
+<td>1.11 G</td>
+<td>529 ms</td>
+<td>1.89</td>
+<td>529 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>sydo_256f</code></td>
+<td>keygen</td>
+<td>1.60 M</td>
+<td>763 µs</td>
+<td>1.31e+03</td>
+<td>763 µs</td>
+<td>6325 (5 × 1265)</td>
+</tr>
+<tr>
+<td><code>sydo_256f</code></td>
+<td>sign</td>
+<td>967.48 M</td>
+<td>466 ms</td>
+<td>2.14</td>
+<td>464 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>sydo_256f</code></td>
+<td>verify</td>
+<td>1.00 G</td>
+<td>481 ms</td>
+<td>2.08</td>
+<td>478 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>sydo_256s</code></td>
+<td>keygen</td>
+<td>1.60 M</td>
+<td>763 µs</td>
+<td>1.31e+03</td>
+<td>763 µs</td>
+<td>6405 (5 × 1281)</td>
+</tr>
+<tr>
+<td><code>sydo_256s</code></td>
+<td>sign</td>
+<td>2.40 G</td>
+<td>1.16 s</td>
+<td>0.865</td>
+<td>1.16 s</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>sydo_256s</code></td>
+<td>verify</td>
+<td>2.43 G</td>
+<td>1.17 s</td>
+<td>0.856</td>
+<td>1.17 s</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>sydo_512f</code></td>
+<td>keygen</td>
+<td>577.0 k</td>
+<td>276 µs</td>
+<td>3.62e+03</td>
+<td>277 µs</td>
+<td>17220 (5 × 3444)</td>
+</tr>
+<tr>
+<td><code>sydo_512f</code></td>
+<td>sign</td>
+<td>2.49 G</td>
+<td>1.2 s</td>
+<td>0.833</td>
+<td>1.2 s</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>sydo_512f</code></td>
+<td>verify</td>
+<td>2.65 G</td>
+<td>1.27 s</td>
+<td>0.787</td>
+<td>1.27 s</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>sydo_512s</code></td>
+<td>keygen</td>
+<td>570.3 k</td>
+<td>273 µs</td>
+<td>3.66e+03</td>
+<td>273 µs</td>
+<td>16530 (5 × 3306)</td>
+</tr>
+<tr>
+<td><code>sydo_512s</code></td>
+<td>sign</td>
+<td>4.30 G</td>
+<td>2.07 s</td>
+<td>0.482</td>
+<td>2.08 s</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>sydo_512s</code></td>
+<td>verify</td>
+<td>4.36 G</td>
+<td>2.1 s</td>
+<td>0.477</td>
+<td>2.1 s</td>
+<td>100 (5 × 20)</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="5-resource-consumption">5. Resource consumption</h2>
+<p>Static memory is approximated by the library's loadable ELF segments; peak memory is the process high-water mark (VmHWM) including the benchmark driver and libc, so both are upper-bound proxies rather than isolated algorithm memory.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>operation</th>
+<th>static: ELF image (bytes)</th>
+<th>baseline RSS</th>
+<th>peak RSS</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>sydo_160f</code></td>
+<td>keygen</td>
+<td>269273</td>
+<td>1804 KiB</td>
+<td>1872 KiB</td>
+</tr>
+<tr>
+<td><code>sydo_160f</code></td>
+<td>sign</td>
+<td>269273</td>
+<td>1808 KiB</td>
+<td>4076 KiB</td>
+</tr>
+<tr>
+<td><code>sydo_160f</code></td>
+<td>verify</td>
+<td>269273</td>
+<td>2156 KiB</td>
+<td>3668 KiB</td>
+</tr>
+<tr>
+<td><code>sydo_160s</code></td>
+<td>keygen</td>
+<td>269273</td>
+<td>1764 KiB</td>
+<td>1896 KiB</td>
+</tr>
+<tr>
+<td><code>sydo_160s</code></td>
+<td>sign</td>
+<td>269273</td>
+<td>1808 KiB</td>
+<td>6396 KiB</td>
+</tr>
+<tr>
+<td><code>sydo_160s</code></td>
+<td>verify</td>
+<td>269273</td>
+<td>2188 KiB</td>
+<td>6024 KiB</td>
+</tr>
+<tr>
+<td><code>sydo_256f</code></td>
+<td>keygen</td>
+<td>269273</td>
+<td>1816 KiB</td>
+<td>1916 KiB</td>
+</tr>
+<tr>
+<td><code>sydo_256f</code></td>
+<td>sign</td>
+<td>269273</td>
+<td>1820 KiB</td>
+<td>6512 KiB</td>
+</tr>
+<tr>
+<td><code>sydo_256f</code></td>
+<td>verify</td>
+<td>269273</td>
+<td>2272 KiB</td>
+<td>6300 KiB</td>
+</tr>
+<tr>
+<td><code>sydo_256s</code></td>
+<td>keygen</td>
+<td>269273</td>
+<td>1772 KiB</td>
+<td>1896 KiB</td>
+</tr>
+<tr>
+<td><code>sydo_256s</code></td>
+<td>sign</td>
+<td>269273</td>
+<td>1820 KiB</td>
+<td>12576 KiB</td>
+</tr>
+<tr>
+<td><code>sydo_256s</code></td>
+<td>verify</td>
+<td>269273</td>
+<td>2328 KiB</td>
+<td>12404 KiB</td>
+</tr>
+<tr>
+<td><code>sydo_512f</code></td>
+<td>keygen</td>
+<td>269273</td>
+<td>1880 KiB</td>
+<td>1944 KiB</td>
+</tr>
+<tr>
+<td><code>sydo_512f</code></td>
+<td>sign</td>
+<td>269273</td>
+<td>1844 KiB</td>
+<td>18240 KiB</td>
+</tr>
+<tr>
+<td><code>sydo_512f</code></td>
+<td>verify</td>
+<td>269273</td>
+<td>2252 KiB</td>
+<td>18004 KiB</td>
+</tr>
+<tr>
+<td><code>sydo_512s</code></td>
+<td>keygen</td>
+<td>269273</td>
+<td>1852 KiB</td>
+<td>1916 KiB</td>
+</tr>
+<tr>
+<td><code>sydo_512s</code></td>
+<td>sign</td>
+<td>269273</td>
+<td>1820 KiB</td>
+<td>42596 KiB</td>
+</tr>
+<tr>
+<td><code>sydo_512s</code></td>
+<td>verify</td>
+<td>269273</td>
+<td>2404 KiB</td>
+<td>42404 KiB</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="6-transmission-and-storage-overhead">6. Transmission and storage overhead</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>public key</th>
+<th>secret key</th>
+<th>signature</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>sydo_160f</code></td>
+<td>80</td>
+<td>174</td>
+<td>6724</td>
+</tr>
+<tr>
+<td><code>sydo_160s</code></td>
+<td>80</td>
+<td>174</td>
+<td>5428</td>
+</tr>
+<tr>
+<td><code>sydo_256f</code></td>
+<td>128</td>
+<td>278</td>
+<td>17604</td>
+</tr>
+<tr>
+<td><code>sydo_256s</code></td>
+<td>128</td>
+<td>278</td>
+<td>14444</td>
+</tr>
+<tr>
+<td><code>sydo_512f</code></td>
+<td>246</td>
+<td>534</td>
+<td>67716</td>
+</tr>
+<tr>
+<td><code>sydo_512s</code></td>
+<td>246</td>
+<td>534</td>
+<td>56672</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="symmetric-primitives">Symmetric primitives</h2>
+<p><a href="../symmetric-survey.html">Survey</a> verdict: <strong>mixed</strong> — hashing via pseudoXOF; PRGs via own AES/Rijndael and a BLAKE2s-round cipher</p>
+<p>Share of each operation spent in the ICCS placeholder hash functions and in the ICCS DRNG (reference build, measured in the same run with link-time wrappers):</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>operation</th>
+<th>pseudohash/XOF/sm3</th>
+<th>DRNG</th>
+<th>calls per operation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>sydo_160f</code></td>
+<td>keygen</td>
+<td>1.3%</td>
+<td>0.7%</td>
+<td>drng 1, pseudoXOF 8</td>
+</tr>
+<tr>
+<td><code>sydo_160f</code></td>
+<td>sign</td>
+<td>2.1%</td>
+<td>0.0%</td>
+<td>drng 1, pseudoXOF 35.4</td>
+</tr>
+<tr>
+<td><code>sydo_160f</code></td>
+<td>verify</td>
+<td>2.1%</td>
+<td>0.0%</td>
+<td>pseudoXOF 25</td>
+</tr>
+<tr>
+<td><code>sydo_160s</code></td>
+<td>keygen</td>
+<td>1.3%</td>
+<td>0.7%</td>
+<td>drng 1, pseudoXOF 8</td>
+</tr>
+<tr>
+<td><code>sydo_160s</code></td>
+<td>sign</td>
+<td>5.3%</td>
+<td>0.0%</td>
+<td>drng 1, pseudoXOF 1.71e+03</td>
+</tr>
+<tr>
+<td><code>sydo_160s</code></td>
+<td>verify</td>
+<td>4.5%</td>
+<td>0.0%</td>
+<td>pseudoXOF 19</td>
+</tr>
+<tr>
+<td><code>sydo_256f</code></td>
+<td>keygen</td>
+<td>1.1%</td>
+<td>0.4%</td>
+<td>drng 1, pseudoXOF 12</td>
+</tr>
+<tr>
+<td><code>sydo_256f</code></td>
+<td>sign</td>
+<td>2.5%</td>
+<td>0.0%</td>
+<td>drng 1, pseudoXOF 50</td>
+</tr>
+<tr>
+<td><code>sydo_256f</code></td>
+<td>verify</td>
+<td>2.5%</td>
+<td>0.0%</td>
+<td>pseudoXOF 37</td>
+</tr>
+<tr>
+<td><code>sydo_256s</code></td>
+<td>keygen</td>
+<td>1.1%</td>
+<td>0.4%</td>
+<td>drng 1, pseudoXOF 12</td>
+</tr>
+<tr>
+<td><code>sydo_256s</code></td>
+<td>sign</td>
+<td>5.5%</td>
+<td>0.0%</td>
+<td>drng 1, pseudoXOF 145</td>
+</tr>
+<tr>
+<td><code>sydo_256s</code></td>
+<td>verify</td>
+<td>5.4%</td>
+<td>0.0%</td>
+<td>pseudoXOF 28</td>
+</tr>
+<tr>
+<td><code>sydo_512f</code></td>
+<td>keygen</td>
+<td>12%</td>
+<td>1.6%</td>
+<td>drng 1, pseudoXOF 23</td>
+</tr>
+<tr>
+<td><code>sydo_512f</code></td>
+<td>sign</td>
+<td>7.8%</td>
+<td>0.0%</td>
+<td>drng 1, pseudoXOF 97.3</td>
+</tr>
+<tr>
+<td><code>sydo_512f</code></td>
+<td>verify</td>
+<td>7.4%</td>
+<td>0.0%</td>
+<td>pseudoXOF 69</td>
+</tr>
+<tr>
+<td><code>sydo_512s</code></td>
+<td>keygen</td>
+<td>11%</td>
+<td>1.6%</td>
+<td>drng 1, pseudoXOF 23</td>
+</tr>
+<tr>
+<td><code>sydo_512s</code></td>
+<td>sign</td>
+<td>26%</td>
+<td>0.0%</td>
+<td>drng 1, pseudoXOF 2.98e+03</td>
+</tr>
+<tr>
+<td><code>sydo_512s</code></td>
+<td>verify</td>
+<td>24%</td>
+<td>0.0%</td>
+<td>pseudoXOF 51</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="7-raw-evidence-index">7. Raw evidence index</h2>
+<p>Paths are relative to <code>performance/data/x86_1/</code> in the <a href="https://github.com/ngcc-dev/ngcc-harness">harness</a>; each JSON file records its commands, environment and trials.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>item</th>
+<th>file</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>sydo_160f</code></td>
+<td>KAT log (sha256 <code>2bf6097e2c78f39a…</code>)</td>
+<td><code>kat/sign-28/sydo_160f.log</code></td>
+</tr>
+<tr>
+<td><code>sydo_160f</code></td>
+<td>timing keygen</td>
+<td><code>records/sign-28/sydo_160f__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>sydo_160f</code></td>
+<td>timing sign</td>
+<td><code>records/sign-28/sydo_160f__sign.json</code></td>
+</tr>
+<tr>
+<td><code>sydo_160f</code></td>
+<td>timing verify</td>
+<td><code>records/sign-28/sydo_160f__verify.json</code></td>
+</tr>
+<tr>
+<td><code>sydo_160f</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/sign-28/sydo_160f__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>sydo_160f</code></td>
+<td>hash profile sign</td>
+<td><code>profile/sign-28/sydo_160f__sign.json</code></td>
+</tr>
+<tr>
+<td><code>sydo_160f</code></td>
+<td>hash profile verify</td>
+<td><code>profile/sign-28/sydo_160f__verify.json</code></td>
+</tr>
+<tr>
+<td><code>sydo_160s</code></td>
+<td>KAT log (sha256 <code>074c21af4137e488…</code>)</td>
+<td><code>kat/sign-28/sydo_160s.log</code></td>
+</tr>
+<tr>
+<td><code>sydo_160s</code></td>
+<td>timing keygen</td>
+<td><code>records/sign-28/sydo_160s__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>sydo_160s</code></td>
+<td>timing sign</td>
+<td><code>records/sign-28/sydo_160s__sign.json</code></td>
+</tr>
+<tr>
+<td><code>sydo_160s</code></td>
+<td>timing verify</td>
+<td><code>records/sign-28/sydo_160s__verify.json</code></td>
+</tr>
+<tr>
+<td><code>sydo_160s</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/sign-28/sydo_160s__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>sydo_160s</code></td>
+<td>hash profile sign</td>
+<td><code>profile/sign-28/sydo_160s__sign.json</code></td>
+</tr>
+<tr>
+<td><code>sydo_160s</code></td>
+<td>hash profile verify</td>
+<td><code>profile/sign-28/sydo_160s__verify.json</code></td>
+</tr>
+<tr>
+<td><code>sydo_256f</code></td>
+<td>KAT log (sha256 <code>b0647264ed92bf7c…</code>)</td>
+<td><code>kat/sign-28/sydo_256f.log</code></td>
+</tr>
+<tr>
+<td><code>sydo_256f</code></td>
+<td>timing keygen</td>
+<td><code>records/sign-28/sydo_256f__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>sydo_256f</code></td>
+<td>timing sign</td>
+<td><code>records/sign-28/sydo_256f__sign.json</code></td>
+</tr>
+<tr>
+<td><code>sydo_256f</code></td>
+<td>timing verify</td>
+<td><code>records/sign-28/sydo_256f__verify.json</code></td>
+</tr>
+<tr>
+<td><code>sydo_256f</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/sign-28/sydo_256f__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>sydo_256f</code></td>
+<td>hash profile sign</td>
+<td><code>profile/sign-28/sydo_256f__sign.json</code></td>
+</tr>
+<tr>
+<td><code>sydo_256f</code></td>
+<td>hash profile verify</td>
+<td><code>profile/sign-28/sydo_256f__verify.json</code></td>
+</tr>
+<tr>
+<td><code>sydo_256s</code></td>
+<td>KAT log (sha256 <code>4b89775e4fd29635…</code>)</td>
+<td><code>kat/sign-28/sydo_256s.log</code></td>
+</tr>
+<tr>
+<td><code>sydo_256s</code></td>
+<td>timing keygen</td>
+<td><code>records/sign-28/sydo_256s__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>sydo_256s</code></td>
+<td>timing sign</td>
+<td><code>records/sign-28/sydo_256s__sign.json</code></td>
+</tr>
+<tr>
+<td><code>sydo_256s</code></td>
+<td>timing verify</td>
+<td><code>records/sign-28/sydo_256s__verify.json</code></td>
+</tr>
+<tr>
+<td><code>sydo_256s</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/sign-28/sydo_256s__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>sydo_256s</code></td>
+<td>hash profile sign</td>
+<td><code>profile/sign-28/sydo_256s__sign.json</code></td>
+</tr>
+<tr>
+<td><code>sydo_256s</code></td>
+<td>hash profile verify</td>
+<td><code>profile/sign-28/sydo_256s__verify.json</code></td>
+</tr>
+<tr>
+<td><code>sydo_512f</code></td>
+<td>KAT log (sha256 <code>801ca661746d20c3…</code>)</td>
+<td><code>kat/sign-28/sydo_512f.log</code></td>
+</tr>
+<tr>
+<td><code>sydo_512f</code></td>
+<td>timing keygen</td>
+<td><code>records/sign-28/sydo_512f__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>sydo_512f</code></td>
+<td>timing sign</td>
+<td><code>records/sign-28/sydo_512f__sign.json</code></td>
+</tr>
+<tr>
+<td><code>sydo_512f</code></td>
+<td>timing verify</td>
+<td><code>records/sign-28/sydo_512f__verify.json</code></td>
+</tr>
+<tr>
+<td><code>sydo_512f</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/sign-28/sydo_512f__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>sydo_512f</code></td>
+<td>hash profile sign</td>
+<td><code>profile/sign-28/sydo_512f__sign.json</code></td>
+</tr>
+<tr>
+<td><code>sydo_512f</code></td>
+<td>hash profile verify</td>
+<td><code>profile/sign-28/sydo_512f__verify.json</code></td>
+</tr>
+<tr>
+<td><code>sydo_512s</code></td>
+<td>KAT log (sha256 <code>31c1983d7fa39ac0…</code>)</td>
+<td><code>kat/sign-28/sydo_512s.log</code></td>
+</tr>
+<tr>
+<td><code>sydo_512s</code></td>
+<td>timing keygen</td>
+<td><code>records/sign-28/sydo_512s__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>sydo_512s</code></td>
+<td>timing sign</td>
+<td><code>records/sign-28/sydo_512s__sign.json</code></td>
+</tr>
+<tr>
+<td><code>sydo_512s</code></td>
+<td>timing verify</td>
+<td><code>records/sign-28/sydo_512s__verify.json</code></td>
+</tr>
+<tr>
+<td><code>sydo_512s</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/sign-28/sydo_512s__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>sydo_512s</code></td>
+<td>hash profile sign</td>
+<td><code>profile/sign-28/sydo_512s__sign.json</code></td>
+</tr>
+<tr>
+<td><code>sydo_512s</code></td>
+<td>hash profile verify</td>
+<td><code>profile/sign-28/sydo_512s__verify.json</code></td>
+</tr>
+</tbody>
+</table></div>
+<p>Scripts: <code>performance/campaign.py</code>, <code>performance/ngcc_perf.c</code>, <code>performance/hashprof/</code> in the <a href="https://github.com/ngcc-dev/ngcc-harness">harness</a>.</p>
+</main>
+<footer class="site-footer">
+<p>Maintained by: <a href="mailto:markku-juhani.saarinen@tuni.fi">markku-juhani.saarinen@tuni.fi</a></p>
+<p>Submissions are welcome via <a href="https://github.com/ngcc-dev/ngcc-harness/issues">GitHub issues</a>.</p>
+</footer>
+</body>
+</html>

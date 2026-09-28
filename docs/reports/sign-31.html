@@ -5,22 +5,22 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>ngcc.dev: TSUOV (sign-31)</title>
 <link rel="icon" type="image/png" href="../assets/mag-glass.png">
-<link rel="stylesheet" href="../assets/style.css?v=996d5cfd">
+<link rel="stylesheet" href="../assets/style.css?v=1fdb792d">
 </head>
 <body>
 <header class="site-header">
 <a class="brand" href="../index.html"><img class="brand-icon" src="../assets/mag-glass.png" alt="" width="28" height="28">ngcc.dev</a>
-<nav><a href="../index.html">Home</a><a href="../reports/index.html">Reports</a><a href="../constant-time/index.html">Constant-Time</a></nav>
+<nav><a href="../index.html">Home</a><a href="../reports/index.html">Reports</a><a href="../performance/x86_1/index.html">Performance</a><a href="../constant-time/index.html">Constant-Time</a></nav>
 </header>
-<main>
-<p class="crumb"><a href="../reports/index.html">Reports</a> › <code>sign-31</code> · <a href="../constant-time/sign-31.html">Constant-time review</a></p>
+<main class="">
+<p class="crumb"><a href="../reports/index.html">Reports</a> › <code>sign-31</code> · <a href="../constant-time/sign-31.html">Constant-time review</a> · <a href="../performance/x86_1/sign-31.html">Performance</a></p>
 
 <h1 id="tsuov-sign-31">TSUOV (sign-31)</h1>
 <div class="table-wrap"><table class="meta">
 <tr><th>Candidate</th><td>TSUOV</td></tr>
 <tr><th>Family</th><td>Multivariate</td></tr>
 <tr><th>Archive</th><td><a href="https://www.niccs.org.cn/niccs/Proposal/Public-Key%20Cryptographic%20Algorithms/Round%201%20candidates/TSUOV.zip">TSUOV.zip</a> (SHA-256: <code>7ab1effc5fe911c6ab9483ca44a9d9f6d6d911b03eee9f2873b384d97f9aee1d</code>)</td></tr>
-<tr><th>Specification</th><td><a href="https://github.com/ngcc-dev/ngcc-harness/raw/refs/heads/main/sign-31/sign-31-spec.pdf" title="Download sign-31-spec.pdf from GitHub">sign-31-spec.pdf</a>&nbsp;<a class="pdf-link" href="https://cdn.jsdelivr.net/gh/ngcc-dev/ngcc-harness@main/sign-31/sign-31-spec.pdf" title="Open the sign-31 specification PDF">PDF</a></td></tr>
+<tr><th>Specification</th><td><a href="https://github.com/ngcc-dev/ngcc-harness/raw/dc66c6cb3c06e75bdea0048e21fa4e13c63f00af/sign-31/sign-31-spec.pdf" title="Download sign-31-spec.pdf from GitHub">sign-31-spec.pdf</a>&nbsp;<a class="pdf-link" href="https://cdn.jsdelivr.net/gh/ngcc-dev/ngcc-harness@dc66c6cb3c06e75bdea0048e21fa4e13c63f00af/sign-31/sign-31-spec.pdf" title="Open the sign-31 specification PDF">PDF</a></td></tr>
 </table></div>
 
 <h2 class="issue-heading issue-heading-first" id="sign-31-1-a-512-bit-prehash-caps-forgery-security-at-256-bits">sign-31-1: A 512-bit prehash caps forgery security at 256 bits</h2>
@@ -58,6 +58,7 @@
 </table></div>
 
 <p>The signing trapdoor builds a linear system from the private central map and fresh vinegar state. In <code>tsuov_core.c</code>, echelon reduction advances <code>j</code> until <code>EQN(j,c)</code> is nonzero (line 695), branches on rank (753, 785), and retries until consistency (984). These predicates contain secret intermediate values and control the signing execution trace. No full-key extraction or forgery from that trace is claimed; see <code>constant_time.md</code>.</p>
+<p>Constant-time fix (moderate, hence Medium): use constant-time Gaussian elimination that adds candidate pivot rows under masks, a well-known technique in constant-time UOV and MAYO implementations. It processes every row at every step, a moderate cost; a retry on a singular system is the usual accepted exception.</p>
 <h3 id="reproducing_1">Reproducing</h3>
 <p>Commands below run in a checkout of the <a href="https://github.com/ngcc-dev/ngcc-harness">ngcc-harness repository</a> with the candidate built (see its README).</p>
 <p>Inspect the included reference source at

@@ -5,7 +5,7 @@ Archive: [SQIsignTriangle.zip](https://www.niccs.org.cn/niccs/Proposal/Public-Ke
 
 ## sign-27-1: An all-zero signature aborts the verifier process
 
-Severity: Medium
+Severity: Low
 Status: Confirmed
 Layer: Implementation
 Affected: All four submitted reference levels; independently rerun on SQIsignTriangle_lvl1

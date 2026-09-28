@@ -5,22 +5,22 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>ngcc.dev: Rhyme (sign-22)</title>
 <link rel="icon" type="image/png" href="../assets/mag-glass.png">
-<link rel="stylesheet" href="../assets/style.css?v=996d5cfd">
+<link rel="stylesheet" href="../assets/style.css?v=1fdb792d">
 </head>
 <body>
 <header class="site-header">
 <a class="brand" href="../index.html"><img class="brand-icon" src="../assets/mag-glass.png" alt="" width="28" height="28">ngcc.dev</a>
-<nav><a href="../index.html">Home</a><a href="../reports/index.html">Reports</a><a href="../constant-time/index.html">Constant-Time</a></nav>
+<nav><a href="../index.html">Home</a><a href="../reports/index.html">Reports</a><a href="../performance/x86_1/index.html">Performance</a><a href="../constant-time/index.html">Constant-Time</a></nav>
 </header>
-<main>
-<p class="crumb"><a href="../reports/index.html">Reports</a> › <code>sign-22</code> · <a href="../constant-time/sign-22.html">Constant-time review</a></p>
+<main class="">
+<p class="crumb"><a href="../reports/index.html">Reports</a> › <code>sign-22</code> · <a href="../constant-time/sign-22.html">Constant-time review</a> · <a href="../performance/x86_1/sign-22.html">Performance</a></p>
 
 <h1 id="rhyme-sign-22">Rhyme (sign-22)</h1>
 <div class="table-wrap"><table class="meta">
 <tr><th>Candidate</th><td>Rhyme</td></tr>
 <tr><th>Family</th><td>Lattice-based</td></tr>
 <tr><th>Archive</th><td><a href="https://www.niccs.org.cn/niccs/Proposal/Public-Key%20Cryptographic%20Algorithms/Round%201%20candidates/Rhyme.zip">Rhyme.zip</a> (SHA-256: <code>7b509d21c6674bc23751b8743cb7c2a4a07ee295fafe04e2fa95c0613160bdfd</code>)</td></tr>
-<tr><th>Specification</th><td><a href="https://github.com/ngcc-dev/ngcc-harness/raw/refs/heads/main/sign-22/sign-22-spec.pdf" title="Download sign-22-spec.pdf from GitHub">sign-22-spec.pdf</a>&nbsp;<a class="pdf-link" href="https://cdn.jsdelivr.net/gh/ngcc-dev/ngcc-harness@main/sign-22/sign-22-spec.pdf" title="Open the sign-22 specification PDF">PDF</a></td></tr>
+<tr><th>Specification</th><td><a href="https://github.com/ngcc-dev/ngcc-harness/raw/dc66c6cb3c06e75bdea0048e21fa4e13c63f00af/sign-22/sign-22-spec.pdf" title="Download sign-22-spec.pdf from GitHub">sign-22-spec.pdf</a>&nbsp;<a class="pdf-link" href="https://cdn.jsdelivr.net/gh/ngcc-dev/ngcc-harness@dc66c6cb3c06e75bdea0048e21fa4e13c63f00af/sign-22/sign-22-spec.pdf" title="Open the sign-22 specification PDF">PDF</a></td></tr>
 </table></div>
 
 <h2 class="issue-heading issue-heading-first" id="sign-22-1-the-implemented-message-representative-caps-forgery-security-at-256-bits">sign-22-1: The implemented message representative caps forgery security at 256 bits</h2>
@@ -65,6 +65,33 @@ physical PDF pages 29–32 and 50–51 and the source digest constant.</p>
 </code></pre>
 <p>The <code>sign-22-2</code> check verifies the normative KeyGen algorithm on physical PDF
 pages 29 and 50–51 and the source root constant.</p>
+<h2 class="issue-heading" id="sign-22-3-rhyme-sm3-omits-the-specified-doubled-width-parity-mask">sign-22-3: Rhyme-SM3 omits the specified doubled-width parity mask</h2>
+
+<div class="table-wrap"><table class="meta issue-meta">
+<tr><th>Severity</th><td><span class="sev sev-medium">Medium</span></td></tr>
+<tr><th>Scope</th><td>implementation</td></tr>
+<tr><th>Status</th><td><span class="issue-status status-confirmed">Confirmed</span></td></tr>
+<tr><th>Affected</th><td>Reference and optimized Rhyme-SM3-128, -256, -384, and -512; the SHAKE implementations are controls</td></tr>
+<tr><th>Discovery</th><td>Moderate</td></tr>
+<tr><th>Exploitation</th><td>Valid signatures give noisy linear equations in the secret parity; key recovery or forgery not demonstrated</td></tr>
+<tr><th>Credit</th><td>Yijian Liu, with AI assistance</td></tr>
+<tr><th>Date</th><td>2026-09-28</td></tr>
+</table></div>
+<p>Original source: <a href="https://list.niccs.org.cn/archives/list/pkcforum@list.niccs.org.cn/message/32MEEUHEHAW2TQD74RYHELHXNBUJKU5I/">Liu's PKC Forum post</a></p>
+<p>Algorithm 6 samples <code>X'</code> from <code>D_Z,sigma</code> but requires the independent masking noise <code>e_bottom</code> to come from <code>D_Z,2sigma</code>. Theorem 4.3 says that the doubled width is essential to make its parity statistically close to uniform and uses an identical <code>D_Z,2sigma</code> sample in the simulator. Every submitted SM3 signer instead calls the ordinary <code>SampleGauss</code> for both values (<code>src/sign.c:333–334</code>); that function always uses the <code>rhyme_cdt_g</code> table (<code>src/sampler.c:175–181</code>). Both the reference and optimized trees are affected. The SHAKE trees contain the missing separate <code>SampleGaussE</code>/<code>rhyme_cdt_e</code> path and provide a direct control.</p>
+<p>Reducing a valid signature modulo two removes the <code>2 B' X'</code> term. The rejection sampler's offset has the challenge's parity, so the remaining public relation is</p>
+<p><code>z_bottom mod 2 = s_tail * c + e_bottom mod 2</code>.</p>
+<p>Exact evaluation of the submitted CDT gives <code>E[(-1)^e]</code> equal to <code>6.3322e-4</code>, <code>4.8828e-4</code>, <code>4.1941e-4</code>, and <code>3.7652e-4</code> for the four SM3 levels. Thus signatures carry secret-dependent noisy parity equations, and Theorem 4.3's parity-masking argument and stated <code>2sigma</code> condition—and the later bounds that invoke them—do not apply to the submitted SM3 implementations. This report does not claim an efficient decoder for those equations, a signing-key recovery, or a forgery; that boundary keeps the finding at Medium.</p>
+<p>Use the specified doubled-width sampler/table for <code>e_bottom</code>, retaining the already distinct nonce/domain used by the SM3 signer, and re-evaluate the complete transcript distribution. The submitted SHAKE implementation provides a working model for the separate sampler.</p>
+<h3 id="reproducing_2">Reproducing</h3>
+<p>Commands below run in a checkout of the <a href="https://github.com/ngcc-dev/ngcc-harness">ngcc-harness repository</a> with the candidate built (see its README).</p>
+<pre><code class="language-sh">python3 sign-22/reproduce_sm3_parity_bias.py
+</code></pre>
+<p>The script checks both implementation trees, confirms the SHAKE control, and computes the four exact CDT parity biases.</p>
+<p>An optional accepted-transcript experiment generates and verifies 25,000 deterministic Rhyme-SM3-128 signatures, then scores the predicted parity relation over 25.6 million bottom-response coefficients:</p>
+<pre><code class="language-sh">sh sign-22/reproduce_sm3_parity_runtime.sh
+</code></pre>
+<p>The checked run measured bias <code>7.025e-4</code>, versus the exact raw-CDT value <code>6.3322e-4</code>; a zero-vector wrong predictor measured <code>-1.028125e-4</code>. It takes about two minutes on this host.</p>
 </main>
 <footer class="site-footer">
 <p>Maintained by: <a href="mailto:markku-juhani.saarinen@tuni.fi">markku-juhani.saarinen@tuni.fi</a></p>

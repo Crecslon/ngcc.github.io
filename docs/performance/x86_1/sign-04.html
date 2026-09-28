@@ -1,0 +1,1075 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ngcc.dev: sign-04 CEDRUSɑ — performance on x86-64 (system x861)</title>
+<link rel="icon" type="image/png" href="../../assets/mag-glass.png">
+<link rel="stylesheet" href="../../assets/style.css?v=1fdb792d">
+</head>
+<body>
+<header class="site-header">
+<a class="brand" href="../../index.html"><img class="brand-icon" src="../../assets/mag-glass.png" alt="" width="28" height="28">ngcc.dev</a>
+<nav><a href="../../index.html">Home</a><a href="../../reports/index.html">Reports</a><a href="../../performance/x86_1/index.html">Performance</a><a href="../../constant-time/index.html">Constant-Time</a></nav>
+</header>
+<main class="">
+<!-- synchronized from harness: sign-04/perf_x86_1.md -->
+<h1 id="sign-04-cedrus-performance-on-x86-64-system-x86_1">sign-04 CEDRUSɑ — performance on x86-64 (system x86_1)</h1>
+<p><a href="index.html">Performance x86_1</a> › <code>sign-04</code> · <a href="method.html">method</a> · <a href="https://www.niccs.org.cn/niccs/Round1Additional/pc/content/content_2101561076644139008.html">NICCS page</a></p>
+<p>Independent measurement following the structure of the NICCS x86 self-assessment guide, §3.5 (1)–(7). Not a submitter self-assessment.</p>
+<h2 id="1-basic-information">1. Basic information</h2>
+<ul>
+<li>Category: public-key algorithm; function: digital signature</li>
+<li>Algorithm: CEDRUSɑ</li>
+<li>Implementation versions measured: reference</li>
+<li>Parameter sets: <code>CEDRUSALPHA-160f</code>, <code>CEDRUSALPHA-160s</code>, <code>CEDRUSALPHA-256f</code>, <code>CEDRUSALPHA-256s</code>, <code>CEDRUSALPHA-384f</code>, <code>CEDRUSALPHA-384s</code>, <code>CEDRUSALPHA-512f</code>, <code>CEDRUSALPHA-512s</code></li>
+</ul>
+<h2 id="2-assessment-environment">2. Assessment environment</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>item</th>
+<th>value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>processor</td>
+<td>12th Gen Intel(R) Core(TM) i7-12700 (CPU 2, one core)</td>
+</tr>
+<tr>
+<td>clock</td>
+<td>max 2.10 GHz, governor performance, turbo off, SMT off</td>
+</tr>
+<tr>
+<td>memory</td>
+<td>31788 MiB</td>
+</tr>
+<tr>
+<td>OS / kernel</td>
+<td>Debian GNU/Linux 13 (trixie) / 6.12.107+deb13-amd64</td>
+</tr>
+<tr>
+<td>compiler / build tool</td>
+<td>gcc (Debian 14.2.0-19) 14.2.0 / cmake version 3.31.6</td>
+</tr>
+<tr>
+<td>campaign start / end (UTC)</td>
+<td>2026-09-25T10:02:21 / 2026-09-28T04:35:59</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="3-functional-testing-kat">3. Functional testing (KAT)</h2>
+<p>Each library was checked against the submitted KAT vectors (SHA-256 manifest <code>sign-04/kat.sha256</code> in the harness) before timing.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>build flags</th>
+<th>KAT</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>CEDRUSALPHA-160f</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-160s</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-256f</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-256s</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-384f</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-384s</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-512f</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-512s</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="4-performance">4. Performance</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>operation</th>
+<th>mean cycles</th>
+<th>mean time</th>
+<th>ops/s</th>
+<th>median trial</th>
+<th>n (trials × iters)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>CEDRUSALPHA-160f</code></td>
+<td>keygen</td>
+<td>16.05 M</td>
+<td>7.67 ms</td>
+<td>130</td>
+<td>7.67 ms</td>
+<td>625 (5 × 125)</td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-160f</code></td>
+<td>sign</td>
+<td>570.59 M</td>
+<td>274 ms</td>
+<td>3.65</td>
+<td>273 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-160f</code></td>
+<td>verify</td>
+<td>17.73 M</td>
+<td>8.47 ms</td>
+<td>118</td>
+<td>8.47 ms</td>
+<td>590 (5 × 118)</td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-160s</code></td>
+<td>keygen</td>
+<td>523.56 M</td>
+<td>251 ms</td>
+<td>3.98</td>
+<td>250 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-160s</code></td>
+<td>sign</td>
+<td>7.78 G</td>
+<td>3.71 s</td>
+<td>0.269</td>
+<td>3.71 s</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-160s</code></td>
+<td>verify</td>
+<td>19.14 M</td>
+<td>9.14 ms</td>
+<td>109</td>
+<td>9.14 ms</td>
+<td>540 (5 × 108)</td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-256f</code></td>
+<td>keygen</td>
+<td>52.40 M</td>
+<td>25 ms</td>
+<td>40</td>
+<td>25 ms</td>
+<td>175 (5 × 35)</td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-256f</code></td>
+<td>sign</td>
+<td>1.35 G</td>
+<td>646 ms</td>
+<td>1.55</td>
+<td>646 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-256f</code></td>
+<td>verify</td>
+<td>24.20 M</td>
+<td>11.6 ms</td>
+<td>86.5</td>
+<td>11.6 ms</td>
+<td>435 (5 × 87)</td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-256s</code></td>
+<td>keygen</td>
+<td>793.87 M</td>
+<td>379 ms</td>
+<td>2.64</td>
+<td>379 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-256s</code></td>
+<td>sign</td>
+<td>12.06 G</td>
+<td>5.79 s</td>
+<td>0.173</td>
+<td>5.79 s</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-256s</code></td>
+<td>verify</td>
+<td>29.24 M</td>
+<td>14 ms</td>
+<td>71.6</td>
+<td>14 ms</td>
+<td>360 (5 × 72)</td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-384f</code></td>
+<td>keygen</td>
+<td>637.31 M</td>
+<td>307 ms</td>
+<td>3.26</td>
+<td>305 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-384f</code></td>
+<td>sign</td>
+<td>12.46 G</td>
+<td>5.97 s</td>
+<td>0.168</td>
+<td>5.97 s</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-384f</code></td>
+<td>verify</td>
+<td>123.74 M</td>
+<td>59.1 ms</td>
+<td>16.9</td>
+<td>59 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-384s</code></td>
+<td>keygen</td>
+<td>4.10 G</td>
+<td>1.96 s</td>
+<td>0.51</td>
+<td>1.96 s</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-384s</code></td>
+<td>sign</td>
+<td>44.24 G</td>
+<td>21.2 s</td>
+<td>0.0471</td>
+<td>21.2 s</td>
+<td>40 (5 × 8)</td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-384s</code></td>
+<td>verify</td>
+<td>68.37 M</td>
+<td>32.7 ms</td>
+<td>30.6</td>
+<td>32.6 ms</td>
+<td>155 (5 × 31)</td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-512f</code></td>
+<td>keygen</td>
+<td>1.60 G</td>
+<td>766 ms</td>
+<td>1.31</td>
+<td>764 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-512f</code></td>
+<td>sign</td>
+<td>21.00 G</td>
+<td>10 s</td>
+<td>0.0997</td>
+<td>10 s</td>
+<td>85 (5 × 17)</td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-512f</code></td>
+<td>verify</td>
+<td>145.58 M</td>
+<td>69.5 ms</td>
+<td>14.4</td>
+<td>69.5 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-512s</code></td>
+<td>keygen</td>
+<td>7.68 G</td>
+<td>3.67 s</td>
+<td>0.273</td>
+<td>3.67 s</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-512s</code></td>
+<td>sign</td>
+<td>88.57 G</td>
+<td>42.3 s</td>
+<td>0.0236</td>
+<td>42.3 s</td>
+<td>20 (5 × 4)</td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-512s</code></td>
+<td>verify</td>
+<td>128.14 M</td>
+<td>61.2 ms</td>
+<td>16.3</td>
+<td>61.2 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="5-resource-consumption">5. Resource consumption</h2>
+<p>Static memory is approximated by the library's loadable ELF segments; peak memory is the process high-water mark (VmHWM) including the benchmark driver and libc, so both are upper-bound proxies rather than isolated algorithm memory.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>operation</th>
+<th>static: ELF image (bytes)</th>
+<th>baseline RSS</th>
+<th>peak RSS</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>CEDRUSALPHA-160f</code></td>
+<td>keygen</td>
+<td>250461</td>
+<td>1728 KiB</td>
+<td>2028 KiB</td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-160f</code></td>
+<td>sign</td>
+<td>250461</td>
+<td>1940 KiB</td>
+<td>2016 KiB</td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-160f</code></td>
+<td>verify</td>
+<td>250461</td>
+<td>1932 KiB</td>
+<td>1996 KiB</td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-160s</code></td>
+<td>keygen</td>
+<td>379333</td>
+<td>1696 KiB</td>
+<td>2092 KiB</td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-160s</code></td>
+<td>sign</td>
+<td>379333</td>
+<td>2044 KiB</td>
+<td>2144 KiB</td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-160s</code></td>
+<td>verify</td>
+<td>379333</td>
+<td>2052 KiB</td>
+<td>2120 KiB</td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-256f</code></td>
+<td>keygen</td>
+<td>1126817</td>
+<td>1756 KiB</td>
+<td>2884 KiB</td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-256f</code></td>
+<td>sign</td>
+<td>1126817</td>
+<td>2812 KiB</td>
+<td>2876 KiB</td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-256f</code></td>
+<td>verify</td>
+<td>1126817</td>
+<td>2800 KiB</td>
+<td>2896 KiB</td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-256s</code></td>
+<td>keygen</td>
+<td>1691081</td>
+<td>1712 KiB</td>
+<td>3412 KiB</td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-256s</code></td>
+<td>sign</td>
+<td>1691081</td>
+<td>3284 KiB</td>
+<td>3416 KiB</td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-256s</code></td>
+<td>verify</td>
+<td>1691081</td>
+<td>3332 KiB</td>
+<td>3420 KiB</td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-384f</code></td>
+<td>keygen</td>
+<td>4504613</td>
+<td>1788 KiB</td>
+<td>6188 KiB</td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-384f</code></td>
+<td>sign</td>
+<td>4504613</td>
+<td>6088 KiB</td>
+<td>6200 KiB</td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-384f</code></td>
+<td>verify</td>
+<td>4504613</td>
+<td>6092 KiB</td>
+<td>6160 KiB</td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-384s</code></td>
+<td>keygen</td>
+<td>3942709</td>
+<td>1768 KiB</td>
+<td>5632 KiB</td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-384s</code></td>
+<td>sign</td>
+<td>3942709</td>
+<td>5552 KiB</td>
+<td>5640 KiB</td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-384s</code></td>
+<td>verify</td>
+<td>3942709</td>
+<td>5564 KiB</td>
+<td>5656 KiB</td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-512f</code></td>
+<td>keygen</td>
+<td>10104321</td>
+<td>1684 KiB</td>
+<td>11580 KiB</td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-512f</code></td>
+<td>sign</td>
+<td>10104321</td>
+<td>11480 KiB</td>
+<td>11704 KiB</td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-512f</code></td>
+<td>verify</td>
+<td>10104321</td>
+<td>11552 KiB</td>
+<td>11684 KiB</td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-512s</code></td>
+<td>keygen</td>
+<td>11401761</td>
+<td>1812 KiB</td>
+<td>12900 KiB</td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-512s</code></td>
+<td>sign</td>
+<td>11401761</td>
+<td>12828 KiB</td>
+<td>12896 KiB</td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-512s</code></td>
+<td>verify</td>
+<td>11401761</td>
+<td>12812 KiB</td>
+<td>12908 KiB</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="6-transmission-and-storage-overhead">6. Transmission and storage overhead</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>public key</th>
+<th>secret key</th>
+<th>signature</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>CEDRUSALPHA-160f</code></td>
+<td>40</td>
+<td>80</td>
+<td>19420</td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-160s</code></td>
+<td>40</td>
+<td>80</td>
+<td>10300</td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-256f</code></td>
+<td>64</td>
+<td>128</td>
+<td>43296</td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-256s</code></td>
+<td>64</td>
+<td>128</td>
+<td>25568</td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-384f</code></td>
+<td>96</td>
+<td>192</td>
+<td>76176</td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-384s</code></td>
+<td>96</td>
+<td>192</td>
+<td>60672</td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-512f</code></td>
+<td>128</td>
+<td>256</td>
+<td>127488</td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-512s</code></td>
+<td>128</td>
+<td>256</td>
+<td>98048</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="symmetric-primitives">Symmetric primitives</h2>
+<p><a href="../symmetric-survey.html">Survey</a> verdict: <strong>ICCS-only</strong></p>
+<p>Share of each operation spent in the ICCS placeholder hash functions and in the ICCS DRNG (reference build, measured in the same run with link-time wrappers):</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>operation</th>
+<th>pseudohash/XOF/sm3</th>
+<th>DRNG</th>
+<th>calls per operation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>CEDRUSALPHA-160f</code></td>
+<td>keygen</td>
+<td>98%</td>
+<td>0.0%</td>
+<td>drng 1, sm3hash 5.74e+03</td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-160f</code></td>
+<td>sign</td>
+<td>98%</td>
+<td>0.0%</td>
+<td>drng 1, pseudoXOF 1, sm3hash 2.05e+05</td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-160f</code></td>
+<td>verify</td>
+<td>98%</td>
+<td>0.0%</td>
+<td>pseudoXOF 1, sm3hash 6.09e+03</td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-160s</code></td>
+<td>keygen</td>
+<td>98%</td>
+<td>0.0%</td>
+<td>drng 1, sm3hash 1.85e+05</td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-160s</code></td>
+<td>sign</td>
+<td>98%</td>
+<td>0.0%</td>
+<td>drng 1, pseudoXOF 1, sm3hash 2.75e+06</td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-160s</code></td>
+<td>verify</td>
+<td>98%</td>
+<td>0.0%</td>
+<td>pseudoXOF 1, sm3hash 6.65e+03</td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-256f</code></td>
+<td>keygen</td>
+<td>98%</td>
+<td>0.0%</td>
+<td>drng 1, sm3hash 1.82e+04</td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-256f</code></td>
+<td>sign</td>
+<td>98%</td>
+<td>0.0%</td>
+<td>drng 1, pseudoXOF 1, sm3hash 4.64e+05</td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-256f</code></td>
+<td>verify</td>
+<td>97%</td>
+<td>0.0%</td>
+<td>pseudoXOF 1, sm3hash 8.01e+03</td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-256s</code></td>
+<td>keygen</td>
+<td>98%</td>
+<td>0.0%</td>
+<td>drng 1, sm3hash 2.78e+05</td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-256s</code></td>
+<td>sign</td>
+<td>98%</td>
+<td>0.0%</td>
+<td>drng 1, pseudoXOF 1, sm3hash 4.17e+06</td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-256s</code></td>
+<td>verify</td>
+<td>98%</td>
+<td>0.0%</td>
+<td>pseudoXOF 1, sm3hash 9.95e+03</td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-384f</code></td>
+<td>keygen</td>
+<td>99%</td>
+<td>0.0%</td>
+<td>drng 1, pseudoXOF 7.63e+04</td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-384f</code></td>
+<td>sign</td>
+<td>99%</td>
+<td>0.0%</td>
+<td>drng 1, pseudoXOF 1.51e+06</td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-384f</code></td>
+<td>verify</td>
+<td>99%</td>
+<td>0.0%</td>
+<td>pseudoXOF 1.45e+04</td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-384s</code></td>
+<td>keygen</td>
+<td>99%</td>
+<td>0.0%</td>
+<td>drng 1, pseudoXOF 4.92e+05</td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-384s</code></td>
+<td>sign</td>
+<td>99%</td>
+<td>0.0%</td>
+<td>drng 1, pseudoXOF 5.36e+06</td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-384s</code></td>
+<td>verify</td>
+<td>99%</td>
+<td>0.0%</td>
+<td>pseudoXOF 7.96e+03</td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-512f</code></td>
+<td>keygen</td>
+<td>99%</td>
+<td>0.0%</td>
+<td>drng 1, pseudoXOF 1.9e+05</td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-512f</code></td>
+<td>sign</td>
+<td>99%</td>
+<td>0.0%</td>
+<td>drng 1, pseudoXOF 2.5e+06</td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-512f</code></td>
+<td>verify</td>
+<td>99%</td>
+<td>0.0%</td>
+<td>pseudoXOF 1.66e+04</td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-512s</code></td>
+<td>keygen</td>
+<td>99%</td>
+<td>0.0%</td>
+<td>drng 1, pseudoXOF 9.18e+05</td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-512s</code></td>
+<td>sign</td>
+<td>99%</td>
+<td>0.0%</td>
+<td>drng 1, pseudoXOF 1.06e+07</td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-512s</code></td>
+<td>verify</td>
+<td>99%</td>
+<td>0.0%</td>
+<td>pseudoXOF 1.47e+04</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="7-raw-evidence-index">7. Raw evidence index</h2>
+<p>Paths are relative to <code>performance/data/x86_1/</code> in the <a href="https://github.com/ngcc-dev/ngcc-harness">harness</a>; each JSON file records its commands, environment and trials.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>item</th>
+<th>file</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>CEDRUSALPHA-160f</code></td>
+<td>KAT log (sha256 <code>58bead2fc71ac9c6…</code>)</td>
+<td><code>kat/sign-04/CEDRUSALPHA-160f.log</code></td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-160f</code></td>
+<td>timing keygen</td>
+<td><code>records/sign-04/CEDRUSALPHA-160f__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-160f</code></td>
+<td>timing sign</td>
+<td><code>records/sign-04/CEDRUSALPHA-160f__sign.json</code></td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-160f</code></td>
+<td>timing verify</td>
+<td><code>records/sign-04/CEDRUSALPHA-160f__verify.json</code></td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-160f</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/sign-04/CEDRUSALPHA-160f__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-160f</code></td>
+<td>hash profile sign</td>
+<td><code>profile/sign-04/CEDRUSALPHA-160f__sign.json</code></td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-160f</code></td>
+<td>hash profile verify</td>
+<td><code>profile/sign-04/CEDRUSALPHA-160f__verify.json</code></td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-160s</code></td>
+<td>KAT log (sha256 <code>d0e5dc37f3043047…</code>)</td>
+<td><code>kat/sign-04/CEDRUSALPHA-160s.log</code></td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-160s</code></td>
+<td>timing keygen</td>
+<td><code>records/sign-04/CEDRUSALPHA-160s__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-160s</code></td>
+<td>timing sign</td>
+<td><code>records/sign-04/CEDRUSALPHA-160s__sign.json</code></td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-160s</code></td>
+<td>timing verify</td>
+<td><code>records/sign-04/CEDRUSALPHA-160s__verify.json</code></td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-160s</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/sign-04/CEDRUSALPHA-160s__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-160s</code></td>
+<td>hash profile sign</td>
+<td><code>profile/sign-04/CEDRUSALPHA-160s__sign.json</code></td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-160s</code></td>
+<td>hash profile verify</td>
+<td><code>profile/sign-04/CEDRUSALPHA-160s__verify.json</code></td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-256f</code></td>
+<td>KAT log (sha256 <code>e245e4d5e4fae4b5…</code>)</td>
+<td><code>kat/sign-04/CEDRUSALPHA-256f.log</code></td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-256f</code></td>
+<td>timing keygen</td>
+<td><code>records/sign-04/CEDRUSALPHA-256f__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-256f</code></td>
+<td>timing sign</td>
+<td><code>records/sign-04/CEDRUSALPHA-256f__sign.json</code></td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-256f</code></td>
+<td>timing verify</td>
+<td><code>records/sign-04/CEDRUSALPHA-256f__verify.json</code></td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-256f</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/sign-04/CEDRUSALPHA-256f__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-256f</code></td>
+<td>hash profile sign</td>
+<td><code>profile/sign-04/CEDRUSALPHA-256f__sign.json</code></td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-256f</code></td>
+<td>hash profile verify</td>
+<td><code>profile/sign-04/CEDRUSALPHA-256f__verify.json</code></td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-256s</code></td>
+<td>KAT log (sha256 <code>f37910464d8fbb8c…</code>)</td>
+<td><code>kat/sign-04/CEDRUSALPHA-256s.log</code></td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-256s</code></td>
+<td>timing keygen</td>
+<td><code>records/sign-04/CEDRUSALPHA-256s__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-256s</code></td>
+<td>timing sign</td>
+<td><code>records/sign-04/CEDRUSALPHA-256s__sign.json</code></td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-256s</code></td>
+<td>timing verify</td>
+<td><code>records/sign-04/CEDRUSALPHA-256s__verify.json</code></td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-256s</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/sign-04/CEDRUSALPHA-256s__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-256s</code></td>
+<td>hash profile sign</td>
+<td><code>profile/sign-04/CEDRUSALPHA-256s__sign.json</code></td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-256s</code></td>
+<td>hash profile verify</td>
+<td><code>profile/sign-04/CEDRUSALPHA-256s__verify.json</code></td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-384f</code></td>
+<td>KAT log (sha256 <code>e2dd7362970666e4…</code>)</td>
+<td><code>kat/sign-04/CEDRUSALPHA-384f.log</code></td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-384f</code></td>
+<td>timing keygen</td>
+<td><code>records/sign-04/CEDRUSALPHA-384f__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-384f</code></td>
+<td>timing sign</td>
+<td><code>records/sign-04/CEDRUSALPHA-384f__sign.json</code></td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-384f</code></td>
+<td>timing verify</td>
+<td><code>records/sign-04/CEDRUSALPHA-384f__verify.json</code></td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-384f</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/sign-04/CEDRUSALPHA-384f__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-384f</code></td>
+<td>hash profile sign</td>
+<td><code>profile/sign-04/CEDRUSALPHA-384f__sign.json</code></td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-384f</code></td>
+<td>hash profile verify</td>
+<td><code>profile/sign-04/CEDRUSALPHA-384f__verify.json</code></td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-384s</code></td>
+<td>KAT log (sha256 <code>158bde17ef118a20…</code>)</td>
+<td><code>kat/sign-04/CEDRUSALPHA-384s.log</code></td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-384s</code></td>
+<td>timing keygen</td>
+<td><code>records/sign-04/CEDRUSALPHA-384s__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-384s</code></td>
+<td>timing sign</td>
+<td><code>records/sign-04/CEDRUSALPHA-384s__sign.json</code></td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-384s</code></td>
+<td>timing verify</td>
+<td><code>records/sign-04/CEDRUSALPHA-384s__verify.json</code></td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-384s</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/sign-04/CEDRUSALPHA-384s__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-384s</code></td>
+<td>hash profile sign</td>
+<td><code>profile/sign-04/CEDRUSALPHA-384s__sign.json</code></td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-384s</code></td>
+<td>hash profile verify</td>
+<td><code>profile/sign-04/CEDRUSALPHA-384s__verify.json</code></td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-512f</code></td>
+<td>KAT log (sha256 <code>829fcb77d8d4027a…</code>)</td>
+<td><code>kat/sign-04/CEDRUSALPHA-512f.log</code></td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-512f</code></td>
+<td>timing keygen</td>
+<td><code>records/sign-04/CEDRUSALPHA-512f__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-512f</code></td>
+<td>timing sign</td>
+<td><code>records/sign-04/CEDRUSALPHA-512f__sign.json</code></td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-512f</code></td>
+<td>timing verify</td>
+<td><code>records/sign-04/CEDRUSALPHA-512f__verify.json</code></td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-512f</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/sign-04/CEDRUSALPHA-512f__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-512f</code></td>
+<td>hash profile sign</td>
+<td><code>profile/sign-04/CEDRUSALPHA-512f__sign.json</code></td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-512f</code></td>
+<td>hash profile verify</td>
+<td><code>profile/sign-04/CEDRUSALPHA-512f__verify.json</code></td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-512s</code></td>
+<td>KAT log (sha256 <code>29624e9e32b36380…</code>)</td>
+<td><code>kat/sign-04/CEDRUSALPHA-512s.log</code></td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-512s</code></td>
+<td>timing keygen</td>
+<td><code>records/sign-04/CEDRUSALPHA-512s__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-512s</code></td>
+<td>timing sign</td>
+<td><code>records/sign-04/CEDRUSALPHA-512s__sign.json</code></td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-512s</code></td>
+<td>timing verify</td>
+<td><code>records/sign-04/CEDRUSALPHA-512s__verify.json</code></td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-512s</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/sign-04/CEDRUSALPHA-512s__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-512s</code></td>
+<td>hash profile sign</td>
+<td><code>profile/sign-04/CEDRUSALPHA-512s__sign.json</code></td>
+</tr>
+<tr>
+<td><code>CEDRUSALPHA-512s</code></td>
+<td>hash profile verify</td>
+<td><code>profile/sign-04/CEDRUSALPHA-512s__verify.json</code></td>
+</tr>
+</tbody>
+</table></div>
+<p>Scripts: <code>performance/campaign.py</code>, <code>performance/ngcc_perf.c</code>, <code>performance/hashprof/</code> in the <a href="https://github.com/ngcc-dev/ngcc-harness">harness</a>.</p>
+</main>
+<footer class="site-footer">
+<p>Maintained by: <a href="mailto:markku-juhani.saarinen@tuni.fi">markku-juhani.saarinen@tuni.fi</a></p>
+<p>Submissions are welcome via <a href="https://github.com/ngcc-dev/ngcc-harness/issues">GitHub issues</a>.</p>
+</footer>
+</body>
+</html>

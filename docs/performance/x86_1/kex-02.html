@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ngcc.dev: kex-02 AFS-KEX — performance on x86-64 (system x861)</title>
+<link rel="icon" type="image/png" href="../../assets/mag-glass.png">
+<link rel="stylesheet" href="../../assets/style.css?v=1fdb792d">
+</head>
+<body>
+<header class="site-header">
+<a class="brand" href="../../index.html"><img class="brand-icon" src="../../assets/mag-glass.png" alt="" width="28" height="28">ngcc.dev</a>
+<nav><a href="../../index.html">Home</a><a href="../../reports/index.html">Reports</a><a href="../../performance/x86_1/index.html">Performance</a><a href="../../constant-time/index.html">Constant-Time</a></nav>
+</header>
+<main class="">
+<!-- synchronized from harness: kex-02/perf_x86_1.md -->
+<h1 id="kex-02-afs-kex-performance-on-x86-64-system-x86_1">kex-02 AFS-KEX — performance on x86-64 (system x86_1)</h1>
+<p><a href="index.html">Performance x86_1</a> › <code>kex-02</code> · <a href="method.html">method</a> · <a href="https://www.niccs.org.cn/niccs/Round1Additional/pc/content/content_2101560625362194432.html">NICCS page</a></p>
+<p>Independent measurement following the structure of the NICCS x86 self-assessment guide, §3.5 (1)–(7). Not a submitter self-assessment.</p>
+<h2 id="1-basic-information">1. Basic information</h2>
+<ul>
+<li>Category: public-key algorithm; function: key exchange</li>
+<li>Algorithm: AFS-KEX</li>
+<li>Implementation versions measured: reference</li>
+<li>Parameter sets: <code>AFS_KEX_C128</code>, <code>AFS_KEX_C256</code>, <code>AFS_KEX_C512</code></li>
+</ul>
+<h2 id="2-assessment-environment">2. Assessment environment</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>item</th>
+<th>value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>processor</td>
+<td>12th Gen Intel(R) Core(TM) i7-12700 (CPU 2, one core)</td>
+</tr>
+<tr>
+<td>clock</td>
+<td>max 2.10 GHz, governor performance, turbo off, SMT off</td>
+</tr>
+<tr>
+<td>memory</td>
+<td>31788 MiB</td>
+</tr>
+<tr>
+<td>OS / kernel</td>
+<td>Debian GNU/Linux 13 (trixie) / 6.12.107+deb13-amd64</td>
+</tr>
+<tr>
+<td>compiler / build tool</td>
+<td>gcc (Debian 14.2.0-19) 14.2.0 / cmake version 3.31.6</td>
+</tr>
+<tr>
+<td>campaign start / end (UTC)</td>
+<td>2026-09-25T10:02:21 / 2026-09-28T04:35:59</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="3-functional-testing-kat">3. Functional testing (KAT)</h2>
+<p>Each library was checked against the submitted KAT vectors (SHA-256 manifest <code>kex-02/kat.sha256</code> in the harness) before timing.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>build flags</th>
+<th>KAT</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>AFS_KEX_C128</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>AFS_KEX_C256</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>AFS_KEX_C512</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="4-performance">4. Performance</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>operation</th>
+<th>mean cycles</th>
+<th>mean time</th>
+<th>ops/s</th>
+<th>median trial</th>
+<th>n (trials × iters)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>AFS_KEX_C128</code></td>
+<td>exchange</td>
+<td>2.81 M</td>
+<td>1.34 ms</td>
+<td>744</td>
+<td>1.34 ms</td>
+<td>3670 (5 × 734)</td>
+</tr>
+<tr>
+<td><code>AFS_KEX_C128</code></td>
+<td>init_a</td>
+<td>519.4 k</td>
+<td>248 µs</td>
+<td>4.03e+03</td>
+<td>248 µs</td>
+<td>3670 (5 × 734)</td>
+</tr>
+<tr>
+<td><code>AFS_KEX_C128</code></td>
+<td>init_b</td>
+<td>519.7 k</td>
+<td>248 µs</td>
+<td>4.03e+03</td>
+<td>248 µs</td>
+<td>3670 (5 × 734)</td>
+</tr>
+<tr>
+<td><code>AFS_KEX_C128</code></td>
+<td>pass1</td>
+<td>291.9 k</td>
+<td>139 µs</td>
+<td>7.18e+03</td>
+<td>139 µs</td>
+<td>3670 (5 × 734)</td>
+</tr>
+<tr>
+<td><code>AFS_KEX_C128</code></td>
+<td>pass2</td>
+<td>640.0 k</td>
+<td>306 µs</td>
+<td>3.27e+03</td>
+<td>306 µs</td>
+<td>3670 (5 × 734)</td>
+</tr>
+<tr>
+<td><code>AFS_KEX_C128</code></td>
+<td>pass3</td>
+<td>599.7 k</td>
+<td>286 µs</td>
+<td>3.49e+03</td>
+<td>287 µs</td>
+<td>3670 (5 × 734)</td>
+</tr>
+<tr>
+<td><code>AFS_KEX_C128</code></td>
+<td>pass4</td>
+<td>250.4 k</td>
+<td>120 µs</td>
+<td>8.37e+03</td>
+<td>120 µs</td>
+<td>3670 (5 × 734)</td>
+</tr>
+<tr>
+<td><code>AFS_KEX_C128</code></td>
+<td>derive_a</td>
+<td>317</td>
+<td>50.2 ns</td>
+<td>1.99e+07</td>
+<td>50.1 ns</td>
+<td>3670 (5 × 734)</td>
+</tr>
+<tr>
+<td><code>AFS_KEX_C128</code></td>
+<td>derive_b</td>
+<td>316</td>
+<td>50.4 ns</td>
+<td>1.98e+07</td>
+<td>50.3 ns</td>
+<td>3670 (5 × 734)</td>
+</tr>
+<tr>
+<td><code>AFS_KEX_C256</code></td>
+<td>exchange</td>
+<td>6.52 M</td>
+<td>3.11 ms</td>
+<td>321</td>
+<td>3.11 ms</td>
+<td>1535 (5 × 307)</td>
+</tr>
+<tr>
+<td><code>AFS_KEX_C256</code></td>
+<td>init_a</td>
+<td>1.24 M</td>
+<td>594 µs</td>
+<td>1.68e+03</td>
+<td>593 µs</td>
+<td>1535 (5 × 307)</td>
+</tr>
+<tr>
+<td><code>AFS_KEX_C256</code></td>
+<td>init_b</td>
+<td>1.25 M</td>
+<td>595 µs</td>
+<td>1.68e+03</td>
+<td>594 µs</td>
+<td>1535 (5 × 307)</td>
+</tr>
+<tr>
+<td><code>AFS_KEX_C256</code></td>
+<td>pass1</td>
+<td>645.4 k</td>
+<td>308 µs</td>
+<td>3.24e+03</td>
+<td>308 µs</td>
+<td>1535 (5 × 307)</td>
+</tr>
+<tr>
+<td><code>AFS_KEX_C256</code></td>
+<td>pass2</td>
+<td>1.42 M</td>
+<td>678 µs</td>
+<td>1.47e+03</td>
+<td>678 µs</td>
+<td>1535 (5 × 307)</td>
+</tr>
+<tr>
+<td><code>AFS_KEX_C256</code></td>
+<td>pass3</td>
+<td>1.37 M</td>
+<td>653 µs</td>
+<td>1.53e+03</td>
+<td>653 µs</td>
+<td>1535 (5 × 307)</td>
+</tr>
+<tr>
+<td><code>AFS_KEX_C256</code></td>
+<td>pass4</td>
+<td>596.3 k</td>
+<td>292 µs</td>
+<td>3.42e+03</td>
+<td>285 µs</td>
+<td>1535 (5 × 307)</td>
+</tr>
+<tr>
+<td><code>AFS_KEX_C256</code></td>
+<td>derive_a</td>
+<td>338</td>
+<td>55.8 ns</td>
+<td>1.79e+07</td>
+<td>56.3 ns</td>
+<td>1535 (5 × 307)</td>
+</tr>
+<tr>
+<td><code>AFS_KEX_C256</code></td>
+<td>derive_b</td>
+<td>334</td>
+<td>53.5 ns</td>
+<td>1.87e+07</td>
+<td>53.7 ns</td>
+<td>1535 (5 × 307)</td>
+</tr>
+<tr>
+<td><code>AFS_KEX_C512</code></td>
+<td>exchange</td>
+<td>22.17 M</td>
+<td>10.6 ms</td>
+<td>94.4</td>
+<td>10.6 ms</td>
+<td>475 (5 × 95)</td>
+</tr>
+<tr>
+<td><code>AFS_KEX_C512</code></td>
+<td>init_a</td>
+<td>4.26 M</td>
+<td>2.03 ms</td>
+<td>492</td>
+<td>2.03 ms</td>
+<td>475 (5 × 95)</td>
+</tr>
+<tr>
+<td><code>AFS_KEX_C512</code></td>
+<td>init_b</td>
+<td>4.26 M</td>
+<td>2.03 ms</td>
+<td>492</td>
+<td>2.03 ms</td>
+<td>475 (5 × 95)</td>
+</tr>
+<tr>
+<td><code>AFS_KEX_C512</code></td>
+<td>pass1</td>
+<td>2.18 M</td>
+<td>1.04 ms</td>
+<td>959</td>
+<td>1.04 ms</td>
+<td>475 (5 × 95)</td>
+</tr>
+<tr>
+<td><code>AFS_KEX_C512</code></td>
+<td>pass2</td>
+<td>4.74 M</td>
+<td>2.26 ms</td>
+<td>442</td>
+<td>2.26 ms</td>
+<td>475 (5 × 95)</td>
+</tr>
+<tr>
+<td><code>AFS_KEX_C512</code></td>
+<td>pass3</td>
+<td>4.65 M</td>
+<td>2.22 ms</td>
+<td>451</td>
+<td>2.22 ms</td>
+<td>475 (5 × 95)</td>
+</tr>
+<tr>
+<td><code>AFS_KEX_C512</code></td>
+<td>pass4</td>
+<td>2.09 M</td>
+<td>999 µs</td>
+<td>1e+03</td>
+<td>998 µs</td>
+<td>475 (5 × 95)</td>
+</tr>
+<tr>
+<td><code>AFS_KEX_C512</code></td>
+<td>derive_a</td>
+<td>351</td>
+<td>59.7 ns</td>
+<td>1.68e+07</td>
+<td>58.9 ns</td>
+<td>475 (5 × 95)</td>
+</tr>
+<tr>
+<td><code>AFS_KEX_C512</code></td>
+<td>derive_b</td>
+<td>340</td>
+<td>55.7 ns</td>
+<td>1.79e+07</td>
+<td>56 ns</td>
+<td>475 (5 × 95)</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="5-resource-consumption">5. Resource consumption</h2>
+<p>Static memory is approximated by the library's loadable ELF segments; peak memory is the process high-water mark (VmHWM) including the benchmark driver and libc, so both are upper-bound proxies rather than isolated algorithm memory.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>operation</th>
+<th>static: ELF image (bytes)</th>
+<th>baseline RSS</th>
+<th>peak RSS</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>AFS_KEX_C128</code></td>
+<td>exchange</td>
+<td>32053</td>
+<td>1748 KiB</td>
+<td>1836 KiB</td>
+</tr>
+<tr>
+<td><code>AFS_KEX_C128</code></td>
+<td>init_a</td>
+<td>32053</td>
+<td>1744 KiB</td>
+<td>1808 KiB</td>
+</tr>
+<tr>
+<td><code>AFS_KEX_C128</code></td>
+<td>init_b</td>
+<td>32053</td>
+<td>1760 KiB</td>
+<td>1856 KiB</td>
+</tr>
+<tr>
+<td><code>AFS_KEX_C128</code></td>
+<td>pass1</td>
+<td>32053</td>
+<td>1764 KiB</td>
+<td>1828 KiB</td>
+</tr>
+<tr>
+<td><code>AFS_KEX_C128</code></td>
+<td>pass2</td>
+<td>32053</td>
+<td>1748 KiB</td>
+<td>1852 KiB</td>
+</tr>
+<tr>
+<td><code>AFS_KEX_C128</code></td>
+<td>pass3</td>
+<td>32053</td>
+<td>1740 KiB</td>
+<td>1856 KiB</td>
+</tr>
+<tr>
+<td><code>AFS_KEX_C128</code></td>
+<td>pass4</td>
+<td>32053</td>
+<td>1764 KiB</td>
+<td>1852 KiB</td>
+</tr>
+<tr>
+<td><code>AFS_KEX_C128</code></td>
+<td>derive_a</td>
+<td>32053</td>
+<td>1744 KiB</td>
+<td>1852 KiB</td>
+</tr>
+<tr>
+<td><code>AFS_KEX_C128</code></td>
+<td>derive_b</td>
+<td>32053</td>
+<td>1768 KiB</td>
+<td>1832 KiB</td>
+</tr>
+<tr>
+<td><code>AFS_KEX_C256</code></td>
+<td>exchange</td>
+<td>40345</td>
+<td>1800 KiB</td>
+<td>1916 KiB</td>
+</tr>
+<tr>
+<td><code>AFS_KEX_C256</code></td>
+<td>init_a</td>
+<td>40345</td>
+<td>1800 KiB</td>
+<td>1896 KiB</td>
+</tr>
+<tr>
+<td><code>AFS_KEX_C256</code></td>
+<td>init_b</td>
+<td>40345</td>
+<td>1816 KiB</td>
+<td>1884 KiB</td>
+</tr>
+<tr>
+<td><code>AFS_KEX_C256</code></td>
+<td>pass1</td>
+<td>40345</td>
+<td>1812 KiB</td>
+<td>1912 KiB</td>
+</tr>
+<tr>
+<td><code>AFS_KEX_C256</code></td>
+<td>pass2</td>
+<td>40345</td>
+<td>1824 KiB</td>
+<td>1904 KiB</td>
+</tr>
+<tr>
+<td><code>AFS_KEX_C256</code></td>
+<td>pass3</td>
+<td>40345</td>
+<td>1824 KiB</td>
+<td>1908 KiB</td>
+</tr>
+<tr>
+<td><code>AFS_KEX_C256</code></td>
+<td>pass4</td>
+<td>40345</td>
+<td>1824 KiB</td>
+<td>1892 KiB</td>
+</tr>
+<tr>
+<td><code>AFS_KEX_C256</code></td>
+<td>derive_a</td>
+<td>40345</td>
+<td>1820 KiB</td>
+<td>1888 KiB</td>
+</tr>
+<tr>
+<td><code>AFS_KEX_C256</code></td>
+<td>derive_b</td>
+<td>40345</td>
+<td>1792 KiB</td>
+<td>1860 KiB</td>
+</tr>
+<tr>
+<td><code>AFS_KEX_C512</code></td>
+<td>exchange</td>
+<td>41277</td>
+<td>1912 KiB</td>
+<td>1980 KiB</td>
+</tr>
+<tr>
+<td><code>AFS_KEX_C512</code></td>
+<td>init_a</td>
+<td>41277</td>
+<td>1916 KiB</td>
+<td>2016 KiB</td>
+</tr>
+<tr>
+<td><code>AFS_KEX_C512</code></td>
+<td>init_b</td>
+<td>41277</td>
+<td>1912 KiB</td>
+<td>1980 KiB</td>
+</tr>
+<tr>
+<td><code>AFS_KEX_C512</code></td>
+<td>pass1</td>
+<td>41277</td>
+<td>1920 KiB</td>
+<td>2012 KiB</td>
+</tr>
+<tr>
+<td><code>AFS_KEX_C512</code></td>
+<td>pass2</td>
+<td>41277</td>
+<td>1908 KiB</td>
+<td>1976 KiB</td>
+</tr>
+<tr>
+<td><code>AFS_KEX_C512</code></td>
+<td>pass3</td>
+<td>41277</td>
+<td>1916 KiB</td>
+<td>1984 KiB</td>
+</tr>
+<tr>
+<td><code>AFS_KEX_C512</code></td>
+<td>pass4</td>
+<td>41277</td>
+<td>1920 KiB</td>
+<td>1988 KiB</td>
+</tr>
+<tr>
+<td><code>AFS_KEX_C512</code></td>
+<td>derive_a</td>
+<td>41277</td>
+<td>1908 KiB</td>
+<td>1976 KiB</td>
+</tr>
+<tr>
+<td><code>AFS_KEX_C512</code></td>
+<td>derive_b</td>
+<td>41277</td>
+<td>1928 KiB</td>
+<td>1996 KiB</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="6-transmission-and-storage-overhead">6. Transmission and storage overhead</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>passes</th>
+<th>messages (bytes)</th>
+<th>total</th>
+<th>long-term pk / sk</th>
+<th>shared secret</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>AFS_KEX_C128</code></td>
+<td>4</td>
+<td>768 / 784 / 16 / 1568</td>
+<td>3136</td>
+<td>1568 / 3170</td>
+<td>16</td>
+</tr>
+<tr>
+<td><code>AFS_KEX_C256</code></td>
+<td>4</td>
+<td>1440 / 1472 / 32 / 2944</td>
+<td>5888</td>
+<td>3136 / 6338</td>
+<td>32</td>
+</tr>
+<tr>
+<td><code>AFS_KEX_C512</code></td>
+<td>4</td>
+<td>2944 / 3008 / 64 / 6016</td>
+<td>12032</td>
+<td>6272 / 12674</td>
+<td>64</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="symmetric-primitives">Symmetric primitives</h2>
+<p><a href="../symmetric-survey.html">Survey</a> verdict: <strong>ICCS-only</strong> — optimized AVX2 auxfunc.c adds an SM3 counter-block fast path</p>
+<p>Share of each operation spent in the ICCS placeholder hash functions and in the ICCS DRNG (reference build, measured in the same run with link-time wrappers):</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>operation</th>
+<th>pseudohash/XOF/sm3</th>
+<th>DRNG</th>
+<th>calls per operation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>AFS_KEX_C128</code></td>
+<td>exchange</td>
+<td>63%</td>
+<td>1.0%</td>
+<td>drng 6, pseudoXOF 88.3, sm3hash 6</td>
+</tr>
+<tr>
+<td><code>AFS_KEX_C256</code></td>
+<td>exchange</td>
+<td>73%</td>
+<td>0.5%</td>
+<td>drng 6, pseudoXOF 249, pseudohash 6</td>
+</tr>
+<tr>
+<td><code>AFS_KEX_C512</code></td>
+<td>exchange</td>
+<td>76%</td>
+<td>0.2%</td>
+<td>drng 6, pseudoXOF 248, pseudohash 6</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="7-raw-evidence-index">7. Raw evidence index</h2>
+<p>Paths are relative to <code>performance/data/x86_1/</code> in the <a href="https://github.com/ngcc-dev/ngcc-harness">harness</a>; each JSON file records its commands, environment and trials.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>item</th>
+<th>file</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>AFS_KEX_C128</code></td>
+<td>KAT log (sha256 <code>44a7a639ded42986…</code>)</td>
+<td><code>kat/kex-02/AFS_KEX_C128.log</code></td>
+</tr>
+<tr>
+<td><code>AFS_KEX_C128</code></td>
+<td>timing derive_a</td>
+<td><code>records/kex-02/AFS_KEX_C128__derive_a.json</code></td>
+</tr>
+<tr>
+<td><code>AFS_KEX_C128</code></td>
+<td>timing derive_b</td>
+<td><code>records/kex-02/AFS_KEX_C128__derive_b.json</code></td>
+</tr>
+<tr>
+<td><code>AFS_KEX_C128</code></td>
+<td>timing exchange</td>
+<td><code>records/kex-02/AFS_KEX_C128__exchange.json</code></td>
+</tr>
+<tr>
+<td><code>AFS_KEX_C128</code></td>
+<td>timing init_a</td>
+<td><code>records/kex-02/AFS_KEX_C128__init_a.json</code></td>
+</tr>
+<tr>
+<td><code>AFS_KEX_C128</code></td>
+<td>timing init_b</td>
+<td><code>records/kex-02/AFS_KEX_C128__init_b.json</code></td>
+</tr>
+<tr>
+<td><code>AFS_KEX_C128</code></td>
+<td>timing pass1</td>
+<td><code>records/kex-02/AFS_KEX_C128__pass1.json</code></td>
+</tr>
+<tr>
+<td><code>AFS_KEX_C128</code></td>
+<td>timing pass2</td>
+<td><code>records/kex-02/AFS_KEX_C128__pass2.json</code></td>
+</tr>
+<tr>
+<td><code>AFS_KEX_C128</code></td>
+<td>timing pass3</td>
+<td><code>records/kex-02/AFS_KEX_C128__pass3.json</code></td>
+</tr>
+<tr>
+<td><code>AFS_KEX_C128</code></td>
+<td>timing pass4</td>
+<td><code>records/kex-02/AFS_KEX_C128__pass4.json</code></td>
+</tr>
+<tr>
+<td><code>AFS_KEX_C128</code></td>
+<td>hash profile exchange</td>
+<td><code>profile/kex-02/AFS_KEX_C128__exchange.json</code></td>
+</tr>
+<tr>
+<td><code>AFS_KEX_C256</code></td>
+<td>KAT log (sha256 <code>5ad0fe3331e2a187…</code>)</td>
+<td><code>kat/kex-02/AFS_KEX_C256.log</code></td>
+</tr>
+<tr>
+<td><code>AFS_KEX_C256</code></td>
+<td>timing derive_a</td>
+<td><code>records/kex-02/AFS_KEX_C256__derive_a.json</code></td>
+</tr>
+<tr>
+<td><code>AFS_KEX_C256</code></td>
+<td>timing derive_b</td>
+<td><code>records/kex-02/AFS_KEX_C256__derive_b.json</code></td>
+</tr>
+<tr>
+<td><code>AFS_KEX_C256</code></td>
+<td>timing exchange</td>
+<td><code>records/kex-02/AFS_KEX_C256__exchange.json</code></td>
+</tr>
+<tr>
+<td><code>AFS_KEX_C256</code></td>
+<td>timing init_a</td>
+<td><code>records/kex-02/AFS_KEX_C256__init_a.json</code></td>
+</tr>
+<tr>
+<td><code>AFS_KEX_C256</code></td>
+<td>timing init_b</td>
+<td><code>records/kex-02/AFS_KEX_C256__init_b.json</code></td>
+</tr>
+<tr>
+<td><code>AFS_KEX_C256</code></td>
+<td>timing pass1</td>
+<td><code>records/kex-02/AFS_KEX_C256__pass1.json</code></td>
+</tr>
+<tr>
+<td><code>AFS_KEX_C256</code></td>
+<td>timing pass2</td>
+<td><code>records/kex-02/AFS_KEX_C256__pass2.json</code></td>
+</tr>
+<tr>
+<td><code>AFS_KEX_C256</code></td>
+<td>timing pass3</td>
+<td><code>records/kex-02/AFS_KEX_C256__pass3.json</code></td>
+</tr>
+<tr>
+<td><code>AFS_KEX_C256</code></td>
+<td>timing pass4</td>
+<td><code>records/kex-02/AFS_KEX_C256__pass4.json</code></td>
+</tr>
+<tr>
+<td><code>AFS_KEX_C256</code></td>
+<td>hash profile exchange</td>
+<td><code>profile/kex-02/AFS_KEX_C256__exchange.json</code></td>
+</tr>
+<tr>
+<td><code>AFS_KEX_C512</code></td>
+<td>KAT log (sha256 <code>bfe24e66d2fb9898…</code>)</td>
+<td><code>kat/kex-02/AFS_KEX_C512.log</code></td>
+</tr>
+<tr>
+<td><code>AFS_KEX_C512</code></td>
+<td>timing derive_a</td>
+<td><code>records/kex-02/AFS_KEX_C512__derive_a.json</code></td>
+</tr>
+<tr>
+<td><code>AFS_KEX_C512</code></td>
+<td>timing derive_b</td>
+<td><code>records/kex-02/AFS_KEX_C512__derive_b.json</code></td>
+</tr>
+<tr>
+<td><code>AFS_KEX_C512</code></td>
+<td>timing exchange</td>
+<td><code>records/kex-02/AFS_KEX_C512__exchange.json</code></td>
+</tr>
+<tr>
+<td><code>AFS_KEX_C512</code></td>
+<td>timing init_a</td>
+<td><code>records/kex-02/AFS_KEX_C512__init_a.json</code></td>
+</tr>
+<tr>
+<td><code>AFS_KEX_C512</code></td>
+<td>timing init_b</td>
+<td><code>records/kex-02/AFS_KEX_C512__init_b.json</code></td>
+</tr>
+<tr>
+<td><code>AFS_KEX_C512</code></td>
+<td>timing pass1</td>
+<td><code>records/kex-02/AFS_KEX_C512__pass1.json</code></td>
+</tr>
+<tr>
+<td><code>AFS_KEX_C512</code></td>
+<td>timing pass2</td>
+<td><code>records/kex-02/AFS_KEX_C512__pass2.json</code></td>
+</tr>
+<tr>
+<td><code>AFS_KEX_C512</code></td>
+<td>timing pass3</td>
+<td><code>records/kex-02/AFS_KEX_C512__pass3.json</code></td>
+</tr>
+<tr>
+<td><code>AFS_KEX_C512</code></td>
+<td>timing pass4</td>
+<td><code>records/kex-02/AFS_KEX_C512__pass4.json</code></td>
+</tr>
+<tr>
+<td><code>AFS_KEX_C512</code></td>
+<td>hash profile exchange</td>
+<td><code>profile/kex-02/AFS_KEX_C512__exchange.json</code></td>
+</tr>
+</tbody>
+</table></div>
+<p>Scripts: <code>performance/campaign.py</code>, <code>performance/ngcc_perf.c</code>, <code>performance/hashprof/</code> in the <a href="https://github.com/ngcc-dev/ngcc-harness">harness</a>.</p>
+</main>
+<footer class="site-footer">
+<p>Maintained by: <a href="mailto:markku-juhani.saarinen@tuni.fi">markku-juhani.saarinen@tuni.fi</a></p>
+<p>Submissions are welcome via <a href="https://github.com/ngcc-dev/ngcc-harness/issues">GitHub issues</a>.</p>
+</footer>
+</body>
+</html>

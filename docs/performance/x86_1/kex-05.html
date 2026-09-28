@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ngcc.dev: kex-05 Loom — performance on x86-64 (system x861)</title>
+<link rel="icon" type="image/png" href="../../assets/mag-glass.png">
+<link rel="stylesheet" href="../../assets/style.css?v=1fdb792d">
+</head>
+<body>
+<header class="site-header">
+<a class="brand" href="../../index.html"><img class="brand-icon" src="../../assets/mag-glass.png" alt="" width="28" height="28">ngcc.dev</a>
+<nav><a href="../../index.html">Home</a><a href="../../reports/index.html">Reports</a><a href="../../performance/x86_1/index.html">Performance</a><a href="../../constant-time/index.html">Constant-Time</a></nav>
+</header>
+<main class="">
+<!-- synchronized from harness: kex-05/perf_x86_1.md -->
+<h1 id="kex-05-loom-performance-on-x86-64-system-x86_1">kex-05 Loom — performance on x86-64 (system x86_1)</h1>
+<p><a href="index.html">Performance x86_1</a> › <code>kex-05</code> · <a href="method.html">method</a> · <a href="https://www.niccs.org.cn/niccs/Round1Additional/pc/content/content_2101560625773236224.html">NICCS page</a></p>
+<p>Independent measurement following the structure of the NICCS x86 self-assessment guide, §3.5 (1)–(7). Not a submitter self-assessment.</p>
+<h2 id="1-basic-information">1. Basic information</h2>
+<ul>
+<li>Category: public-key algorithm; function: key exchange</li>
+<li>Algorithm: Loom</li>
+<li>Implementation versions measured: reference</li>
+<li>Parameter sets: <code>LoomKEX-128</code>, <code>LoomKEX-256</code>, <code>LoomKEX-512</code></li>
+</ul>
+<h2 id="2-assessment-environment">2. Assessment environment</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>item</th>
+<th>value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>processor</td>
+<td>12th Gen Intel(R) Core(TM) i7-12700 (CPU 2, one core)</td>
+</tr>
+<tr>
+<td>clock</td>
+<td>max 2.10 GHz, governor performance, turbo off, SMT off</td>
+</tr>
+<tr>
+<td>memory</td>
+<td>31788 MiB</td>
+</tr>
+<tr>
+<td>OS / kernel</td>
+<td>Debian GNU/Linux 13 (trixie) / 6.12.107+deb13-amd64</td>
+</tr>
+<tr>
+<td>compiler / build tool</td>
+<td>gcc (Debian 14.2.0-19) 14.2.0 / cmake version 3.31.6</td>
+</tr>
+<tr>
+<td>campaign start / end (UTC)</td>
+<td>2026-09-25T10:02:21 / 2026-09-28T04:35:59</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="3-functional-testing-kat">3. Functional testing (KAT)</h2>
+<p>Each library was checked against the submitted KAT vectors (SHA-256 manifest <code>kex-05/kat.sha256</code> in the harness) before timing.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>build flags</th>
+<th>KAT</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>LoomKEX-128</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>LoomKEX-256</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>LoomKEX-512</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="4-performance">4. Performance</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>operation</th>
+<th>mean cycles</th>
+<th>mean time</th>
+<th>ops/s</th>
+<th>median trial</th>
+<th>n (trials × iters)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>LoomKEX-128</code></td>
+<td>exchange</td>
+<td>30.90 M</td>
+<td>14.8 ms</td>
+<td>67.8</td>
+<td>14.8 ms</td>
+<td>230 (5 × 46)</td>
+</tr>
+<tr>
+<td><code>LoomKEX-128</code></td>
+<td>init_a</td>
+<td>8.60 M</td>
+<td>4.11 ms</td>
+<td>243</td>
+<td>4.11 ms</td>
+<td>230 (5 × 46)</td>
+</tr>
+<tr>
+<td><code>LoomKEX-128</code></td>
+<td>init_b</td>
+<td>9.51 M</td>
+<td>4.54 ms</td>
+<td>220</td>
+<td>4.54 ms</td>
+<td>230 (5 × 46)</td>
+</tr>
+<tr>
+<td><code>LoomKEX-128</code></td>
+<td>pass1</td>
+<td>549.6 k</td>
+<td>262 µs</td>
+<td>3.81e+03</td>
+<td>262 µs</td>
+<td>230 (5 × 46)</td>
+</tr>
+<tr>
+<td><code>LoomKEX-128</code></td>
+<td>pass2</td>
+<td>621.9 k</td>
+<td>297 µs</td>
+<td>3.37e+03</td>
+<td>297 µs</td>
+<td>230 (5 × 46)</td>
+</tr>
+<tr>
+<td><code>LoomKEX-128</code></td>
+<td>pass3</td>
+<td>4.63 M</td>
+<td>2.21 ms</td>
+<td>452</td>
+<td>2.21 ms</td>
+<td>230 (5 × 46)</td>
+</tr>
+<tr>
+<td><code>LoomKEX-128</code></td>
+<td>pass4</td>
+<td>5.79 M</td>
+<td>2.76 ms</td>
+<td>362</td>
+<td>2.76 ms</td>
+<td>230 (5 × 46)</td>
+</tr>
+<tr>
+<td><code>LoomKEX-128</code></td>
+<td>derive_a</td>
+<td>1.21 M</td>
+<td>576 µs</td>
+<td>1.74e+03</td>
+<td>576 µs</td>
+<td>230 (5 × 46)</td>
+</tr>
+<tr>
+<td><code>LoomKEX-128</code></td>
+<td>derive_b</td>
+<td>4246</td>
+<td>1.86 µs</td>
+<td>5.39e+05</td>
+<td>1.84 µs</td>
+<td>230 (5 × 46)</td>
+</tr>
+<tr>
+<td><code>LoomKEX-256</code></td>
+<td>exchange</td>
+<td>38.83 M</td>
+<td>18.5 ms</td>
+<td>53.9</td>
+<td>18.5 ms</td>
+<td>175 (5 × 35)</td>
+</tr>
+<tr>
+<td><code>LoomKEX-256</code></td>
+<td>init_a</td>
+<td>8.81 M</td>
+<td>4.21 ms</td>
+<td>238</td>
+<td>4.21 ms</td>
+<td>175 (5 × 35)</td>
+</tr>
+<tr>
+<td><code>LoomKEX-256</code></td>
+<td>init_b</td>
+<td>10.35 M</td>
+<td>4.94 ms</td>
+<td>202</td>
+<td>4.94 ms</td>
+<td>175 (5 × 35)</td>
+</tr>
+<tr>
+<td><code>LoomKEX-256</code></td>
+<td>pass1</td>
+<td>764.7 k</td>
+<td>365 µs</td>
+<td>2.74e+03</td>
+<td>365 µs</td>
+<td>175 (5 × 35)</td>
+</tr>
+<tr>
+<td><code>LoomKEX-256</code></td>
+<td>pass2</td>
+<td>881.8 k</td>
+<td>421 µs</td>
+<td>2.38e+03</td>
+<td>421 µs</td>
+<td>175 (5 × 35)</td>
+</tr>
+<tr>
+<td><code>LoomKEX-256</code></td>
+<td>pass3</td>
+<td>7.42 M</td>
+<td>3.55 ms</td>
+<td>282</td>
+<td>3.54 ms</td>
+<td>175 (5 × 35)</td>
+</tr>
+<tr>
+<td><code>LoomKEX-256</code></td>
+<td>pass4</td>
+<td>8.93 M</td>
+<td>4.26 ms</td>
+<td>234</td>
+<td>4.26 ms</td>
+<td>175 (5 × 35)</td>
+</tr>
+<tr>
+<td><code>LoomKEX-256</code></td>
+<td>derive_a</td>
+<td>1.67 M</td>
+<td>795 µs</td>
+<td>1.26e+03</td>
+<td>795 µs</td>
+<td>175 (5 × 35)</td>
+</tr>
+<tr>
+<td><code>LoomKEX-256</code></td>
+<td>derive_b</td>
+<td>6333</td>
+<td>2.85 µs</td>
+<td>3.51e+05</td>
+<td>2.85 µs</td>
+<td>175 (5 × 35)</td>
+</tr>
+<tr>
+<td><code>LoomKEX-512</code></td>
+<td>exchange</td>
+<td>81.64 M</td>
+<td>39 ms</td>
+<td>25.6</td>
+<td>39 ms</td>
+<td>125 (5 × 25)</td>
+</tr>
+<tr>
+<td><code>LoomKEX-512</code></td>
+<td>init_a</td>
+<td>19.24 M</td>
+<td>9.19 ms</td>
+<td>109</td>
+<td>9.19 ms</td>
+<td>125 (5 × 25)</td>
+</tr>
+<tr>
+<td><code>LoomKEX-512</code></td>
+<td>init_b</td>
+<td>20.27 M</td>
+<td>9.69 ms</td>
+<td>103</td>
+<td>9.69 ms</td>
+<td>125 (5 × 25)</td>
+</tr>
+<tr>
+<td><code>LoomKEX-512</code></td>
+<td>pass1</td>
+<td>2.53 M</td>
+<td>1.22 ms</td>
+<td>819</td>
+<td>1.22 ms</td>
+<td>125 (5 × 25)</td>
+</tr>
+<tr>
+<td><code>LoomKEX-512</code></td>
+<td>pass2</td>
+<td>3.09 M</td>
+<td>1.48 ms</td>
+<td>677</td>
+<td>1.48 ms</td>
+<td>125 (5 × 25)</td>
+</tr>
+<tr>
+<td><code>LoomKEX-512</code></td>
+<td>pass3</td>
+<td>15.28 M</td>
+<td>7.31 ms</td>
+<td>137</td>
+<td>7.31 ms</td>
+<td>125 (5 × 25)</td>
+</tr>
+<tr>
+<td><code>LoomKEX-512</code></td>
+<td>pass4</td>
+<td>18.04 M</td>
+<td>8.64 ms</td>
+<td>116</td>
+<td>8.63 ms</td>
+<td>125 (5 × 25)</td>
+</tr>
+<tr>
+<td><code>LoomKEX-512</code></td>
+<td>derive_a</td>
+<td>3.15 M</td>
+<td>1.5 ms</td>
+<td>665</td>
+<td>1.5 ms</td>
+<td>125 (5 × 25)</td>
+</tr>
+<tr>
+<td><code>LoomKEX-512</code></td>
+<td>derive_b</td>
+<td>11.6 k</td>
+<td>5.43 µs</td>
+<td>1.84e+05</td>
+<td>5.43 µs</td>
+<td>125 (5 × 25)</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="5-resource-consumption">5. Resource consumption</h2>
+<p>Static memory is approximated by the library's loadable ELF segments; peak memory is the process high-water mark (VmHWM) including the benchmark driver and libc, so both are upper-bound proxies rather than isolated algorithm memory.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>operation</th>
+<th>static: ELF image (bytes)</th>
+<th>baseline RSS</th>
+<th>peak RSS</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>LoomKEX-128</code></td>
+<td>exchange</td>
+<td>108105</td>
+<td>1944 KiB</td>
+<td>2044 KiB</td>
+</tr>
+<tr>
+<td><code>LoomKEX-128</code></td>
+<td>init_a</td>
+<td>108105</td>
+<td>1936 KiB</td>
+<td>2052 KiB</td>
+</tr>
+<tr>
+<td><code>LoomKEX-128</code></td>
+<td>init_b</td>
+<td>108105</td>
+<td>1948 KiB</td>
+<td>2056 KiB</td>
+</tr>
+<tr>
+<td><code>LoomKEX-128</code></td>
+<td>pass1</td>
+<td>108105</td>
+<td>1968 KiB</td>
+<td>2060 KiB</td>
+</tr>
+<tr>
+<td><code>LoomKEX-128</code></td>
+<td>pass2</td>
+<td>108105</td>
+<td>1964 KiB</td>
+<td>2036 KiB</td>
+</tr>
+<tr>
+<td><code>LoomKEX-128</code></td>
+<td>pass3</td>
+<td>108105</td>
+<td>1964 KiB</td>
+<td>2036 KiB</td>
+</tr>
+<tr>
+<td><code>LoomKEX-128</code></td>
+<td>pass4</td>
+<td>108105</td>
+<td>1960 KiB</td>
+<td>2032 KiB</td>
+</tr>
+<tr>
+<td><code>LoomKEX-128</code></td>
+<td>derive_a</td>
+<td>108105</td>
+<td>1948 KiB</td>
+<td>2020 KiB</td>
+</tr>
+<tr>
+<td><code>LoomKEX-128</code></td>
+<td>derive_b</td>
+<td>108105</td>
+<td>1940 KiB</td>
+<td>2052 KiB</td>
+</tr>
+<tr>
+<td><code>LoomKEX-256</code></td>
+<td>exchange</td>
+<td>113917</td>
+<td>2080 KiB</td>
+<td>2152 KiB</td>
+</tr>
+<tr>
+<td><code>LoomKEX-256</code></td>
+<td>init_a</td>
+<td>113917</td>
+<td>2072 KiB</td>
+<td>2172 KiB</td>
+</tr>
+<tr>
+<td><code>LoomKEX-256</code></td>
+<td>init_b</td>
+<td>113917</td>
+<td>2076 KiB</td>
+<td>2172 KiB</td>
+</tr>
+<tr>
+<td><code>LoomKEX-256</code></td>
+<td>pass1</td>
+<td>113917</td>
+<td>2084 KiB</td>
+<td>2156 KiB</td>
+</tr>
+<tr>
+<td><code>LoomKEX-256</code></td>
+<td>pass2</td>
+<td>113917</td>
+<td>2048 KiB</td>
+<td>2184 KiB</td>
+</tr>
+<tr>
+<td><code>LoomKEX-256</code></td>
+<td>pass3</td>
+<td>113917</td>
+<td>2088 KiB</td>
+<td>2196 KiB</td>
+</tr>
+<tr>
+<td><code>LoomKEX-256</code></td>
+<td>pass4</td>
+<td>113917</td>
+<td>2068 KiB</td>
+<td>2200 KiB</td>
+</tr>
+<tr>
+<td><code>LoomKEX-256</code></td>
+<td>derive_a</td>
+<td>113917</td>
+<td>2100 KiB</td>
+<td>2172 KiB</td>
+</tr>
+<tr>
+<td><code>LoomKEX-256</code></td>
+<td>derive_b</td>
+<td>113917</td>
+<td>2060 KiB</td>
+<td>2192 KiB</td>
+</tr>
+<tr>
+<td><code>LoomKEX-512</code></td>
+<td>exchange</td>
+<td>119277</td>
+<td>2428 KiB</td>
+<td>2504 KiB</td>
+</tr>
+<tr>
+<td><code>LoomKEX-512</code></td>
+<td>init_a</td>
+<td>119277</td>
+<td>2400 KiB</td>
+<td>2528 KiB</td>
+</tr>
+<tr>
+<td><code>LoomKEX-512</code></td>
+<td>init_b</td>
+<td>119277</td>
+<td>2416 KiB</td>
+<td>2492 KiB</td>
+</tr>
+<tr>
+<td><code>LoomKEX-512</code></td>
+<td>pass1</td>
+<td>119277</td>
+<td>2404 KiB</td>
+<td>2520 KiB</td>
+</tr>
+<tr>
+<td><code>LoomKEX-512</code></td>
+<td>pass2</td>
+<td>119277</td>
+<td>2428 KiB</td>
+<td>2504 KiB</td>
+</tr>
+<tr>
+<td><code>LoomKEX-512</code></td>
+<td>pass3</td>
+<td>119277</td>
+<td>2424 KiB</td>
+<td>2516 KiB</td>
+</tr>
+<tr>
+<td><code>LoomKEX-512</code></td>
+<td>pass4</td>
+<td>119277</td>
+<td>2404 KiB</td>
+<td>2480 KiB</td>
+</tr>
+<tr>
+<td><code>LoomKEX-512</code></td>
+<td>derive_a</td>
+<td>119277</td>
+<td>2416 KiB</td>
+<td>2532 KiB</td>
+</tr>
+<tr>
+<td><code>LoomKEX-512</code></td>
+<td>derive_b</td>
+<td>119277</td>
+<td>2404 KiB</td>
+<td>2528 KiB</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="6-transmission-and-storage-overhead">6. Transmission and storage overhead</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>passes</th>
+<th>messages (bytes)</th>
+<th>total</th>
+<th>long-term pk / sk</th>
+<th>shared secret</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>LoomKEX-128</code></td>
+<td>4</td>
+<td>792 / 776 / 1235 / 1235</td>
+<td>4038</td>
+<td>1264 / 2288</td>
+<td>16</td>
+</tr>
+<tr>
+<td><code>LoomKEX-256</code></td>
+<td>4</td>
+<td>1352 / 1384 / 2485 / 2485</td>
+<td>7706</td>
+<td>1952 / 3680</td>
+<td>32</td>
+</tr>
+<tr>
+<td><code>LoomKEX-512</code></td>
+<td>4</td>
+<td>2952 / 3016 / 5101 / 5101</td>
+<td>16170</td>
+<td>3648 / 7104</td>
+<td>64</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="symmetric-primitives">Symmetric primitives</h2>
+<p><a href="../symmetric-survey.html">Survey</a> verdict: <strong>ICCS-only</strong> — grep hits for AES/Keccak/OpenSSL are not reachable in the built library</p>
+<p>Share of each operation spent in the ICCS placeholder hash functions and in the ICCS DRNG (reference build, measured in the same run with link-time wrappers):</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>operation</th>
+<th>pseudohash/XOF/sm3</th>
+<th>DRNG</th>
+<th>calls per operation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>LoomKEX-128</code></td>
+<td>exchange</td>
+<td>3.1%</td>
+<td>71%</td>
+<td>drng 833, pseudoXOF 84</td>
+</tr>
+<tr>
+<td><code>LoomKEX-256</code></td>
+<td>exchange</td>
+<td>3.4%</td>
+<td>69%</td>
+<td>drng 939, pseudoXOF 63</td>
+</tr>
+<tr>
+<td><code>LoomKEX-512</code></td>
+<td>exchange</td>
+<td>6.2%</td>
+<td>67%</td>
+<td>drng 1.75e+03, pseudoXOF 67</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="7-raw-evidence-index">7. Raw evidence index</h2>
+<p>Paths are relative to <code>performance/data/x86_1/</code> in the <a href="https://github.com/ngcc-dev/ngcc-harness">harness</a>; each JSON file records its commands, environment and trials.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>item</th>
+<th>file</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>LoomKEX-128</code></td>
+<td>KAT log (sha256 <code>5ee8305db770e4cb…</code>)</td>
+<td><code>kat/kex-05/LoomKEX-128.log</code></td>
+</tr>
+<tr>
+<td><code>LoomKEX-128</code></td>
+<td>timing derive_a</td>
+<td><code>records/kex-05/LoomKEX-128__derive_a.json</code></td>
+</tr>
+<tr>
+<td><code>LoomKEX-128</code></td>
+<td>timing derive_b</td>
+<td><code>records/kex-05/LoomKEX-128__derive_b.json</code></td>
+</tr>
+<tr>
+<td><code>LoomKEX-128</code></td>
+<td>timing exchange</td>
+<td><code>records/kex-05/LoomKEX-128__exchange.json</code></td>
+</tr>
+<tr>
+<td><code>LoomKEX-128</code></td>
+<td>timing init_a</td>
+<td><code>records/kex-05/LoomKEX-128__init_a.json</code></td>
+</tr>
+<tr>
+<td><code>LoomKEX-128</code></td>
+<td>timing init_b</td>
+<td><code>records/kex-05/LoomKEX-128__init_b.json</code></td>
+</tr>
+<tr>
+<td><code>LoomKEX-128</code></td>
+<td>timing pass1</td>
+<td><code>records/kex-05/LoomKEX-128__pass1.json</code></td>
+</tr>
+<tr>
+<td><code>LoomKEX-128</code></td>
+<td>timing pass2</td>
+<td><code>records/kex-05/LoomKEX-128__pass2.json</code></td>
+</tr>
+<tr>
+<td><code>LoomKEX-128</code></td>
+<td>timing pass3</td>
+<td><code>records/kex-05/LoomKEX-128__pass3.json</code></td>
+</tr>
+<tr>
+<td><code>LoomKEX-128</code></td>
+<td>timing pass4</td>
+<td><code>records/kex-05/LoomKEX-128__pass4.json</code></td>
+</tr>
+<tr>
+<td><code>LoomKEX-128</code></td>
+<td>hash profile exchange</td>
+<td><code>profile/kex-05/LoomKEX-128__exchange.json</code></td>
+</tr>
+<tr>
+<td><code>LoomKEX-256</code></td>
+<td>KAT log (sha256 <code>1246b71c4a1f2b2d…</code>)</td>
+<td><code>kat/kex-05/LoomKEX-256.log</code></td>
+</tr>
+<tr>
+<td><code>LoomKEX-256</code></td>
+<td>timing derive_a</td>
+<td><code>records/kex-05/LoomKEX-256__derive_a.json</code></td>
+</tr>
+<tr>
+<td><code>LoomKEX-256</code></td>
+<td>timing derive_b</td>
+<td><code>records/kex-05/LoomKEX-256__derive_b.json</code></td>
+</tr>
+<tr>
+<td><code>LoomKEX-256</code></td>
+<td>timing exchange</td>
+<td><code>records/kex-05/LoomKEX-256__exchange.json</code></td>
+</tr>
+<tr>
+<td><code>LoomKEX-256</code></td>
+<td>timing init_a</td>
+<td><code>records/kex-05/LoomKEX-256__init_a.json</code></td>
+</tr>
+<tr>
+<td><code>LoomKEX-256</code></td>
+<td>timing init_b</td>
+<td><code>records/kex-05/LoomKEX-256__init_b.json</code></td>
+</tr>
+<tr>
+<td><code>LoomKEX-256</code></td>
+<td>timing pass1</td>
+<td><code>records/kex-05/LoomKEX-256__pass1.json</code></td>
+</tr>
+<tr>
+<td><code>LoomKEX-256</code></td>
+<td>timing pass2</td>
+<td><code>records/kex-05/LoomKEX-256__pass2.json</code></td>
+</tr>
+<tr>
+<td><code>LoomKEX-256</code></td>
+<td>timing pass3</td>
+<td><code>records/kex-05/LoomKEX-256__pass3.json</code></td>
+</tr>
+<tr>
+<td><code>LoomKEX-256</code></td>
+<td>timing pass4</td>
+<td><code>records/kex-05/LoomKEX-256__pass4.json</code></td>
+</tr>
+<tr>
+<td><code>LoomKEX-256</code></td>
+<td>hash profile exchange</td>
+<td><code>profile/kex-05/LoomKEX-256__exchange.json</code></td>
+</tr>
+<tr>
+<td><code>LoomKEX-512</code></td>
+<td>KAT log (sha256 <code>43b12c64434096a8…</code>)</td>
+<td><code>kat/kex-05/LoomKEX-512.log</code></td>
+</tr>
+<tr>
+<td><code>LoomKEX-512</code></td>
+<td>timing derive_a</td>
+<td><code>records/kex-05/LoomKEX-512__derive_a.json</code></td>
+</tr>
+<tr>
+<td><code>LoomKEX-512</code></td>
+<td>timing derive_b</td>
+<td><code>records/kex-05/LoomKEX-512__derive_b.json</code></td>
+</tr>
+<tr>
+<td><code>LoomKEX-512</code></td>
+<td>timing exchange</td>
+<td><code>records/kex-05/LoomKEX-512__exchange.json</code></td>
+</tr>
+<tr>
+<td><code>LoomKEX-512</code></td>
+<td>timing init_a</td>
+<td><code>records/kex-05/LoomKEX-512__init_a.json</code></td>
+</tr>
+<tr>
+<td><code>LoomKEX-512</code></td>
+<td>timing init_b</td>
+<td><code>records/kex-05/LoomKEX-512__init_b.json</code></td>
+</tr>
+<tr>
+<td><code>LoomKEX-512</code></td>
+<td>timing pass1</td>
+<td><code>records/kex-05/LoomKEX-512__pass1.json</code></td>
+</tr>
+<tr>
+<td><code>LoomKEX-512</code></td>
+<td>timing pass2</td>
+<td><code>records/kex-05/LoomKEX-512__pass2.json</code></td>
+</tr>
+<tr>
+<td><code>LoomKEX-512</code></td>
+<td>timing pass3</td>
+<td><code>records/kex-05/LoomKEX-512__pass3.json</code></td>
+</tr>
+<tr>
+<td><code>LoomKEX-512</code></td>
+<td>timing pass4</td>
+<td><code>records/kex-05/LoomKEX-512__pass4.json</code></td>
+</tr>
+<tr>
+<td><code>LoomKEX-512</code></td>
+<td>hash profile exchange</td>
+<td><code>profile/kex-05/LoomKEX-512__exchange.json</code></td>
+</tr>
+</tbody>
+</table></div>
+<p>Scripts: <code>performance/campaign.py</code>, <code>performance/ngcc_perf.c</code>, <code>performance/hashprof/</code> in the <a href="https://github.com/ngcc-dev/ngcc-harness">harness</a>.</p>
+</main>
+<footer class="site-footer">
+<p>Maintained by: <a href="mailto:markku-juhani.saarinen@tuni.fi">markku-juhani.saarinen@tuni.fi</a></p>
+<p>Submissions are welcome via <a href="https://github.com/ngcc-dev/ngcc-harness/issues">GitHub issues</a>.</p>
+</footer>
+</body>
+</html>

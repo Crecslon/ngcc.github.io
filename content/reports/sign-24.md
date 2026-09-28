@@ -24,4 +24,4 @@ make -C sign-24 exploit
 tools/reproduce.sh sign-24
 ```
 
-The independent driver queries `sig_sign` for ordinary signatures, parses only public transcripts, interpolates witness-only chunks, solves the remaining public-syndrome system, and calls the submitted `Prover` with the recovered witness. The original [forum analysis](https://groups.google.com/a/list.nist.gov/g/pqc-forum/c/2lO14yYyDK4/m/UYKYkWM7BAAJ) reports broader 35-key testing; our witness tests two different keys at each level.
+The [independent driver](https://github.com/ngcc-dev/ngcc-harness/blob/dc66c6cb3c06e75bdea0048e21fa4e13c63f00af/security/sigurd_chunk_recovery.c) queries `sig_sign` for ordinary signatures, parses only public transcripts, interpolates witness-only chunks, solves the remaining public-syndrome system, and calls the submitted `Prover` with the recovered witness. The original [forum analysis](https://groups.google.com/a/list.nist.gov/g/pqc-forum/c/2lO14yYyDK4/m/UYKYkWM7BAAJ) reports broader 35-key testing; our witness tests two different keys at each level.

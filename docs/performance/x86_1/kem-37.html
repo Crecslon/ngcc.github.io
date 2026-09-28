@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ngcc.dev: kem-37 TriQ-KEM — performance on x86-64 (system x861)</title>
+<link rel="icon" type="image/png" href="../../assets/mag-glass.png">
+<link rel="stylesheet" href="../../assets/style.css?v=1fdb792d">
+</head>
+<body>
+<header class="site-header">
+<a class="brand" href="../../index.html"><img class="brand-icon" src="../../assets/mag-glass.png" alt="" width="28" height="28">ngcc.dev</a>
+<nav><a href="../../index.html">Home</a><a href="../../reports/index.html">Reports</a><a href="../../performance/x86_1/index.html">Performance</a><a href="../../constant-time/index.html">Constant-Time</a></nav>
+</header>
+<main class="">
+<!-- synchronized from harness: kem-37/perf_x86_1.md -->
+<h1 id="kem-37-triq-kem-performance-on-x86-64-system-x86_1">kem-37 TriQ-KEM — performance on x86-64 (system x86_1)</h1>
+<p><a href="index.html">Performance x86_1</a> › <code>kem-37</code> · <a href="method.html">method</a> · <a href="https://www.niccs.org.cn/niccs/Round1Additional/pc/content/content_2101560881558671360.html">NICCS page</a></p>
+<p>Independent measurement following the structure of the NICCS x86 self-assessment guide, §3.5 (1)–(7). Not a submitter self-assessment.</p>
+<h2 id="1-basic-information">1. Basic information</h2>
+<ul>
+<li>Category: public-key algorithm; function: key encapsulation</li>
+<li>Algorithm: TriQ-KEM</li>
+<li>Implementation versions measured: reference</li>
+<li>Parameter sets: <code>TriQ-KEM-128</code>, <code>TriQ-KEM-256</code>, <code>TriQ-KEM-384</code>, <code>TriQ-KEM-512</code></li>
+</ul>
+<h2 id="2-assessment-environment">2. Assessment environment</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>item</th>
+<th>value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>processor</td>
+<td>12th Gen Intel(R) Core(TM) i7-12700 (CPU 2, one core)</td>
+</tr>
+<tr>
+<td>clock</td>
+<td>max 2.10 GHz, governor performance, turbo off, SMT off</td>
+</tr>
+<tr>
+<td>memory</td>
+<td>31788 MiB</td>
+</tr>
+<tr>
+<td>OS / kernel</td>
+<td>Debian GNU/Linux 13 (trixie) / 6.12.107+deb13-amd64</td>
+</tr>
+<tr>
+<td>compiler / build tool</td>
+<td>gcc (Debian 14.2.0-19) 14.2.0 / cmake version 3.31.6</td>
+</tr>
+<tr>
+<td>campaign start / end (UTC)</td>
+<td>2026-09-25T10:02:21 / 2026-09-28T04:35:59</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="3-functional-testing-kat">3. Functional testing (KAT)</h2>
+<p>Each library was checked against the submitted KAT vectors (SHA-256 manifest <code>kem-37/kat.sha256</code> in the harness) before timing.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>build flags</th>
+<th>KAT</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>TriQ-KEM-128</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>TriQ-KEM-256</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>TriQ-KEM-384</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>TriQ-KEM-512</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="4-performance">4. Performance</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>operation</th>
+<th>mean cycles</th>
+<th>mean time</th>
+<th>ops/s</th>
+<th>median trial</th>
+<th>n (trials × iters)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>TriQ-KEM-128</code></td>
+<td>keygen</td>
+<td>3.92 M</td>
+<td>1.87 ms</td>
+<td>534</td>
+<td>1.87 ms</td>
+<td>2625 (5 × 525)</td>
+</tr>
+<tr>
+<td><code>TriQ-KEM-128</code></td>
+<td>enc</td>
+<td>7.41 M</td>
+<td>3.54 ms</td>
+<td>282</td>
+<td>3.54 ms</td>
+<td>1400 (5 × 280)</td>
+</tr>
+<tr>
+<td><code>TriQ-KEM-128</code></td>
+<td>dec</td>
+<td>11.21 M</td>
+<td>5.35 ms</td>
+<td>187</td>
+<td>5.35 ms</td>
+<td>930 (5 × 186)</td>
+</tr>
+<tr>
+<td><code>TriQ-KEM-256</code></td>
+<td>keygen</td>
+<td>21.48 M</td>
+<td>10.3 ms</td>
+<td>97.5</td>
+<td>10.3 ms</td>
+<td>485 (5 × 97)</td>
+</tr>
+<tr>
+<td><code>TriQ-KEM-256</code></td>
+<td>enc</td>
+<td>42.49 M</td>
+<td>20.3 ms</td>
+<td>49.3</td>
+<td>20.3 ms</td>
+<td>250 (5 × 50)</td>
+</tr>
+<tr>
+<td><code>TriQ-KEM-256</code></td>
+<td>dec</td>
+<td>63.63 M</td>
+<td>30.4 ms</td>
+<td>32.9</td>
+<td>30.4 ms</td>
+<td>165 (5 × 33)</td>
+</tr>
+<tr>
+<td><code>TriQ-KEM-384</code></td>
+<td>keygen</td>
+<td>57.31 M</td>
+<td>27.4 ms</td>
+<td>36.5</td>
+<td>27.4 ms</td>
+<td>185 (5 × 37)</td>
+</tr>
+<tr>
+<td><code>TriQ-KEM-384</code></td>
+<td>enc</td>
+<td>113.81 M</td>
+<td>54.4 ms</td>
+<td>18.4</td>
+<td>54.4 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>TriQ-KEM-384</code></td>
+<td>dec</td>
+<td>171.18 M</td>
+<td>81.8 ms</td>
+<td>12.2</td>
+<td>81.8 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>TriQ-KEM-512</code></td>
+<td>keygen</td>
+<td>122.30 M</td>
+<td>58.4 ms</td>
+<td>17.1</td>
+<td>58.4 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>TriQ-KEM-512</code></td>
+<td>enc</td>
+<td>242.32 M</td>
+<td>116 ms</td>
+<td>8.64</td>
+<td>116 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>TriQ-KEM-512</code></td>
+<td>dec</td>
+<td>362.24 M</td>
+<td>173 ms</td>
+<td>5.78</td>
+<td>173 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="5-resource-consumption">5. Resource consumption</h2>
+<p>Static memory is approximated by the library's loadable ELF segments; peak memory is the process high-water mark (VmHWM) including the benchmark driver and libc, so both are upper-bound proxies rather than isolated algorithm memory.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>operation</th>
+<th>static: ELF image (bytes)</th>
+<th>baseline RSS</th>
+<th>peak RSS</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>TriQ-KEM-128</code></td>
+<td>keygen</td>
+<td>42477</td>
+<td>1724 KiB</td>
+<td>1840 KiB</td>
+</tr>
+<tr>
+<td><code>TriQ-KEM-128</code></td>
+<td>enc</td>
+<td>42477</td>
+<td>1776 KiB</td>
+<td>1844 KiB</td>
+</tr>
+<tr>
+<td><code>TriQ-KEM-128</code></td>
+<td>dec</td>
+<td>42477</td>
+<td>1780 KiB</td>
+<td>1872 KiB</td>
+</tr>
+<tr>
+<td><code>TriQ-KEM-256</code></td>
+<td>keygen</td>
+<td>45957</td>
+<td>1736 KiB</td>
+<td>1972 KiB</td>
+</tr>
+<tr>
+<td><code>TriQ-KEM-256</code></td>
+<td>enc</td>
+<td>45957</td>
+<td>1892 KiB</td>
+<td>2004 KiB</td>
+</tr>
+<tr>
+<td><code>TriQ-KEM-256</code></td>
+<td>dec</td>
+<td>45957</td>
+<td>1916 KiB</td>
+<td>2004 KiB</td>
+</tr>
+<tr>
+<td><code>TriQ-KEM-384</code></td>
+<td>keygen</td>
+<td>54893</td>
+<td>1768 KiB</td>
+<td>2100 KiB</td>
+</tr>
+<tr>
+<td><code>TriQ-KEM-384</code></td>
+<td>enc</td>
+<td>54893</td>
+<td>2064 KiB</td>
+<td>2184 KiB</td>
+</tr>
+<tr>
+<td><code>TriQ-KEM-384</code></td>
+<td>dec</td>
+<td>54893</td>
+<td>2144 KiB</td>
+<td>2228 KiB</td>
+</tr>
+<tr>
+<td><code>TriQ-KEM-512</code></td>
+<td>keygen</td>
+<td>62041</td>
+<td>1808 KiB</td>
+<td>2272 KiB</td>
+</tr>
+<tr>
+<td><code>TriQ-KEM-512</code></td>
+<td>enc</td>
+<td>62041</td>
+<td>2300 KiB</td>
+<td>2408 KiB</td>
+</tr>
+<tr>
+<td><code>TriQ-KEM-512</code></td>
+<td>dec</td>
+<td>62041</td>
+<td>2384 KiB</td>
+<td>2480 KiB</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="6-transmission-and-storage-overhead">6. Transmission and storage overhead</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>public key</th>
+<th>secret key</th>
+<th>ciphertext</th>
+<th>shared secret</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>TriQ-KEM-128</code></td>
+<td>2054</td>
+<td>2102</td>
+<td>4086</td>
+<td>16</td>
+</tr>
+<tr>
+<td><code>TriQ-KEM-256</code></td>
+<td>6328</td>
+<td>6424</td>
+<td>12472</td>
+<td>32</td>
+</tr>
+<tr>
+<td><code>TriQ-KEM-384</code></td>
+<td>12255</td>
+<td>12399</td>
+<td>24335</td>
+<td>48</td>
+</tr>
+<tr>
+<td><code>TriQ-KEM-512</code></td>
+<td>19768</td>
+<td>19960</td>
+<td>39320</td>
+<td>64</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="symmetric-primitives">Symmetric primitives</h2>
+<p><a href="../symmetric-survey.html">Survey</a> verdict: <strong>ICCS-only</strong></p>
+<p>Share of each operation spent in the ICCS placeholder hash functions and in the ICCS DRNG (reference build, measured in the same run with link-time wrappers):</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>operation</th>
+<th>pseudohash/XOF/sm3</th>
+<th>DRNG</th>
+<th>calls per operation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>TriQ-KEM-128</code></td>
+<td>keygen</td>
+<td>12%</td>
+<td>0.3%</td>
+<td>drng 2, pseudoXOF 8, sm3hash 1</td>
+</tr>
+<tr>
+<td><code>TriQ-KEM-128</code></td>
+<td>enc</td>
+<td>6.1%</td>
+<td>0.2%</td>
+<td>drng 2, pseudoXOF 6.02, sm3hash 2</td>
+</tr>
+<tr>
+<td><code>TriQ-KEM-128</code></td>
+<td>dec</td>
+<td>4.6%</td>
+<td>0.0%</td>
+<td>pseudoXOF 6, sm3hash 3</td>
+</tr>
+<tr>
+<td><code>TriQ-KEM-256</code></td>
+<td>keygen</td>
+<td>4.1%</td>
+<td>0.1%</td>
+<td>drng 2, pseudoXOF 9.1</td>
+</tr>
+<tr>
+<td><code>TriQ-KEM-256</code></td>
+<td>enc</td>
+<td>2.9%</td>
+<td>0.0%</td>
+<td>drng 2, pseudoXOF 8, pseudohash 1, sm3hash 1</td>
+</tr>
+<tr>
+<td><code>TriQ-KEM-256</code></td>
+<td>dec</td>
+<td>2.3%</td>
+<td>0.0%</td>
+<td>pseudoXOF 8, pseudohash 1, sm3hash 2</td>
+</tr>
+<tr>
+<td><code>TriQ-KEM-384</code></td>
+<td>keygen</td>
+<td>2.9%</td>
+<td>0.0%</td>
+<td>drng 2, pseudoXOF 10.9</td>
+</tr>
+<tr>
+<td><code>TriQ-KEM-384</code></td>
+<td>enc</td>
+<td>2.0%</td>
+<td>0.0%</td>
+<td>drng 2, pseudoXOF 9, pseudohash 1</td>
+</tr>
+<tr>
+<td><code>TriQ-KEM-384</code></td>
+<td>dec</td>
+<td>1.9%</td>
+<td>0.0%</td>
+<td>pseudoXOF 10, pseudohash 1</td>
+</tr>
+<tr>
+<td><code>TriQ-KEM-512</code></td>
+<td>keygen</td>
+<td>3.7%</td>
+<td>0.0%</td>
+<td>drng 2, pseudoXOF 10.9</td>
+</tr>
+<tr>
+<td><code>TriQ-KEM-512</code></td>
+<td>enc</td>
+<td>2.6%</td>
+<td>0.0%</td>
+<td>drng 2, pseudoXOF 11.2, pseudohash 1</td>
+</tr>
+<tr>
+<td><code>TriQ-KEM-512</code></td>
+<td>dec</td>
+<td>2.2%</td>
+<td>0.0%</td>
+<td>pseudoXOF 12, pseudohash 1</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="7-raw-evidence-index">7. Raw evidence index</h2>
+<p>Paths are relative to <code>performance/data/x86_1/</code> in the <a href="https://github.com/ngcc-dev/ngcc-harness">harness</a>; each JSON file records its commands, environment and trials.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>item</th>
+<th>file</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>TriQ-KEM-128</code></td>
+<td>KAT log (sha256 <code>440a979fa2a19c57…</code>)</td>
+<td><code>kat/kem-37/TriQ-KEM-128.log</code></td>
+</tr>
+<tr>
+<td><code>TriQ-KEM-128</code></td>
+<td>timing dec</td>
+<td><code>records/kem-37/TriQ-KEM-128__dec.json</code></td>
+</tr>
+<tr>
+<td><code>TriQ-KEM-128</code></td>
+<td>timing enc</td>
+<td><code>records/kem-37/TriQ-KEM-128__enc.json</code></td>
+</tr>
+<tr>
+<td><code>TriQ-KEM-128</code></td>
+<td>timing keygen</td>
+<td><code>records/kem-37/TriQ-KEM-128__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>TriQ-KEM-128</code></td>
+<td>hash profile dec</td>
+<td><code>profile/kem-37/TriQ-KEM-128__dec.json</code></td>
+</tr>
+<tr>
+<td><code>TriQ-KEM-128</code></td>
+<td>hash profile enc</td>
+<td><code>profile/kem-37/TriQ-KEM-128__enc.json</code></td>
+</tr>
+<tr>
+<td><code>TriQ-KEM-128</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/kem-37/TriQ-KEM-128__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>TriQ-KEM-256</code></td>
+<td>KAT log (sha256 <code>10b6c7648cd3bbb5…</code>)</td>
+<td><code>kat/kem-37/TriQ-KEM-256.log</code></td>
+</tr>
+<tr>
+<td><code>TriQ-KEM-256</code></td>
+<td>timing dec</td>
+<td><code>records/kem-37/TriQ-KEM-256__dec.json</code></td>
+</tr>
+<tr>
+<td><code>TriQ-KEM-256</code></td>
+<td>timing enc</td>
+<td><code>records/kem-37/TriQ-KEM-256__enc.json</code></td>
+</tr>
+<tr>
+<td><code>TriQ-KEM-256</code></td>
+<td>timing keygen</td>
+<td><code>records/kem-37/TriQ-KEM-256__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>TriQ-KEM-256</code></td>
+<td>hash profile dec</td>
+<td><code>profile/kem-37/TriQ-KEM-256__dec.json</code></td>
+</tr>
+<tr>
+<td><code>TriQ-KEM-256</code></td>
+<td>hash profile enc</td>
+<td><code>profile/kem-37/TriQ-KEM-256__enc.json</code></td>
+</tr>
+<tr>
+<td><code>TriQ-KEM-256</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/kem-37/TriQ-KEM-256__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>TriQ-KEM-384</code></td>
+<td>KAT log (sha256 <code>bbf322220cf9be79…</code>)</td>
+<td><code>kat/kem-37/TriQ-KEM-384.log</code></td>
+</tr>
+<tr>
+<td><code>TriQ-KEM-384</code></td>
+<td>timing dec</td>
+<td><code>records/kem-37/TriQ-KEM-384__dec.json</code></td>
+</tr>
+<tr>
+<td><code>TriQ-KEM-384</code></td>
+<td>timing enc</td>
+<td><code>records/kem-37/TriQ-KEM-384__enc.json</code></td>
+</tr>
+<tr>
+<td><code>TriQ-KEM-384</code></td>
+<td>timing keygen</td>
+<td><code>records/kem-37/TriQ-KEM-384__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>TriQ-KEM-384</code></td>
+<td>hash profile dec</td>
+<td><code>profile/kem-37/TriQ-KEM-384__dec.json</code></td>
+</tr>
+<tr>
+<td><code>TriQ-KEM-384</code></td>
+<td>hash profile enc</td>
+<td><code>profile/kem-37/TriQ-KEM-384__enc.json</code></td>
+</tr>
+<tr>
+<td><code>TriQ-KEM-384</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/kem-37/TriQ-KEM-384__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>TriQ-KEM-512</code></td>
+<td>KAT log (sha256 <code>5894523014ae0d3b…</code>)</td>
+<td><code>kat/kem-37/TriQ-KEM-512.log</code></td>
+</tr>
+<tr>
+<td><code>TriQ-KEM-512</code></td>
+<td>timing dec</td>
+<td><code>records/kem-37/TriQ-KEM-512__dec.json</code></td>
+</tr>
+<tr>
+<td><code>TriQ-KEM-512</code></td>
+<td>timing enc</td>
+<td><code>records/kem-37/TriQ-KEM-512__enc.json</code></td>
+</tr>
+<tr>
+<td><code>TriQ-KEM-512</code></td>
+<td>timing keygen</td>
+<td><code>records/kem-37/TriQ-KEM-512__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>TriQ-KEM-512</code></td>
+<td>hash profile dec</td>
+<td><code>profile/kem-37/TriQ-KEM-512__dec.json</code></td>
+</tr>
+<tr>
+<td><code>TriQ-KEM-512</code></td>
+<td>hash profile enc</td>
+<td><code>profile/kem-37/TriQ-KEM-512__enc.json</code></td>
+</tr>
+<tr>
+<td><code>TriQ-KEM-512</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/kem-37/TriQ-KEM-512__keygen.json</code></td>
+</tr>
+</tbody>
+</table></div>
+<p>Scripts: <code>performance/campaign.py</code>, <code>performance/ngcc_perf.c</code>, <code>performance/hashprof/</code> in the <a href="https://github.com/ngcc-dev/ngcc-harness">harness</a>.</p>
+</main>
+<footer class="site-footer">
+<p>Maintained by: <a href="mailto:markku-juhani.saarinen@tuni.fi">markku-juhani.saarinen@tuni.fi</a></p>
+<p>Submissions are welcome via <a href="https://github.com/ngcc-dev/ngcc-harness/issues">GitHub issues</a>.</p>
+</footer>
+</body>
+</html>

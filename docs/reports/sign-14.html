@@ -5,22 +5,22 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>ngcc.dev: Lynxer (sign-14)</title>
 <link rel="icon" type="image/png" href="../assets/mag-glass.png">
-<link rel="stylesheet" href="../assets/style.css?v=996d5cfd">
+<link rel="stylesheet" href="../assets/style.css?v=1fdb792d">
 </head>
 <body>
 <header class="site-header">
 <a class="brand" href="../index.html"><img class="brand-icon" src="../assets/mag-glass.png" alt="" width="28" height="28">ngcc.dev</a>
-<nav><a href="../index.html">Home</a><a href="../reports/index.html">Reports</a><a href="../constant-time/index.html">Constant-Time</a></nav>
+<nav><a href="../index.html">Home</a><a href="../reports/index.html">Reports</a><a href="../performance/x86_1/index.html">Performance</a><a href="../constant-time/index.html">Constant-Time</a></nav>
 </header>
-<main>
-<p class="crumb"><a href="../reports/index.html">Reports</a> › <code>sign-14</code> · <a href="../constant-time/sign-14.html">Constant-time review</a></p>
+<main class="">
+<p class="crumb"><a href="../reports/index.html">Reports</a> › <code>sign-14</code> · <a href="../constant-time/sign-14.html">Constant-time review</a> · <a href="../performance/x86_1/sign-14.html">Performance</a></p>
 
 <h1 id="lynxer-sign-14">Lynxer (sign-14)</h1>
 <div class="table-wrap"><table class="meta">
 <tr><th>Candidate</th><td>Lynxer</td></tr>
 <tr><th>Family</th><td>VOLE-in-the-head signature</td></tr>
 <tr><th>Archive</th><td><a href="https://www.niccs.org.cn/niccs/Proposal/Public-Key%20Cryptographic%20Algorithms/Round%201%20candidates/Lynxer.zip">Lynxer.zip</a> (SHA-256: <code>34d863f7df8979c4a5e27fcfe657ed54e81905115c0afc8ef749f50af432f928</code>)</td></tr>
-<tr><th>Specification</th><td><a href="https://github.com/ngcc-dev/ngcc-harness/raw/refs/heads/main/sign-14/sign-14-spec.pdf" title="Download sign-14-spec.pdf from GitHub">sign-14-spec.pdf</a>&nbsp;<a class="pdf-link" href="https://cdn.jsdelivr.net/gh/ngcc-dev/ngcc-harness@main/sign-14/sign-14-spec.pdf" title="Open the sign-14 specification PDF">PDF</a></td></tr>
+<tr><th>Specification</th><td><a href="https://github.com/ngcc-dev/ngcc-harness/raw/dc66c6cb3c06e75bdea0048e21fa4e13c63f00af/sign-14/sign-14-spec.pdf" title="Download sign-14-spec.pdf from GitHub">sign-14-spec.pdf</a>&nbsp;<a class="pdf-link" href="https://cdn.jsdelivr.net/gh/ngcc-dev/ngcc-harness@dc66c6cb3c06e75bdea0048e21fa4e13c63f00af/sign-14/sign-14-spec.pdf" title="Open the sign-14 specification PDF">PDF</a></td></tr>
 </table></div>
 
 <h2 class="issue-heading issue-heading-first" id="sign-14-1-a-degenerate-quicksilver-witness-gives-universal-public-key-only-forgeries">sign-14-1: A degenerate QuickSilver witness gives universal public-key-only forgeries</h2>
@@ -35,9 +35,13 @@
 <tr><th>Credit</th><td>Martin Feussner, with OpenAI Codex (Daybreak Blue) assistance</td></tr>
 <tr><th>Date</th><td>2026-09-27</td></tr>
 </table></div>
-<p>Original source: <a href="https://list.niccs.org.cn/archives/list/pkcforum@list.niccs.org.cn/message/JMTZL5V7ROPXSFJQWRHIOKLORGI5AJSN/">Feussner's PKC Forum post</a> and <a href="https://github.com/martinfeussner/NGCC-Signature-Audit/tree/d03848f40a49a1d1d146e33c88ce251ac092439d/Lynxer">pinned public analysis and reproducer</a></p>
+<p>Original source: <a href="https://list.niccs.org.cn/archives/list/pkcforum@list.niccs.org.cn/message/JMTZL5V7ROPXSFJQWRHIOKLORGI5AJSN/">Feussner's PKC Forum post</a> and <a href="https://github.com/martinfeussner/NGCC-Signature-Audit/tree/d03848f40a49a1d1d146e33c88ce251ac092439d/Lynxer">pinned public analysis and reproducer</a>
+Follow-up source: <a href="https://list.niccs.org.cn/archives/list/pkcforum@list.niccs.org.cn/message/TJ3HPFROBMZMNMEHDEC3IQRO7R7QHQAQ/">Lynxer team's confirmation and fix</a></p>
+<p>Additional reference: <a href="https://eprint.iacr.org/2026/2235">Liu et al., ePrint 2026/2235</a></p>
 <p>The specified QuickSilver relation fails to enforce two nonzero conditions. Set the purported Lynx key to the public constant <code>c3</code> and the first S-box output <code>v1</code> to zero. Every term in the first constraint then vanishes; the final constraint loses the public target because both its products contain either <code>v1</code> or <code>k+c3</code>. The attacker publicly evaluates the second S-box to satisfy the sole remaining constraint. This gives a false witness for every public key and message without a signing query or Lynx preimage.</p>
 <p>We reran the pinned attack against all six affected full reference parameter sets. Each secret-key buffer was erased before attack construction, direct Lynx evaluation confirmed that the forged key was not a victim preimage, the ordinary submitted verifier accepted the fresh-message signature, and a changed-message control rejected. The 160-bit relations differ and are not claimed to be vulnerable.</p>
+<p>The Lynxer team confirms the flaw, reports that the Center for Cryptology Study at Tsinghua University found it independently, and replaces the original S-boxes with inversion in <a href="https://eprint.iacr.org/2026/1099">ePrint 2026/1099</a>. That revision is intended to enforce the relation over the full key space and blocks this attack; the archived Round 1 submission remains affected.</p>
+<p>Liu et al. independently formalize the same null-branch witness mechanism, prove public-key-only forgery for the affected 256-, 384-, and 512-bit Lynxer relations, and report accepted fresh-message forgeries. Their separate Lynx-192 analysis concerns another upstream variant and does not extend this finding to the archived NGCC 160-bit sets.</p>
 <h3 id="reproducing">Reproducing</h3>
 <p>Commands below run in a checkout of the <a href="https://github.com/ngcc-dev/ngcc-harness">ngcc-harness repository</a> with the candidate built (see its README).</p>
 <pre><code class="language-sh">make -C sign-14 exploit-public-forgery

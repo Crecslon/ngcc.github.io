@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ngcc.dev: kem-38 UVW Key Encapsulation Mechanism — performance on x86-64 (system x861)</title>
+<link rel="icon" type="image/png" href="../../assets/mag-glass.png">
+<link rel="stylesheet" href="../../assets/style.css?v=1fdb792d">
+</head>
+<body>
+<header class="site-header">
+<a class="brand" href="../../index.html"><img class="brand-icon" src="../../assets/mag-glass.png" alt="" width="28" height="28">ngcc.dev</a>
+<nav><a href="../../index.html">Home</a><a href="../../reports/index.html">Reports</a><a href="../../performance/x86_1/index.html">Performance</a><a href="../../constant-time/index.html">Constant-Time</a></nav>
+</header>
+<main class="">
+<!-- synchronized from harness: kem-38/perf_x86_1.md -->
+<h1 id="kem-38-uvw-key-encapsulation-mechanism-performance-on-x86-64-system-x86_1">kem-38 UVW Key Encapsulation Mechanism — performance on x86-64 (system x86_1)</h1>
+<p><a href="index.html">Performance x86_1</a> › <code>kem-38</code> · <a href="method.html">method</a> · <a href="https://www.niccs.org.cn/niccs/Round1Additional/pc/content/content_2101560881697083392.html">NICCS page</a></p>
+<p>Independent measurement following the structure of the NICCS x86 self-assessment guide, §3.5 (1)–(7). Not a submitter self-assessment.</p>
+<h2 id="1-basic-information">1. Basic information</h2>
+<ul>
+<li>Category: public-key algorithm; function: key encapsulation</li>
+<li>Algorithm: UVW Key Encapsulation Mechanism</li>
+<li>Implementation versions measured: reference</li>
+<li>Parameter sets: <code>UVW-KEM-128</code>, <code>UVW-KEM-256</code>, <code>UVW-KEM-512</code></li>
+</ul>
+<h2 id="2-assessment-environment">2. Assessment environment</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>item</th>
+<th>value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>processor</td>
+<td>12th Gen Intel(R) Core(TM) i7-12700 (CPU 2, one core)</td>
+</tr>
+<tr>
+<td>clock</td>
+<td>max 2.10 GHz, governor performance, turbo off, SMT off</td>
+</tr>
+<tr>
+<td>memory</td>
+<td>31788 MiB</td>
+</tr>
+<tr>
+<td>OS / kernel</td>
+<td>Debian GNU/Linux 13 (trixie) / 6.12.107+deb13-amd64</td>
+</tr>
+<tr>
+<td>compiler / build tool</td>
+<td>gcc (Debian 14.2.0-19) 14.2.0 / cmake version 3.31.6</td>
+</tr>
+<tr>
+<td>campaign start / end (UTC)</td>
+<td>2026-09-25T10:02:21 / 2026-09-28T04:35:59</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="3-functional-testing-kat">3. Functional testing (KAT)</h2>
+<p>Each library was checked against the submitted KAT vectors (SHA-256 manifest <code>kem-38/kat.sha256</code> in the harness) before timing.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>build flags</th>
+<th>KAT</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>UVW-KEM-128</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>UVW-KEM-256</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>UVW-KEM-512</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="4-performance">4. Performance</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>operation</th>
+<th>mean cycles</th>
+<th>mean time</th>
+<th>ops/s</th>
+<th>median trial</th>
+<th>n (trials × iters)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>UVW-KEM-128</code></td>
+<td>keygen</td>
+<td>627.34 M</td>
+<td>301 ms</td>
+<td>3.33</td>
+<td>300 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>UVW-KEM-128</code></td>
+<td>enc</td>
+<td>987.6 k</td>
+<td>472 µs</td>
+<td>2.12e+03</td>
+<td>471 µs</td>
+<td>11280 (5 × 2256)</td>
+</tr>
+<tr>
+<td><code>UVW-KEM-128</code></td>
+<td>dec</td>
+<td>1.36 G</td>
+<td>650 ms</td>
+<td>1.54</td>
+<td>650 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>UVW-KEM-256</code></td>
+<td>keygen</td>
+<td>4.82 G</td>
+<td>2.32 s</td>
+<td>0.431</td>
+<td>2.32 s</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>UVW-KEM-256</code></td>
+<td>enc</td>
+<td>2.88 M</td>
+<td>1.38 ms</td>
+<td>727</td>
+<td>1.38 ms</td>
+<td>3950 (5 × 790)</td>
+</tr>
+<tr>
+<td><code>UVW-KEM-256</code></td>
+<td>dec</td>
+<td>9.76 G</td>
+<td>4.69 s</td>
+<td>0.213</td>
+<td>4.69 s</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>UVW-KEM-512</code></td>
+<td>keygen</td>
+<td>37.96 G</td>
+<td>18.2 s</td>
+<td>0.0549</td>
+<td>18.2 s</td>
+<td>45 (5 × 9)</td>
+</tr>
+<tr>
+<td><code>UVW-KEM-512</code></td>
+<td>enc</td>
+<td>18.93 M</td>
+<td>9.08 ms</td>
+<td>110</td>
+<td>9.08 ms</td>
+<td>555 (5 × 111)</td>
+</tr>
+<tr>
+<td><code>UVW-KEM-512</code></td>
+<td>dec</td>
+<td>62.33 G</td>
+<td>29.8 s</td>
+<td>0.0336</td>
+<td>29.8 s</td>
+<td>30 (5 × 6)</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="5-resource-consumption">5. Resource consumption</h2>
+<p>Static memory is approximated by the library's loadable ELF segments; peak memory is the process high-water mark (VmHWM) including the benchmark driver and libc, so both are upper-bound proxies rather than isolated algorithm memory.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>operation</th>
+<th>static: ELF image (bytes)</th>
+<th>baseline RSS</th>
+<th>peak RSS</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>UVW-KEM-128</code></td>
+<td>keygen</td>
+<td>225041</td>
+<td>1772 KiB</td>
+<td>4804 KiB</td>
+</tr>
+<tr>
+<td><code>UVW-KEM-128</code></td>
+<td>enc</td>
+<td>225041</td>
+<td>2440 KiB</td>
+<td>4088 KiB</td>
+</tr>
+<tr>
+<td><code>UVW-KEM-128</code></td>
+<td>dec</td>
+<td>225041</td>
+<td>7300 KiB</td>
+<td>7400 KiB</td>
+</tr>
+<tr>
+<td><code>UVW-KEM-256</code></td>
+<td>keygen</td>
+<td>769869</td>
+<td>1760 KiB</td>
+<td>13988 KiB</td>
+</tr>
+<tr>
+<td><code>UVW-KEM-256</code></td>
+<td>enc</td>
+<td>769869</td>
+<td>4732 KiB</td>
+<td>12176 KiB</td>
+</tr>
+<tr>
+<td><code>UVW-KEM-256</code></td>
+<td>dec</td>
+<td>769869</td>
+<td>10728 KiB</td>
+<td>43984 KiB</td>
+</tr>
+<tr>
+<td><code>UVW-KEM-512</code></td>
+<td>keygen</td>
+<td>2952809</td>
+<td>1784 KiB</td>
+<td>51212 KiB</td>
+</tr>
+<tr>
+<td><code>UVW-KEM-512</code></td>
+<td>enc</td>
+<td>2952809</td>
+<td>14180 KiB</td>
+<td>44204 KiB</td>
+</tr>
+<tr>
+<td><code>UVW-KEM-512</code></td>
+<td>dec</td>
+<td>2952809</td>
+<td>32464 KiB</td>
+<td>117524 KiB</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="6-transmission-and-storage-overhead">6. Transmission and storage overhead</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>public key</th>
+<th>secret key</th>
+<th>ciphertext</th>
+<th>shared secret</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>UVW-KEM-128</code></td>
+<td>208013</td>
+<td>35</td>
+<td>1032</td>
+<td>64</td>
+</tr>
+<tr>
+<td><code>UVW-KEM-256</code></td>
+<td>911645</td>
+<td>35</td>
+<td>2199</td>
+<td>64</td>
+</tr>
+<tr>
+<td><code>UVW-KEM-512</code></td>
+<td>4001850</td>
+<td>67</td>
+<td>4820</td>
+<td>64</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="symmetric-primitives">Symmetric primitives</h2>
+<p><a href="../symmetric-survey.html">Survey</a> verdict: <strong>ICCS-only</strong></p>
+<p>Share of each operation spent in the ICCS placeholder hash functions and in the ICCS DRNG (reference build, measured in the same run with link-time wrappers):</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>operation</th>
+<th>pseudohash/XOF/sm3</th>
+<th>DRNG</th>
+<th>calls per operation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>UVW-KEM-128</code></td>
+<td>keygen</td>
+<td>0.0%</td>
+<td>3.4%</td>
+<td>drng 218</td>
+</tr>
+<tr>
+<td><code>UVW-KEM-128</code></td>
+<td>enc</td>
+<td>14%</td>
+<td>21%</td>
+<td>drng 3, pseudoXOF 4</td>
+</tr>
+<tr>
+<td><code>UVW-KEM-128</code></td>
+<td>dec</td>
+<td>0.0%</td>
+<td>3.1%</td>
+<td>drng 437, pseudoXOF 5</td>
+</tr>
+<tr>
+<td><code>UVW-KEM-256</code></td>
+<td>keygen</td>
+<td>0.0%</td>
+<td>1.6%</td>
+<td>drng 858</td>
+</tr>
+<tr>
+<td><code>UVW-KEM-256</code></td>
+<td>enc</td>
+<td>9.5%</td>
+<td>8.6%</td>
+<td>drng 3.4, pseudoXOF 4</td>
+</tr>
+<tr>
+<td><code>UVW-KEM-256</code></td>
+<td>dec</td>
+<td>0.0%</td>
+<td>1.7%</td>
+<td>drng 1.72e+03, pseudoXOF 5</td>
+</tr>
+<tr>
+<td><code>UVW-KEM-512</code></td>
+<td>keygen</td>
+<td>0.0%</td>
+<td>0.8%</td>
+<td>drng 3.42e+03</td>
+</tr>
+<tr>
+<td><code>UVW-KEM-512</code></td>
+<td>enc</td>
+<td>3.9%</td>
+<td>2.3%</td>
+<td>drng 5.37, pseudoXOF 4</td>
+</tr>
+<tr>
+<td><code>UVW-KEM-512</code></td>
+<td>dec</td>
+<td>0.0%</td>
+<td>1.1%</td>
+<td>drng 6.84e+03, pseudoXOF 5</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="7-raw-evidence-index">7. Raw evidence index</h2>
+<p>Paths are relative to <code>performance/data/x86_1/</code> in the <a href="https://github.com/ngcc-dev/ngcc-harness">harness</a>; each JSON file records its commands, environment and trials.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>item</th>
+<th>file</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>UVW-KEM-128</code></td>
+<td>KAT log (sha256 <code>2c07ed6cab2aeb5e…</code>)</td>
+<td><code>kat/kem-38/UVW-KEM-128.log</code></td>
+</tr>
+<tr>
+<td><code>UVW-KEM-128</code></td>
+<td>timing dec</td>
+<td><code>records/kem-38/UVW-KEM-128__dec.json</code></td>
+</tr>
+<tr>
+<td><code>UVW-KEM-128</code></td>
+<td>timing enc</td>
+<td><code>records/kem-38/UVW-KEM-128__enc.json</code></td>
+</tr>
+<tr>
+<td><code>UVW-KEM-128</code></td>
+<td>timing keygen</td>
+<td><code>records/kem-38/UVW-KEM-128__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>UVW-KEM-128</code></td>
+<td>hash profile dec</td>
+<td><code>profile/kem-38/UVW-KEM-128__dec.json</code></td>
+</tr>
+<tr>
+<td><code>UVW-KEM-128</code></td>
+<td>hash profile enc</td>
+<td><code>profile/kem-38/UVW-KEM-128__enc.json</code></td>
+</tr>
+<tr>
+<td><code>UVW-KEM-128</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/kem-38/UVW-KEM-128__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>UVW-KEM-256</code></td>
+<td>KAT log (sha256 <code>67212b8474761006…</code>)</td>
+<td><code>kat/kem-38/UVW-KEM-256.log</code></td>
+</tr>
+<tr>
+<td><code>UVW-KEM-256</code></td>
+<td>timing dec</td>
+<td><code>records/kem-38/UVW-KEM-256__dec.json</code></td>
+</tr>
+<tr>
+<td><code>UVW-KEM-256</code></td>
+<td>timing enc</td>
+<td><code>records/kem-38/UVW-KEM-256__enc.json</code></td>
+</tr>
+<tr>
+<td><code>UVW-KEM-256</code></td>
+<td>timing keygen</td>
+<td><code>records/kem-38/UVW-KEM-256__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>UVW-KEM-256</code></td>
+<td>hash profile dec</td>
+<td><code>profile/kem-38/UVW-KEM-256__dec.json</code></td>
+</tr>
+<tr>
+<td><code>UVW-KEM-256</code></td>
+<td>hash profile enc</td>
+<td><code>profile/kem-38/UVW-KEM-256__enc.json</code></td>
+</tr>
+<tr>
+<td><code>UVW-KEM-256</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/kem-38/UVW-KEM-256__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>UVW-KEM-512</code></td>
+<td>KAT log (sha256 <code>7407063586e93524…</code>)</td>
+<td><code>kat/kem-38/UVW-KEM-512.log</code></td>
+</tr>
+<tr>
+<td><code>UVW-KEM-512</code></td>
+<td>timing dec</td>
+<td><code>records/kem-38/UVW-KEM-512__dec.json</code></td>
+</tr>
+<tr>
+<td><code>UVW-KEM-512</code></td>
+<td>timing enc</td>
+<td><code>records/kem-38/UVW-KEM-512__enc.json</code></td>
+</tr>
+<tr>
+<td><code>UVW-KEM-512</code></td>
+<td>timing keygen</td>
+<td><code>records/kem-38/UVW-KEM-512__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>UVW-KEM-512</code></td>
+<td>hash profile dec</td>
+<td><code>profile/kem-38/UVW-KEM-512__dec.json</code></td>
+</tr>
+<tr>
+<td><code>UVW-KEM-512</code></td>
+<td>hash profile enc</td>
+<td><code>profile/kem-38/UVW-KEM-512__enc.json</code></td>
+</tr>
+<tr>
+<td><code>UVW-KEM-512</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/kem-38/UVW-KEM-512__keygen.json</code></td>
+</tr>
+</tbody>
+</table></div>
+<p>Scripts: <code>performance/campaign.py</code>, <code>performance/ngcc_perf.c</code>, <code>performance/hashprof/</code> in the <a href="https://github.com/ngcc-dev/ngcc-harness">harness</a>.</p>
+</main>
+<footer class="site-footer">
+<p>Maintained by: <a href="mailto:markku-juhani.saarinen@tuni.fi">markku-juhani.saarinen@tuni.fi</a></p>
+<p>Submissions are welcome via <a href="https://github.com/ngcc-dev/ngcc-harness/issues">GitHub issues</a>.</p>
+</footer>
+</body>
+</html>

@@ -28,7 +28,7 @@ The Linux witness preallocates the input, caps process virtual memory at its cur
 
 ## hash-02-2: Partial-bit AXIS update branches on secret state
 
-Severity: Medium
+Severity: Low
 Status: Confirmed
 Layer: Side-channel
 Affected: Reference AXIS-512/768/1024 on non-byte-aligned messages
@@ -39,13 +39,15 @@ Date: 2026-09-23
 
 For non-byte-aligned input, `axis_core_hash_bits` leaves the bit-sliced byte-aligned fast path (`axis_core.c:1698-1704`). The scalar nonlinear update calls `axis_flip_bit` on state-derived bits (`:160,633-638,685-690`); its generic and finalization paths retain conditional jumps under GCC `-O2`. Equal-length secret bitstrings can therefore change the branch trace. This does not apply to the ordinary byte-aligned fast path, and no timing extraction was demonstrated. See [constant_time.md](../constant-time/hash-02.md).
 
+Constant-time fix (easy, hence Low): apply each flip as a masked XOR, `reg[w] ^= (uint64_t)(-(bit & 1)) & mask`; the byte-aligned bitsliced path is already branch-free.
+
 ### Reproducing
 
 Compile `AXIS-768/axis_core.c` with `gcc -O2 -g -c`; `objdump -dSl` shows conditional jumps at `axis_flip_bit` in `axis_step_generic`.
 
 ## hash-02-3: The invertible AXIS state caps AXIS-1024 second-preimage security at 768 bits
 
-Severity: High
+Severity: Critical
 Status: Confirmed
 Layer: Design
 Affected: AXIS-1024 specification and implementations; AXIS-768 is exactly at the bound

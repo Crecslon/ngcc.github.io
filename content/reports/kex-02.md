@@ -41,7 +41,7 @@ ATTACK kex-pfs-recovery AFS_KEX_C512 CONFIRMED recorded m1/m2 plus later API lon
 
 ## kex-02-2: Secret-derived decryption coefficients take a sign branch
 
-Severity: Medium
+Severity: Low
 Status: Confirmed
 Layer: Side-channel
 Affected: AFS_KEX_C128 reference implementation
@@ -51,6 +51,8 @@ Credit: Markku-Juhani O. Saarinen <markku-juhani.saarinen@tuni.fi>, with AI assi
 Date: 2026-09-23
 
 The C128 KEM decapsulator decrypts the ciphertext using the secret polynomial, forming `mp = v - skpv*b` (`indcpa.c:354-364`). Message conversion then branches on the sign of each secret-derived centered coefficient (`poly.c:174-193`). This exposes a key- and ciphertext-dependent branch pattern on repeated decapsulation. C256/C512 use different conversion code and are not included in this finding. A KyberSlash-style full-key attack would also need an observable per-coefficient oracle and a chosen-ciphertext recovery argument; neither has been demonstrated here, so this is not rated Critical. See `constant_time.md` for the data-flow trace.
+
+Constant-time fix (easy, hence Low): derive each message bit from the coefficient with arithmetic masks, as in Kyber's `poly_tomsg`, instead of branching on its sign.
 
 ### Reproducing
 

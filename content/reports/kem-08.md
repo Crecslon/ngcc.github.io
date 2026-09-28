@@ -5,7 +5,7 @@ Archive: [BW-KEM.zip](https://www.niccs.org.cn/niccs/Proposal/Public-Key%20Crypt
 
 ## kem-08-1: C128 decapsulation branches on decrypted coefficients
 
-Severity: Medium
+Severity: Low
 Status: Confirmed
 Layer: Side-channel
 Affected: BW_KEM_C128 reference implementation
@@ -18,6 +18,8 @@ Follow-up source: [BW-KEM team's confirmation and fix](https://list.niccs.org.cn
 Decapsulation computes `mp = v - sᵀu` from the recipient secret and chosen ciphertext (`indcpa.c:321-331`), then branches on the sign of each centered coefficient while converting it to a message (`poly.c:174-193`). GCC `-O2` retains a conditional `jns`; the FO comparison occurs later (`kem.c:155-170`). The function is identical to the AFS-KEX C128 path in `kex-02-2`. This establishes secret-dependent control flow, not a measured remote oracle or a transferable KyberSlash key-recovery attack; see `constant_time.md`.
 
 The BW-KEM team confirmed the branch and reports replacing it with mask-based arithmetic in the reference, ARM, performance-optimized, and resource-optimized C128 implementations; its AVX2 path was already branch-free.
+
+Constant-time fix (easy, hence Low): derive each message bit from the coefficient with arithmetic masks, as the BW-KEM team's fix does.
 
 ### Reproducing
 

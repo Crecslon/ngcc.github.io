@@ -46,11 +46,15 @@ Credit: XuHaomeng
 Date: 2026-09-22
 Original source: [NGCC PKC Forum report](https://list.niccs.org.cn/archives/list/pkcforum@list.niccs.org.cn/message/IKMFXEEH5K427JC75E7364RNOJEO5OK7/)
 
+Additional reference: [Xiong and Wang, ePrint 2026/2232, §11](https://eprint.iacr.org/2026/2232)
+
 The specified ring polynomial is reducible: `X^640+1 = (X^128+1)(X^512-X^384+X^256-X^128+1)`. Reducing a public MLWE sample modulo `X^128+1` is the public alternating fold `a[j]-a[j+128]+a[j+256]-a[j+384]+a[j+512]`. It reduces the scalar secret dimension from `640k` to `128k`; five independent `CBD(eta)` coefficients fold to `CBD(5*eta)`, and public-key compression noise folds in the same way.
 
 Re-running `lattice-estimator` with that quotient distribution reproduces XuHaomeng's [mailing-list estimates](https://list.niccs.org.cn/archives/list/pkcforum@list.niccs.org.cn/message/IKMFXEEH5K427JC75E7364RNOJEO5OK7/): uSVP costs of 27.7, 67.7, 99.3, and 133.4 bits, versus the specification's 159, 307, 426, and 541 bits. This establishes a much cheaper distinguisher for the underlying structured samples and invalidates estimates that treat all `640k` coordinates as one irreducible component.
 
 This remains a Lead because a complete IND-CCA attack on the KEM has not been constructed. Full secret recovery also requires solving the residual degree-512 component; the post explicitly leaves that cost unresolved.
+
+Xiong and Wang independently reproduce the quotient, estimator figures, and reduced toy recoveries. Their stronger statement that distinguishing the projected public-key distribution by itself breaks IND-CPA reverses the direction of the usual SLWE reduction: it does not provide a challenge-message or shared-key distinguisher for an honestly generated public key. The paper therefore strengthens the structural and experimental evidence but does not close the full-recovery gap recorded above.
 
 ### Reproducing
 

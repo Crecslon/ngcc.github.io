@@ -5,19 +5,19 @@ Archive: [cedrus-alpha.zip](https://www.niccs.org.cn/niccs/Proposal/Public-Key%2
 
 ## sign-04-1: The 160-bit WOTS implementation authenticates only 128 bits
 
-Severity: Medium
+Severity: Critical
 Status: Confirmed
 Layer: Implementation
 Affected: CEDRUSALPHA-160s and CEDRUSALPHA-160f, reference and optimized implementations
 Discovery: Trivial
-Exploitation: Reduces the relevant WOTS second-preimage target from 160 to 128 bits
+Exploitation: About 2^128 work to replace an authenticated lower-layer root, below the 160-bit claim
 Credit: shiyuan (NGCC PKC Forum sender)
 Date: 2026-09-22
 Original source: [NGCC PKC Forum report](https://list.niccs.org.cn/archives/list/pkcforum@list.niccs.org.cn/message/S5GGRLD7YZQQRH2VPPYET2GWYTHFWKXR/)
 
 Shiyuan reported the defect in the [NGCC PKC Forum](https://list.niccs.org.cn/archives/list/pkcforum@list.niccs.org.cn/message/S5GGRLD7YZQQRH2VPPYET2GWYTHFWKXR/). The specification converts the complete `n`-byte WOTS message to an integer. In both 160-bit implementations, however, `WOTS_UINT_WORDS` is `SPX_N/8 = 2`, and `chain_lengths()` loads only two eight-byte words. Bytes 16 through 19 of every FORC or child-XMSS root are ignored by WOTS signing and verification.
 
-The implementation therefore authenticates only a 128-bit prefix at these layers, contradicting the stated 160-bit classical strength. This is not an immediate signature-bit malleability: exploiting it in the full hypertree still requires finding a lower-layer result with the same authenticated prefix. The submitted `2^128` second-preimage estimate is the justified cap; the forum post's separate `2^64` collision figure does not by itself give a `2^64` signature forgery.
+The implementation therefore authenticates only a 128-bit prefix at these layers, contradicting the stated 160-bit classical strength. An attacker can replace an authenticated lower-layer result by grinding candidate subtree roots until that prefix matches, at about `2^128` work, and then use the replacement subtree for a fresh message. The forum post's separate `2^64` collision figure does not by itself give a `2^64` signature forgery. The `2^128` full-scheme path is nevertheless a concrete attack bound below the 160-bit claim, so the finding is Critical even though the full-size computation has not been run.
 
 ### Reproducing
 

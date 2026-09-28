@@ -36,7 +36,7 @@ witnesses and their controls. See `tools/README.md`.
 
 ## sign-07-2: Verifier challenge-sign blindness enables universal forgery
 
-Severity: High
+Severity: Critical
 Status: Confirmed
 Layer: Design
 Affected: CS-128, CS-256, and CS-512

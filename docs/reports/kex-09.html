@@ -5,22 +5,22 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>ngcc.dev: TriQ-KEX (kex-09)</title>
 <link rel="icon" type="image/png" href="../assets/mag-glass.png">
-<link rel="stylesheet" href="../assets/style.css?v=996d5cfd">
+<link rel="stylesheet" href="../assets/style.css?v=1fdb792d">
 </head>
 <body>
 <header class="site-header">
 <a class="brand" href="../index.html"><img class="brand-icon" src="../assets/mag-glass.png" alt="" width="28" height="28">ngcc.dev</a>
-<nav><a href="../index.html">Home</a><a href="../reports/index.html">Reports</a><a href="../constant-time/index.html">Constant-Time</a></nav>
+<nav><a href="../index.html">Home</a><a href="../reports/index.html">Reports</a><a href="../performance/x86_1/index.html">Performance</a><a href="../constant-time/index.html">Constant-Time</a></nav>
 </header>
-<main>
-<p class="crumb"><a href="../reports/index.html">Reports</a> › <code>kex-09</code> · <a href="../constant-time/kex-09.html">Constant-time review</a></p>
+<main class="">
+<p class="crumb"><a href="../reports/index.html">Reports</a> › <code>kex-09</code> · <a href="../constant-time/kex-09.html">Constant-time review</a> · <a href="../performance/x86_1/kex-09.html">Performance</a></p>
 
 <h1 id="triq-kex-kex-09">TriQ-KEX (kex-09)</h1>
 <div class="table-wrap"><table class="meta">
 <tr><th>Candidate</th><td>TriQ-KEX</td></tr>
 <tr><th>Family</th><td>Code-based authenticated key exchange</td></tr>
 <tr><th>Archive</th><td><a href="https://www.niccs.org.cn/niccs/Proposal/Public-Key%20Cryptographic%20Algorithms/Round%201%20candidates/TriQ-KEX.zip">TriQ-KEX.zip</a> (SHA-256: <code>dde9bf3e8d75fc3df53bcbcacaba4faed39272b8ef2f1ac199ae0128d327b505</code>)</td></tr>
-<tr><th>Specification</th><td><a href="https://github.com/ngcc-dev/ngcc-harness/raw/refs/heads/main/kex-09/kex-09-spec.pdf" title="Download kex-09-spec.pdf from GitHub">kex-09-spec.pdf</a>&nbsp;<a class="pdf-link" href="https://cdn.jsdelivr.net/gh/ngcc-dev/ngcc-harness@main/kex-09/kex-09-spec.pdf" title="Open the kex-09 specification PDF">PDF</a></td></tr>
+<tr><th>Specification</th><td><a href="https://github.com/ngcc-dev/ngcc-harness/raw/dc66c6cb3c06e75bdea0048e21fa4e13c63f00af/kex-09/kex-09-spec.pdf" title="Download kex-09-spec.pdf from GitHub">kex-09-spec.pdf</a>&nbsp;<a class="pdf-link" href="https://cdn.jsdelivr.net/gh/ngcc-dev/ngcc-harness@dc66c6cb3c06e75bdea0048e21fa4e13c63f00af/kex-09/kex-09-spec.pdf" title="Open the kex-09 specification PDF">PDF</a></td></tr>
 </table></div>
 
 <h2 class="issue-heading issue-heading-first" id="kex-09-1-decapsulation-re-expands-its-secret-key-with-a-variable-length-sampler">kex-09-1: Decapsulation re-expands its secret key with a variable-length sampler</h2>
@@ -37,6 +37,7 @@
 </table></div>
 
 <p><code>crypto_kem_dec()</code> passes the persistent secret PKE seed to <code>triq_pke_decrypt()</code>, which calls <code>triq_dk_pke_from_string()</code> on every decapsulation. That function expands the seed through <code>vect_sample_fixed_weight1()</code>. Its support sampler repeats on rejected or duplicate secret-derived positions (<code>vector.c:69-90</code>), and refills an XOF buffer when the extra draws cross its boundary. Thus otherwise identical decapsulation calls perform a secret-key-dependent number of loop iterations and XOF calls. The four reference variants share the same sampler. This is a secret-dependent timing/control-flow leak, not an established full-key attack; see <code>constant_time.md</code> for the data-flow trace.</p>
+<p>Constant-time fix (moderate, hence Medium): store the expanded support in the private key instead of re-deriving it on every decapsulation, which changes the key format and storage, or sample it with a fixed number of draws and constant-time duplicate handling. Both are well-known techniques with moderate cost.</p>
 <h3 id="reproducing">Reproducing</h3>
 <p>Commands below run in a checkout of the <a href="https://github.com/ngcc-dev/ngcc-harness">ngcc-harness repository</a> with the candidate built (see its README).</p>
 <p>From the repository root, compile the witness against the submitted TriQ-128 source:</p>

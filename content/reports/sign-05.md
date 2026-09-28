@@ -13,7 +13,7 @@ Discovery: Moderate
 Exploitation: No signing queries or secret information; one ordinary signing computation (0.01–6 s) per forged message
 Credit: Martin Feussner, with OpenAI Codex (Daybreak Blue) assistance
 Date: 2026-09-25
-Original source: [Feussner's pqc-forum post](https://groups.google.com/a/list.nist.gov/g/pqc-forum/c/_WrUbtphjHw/m/fHXYK5hJBAAJ) and attached analysis
+Original source: [Feussner's pqc-forum post and attached analysis](https://groups.google.com/a/list.nist.gov/g/pqc-forum/c/_WrUbtphjHw/m/fHXYK5hJBAAJ)
 
 The submission claims EUF-CMA security (§9.1.5–9.1.6), which is trivially violated: anyone can sign any message under any public key.
 
@@ -29,3 +29,22 @@ for b in sign-05/bin/reproduce_forgery_*; do "$b"; done
 ```
 
 For each parameter set, the witness generates a victim key pair with `sig_keygen` and wipes the secret key. It checks that the all-zero OWF key is not a preimage of the public key, then signs with that key's witness while claiming the victim's OWF output. The public `sig_verify` accepts the forged signature, and a one-bit message change is rejected. Each set prints `ATTACK sign-05-1 <set> CONFIRMED`; all 14 were confirmed.
+
+## sign-05-2: Signing indexes lookup tables with the secret key
+
+Severity: Low
+Status: Confirmed
+Layer: Side-channel
+Affected: All 14 SM4th, uBlockith and Vistrutith parameter sets, reference and optimized implementations as built by default
+Discovery: Trivial
+Exploitation: Local cache observer; key recovery not demonstrated
+Credit: Markku-Juhani O. Saarinen <markku-juhani.saarinen@tuni.fi>, with AI assistance
+Date: 2026-09-27
+
+Key generation evaluates the one-way function on the secret key (`sm4th_d3_128f_loose/sm4th_d3_128f_loose.c:43`). Every signature re-derives its output and the extended witness from the secret key again (`:64,72`). The submitted Makefiles select table S-boxes (`sm4th_d3_128f_loose/Makefile:4`, `vistrutith_d3_512f/Makefile:4`, and `USE_SBOX_TABLE ?= 1` in the optimized trees). SM4th therefore reads the 256-byte `SM4_S` table at key-dependent round words (`utils_sm4/sm4_sbox.c:42-45`, `utils_sm4/sm4_core.c:208-216`). uBlockith reads eight 2-KiB T-tables in its middle rounds (`utils_ublock/ublock_core.c:61-62,137`); its comments acknowledge the Flush+Reload risk and harden only the first and last rounds. Vistrutith reads AES T-tables (`utils_vistrutah/vistrutah.c:37,105-134`). A co-resident cache observer can therefore see secret-key-dependent addresses on each signature. No key recovery is demonstrated.
+
+Constant-time fix (easy, hence Low): the submission already contains table-free code. Building without `SM4_SBOX_TABLE` computes the SM4 S-box as an affine map, inversion by fixed exponentiation with masked multiplication, and another affine map (`utils_sm4/sm4_sbox.c:47-126`, `fields.c:253-286`). Vistrutith has a computed S-box path when `SBOX_TABLE` is undefined (`vistrutah.c:187`). Faster constant-time options are AES instructions between two `pshufb` affine transforms for SM4, AES instructions for Vistrutah, and a 16-entry in-register `pshufb` lookup for uBlock's 4-bit S-box.
+
+### Reproducing
+
+Inspect the cited build flags and table reads in any reference variant; the lookup indices are round words derived from the secret one-way-function key.

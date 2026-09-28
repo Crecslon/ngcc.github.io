@@ -41,7 +41,7 @@ The attack-only library is linked from the same submitted Amoeba-576 object file
 
 ## kem-02-2: Secret-derived ECC decoding indexes a syndrome table
 
-Severity: Medium
+Severity: Low
 Status: Confirmed
 Layer: Side-channel
 Affected: Reference implementations, all five parameter sets
@@ -50,7 +50,9 @@ Exploitation: Local cache/control-flow observation; no separate extraction demon
 Credit: Markku-Juhani O. Saarinen <markku-juhani.saarinen@tuni.fi>, with AI assistance
 Date: 2026-09-23
 
-The Amoeba decapsulator decrypts under the private key and ECC-decodes the resulting codeword. Its Hamming decoder branches on each codeword bit and on the syndrome, then loads `syndrome_map[s_h_key]` (`src/backend/hamming.c:131,157-183`). Both the branch decisions and the table address derive from secret-key decryption of the ciphertext. This is a local control-flow/cache side channel independent of `kem-02-1`'s faulty ciphertext comparison. The code also returns an explicit decoder-failure bit (`ccakem.c:61-62`), but neither that bit nor this trace has been turned into a second demonstrated key-recovery oracle. A candidate-specific chosen-ciphertext recovery argument is still needed; that is why this finding remains Medium.
+The Amoeba decapsulator decrypts under the private key and ECC-decodes the resulting codeword. Its Hamming decoder branches on each codeword bit and on the syndrome, then loads `syndrome_map[s_h_key]` (`src/backend/hamming.c:131,157-183`). Both the branch decisions and the table address derive from secret-key decryption of the ciphertext. This is a local control-flow/cache side channel independent of `kem-02-1`'s faulty ciphertext comparison. The code also returns an explicit decoder-failure bit (`ccakem.c:61-62`), but neither that bit nor this trace has been turned into a second demonstrated key-recovery oracle. A candidate-specific chosen-ciphertext recovery argument is still needed.
+
+Constant-time fix (easy, hence Low): compute the syndrome with fixed XORs and correct the codeword by comparing every position with the syndrome under a mask, instead of branching and indexing `syndrome_map`. For a Hamming code this is a small fixed cost per block.
 
 ### Reproducing
 
@@ -124,3 +126,29 @@ make -C kem-02 check-unseeded-keygen
 ```
 
 The check launches two fresh child processes per parameter set and compares `SHA-256(pk || sk)`, then repeats with two explicit distinct seeds as a control. It demonstrates the effect of violating the API's seeding contract.
+
+## kem-02-6: Pre-FO decoder failures give a full chosen-ciphertext key recovery
+
+Severity: Critical
+Status: Confirmed
+Layer: Implementation
+Affected: All five Amoeba reference parameter sets share the oracle; full Amoeba-576 recovery demonstrated
+Discovery: Moderate
+Exploitation: 576/576 Amoeba-576 secret coefficients and a fresh session key recovered in about 24,200 chosen-ciphertext queries
+Credit: Zhenyu Xiong and Mingsheng Wang
+Date: 2026-09-27
+Reference: [Xiong and Wang, “Cryptanalysis of the ICCS NGCC Round-1 Public-Key Candidates,” ePrint 2026/2232, §8](https://eprint.iacr.org/2026/2232)
+
+`CCAKEM_Decaps` returns `-1` immediately when `CPAPKE_Decrypt` reports an ECC failure, before the Fujisaki--Okamoto re-encryption comparison and implicit rejection. An attacker can therefore force and observe a secret-dependent decoding-failure bit. A ciphertext with scalar `c1=delta`, one pinned pilot bit, and one swept probe bit reveals the threshold `q/4+delta*s_i`; matching the 32 possible compressed-`c2` responses recovers that secret coefficient.
+
+Xiong and Wang's public artifact recovers 517 Amoeba-576 coefficients. Further extension to their analysis initially probes all 522 coefficient positions represented in `c2`, then uses `c1=delta*X^j` and multiplication in `Z_q[X]/(X^576-X^288+1)` to expose the 54 positions outside `c2` and resolve the four boundary positions 518--521. The local witness thereby recovers all 576 coefficients, serializes them as a new decapsulation key, and recovers the shared secret from a fresh honest encapsulation. The submitted secret key is read only to score the recovered vector; the fresh shared-secret test uses the reconstructed key. Runs use about 24,200 oracle calls and complete in under a minute on this host (about four CPU seconds, with wall time dominated by isolating crashing queries in child processes). A service that exposes the return value or the associated decoder crash provides the oracle directly.
+
+Do not propagate any decoder result before the constant-time full-ciphertext FO check. Fold all decoding errors into the implicit-rejection mask, and separately bound the correction index to remove the out-of-bounds write.
+
+### Reproducing
+
+```sh
+sh kem-02/reproduce_dfo_key_recovery.sh
+```
+
+The witness builds against the unmodified Amoeba-576 reference sources, contains crashing oracle calls in child processes, requires exact recovery of all 576 coefficients, and verifies a fresh shared secret with the reconstructed key.

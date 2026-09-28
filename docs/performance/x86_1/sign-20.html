@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ngcc.dev: sign-20 Qing Luan — performance on x86-64 (system x861)</title>
+<link rel="icon" type="image/png" href="../../assets/mag-glass.png">
+<link rel="stylesheet" href="../../assets/style.css?v=1fdb792d">
+</head>
+<body>
+<header class="site-header">
+<a class="brand" href="../../index.html"><img class="brand-icon" src="../../assets/mag-glass.png" alt="" width="28" height="28">ngcc.dev</a>
+<nav><a href="../../index.html">Home</a><a href="../../reports/index.html">Reports</a><a href="../../performance/x86_1/index.html">Performance</a><a href="../../constant-time/index.html">Constant-Time</a></nav>
+</header>
+<main class="">
+<!-- synchronized from harness: sign-20/perf_x86_1.md -->
+<h1 id="sign-20-qing-luan-performance-on-x86-64-system-x86_1">sign-20 Qing Luan — performance on x86-64 (system x86_1)</h1>
+<p><a href="index.html">Performance x86_1</a> › <code>sign-20</code> · <a href="method.html">method</a> · <a href="https://www.niccs.org.cn/niccs/Round1Additional/pc/content/content_2101561087243145216.html">NICCS page</a></p>
+<p>Independent measurement following the structure of the NICCS x86 self-assessment guide, §3.5 (1)–(7). Not a submitter self-assessment.</p>
+<h2 id="1-basic-information">1. Basic information</h2>
+<ul>
+<li>Category: public-key algorithm; function: digital signature</li>
+<li>Algorithm: Qing Luan</li>
+<li>Implementation versions measured: reference</li>
+<li>Parameter sets: <code>QingLuan-128</code>, <code>QingLuan-256</code>, <code>QingLuan-384</code>, <code>QingLuan-512</code></li>
+</ul>
+<h2 id="2-assessment-environment">2. Assessment environment</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>item</th>
+<th>value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>processor</td>
+<td>12th Gen Intel(R) Core(TM) i7-12700 (CPU 2, one core)</td>
+</tr>
+<tr>
+<td>clock</td>
+<td>max 2.10 GHz, governor performance, turbo off, SMT off</td>
+</tr>
+<tr>
+<td>memory</td>
+<td>31788 MiB</td>
+</tr>
+<tr>
+<td>OS / kernel</td>
+<td>Debian GNU/Linux 13 (trixie) / 6.12.107+deb13-amd64</td>
+</tr>
+<tr>
+<td>compiler / build tool</td>
+<td>gcc (Debian 14.2.0-19) 14.2.0 / cmake version 3.31.6</td>
+</tr>
+<tr>
+<td>campaign start / end (UTC)</td>
+<td>2026-09-25T10:02:21 / 2026-09-28T04:35:59</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="3-functional-testing-kat">3. Functional testing (KAT)</h2>
+<p>Each library was checked against the submitted KAT vectors (SHA-256 manifest <code>sign-20/kat.sha256</code> in the harness) before timing.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>build flags</th>
+<th>KAT</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>QingLuan-128</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>QingLuan-256</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>QingLuan-384</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>QingLuan-512</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="4-performance">4. Performance</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>operation</th>
+<th>mean cycles</th>
+<th>mean time</th>
+<th>ops/s</th>
+<th>median trial</th>
+<th>n (trials × iters)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>QingLuan-128</code></td>
+<td>keygen</td>
+<td>272.2 k</td>
+<td>130 µs</td>
+<td>7.69e+03</td>
+<td>130 µs</td>
+<td>35075 (5 × 7015)</td>
+</tr>
+<tr>
+<td><code>QingLuan-128</code></td>
+<td>sign</td>
+<td>16.41 M</td>
+<td>7.84 ms</td>
+<td>128</td>
+<td>7.84 ms</td>
+<td>635 (5 × 127)</td>
+</tr>
+<tr>
+<td><code>QingLuan-128</code></td>
+<td>verify</td>
+<td>7.15 M</td>
+<td>3.42 ms</td>
+<td>293</td>
+<td>3.42 ms</td>
+<td>1450 (5 × 290)</td>
+</tr>
+<tr>
+<td><code>QingLuan-256</code></td>
+<td>keygen</td>
+<td>1.67 M</td>
+<td>796 µs</td>
+<td>1.26e+03</td>
+<td>796 µs</td>
+<td>5750 (5 × 1150)</td>
+</tr>
+<tr>
+<td><code>QingLuan-256</code></td>
+<td>sign</td>
+<td>103.95 M</td>
+<td>49.8 ms</td>
+<td>20.1</td>
+<td>49.8 ms</td>
+<td>105 (5 × 21)</td>
+</tr>
+<tr>
+<td><code>QingLuan-256</code></td>
+<td>verify</td>
+<td>45.53 M</td>
+<td>21.8 ms</td>
+<td>46</td>
+<td>21.8 ms</td>
+<td>230 (5 × 46)</td>
+</tr>
+<tr>
+<td><code>QingLuan-384</code></td>
+<td>keygen</td>
+<td>3.58 M</td>
+<td>1.71 ms</td>
+<td>585</td>
+<td>1.71 ms</td>
+<td>2885 (5 × 577)</td>
+</tr>
+<tr>
+<td><code>QingLuan-384</code></td>
+<td>sign</td>
+<td>257.81 M</td>
+<td>123 ms</td>
+<td>8.1</td>
+<td>123 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>QingLuan-384</code></td>
+<td>verify</td>
+<td>115.85 M</td>
+<td>55.5 ms</td>
+<td>18</td>
+<td>55.5 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>QingLuan-512</code></td>
+<td>keygen</td>
+<td>8.80 M</td>
+<td>4.2 ms</td>
+<td>238</td>
+<td>4.2 ms</td>
+<td>1170 (5 × 234)</td>
+</tr>
+<tr>
+<td><code>QingLuan-512</code></td>
+<td>sign</td>
+<td>612.04 M</td>
+<td>294 ms</td>
+<td>3.4</td>
+<td>293 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>QingLuan-512</code></td>
+<td>verify</td>
+<td>274.42 M</td>
+<td>131 ms</td>
+<td>7.61</td>
+<td>131 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="5-resource-consumption">5. Resource consumption</h2>
+<p>Static memory is approximated by the library's loadable ELF segments; peak memory is the process high-water mark (VmHWM) including the benchmark driver and libc, so both are upper-bound proxies rather than isolated algorithm memory.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>operation</th>
+<th>static: ELF image (bytes)</th>
+<th>baseline RSS</th>
+<th>peak RSS</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>QingLuan-128</code></td>
+<td>keygen</td>
+<td>34189</td>
+<td>1712 KiB</td>
+<td>1824 KiB</td>
+</tr>
+<tr>
+<td><code>QingLuan-128</code></td>
+<td>sign</td>
+<td>34189</td>
+<td>1724 KiB</td>
+<td>1940 KiB</td>
+</tr>
+<tr>
+<td><code>QingLuan-128</code></td>
+<td>verify</td>
+<td>34189</td>
+<td>1832 KiB</td>
+<td>1928 KiB</td>
+</tr>
+<tr>
+<td><code>QingLuan-256</code></td>
+<td>keygen</td>
+<td>34789</td>
+<td>1780 KiB</td>
+<td>1860 KiB</td>
+</tr>
+<tr>
+<td><code>QingLuan-256</code></td>
+<td>sign</td>
+<td>34789</td>
+<td>1796 KiB</td>
+<td>2436 KiB</td>
+</tr>
+<tr>
+<td><code>QingLuan-256</code></td>
+<td>verify</td>
+<td>34789</td>
+<td>2228 KiB</td>
+<td>2328 KiB</td>
+</tr>
+<tr>
+<td><code>QingLuan-384</code></td>
+<td>keygen</td>
+<td>34853</td>
+<td>1684 KiB</td>
+<td>1824 KiB</td>
+</tr>
+<tr>
+<td><code>QingLuan-384</code></td>
+<td>sign</td>
+<td>34853</td>
+<td>1732 KiB</td>
+<td>3184 KiB</td>
+</tr>
+<tr>
+<td><code>QingLuan-384</code></td>
+<td>verify</td>
+<td>34853</td>
+<td>2308 KiB</td>
+<td>2920 KiB</td>
+</tr>
+<tr>
+<td><code>QingLuan-512</code></td>
+<td>keygen</td>
+<td>35285</td>
+<td>1720 KiB</td>
+<td>1844 KiB</td>
+</tr>
+<tr>
+<td><code>QingLuan-512</code></td>
+<td>sign</td>
+<td>35285</td>
+<td>1752 KiB</td>
+<td>4348 KiB</td>
+</tr>
+<tr>
+<td><code>QingLuan-512</code></td>
+<td>verify</td>
+<td>35285</td>
+<td>2804 KiB</td>
+<td>3852 KiB</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="6-transmission-and-storage-overhead">6. Transmission and storage overhead</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>public key</th>
+<th>secret key</th>
+<th>signature</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>QingLuan-128</code></td>
+<td>77</td>
+<td>32</td>
+<td>18720</td>
+</tr>
+<tr>
+<td><code>QingLuan-256</code></td>
+<td>153</td>
+<td>64</td>
+<td>74248</td>
+</tr>
+<tr>
+<td><code>QingLuan-384</code></td>
+<td>227</td>
+<td>96</td>
+<td>164940</td>
+</tr>
+<tr>
+<td><code>QingLuan-512</code></td>
+<td>302</td>
+<td>128</td>
+<td>292816</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="symmetric-primitives">Symmetric primitives</h2>
+<p><a href="../symmetric-survey.html">Survey</a> verdict: <strong>ICCS-only</strong> — builds wide hash and counter XOF on sm3hash, not pseudohash/pseudoXOF</p>
+<p>Share of each operation spent in the ICCS placeholder hash functions and in the ICCS DRNG (reference build, measured in the same run with link-time wrappers):</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>operation</th>
+<th>pseudohash/XOF/sm3</th>
+<th>DRNG</th>
+<th>calls per operation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>QingLuan-128</code></td>
+<td>keygen</td>
+<td>69%</td>
+<td>1.6%</td>
+<td>drng 1, sm3hash 133</td>
+</tr>
+<tr>
+<td><code>QingLuan-128</code></td>
+<td>sign</td>
+<td>62%</td>
+<td>0.1%</td>
+<td>drng 2, sm3hash 5.93e+03</td>
+</tr>
+<tr>
+<td><code>QingLuan-128</code></td>
+<td>verify</td>
+<td>66%</td>
+<td>0.0%</td>
+<td>sm3hash 2.54e+03</td>
+</tr>
+<tr>
+<td><code>QingLuan-256</code></td>
+<td>keygen</td>
+<td>82%</td>
+<td>0.4%</td>
+<td>drng 1, sm3hash 497</td>
+</tr>
+<tr>
+<td><code>QingLuan-256</code></td>
+<td>sign</td>
+<td>72%</td>
+<td>0.0%</td>
+<td>drng 2, sm3hash 2.28e+04</td>
+</tr>
+<tr>
+<td><code>QingLuan-256</code></td>
+<td>verify</td>
+<td>77%</td>
+<td>0.0%</td>
+<td>sm3hash 9.73e+03</td>
+</tr>
+<tr>
+<td><code>QingLuan-384</code></td>
+<td>keygen</td>
+<td>82%</td>
+<td>0.2%</td>
+<td>drng 1, sm3hash 1.07e+03</td>
+</tr>
+<tr>
+<td><code>QingLuan-384</code></td>
+<td>sign</td>
+<td>72%</td>
+<td>0.0%</td>
+<td>drng 2, sm3hash 5.01e+04</td>
+</tr>
+<tr>
+<td><code>QingLuan-384</code></td>
+<td>verify</td>
+<td>79%</td>
+<td>0.0%</td>
+<td>sm3hash 2.13e+04</td>
+</tr>
+<tr>
+<td><code>QingLuan-512</code></td>
+<td>keygen</td>
+<td>88%</td>
+<td>0.1%</td>
+<td>drng 1, sm3hash 1.87e+03</td>
+</tr>
+<tr>
+<td><code>QingLuan-512</code></td>
+<td>sign</td>
+<td>77%</td>
+<td>0.0%</td>
+<td>drng 2, sm3hash 8.85e+04</td>
+</tr>
+<tr>
+<td><code>QingLuan-512</code></td>
+<td>verify</td>
+<td>83%</td>
+<td>0.0%</td>
+<td>sm3hash 3.76e+04</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="7-raw-evidence-index">7. Raw evidence index</h2>
+<p>Paths are relative to <code>performance/data/x86_1/</code> in the <a href="https://github.com/ngcc-dev/ngcc-harness">harness</a>; each JSON file records its commands, environment and trials.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>item</th>
+<th>file</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>QingLuan-128</code></td>
+<td>KAT log (sha256 <code>126aa127d1420623…</code>)</td>
+<td><code>kat/sign-20/QingLuan-128.log</code></td>
+</tr>
+<tr>
+<td><code>QingLuan-128</code></td>
+<td>timing keygen</td>
+<td><code>records/sign-20/QingLuan-128__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>QingLuan-128</code></td>
+<td>timing sign</td>
+<td><code>records/sign-20/QingLuan-128__sign.json</code></td>
+</tr>
+<tr>
+<td><code>QingLuan-128</code></td>
+<td>timing verify</td>
+<td><code>records/sign-20/QingLuan-128__verify.json</code></td>
+</tr>
+<tr>
+<td><code>QingLuan-128</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/sign-20/QingLuan-128__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>QingLuan-128</code></td>
+<td>hash profile sign</td>
+<td><code>profile/sign-20/QingLuan-128__sign.json</code></td>
+</tr>
+<tr>
+<td><code>QingLuan-128</code></td>
+<td>hash profile verify</td>
+<td><code>profile/sign-20/QingLuan-128__verify.json</code></td>
+</tr>
+<tr>
+<td><code>QingLuan-256</code></td>
+<td>KAT log (sha256 <code>654d932cf1d9afd7…</code>)</td>
+<td><code>kat/sign-20/QingLuan-256.log</code></td>
+</tr>
+<tr>
+<td><code>QingLuan-256</code></td>
+<td>timing keygen</td>
+<td><code>records/sign-20/QingLuan-256__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>QingLuan-256</code></td>
+<td>timing sign</td>
+<td><code>records/sign-20/QingLuan-256__sign.json</code></td>
+</tr>
+<tr>
+<td><code>QingLuan-256</code></td>
+<td>timing verify</td>
+<td><code>records/sign-20/QingLuan-256__verify.json</code></td>
+</tr>
+<tr>
+<td><code>QingLuan-256</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/sign-20/QingLuan-256__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>QingLuan-256</code></td>
+<td>hash profile sign</td>
+<td><code>profile/sign-20/QingLuan-256__sign.json</code></td>
+</tr>
+<tr>
+<td><code>QingLuan-256</code></td>
+<td>hash profile verify</td>
+<td><code>profile/sign-20/QingLuan-256__verify.json</code></td>
+</tr>
+<tr>
+<td><code>QingLuan-384</code></td>
+<td>KAT log (sha256 <code>b6444860391972e7…</code>)</td>
+<td><code>kat/sign-20/QingLuan-384.log</code></td>
+</tr>
+<tr>
+<td><code>QingLuan-384</code></td>
+<td>timing keygen</td>
+<td><code>records/sign-20/QingLuan-384__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>QingLuan-384</code></td>
+<td>timing sign</td>
+<td><code>records/sign-20/QingLuan-384__sign.json</code></td>
+</tr>
+<tr>
+<td><code>QingLuan-384</code></td>
+<td>timing verify</td>
+<td><code>records/sign-20/QingLuan-384__verify.json</code></td>
+</tr>
+<tr>
+<td><code>QingLuan-384</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/sign-20/QingLuan-384__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>QingLuan-384</code></td>
+<td>hash profile sign</td>
+<td><code>profile/sign-20/QingLuan-384__sign.json</code></td>
+</tr>
+<tr>
+<td><code>QingLuan-384</code></td>
+<td>hash profile verify</td>
+<td><code>profile/sign-20/QingLuan-384__verify.json</code></td>
+</tr>
+<tr>
+<td><code>QingLuan-512</code></td>
+<td>KAT log (sha256 <code>bc89409ddc7e6a7a…</code>)</td>
+<td><code>kat/sign-20/QingLuan-512.log</code></td>
+</tr>
+<tr>
+<td><code>QingLuan-512</code></td>
+<td>timing keygen</td>
+<td><code>records/sign-20/QingLuan-512__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>QingLuan-512</code></td>
+<td>timing sign</td>
+<td><code>records/sign-20/QingLuan-512__sign.json</code></td>
+</tr>
+<tr>
+<td><code>QingLuan-512</code></td>
+<td>timing verify</td>
+<td><code>records/sign-20/QingLuan-512__verify.json</code></td>
+</tr>
+<tr>
+<td><code>QingLuan-512</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/sign-20/QingLuan-512__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>QingLuan-512</code></td>
+<td>hash profile sign</td>
+<td><code>profile/sign-20/QingLuan-512__sign.json</code></td>
+</tr>
+<tr>
+<td><code>QingLuan-512</code></td>
+<td>hash profile verify</td>
+<td><code>profile/sign-20/QingLuan-512__verify.json</code></td>
+</tr>
+</tbody>
+</table></div>
+<p>Scripts: <code>performance/campaign.py</code>, <code>performance/ngcc_perf.c</code>, <code>performance/hashprof/</code> in the <a href="https://github.com/ngcc-dev/ngcc-harness">harness</a>.</p>
+</main>
+<footer class="site-footer">
+<p>Maintained by: <a href="mailto:markku-juhani.saarinen@tuni.fi">markku-juhani.saarinen@tuni.fi</a></p>
+<p>Submissions are welcome via <a href="https://github.com/ngcc-dev/ngcc-harness/issues">GitHub issues</a>.</p>
+</footer>
+</body>
+</html>

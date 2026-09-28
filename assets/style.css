@@ -102,6 +102,20 @@ table.reports td.report-id { white-space: nowrap; text-align: center; }
 .pdf-link { display: inline-block; padding: 0.05em 0.4em; border: 1px solid var(--link);
   border-radius: 3px; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.03em; }
 .pdf-link:hover { background: var(--link); color: var(--bg); text-decoration: none; }
+table.performance-summary { width: max-content; min-width: 100%; }
+main.performance-index { max-width: 118rem; }
+main.performance-index .table-wrap { overflow-x: visible; }
+main.performance-index table.performance-summary { width: 100%; min-width: 72rem; }
+table.performance-summary th:first-child,
+table.performance-summary td:first-child { width: 5.5rem; white-space: nowrap; }
+table.performance-summary th:nth-child(2),
+table.performance-summary td:nth-child(2) {
+  width: 16rem; max-width: 16rem; overflow-wrap: anywhere;
+}
+table.performance-summary td:nth-child(2) .pdf-link { margin-left: 0.25rem; }
+table.performance-summary th:nth-child(3),
+table.performance-summary td:nth-child(3) { white-space: nowrap; }
+table.performance-summary td:nth-child(n+4):not(:last-child) { white-space: nowrap; }
 .issue-heading { scroll-margin-top: 1rem; }
 .issue-heading:not(.issue-heading-first) {
   margin-top: 4rem;

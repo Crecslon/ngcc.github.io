@@ -14,6 +14,8 @@ Exploitation: Trivial
 Credit: Markku-Juhani O. Saarinen <markku-juhani.saarinen@tuni.fi>, with AI assistance
 Date: 2026-09-21
 
+Additional reference: [Xiong and Wang, ePrint 2026/2232, §7](https://eprint.iacr.org/2026/2232)
+
 Changing a ciphertext bit frequently leaves the decapsulated shared secret unchanged. An exhaustive sweep of Aigis-enc1 found that 5,632 of 7,168 single-bit ciphertext changes return the original shared secret. The same defect was reproduced in the other two parameter sets.
 
 `mkem_dec` writes the candidate valid secret to the output before checking the re-encrypted ciphertext. On failure, the intended constant-time replacement writes into the wrong buffer, leaving the already-returned candidate secret untouched. Rejection is therefore ineffective.

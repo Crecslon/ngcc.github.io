@@ -5,7 +5,7 @@ Archive: [Wish.zip](https://www.niccs.org.cn/niccs/Proposal/Cryptographic%20Hash
 
 ## hash-35-1: Secret-indexed S-box and variable-time field multiplication
 
-Severity: Medium
+Severity: Low
 Status: Confirmed
 Layer: Side-channel
 Affected: Reference Wish512 and Wish1024
@@ -15,6 +15,8 @@ Credit: Markku-Juhani O. Saarinen <markku-juhani.saarinen@tuni.fi>, with AI assi
 Date: 2026-09-23
 
 Every permutation round reads `S_Box[s[i]]` with an evolving secret state byte (`wish.c:98`). Its 256-byte table spans cache lines. `GF_Mul` also loops until a secret-dependent multiplier becomes zero and branches on each multiplier bit (`:86-91`). This gives both memory-address and control-flow leakage; no full preimage recovery is claimed. See [constant_time.md](../constant-time/hash-35.md).
+
+Constant-time fix (easy, hence Low): use `aesenc`/`vaeseq` as the specification intends, with a `pshufb` or bitsliced AES fallback; `GF_Mul` becomes a fixed eight-step shift and masked-XOR multiplication.
 
 ### Reproducing
 

@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ngcc.dev: sign-26 SQIsign2D-push1/2 — performance on x86-64 (system x861)</title>
+<link rel="icon" type="image/png" href="../../assets/mag-glass.png">
+<link rel="stylesheet" href="../../assets/style.css?v=1fdb792d">
+</head>
+<body>
+<header class="site-header">
+<a class="brand" href="../../index.html"><img class="brand-icon" src="../../assets/mag-glass.png" alt="" width="28" height="28">ngcc.dev</a>
+<nav><a href="../../index.html">Home</a><a href="../../reports/index.html">Reports</a><a href="../../performance/x86_1/index.html">Performance</a><a href="../../constant-time/index.html">Constant-Time</a></nav>
+</header>
+<main class="">
+<!-- synchronized from harness: sign-26/perf_x86_1.md -->
+<h1 id="sign-26-sqisign2d-push12-performance-on-x86-64-system-x86_1">sign-26 SQIsign2D-push1/2 — performance on x86-64 (system x86_1)</h1>
+<p><a href="index.html">Performance x86_1</a> › <code>sign-26</code> · <a href="method.html">method</a> · <a href="https://www.niccs.org.cn/niccs/Round1Additional/pc/content/content_2101561096483196928.html">NICCS page</a></p>
+<p>Independent measurement following the structure of the NICCS x86 self-assessment guide, §3.5 (1)–(7). Not a submitter self-assessment.</p>
+<h2 id="1-basic-information">1. Basic information</h2>
+<ul>
+<li>Category: public-key algorithm; function: digital signature</li>
+<li>Algorithm: SQIsign2D-push1/2</li>
+<li>Implementation versions measured: reference</li>
+<li>Parameter sets: <code>SQIsign2D-lvl1</code>, <code>SQIsign2D-lvl2</code>, <code>SQIsign2D-lvl3</code>, <code>SQIsign2D-lvl4</code></li>
+</ul>
+<h2 id="2-assessment-environment">2. Assessment environment</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>item</th>
+<th>value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>processor</td>
+<td>12th Gen Intel(R) Core(TM) i7-12700 (CPU 2, one core)</td>
+</tr>
+<tr>
+<td>clock</td>
+<td>max 2.10 GHz, governor performance, turbo off, SMT off</td>
+</tr>
+<tr>
+<td>memory</td>
+<td>31788 MiB</td>
+</tr>
+<tr>
+<td>OS / kernel</td>
+<td>Debian GNU/Linux 13 (trixie) / 6.12.107+deb13-amd64</td>
+</tr>
+<tr>
+<td>compiler / build tool</td>
+<td>gcc (Debian 14.2.0-19) 14.2.0 / cmake version 3.31.6</td>
+</tr>
+<tr>
+<td>campaign start / end (UTC)</td>
+<td>2026-09-25T10:02:21 / 2026-09-28T04:35:59</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="3-functional-testing-kat">3. Functional testing (KAT)</h2>
+<p>Each library was checked against the submitted KAT vectors (SHA-256 manifest <code>sign-26/kat.sha256</code> in the harness) before timing.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>build flags</th>
+<th>KAT</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>SQIsign2D-lvl1</code></td>
+<td>harness-default</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>SQIsign2D-lvl2</code></td>
+<td>harness-default</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>SQIsign2D-lvl3</code></td>
+<td>harness-default</td>
+<td class="st bad">MISMATCH [1]</td>
+</tr>
+<tr>
+<td><code>SQIsign2D-lvl4</code></td>
+<td>harness-default</td>
+<td class="st ok">PASS</td>
+</tr>
+</tbody>
+</table></div>
+<p>[1] The submitted Test_Vectors/KAT_SIG_SQIsign2D-lvl3.txt is a splice of level-2 and level-3 records (10 of 12 records have the level-2 secret-key length of 676 bytes instead of 900), so no level-3 build can reproduce it These instances are timed anyway; their output is not validated.</p>
+<h2 id="4-performance">4. Performance</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>operation</th>
+<th>mean cycles</th>
+<th>mean time</th>
+<th>ops/s</th>
+<th>median trial</th>
+<th>n (trials × iters)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>SQIsign2D-lvl1</code></td>
+<td>keygen</td>
+<td>558.85 M</td>
+<td>268 ms</td>
+<td>3.73</td>
+<td>267 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>SQIsign2D-lvl1</code></td>
+<td>sign</td>
+<td>619.25 M</td>
+<td>299 ms</td>
+<td>3.35</td>
+<td>296 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>SQIsign2D-lvl1</code></td>
+<td>verify</td>
+<td>135.94 M</td>
+<td>65 ms</td>
+<td>15.4</td>
+<td>65.1 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>SQIsign2D-lvl2</code></td>
+<td>keygen</td>
+<td>1.85 G</td>
+<td>887 ms</td>
+<td>1.13</td>
+<td>889 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>SQIsign2D-lvl2</code></td>
+<td>sign</td>
+<td>3.29 G</td>
+<td>1.57 s</td>
+<td>0.637</td>
+<td>1.57 s</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>SQIsign2D-lvl2</code></td>
+<td>verify</td>
+<td>438.06 M</td>
+<td>210 ms</td>
+<td>4.77</td>
+<td>210 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>SQIsign2D-lvl3</code></td>
+<td>keygen</td>
+<td>5.57 G</td>
+<td>2.67 s</td>
+<td>0.375</td>
+<td>2.67 s</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>SQIsign2D-lvl3</code></td>
+<td>sign</td>
+<td>5.32 G</td>
+<td>2.55 s</td>
+<td>0.392</td>
+<td>2.56 s</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>SQIsign2D-lvl3</code></td>
+<td>verify</td>
+<td>1.33 G</td>
+<td>640 ms</td>
+<td>1.56</td>
+<td>643 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>SQIsign2D-lvl4</code></td>
+<td>keygen</td>
+<td>44.58 G</td>
+<td>21.4 s</td>
+<td>0.0467</td>
+<td>21.4 s</td>
+<td>40 (5 × 8)</td>
+</tr>
+<tr>
+<td><code>SQIsign2D-lvl4</code></td>
+<td>sign</td>
+<td>39.28 G</td>
+<td>18.9 s</td>
+<td>0.053</td>
+<td>18.8 s</td>
+<td>45 (5 × 9)</td>
+</tr>
+<tr>
+<td><code>SQIsign2D-lvl4</code></td>
+<td>verify</td>
+<td>9.78 G</td>
+<td>4.69 s</td>
+<td>0.213</td>
+<td>4.69 s</td>
+<td>100 (5 × 20)</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="5-resource-consumption">5. Resource consumption</h2>
+<p>Static memory is approximated by the library's loadable ELF segments; peak memory is the process high-water mark (VmHWM) including the benchmark driver and libc, so both are upper-bound proxies rather than isolated algorithm memory.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>operation</th>
+<th>static: ELF image (bytes)</th>
+<th>baseline RSS</th>
+<th>peak RSS</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>SQIsign2D-lvl1</code></td>
+<td>keygen</td>
+<td>64467189</td>
+<td>1968 KiB</td>
+<td>2864 KiB</td>
+</tr>
+<tr>
+<td><code>SQIsign2D-lvl1</code></td>
+<td>sign</td>
+<td>64467189</td>
+<td>2696 KiB</td>
+<td>9208 KiB</td>
+</tr>
+<tr>
+<td><code>SQIsign2D-lvl1</code></td>
+<td>verify</td>
+<td>64467189</td>
+<td>3204 KiB</td>
+<td>9212 KiB</td>
+</tr>
+<tr>
+<td><code>SQIsign2D-lvl2</code></td>
+<td>keygen</td>
+<td>96558053</td>
+<td>1976 KiB</td>
+<td>3056 KiB</td>
+</tr>
+<tr>
+<td><code>SQIsign2D-lvl2</code></td>
+<td>sign</td>
+<td>96558053</td>
+<td>2880 KiB</td>
+<td>16712 KiB</td>
+</tr>
+<tr>
+<td><code>SQIsign2D-lvl2</code></td>
+<td>verify</td>
+<td>96558053</td>
+<td>3808 KiB</td>
+<td>17184 KiB</td>
+</tr>
+<tr>
+<td><code>SQIsign2D-lvl3</code></td>
+<td>keygen</td>
+<td>–</td>
+<td>2004 KiB</td>
+<td>3244 KiB</td>
+</tr>
+<tr>
+<td><code>SQIsign2D-lvl3</code></td>
+<td>sign</td>
+<td>–</td>
+<td>3032 KiB</td>
+<td>28184 KiB</td>
+</tr>
+<tr>
+<td><code>SQIsign2D-lvl3</code></td>
+<td>verify</td>
+<td>–</td>
+<td>4584 KiB</td>
+<td>29196 KiB</td>
+</tr>
+<tr>
+<td><code>SQIsign2D-lvl4</code></td>
+<td>keygen</td>
+<td>273579493</td>
+<td>1988 KiB</td>
+<td>4180 KiB</td>
+</tr>
+<tr>
+<td><code>SQIsign2D-lvl4</code></td>
+<td>sign</td>
+<td>273579493</td>
+<td>4000 KiB</td>
+<td>52152 KiB</td>
+</tr>
+<tr>
+<td><code>SQIsign2D-lvl4</code></td>
+<td>verify</td>
+<td>273579493</td>
+<td>11944 KiB</td>
+<td>117208 KiB</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="6-transmission-and-storage-overhead">6. Transmission and storage overhead</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>public key</th>
+<th>secret key</th>
+<th>signature</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>SQIsign2D-lvl1</code></td>
+<td>64</td>
+<td>456</td>
+<td>150</td>
+</tr>
+<tr>
+<td><code>SQIsign2D-lvl2</code></td>
+<td>96</td>
+<td>676</td>
+<td>218</td>
+</tr>
+<tr>
+<td><code>SQIsign2D-lvl3</code></td>
+<td>128</td>
+<td>900</td>
+<td>293</td>
+</tr>
+<tr>
+<td><code>SQIsign2D-lvl4</code></td>
+<td>262</td>
+<td>1838</td>
+<td>593</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="symmetric-primitives">Symmetric primitives</h2>
+<p><a href="../symmetric-survey.html">Survey</a> verdict: <strong>ICCS-only</strong> — iccs/xof_iccs.c glue; NIST SHAKE/AES leftovers unused</p>
+<p>Share of each operation spent in the ICCS placeholder hash functions and in the ICCS DRNG (reference build, measured in the same run with link-time wrappers):</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>operation</th>
+<th>pseudohash/XOF/sm3</th>
+<th>DRNG</th>
+<th>calls per operation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>SQIsign2D-lvl1</code></td>
+<td>keygen</td>
+<td>0.0%</td>
+<td>0.5%</td>
+<td>drng 595</td>
+</tr>
+<tr>
+<td><code>SQIsign2D-lvl1</code></td>
+<td>sign</td>
+<td>0.0%</td>
+<td>1.8%</td>
+<td>drng 2.59e+03, pseudoXOF 1</td>
+</tr>
+<tr>
+<td><code>SQIsign2D-lvl1</code></td>
+<td>verify</td>
+<td>0.0%</td>
+<td>0.0%</td>
+<td>pseudoXOF 1</td>
+</tr>
+<tr>
+<td><code>SQIsign2D-lvl2</code></td>
+<td>keygen</td>
+<td>0.0%</td>
+<td>0.3%</td>
+<td>drng 1.27e+03</td>
+</tr>
+<tr>
+<td><code>SQIsign2D-lvl2</code></td>
+<td>sign</td>
+<td>0.0%</td>
+<td>0.5%</td>
+<td>drng 6.11e+03, pseudoXOF 1.67</td>
+</tr>
+<tr>
+<td><code>SQIsign2D-lvl2</code></td>
+<td>verify</td>
+<td>0.0%</td>
+<td>0.0%</td>
+<td>pseudoXOF 1</td>
+</tr>
+<tr>
+<td><code>SQIsign2D-lvl3</code></td>
+<td>keygen</td>
+<td>0.0%</td>
+<td>0.2%</td>
+<td>drng 1.54e+03</td>
+</tr>
+<tr>
+<td><code>SQIsign2D-lvl3</code></td>
+<td>sign</td>
+<td>0.0%</td>
+<td>1.1%</td>
+<td>drng 1.17e+04, pseudoXOF 1</td>
+</tr>
+<tr>
+<td><code>SQIsign2D-lvl3</code></td>
+<td>verify</td>
+<td>0.0%</td>
+<td>0.0%</td>
+<td>pseudoXOF 1</td>
+</tr>
+<tr>
+<td><code>SQIsign2D-lvl4</code></td>
+<td>keygen</td>
+<td>0.0%</td>
+<td>0.1%</td>
+<td>drng 4.22e+03</td>
+</tr>
+<tr>
+<td><code>SQIsign2D-lvl4</code></td>
+<td>sign</td>
+<td>0.0%</td>
+<td>0.2%</td>
+<td>drng 9.46e+03, pseudoXOF 1</td>
+</tr>
+<tr>
+<td><code>SQIsign2D-lvl4</code></td>
+<td>verify</td>
+<td>0.0%</td>
+<td>0.0%</td>
+<td>pseudoXOF 1</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="7-raw-evidence-index">7. Raw evidence index</h2>
+<p>Paths are relative to <code>performance/data/x86_1/</code> in the <a href="https://github.com/ngcc-dev/ngcc-harness">harness</a>; each JSON file records its commands, environment and trials.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>item</th>
+<th>file</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>SQIsign2D-lvl1</code></td>
+<td>KAT log (sha256 <code>0ec44c0ac13d36d5…</code>)</td>
+<td><code>kat/sign-26/SQIsign2D-lvl1.log</code></td>
+</tr>
+<tr>
+<td><code>SQIsign2D-lvl1</code></td>
+<td>timing keygen</td>
+<td><code>records/sign-26/SQIsign2D-lvl1__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>SQIsign2D-lvl1</code></td>
+<td>timing sign</td>
+<td><code>records/sign-26/SQIsign2D-lvl1__sign.json</code></td>
+</tr>
+<tr>
+<td><code>SQIsign2D-lvl1</code></td>
+<td>timing verify</td>
+<td><code>records/sign-26/SQIsign2D-lvl1__verify.json</code></td>
+</tr>
+<tr>
+<td><code>SQIsign2D-lvl1</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/sign-26/SQIsign2D-lvl1__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>SQIsign2D-lvl1</code></td>
+<td>hash profile sign</td>
+<td><code>profile/sign-26/SQIsign2D-lvl1__sign.json</code></td>
+</tr>
+<tr>
+<td><code>SQIsign2D-lvl1</code></td>
+<td>hash profile verify</td>
+<td><code>profile/sign-26/SQIsign2D-lvl1__verify.json</code></td>
+</tr>
+<tr>
+<td><code>SQIsign2D-lvl2</code></td>
+<td>KAT log (sha256 <code>2d9d2f78a339a238…</code>)</td>
+<td><code>kat/sign-26/SQIsign2D-lvl2.log</code></td>
+</tr>
+<tr>
+<td><code>SQIsign2D-lvl2</code></td>
+<td>timing keygen</td>
+<td><code>records/sign-26/SQIsign2D-lvl2__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>SQIsign2D-lvl2</code></td>
+<td>timing sign</td>
+<td><code>records/sign-26/SQIsign2D-lvl2__sign.json</code></td>
+</tr>
+<tr>
+<td><code>SQIsign2D-lvl2</code></td>
+<td>timing verify</td>
+<td><code>records/sign-26/SQIsign2D-lvl2__verify.json</code></td>
+</tr>
+<tr>
+<td><code>SQIsign2D-lvl2</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/sign-26/SQIsign2D-lvl2__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>SQIsign2D-lvl2</code></td>
+<td>hash profile sign</td>
+<td><code>profile/sign-26/SQIsign2D-lvl2__sign.json</code></td>
+</tr>
+<tr>
+<td><code>SQIsign2D-lvl2</code></td>
+<td>hash profile verify</td>
+<td><code>profile/sign-26/SQIsign2D-lvl2__verify.json</code></td>
+</tr>
+<tr>
+<td><code>SQIsign2D-lvl3</code></td>
+<td>KAT log (sha256 <code>2199418541c0f31c…</code>)</td>
+<td><code>kat/sign-26/SQIsign2D-lvl3.log</code></td>
+</tr>
+<tr>
+<td><code>SQIsign2D-lvl3</code></td>
+<td>timing keygen</td>
+<td><code>records/sign-26/SQIsign2D-lvl3__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>SQIsign2D-lvl3</code></td>
+<td>timing sign</td>
+<td><code>records/sign-26/SQIsign2D-lvl3__sign.json</code></td>
+</tr>
+<tr>
+<td><code>SQIsign2D-lvl3</code></td>
+<td>timing verify</td>
+<td><code>records/sign-26/SQIsign2D-lvl3__verify.json</code></td>
+</tr>
+<tr>
+<td><code>SQIsign2D-lvl3</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/sign-26/SQIsign2D-lvl3__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>SQIsign2D-lvl3</code></td>
+<td>hash profile sign</td>
+<td><code>profile/sign-26/SQIsign2D-lvl3__sign.json</code></td>
+</tr>
+<tr>
+<td><code>SQIsign2D-lvl3</code></td>
+<td>hash profile verify</td>
+<td><code>profile/sign-26/SQIsign2D-lvl3__verify.json</code></td>
+</tr>
+<tr>
+<td><code>SQIsign2D-lvl4</code></td>
+<td>KAT log (sha256 <code>1c91fcd66cb8d45b…</code>)</td>
+<td><code>kat/sign-26/SQIsign2D-lvl4.log</code></td>
+</tr>
+<tr>
+<td><code>SQIsign2D-lvl4</code></td>
+<td>timing keygen</td>
+<td><code>records/sign-26/SQIsign2D-lvl4__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>SQIsign2D-lvl4</code></td>
+<td>timing sign</td>
+<td><code>records/sign-26/SQIsign2D-lvl4__sign.json</code></td>
+</tr>
+<tr>
+<td><code>SQIsign2D-lvl4</code></td>
+<td>timing verify</td>
+<td><code>records/sign-26/SQIsign2D-lvl4__verify.json</code></td>
+</tr>
+<tr>
+<td><code>SQIsign2D-lvl4</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/sign-26/SQIsign2D-lvl4__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>SQIsign2D-lvl4</code></td>
+<td>hash profile sign</td>
+<td><code>profile/sign-26/SQIsign2D-lvl4__sign.json</code></td>
+</tr>
+<tr>
+<td><code>SQIsign2D-lvl4</code></td>
+<td>hash profile verify</td>
+<td><code>profile/sign-26/SQIsign2D-lvl4__verify.json</code></td>
+</tr>
+</tbody>
+</table></div>
+<p>Scripts: <code>performance/campaign.py</code>, <code>performance/ngcc_perf.c</code>, <code>performance/hashprof/</code> in the <a href="https://github.com/ngcc-dev/ngcc-harness">harness</a>.</p>
+</main>
+<footer class="site-footer">
+<p>Maintained by: <a href="mailto:markku-juhani.saarinen@tuni.fi">markku-juhani.saarinen@tuni.fi</a></p>
+<p>Submissions are welcome via <a href="https://github.com/ngcc-dev/ngcc-harness/issues">GitHub issues</a>.</p>
+</footer>
+</body>
+</html>

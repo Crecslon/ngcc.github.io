@@ -5,7 +5,7 @@ Archive: [Pavelor.zip](https://www.niccs.org.cn/niccs/Proposal/Cryptographic%20H
 
 ## hash-22-1: Secret state indexes AES S-box; tail bits branch
 
-Severity: Medium
+Severity: Low
 Status: Confirmed
 Layer: Side-channel
 Affected: Reference Pavelor-512/768/1024
@@ -15,6 +15,8 @@ Credit: Markku-Juhani O. Saarinen <markku-juhani.saarinen@tuni.fi>, with AI assi
 Date: 2026-09-23
 
 The round function reads `AES_SBOX[in[i]]` for each secret-dependent state byte (`CryptHash_AlgorithmInstance.c:77`). The 256-byte table spans cache lines. Additionally, `xor_bit` branches on each message bit in the final partial block (`:177,199-200`); GCC `-O2` retains a conditional jump. No complete message-recovery experiment was run. See [constant_time.md](../constant-time/hash-22.md).
+
+Constant-time fix (easy, hence Low): the specification defines the round as `AESENC`, so use the AES instruction, with a `pshufb` or bitsliced AES fallback; the tail-bit branch becomes a masked XOR.
 
 ### Reproducing
 

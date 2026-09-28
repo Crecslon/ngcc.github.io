@@ -5,22 +5,22 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>ngcc.dev: CTL (kem-12)</title>
 <link rel="icon" type="image/png" href="../assets/mag-glass.png">
-<link rel="stylesheet" href="../assets/style.css?v=996d5cfd">
+<link rel="stylesheet" href="../assets/style.css?v=1fdb792d">
 </head>
 <body>
 <header class="site-header">
 <a class="brand" href="../index.html"><img class="brand-icon" src="../assets/mag-glass.png" alt="" width="28" height="28">ngcc.dev</a>
-<nav><a href="../index.html">Home</a><a href="../reports/index.html">Reports</a><a href="../constant-time/index.html">Constant-Time</a></nav>
+<nav><a href="../index.html">Home</a><a href="../reports/index.html">Reports</a><a href="../performance/x86_1/index.html">Performance</a><a href="../constant-time/index.html">Constant-Time</a></nav>
 </header>
-<main>
-<p class="crumb"><a href="../reports/index.html">Reports</a> › <code>kem-12</code> · <a href="../constant-time/kem-12.html">Constant-time review</a></p>
+<main class="">
+<p class="crumb"><a href="../reports/index.html">Reports</a> › <code>kem-12</code> · <a href="../constant-time/kem-12.html">Constant-time review</a> · <a href="../performance/x86_1/kem-12.html">Performance</a></p>
 
 <h1 id="ctl-kem-12">CTL (kem-12)</h1>
 <div class="table-wrap"><table class="meta">
 <tr><th>Candidate</th><td>CTL</td></tr>
 <tr><th>Family</th><td>Lattice-based</td></tr>
 <tr><th>Archive</th><td><a href="https://www.niccs.org.cn/niccs/Proposal/Public-Key%20Cryptographic%20Algorithms/Round%201%20candidates/CTL.zip">CTL.zip</a> (SHA-256: <code>512caaf5fa04ea5ab51fb5eeee9e81f8c7c7c430b60727130067634bfb674d01</code>)</td></tr>
-<tr><th>Specification</th><td><a href="https://github.com/ngcc-dev/ngcc-harness/raw/refs/heads/main/kem-12/kem-12-spec.pdf" title="Download kem-12-spec.pdf from GitHub">kem-12-spec.pdf</a>&nbsp;<a class="pdf-link" href="https://cdn.jsdelivr.net/gh/ngcc-dev/ngcc-harness@main/kem-12/kem-12-spec.pdf" title="Open the kem-12 specification PDF">PDF</a></td></tr>
+<tr><th>Specification</th><td><a href="https://github.com/ngcc-dev/ngcc-harness/raw/dc66c6cb3c06e75bdea0048e21fa4e13c63f00af/kem-12/kem-12-spec.pdf" title="Download kem-12-spec.pdf from GitHub">kem-12-spec.pdf</a>&nbsp;<a class="pdf-link" href="https://cdn.jsdelivr.net/gh/ngcc-dev/ngcc-harness@dc66c6cb3c06e75bdea0048e21fa4e13c63f00af/kem-12/kem-12-spec.pdf" title="Open the kem-12 specification PDF">PDF</a></td></tr>
 </table></div>
 
 <h2 class="issue-heading issue-heading-first" id="kem-12-1-the-specified-ctl-512-public-key-space-has-at-most-256-bits-of-support">kem-12-1: The specified CTL-512 public-key space has at most 256 bits of support</h2>
@@ -47,18 +47,18 @@
 <h2 class="issue-heading" id="kem-12-2-ctl-512-returns-only-384-shared-secret-bits">kem-12-2: CTL-512 returns only 384 shared-secret bits</h2>
 
 <div class="table-wrap"><table class="meta issue-meta">
-<tr><th>Severity</th><td><span class="sev sev-high">High</span></td></tr>
+<tr><th>Severity</th><td><span class="sev sev-critical">Critical</span></td></tr>
 <tr><th>Scope</th><td>implementation</td></tr>
 <tr><th>Status</th><td><span class="issue-status status-confirmed">Confirmed</span></td></tr>
 <tr><th>Affected</th><td>CTL-512 reference adapter and specification</td></tr>
 <tr><th>Discovery</th><td>Trivial</td></tr>
-<tr><th>Exploitation</th><td>Capacity/conformance defect; no IND-CCA attack demonstrated</td></tr>
+<tr><th>Exploitation</th><td>The 384-bit output is 128 bits short of the required 512-bit encapsulated key</td></tr>
 <tr><th>Credit</th><td>Markku-Juhani O. Saarinen <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#109;&#97;&#114;&#107;&#107;&#117;&#45;&#106;&#117;&#104;&#97;&#110;&#105;&#46;&#115;&#97;&#97;&#114;&#105;&#110;&#101;&#110;&#64;&#116;&#117;&#110;&#105;&#46;&#102;&#105;">&#109;&#97;&#114;&#107;&#107;&#117;&#45;&#106;&#117;&#104;&#97;&#110;&#105;&#46;&#115;&#97;&#97;&#114;&#105;&#110;&#101;&#110;&#64;&#116;&#117;&#110;&#105;&#46;&#102;&#105;</a>, with AI assistance</td></tr>
 <tr><th>Date</th><td>2026-09-21</td></tr>
 </table></div>
 <p>Follow-up source: <a href="https://list.niccs.org.cn/archives/list/pkcforum@list.niccs.org.cn/message/H47RU2HKEEAZQOJNKMUFWNEJEHHSLPQQ/">CTL submitters' 2026-09-23 response</a></p>
 <p>The CTL-512 adapter returns a 48-byte shared secret and instantiates the ciphertext hash component <code>c2</code> at 48 bytes. The specification assigns 64 bytes to CTL-512 <code>c2</code>.</p>
-<p>The returned key therefore has at most 384 bits of delivered-key capacity and the ciphertext format contradicts the PDF. Output length alone is not an IND-CCA attack, so this second issue is classified as an implementation/specification conformance break rather than a complete KEM confidentiality attack.</p>
+<p>The returned key therefore has at most 384 bits of delivered-key capacity and the ciphertext format contradicts the PDF. The NGCC <a href="https://www.niccs.org.cn/niccs/Notice/lDop1mav.pdf">Submission Requirements</a> §2(2) require the encapsulated key to be at least as long as the corresponding classical security level. CTL-512 misses that explicit 512-bit target and is therefore Critical, even though this dimensional shortfall is not a separate IND-CCA attack.</p>
 <h3 id="reproducing_1">Reproducing</h3>
 <p>Commands below run in a checkout of the <a href="https://github.com/ngcc-dev/ngcc-harness">ngcc-harness repository</a> with the candidate built (see its README).</p>
 <pre><code class="language-sh">python3 security/design_parameter_audit.py

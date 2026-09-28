@@ -5,22 +5,22 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>ngcc.dev: Facto-DSA (sign-10)</title>
 <link rel="icon" type="image/png" href="../assets/mag-glass.png">
-<link rel="stylesheet" href="../assets/style.css?v=996d5cfd">
+<link rel="stylesheet" href="../assets/style.css?v=1fdb792d">
 </head>
 <body>
 <header class="site-header">
 <a class="brand" href="../index.html"><img class="brand-icon" src="../assets/mag-glass.png" alt="" width="28" height="28">ngcc.dev</a>
-<nav><a href="../index.html">Home</a><a href="../reports/index.html">Reports</a><a href="../constant-time/index.html">Constant-Time</a></nav>
+<nav><a href="../index.html">Home</a><a href="../reports/index.html">Reports</a><a href="../performance/x86_1/index.html">Performance</a><a href="../constant-time/index.html">Constant-Time</a></nav>
 </header>
-<main>
-<p class="crumb"><a href="../reports/index.html">Reports</a> › <code>sign-10</code> · <a href="../constant-time/sign-10.html">Constant-time review</a></p>
+<main class="">
+<p class="crumb"><a href="../reports/index.html">Reports</a> › <code>sign-10</code> · <a href="../constant-time/sign-10.html">Constant-time review</a> · <a href="../performance/x86_1/sign-10.html">Performance</a></p>
 
 <h1 id="facto-dsa-sign-10">Facto-DSA (sign-10)</h1>
 <div class="table-wrap"><table class="meta">
 <tr><th>Candidate</th><td>Facto-DSA</td></tr>
 <tr><th>Family</th><td>Multivariate (cubic factorisation)</td></tr>
 <tr><th>Archive</th><td><a href="https://www.niccs.org.cn/niccs/Proposal/Public-Key%20Cryptographic%20Algorithms/Round%201%20candidates/Facto-DSA.zip">Facto-DSA.zip</a> (SHA-256: <code>b3de38fcc2d92ce83290d17cb250dde61f95d3326a49ada36fad3c578f2fc509</code>)</td></tr>
-<tr><th>Specification</th><td><a href="https://github.com/ngcc-dev/ngcc-harness/raw/refs/heads/main/sign-10/sign-10-spec.pdf" title="Download sign-10-spec.pdf from GitHub">sign-10-spec.pdf</a>&nbsp;<a class="pdf-link" href="https://cdn.jsdelivr.net/gh/ngcc-dev/ngcc-harness@main/sign-10/sign-10-spec.pdf" title="Open the sign-10 specification PDF">PDF</a></td></tr>
+<tr><th>Specification</th><td><a href="https://github.com/ngcc-dev/ngcc-harness/raw/dc66c6cb3c06e75bdea0048e21fa4e13c63f00af/sign-10/sign-10-spec.pdf" title="Download sign-10-spec.pdf from GitHub">sign-10-spec.pdf</a>&nbsp;<a class="pdf-link" href="https://cdn.jsdelivr.net/gh/ngcc-dev/ngcc-harness@dc66c6cb3c06e75bdea0048e21fa4e13c63f00af/sign-10/sign-10-spec.pdf" title="Open the sign-10 specification PDF">PDF</a></td></tr>
 </table></div>
 
 <h2 class="issue-heading issue-heading-first" id="sign-10-1-the-hidden-zero-subspace-has-an-unpriced-algebraic-recovery-path">sign-10-1: The hidden zero subspace has an unpriced algebraic recovery path</h2>
@@ -61,6 +61,7 @@ sign-10/cryptanalysis/build/attack1 7 12 1 12
 <tr><th>Date</th><td>2026-09-22</td></tr>
 </table></div>
 <p>Original source: <a href="https://github.com/ngcc-dev/ngcc-harness/issues/5">GitHub issue #5</a></p>
+<p>Additional reference: <a href="https://eprint.iacr.org/2026/2232">Xiong and Wang, ePrint 2026/2232, §14</a></p>
 <p>Facto-DSA's public cubic map has a derivative space of dimension 165 inside the 210-dimensional space of quadratic forms. The 45 missing dimensions expose the hidden <code>X/Y</code> variable separation by linear algebra. In the recovered coordinates, another linear solve removes the mixed block and reveals the <code>n</code>-dimensional quadratic space; rank-one points recover a certified flag in which that space is triangular.</p>
 <p>For Facto-DSA-128, slicing only the <code>Y</code> variables then reduces public inversion from 13 cubics in 20 variables to <code>f=m-n=3</code> equations of degree at most 10 in three variables. Solving this system, applying the signer's rescaling, and inverting the recovered triangular map gives an equivalent signing trapdoor using only the public key. It does not recover the submitter's original secret basis and needs no signing oracle.</p>
 <p>An independent run against the pinned public key that the attack repository identifies as the first official 128-bit KAT key produced a 40-byte signature in 6.4 seconds with 58 MiB peak resident memory. The unmodified submitted <code>sig_verify</code> returned 0 for that signature and -1 after flipping one signature bit. This checkout omits the original KAT text, so the local reproducer validates the artifact hash and submitted verifier but cannot independently establish that public key's KAT provenance. The flag search is randomized and has exponential worst-case cost; the submitter reports 4--76 seconds over runs. The official 256- and 512-bit sets are not broken by this route because their reduced systems retain 15 and 30 variables respectively.</p>

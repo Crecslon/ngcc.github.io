@@ -1,0 +1,2262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ngcc.dev: hash-31 The ZC-DMC Hash Function — performance on x86-64 (system x861)</title>
+<link rel="icon" type="image/png" href="../../assets/mag-glass.png">
+<link rel="stylesheet" href="../../assets/style.css?v=1fdb792d">
+</head>
+<body>
+<header class="site-header">
+<a class="brand" href="../../index.html"><img class="brand-icon" src="../../assets/mag-glass.png" alt="" width="28" height="28">ngcc.dev</a>
+<nav><a href="../../index.html">Home</a><a href="../../reports/index.html">Reports</a><a href="../../performance/x86_1/index.html">Performance</a><a href="../../constant-time/index.html">Constant-Time</a></nav>
+</header>
+<main class="">
+<!-- synchronized from harness: hash-31/perf_x86_1.md -->
+<h1 id="hash-31-the-zc-dmc-hash-function-performance-on-x86-64-system-x86_1">hash-31 The ZC-DMC Hash Function — performance on x86-64 (system x86_1)</h1>
+<p><a href="index.html">Performance x86_1</a> › <code>hash-31</code> · <a href="method.html">method</a> · <a href="https://www.niccs.org.cn/niccs/Round1Submissions4/pc/content/content_2101534457934204928.html">NICCS page</a></p>
+<p>Independent measurement following the structure of the NICCS x86 self-assessment guide, §3.5 (1)–(7). Not a submitter self-assessment.</p>
+<h2 id="1-basic-information">1. Basic information</h2>
+<ul>
+<li>Category: cryptographic hash algorithm; function: hash</li>
+<li>Algorithm: The ZC-DMC Hash Function</li>
+<li>Implementation versions measured: optimized (AVX2), reference</li>
+<li>Parameter sets: <code>ZC-DMC-1280-512</code>, <code>ZC-DMC-1280-512-avx2</code>, <code>ZC-DMC-1280-768</code>, <code>ZC-DMC-1280-768-avx2</code>, <code>ZC-DMC-1280-1024</code>, <code>ZC-DMC-1280-1024-avx2</code>, <code>ZC-DMC-1536-512</code>, <code>ZC-DMC-1536-512-avx2</code>, <code>ZC-DMC-1536-768</code>, <code>ZC-DMC-1536-768-avx2</code>, <code>ZC-DMC-1536-1024</code>, <code>ZC-DMC-1536-1024-avx2</code></li>
+</ul>
+<h2 id="2-assessment-environment">2. Assessment environment</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>item</th>
+<th>value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>processor</td>
+<td>12th Gen Intel(R) Core(TM) i7-12700 (CPU 2, one core)</td>
+</tr>
+<tr>
+<td>clock</td>
+<td>max 2.10 GHz, governor performance, turbo off, SMT off</td>
+</tr>
+<tr>
+<td>memory</td>
+<td>31788 MiB</td>
+</tr>
+<tr>
+<td>OS / kernel</td>
+<td>Debian GNU/Linux 13 (trixie) / 6.12.107+deb13-amd64</td>
+</tr>
+<tr>
+<td>compiler / build tool</td>
+<td>gcc (Debian 14.2.0-19) 14.2.0 / cmake version 3.31.6</td>
+</tr>
+<tr>
+<td>campaign start / end (UTC)</td>
+<td>2026-09-25T10:02:21 / 2026-09-28T04:35:59</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="3-functional-testing-kat">3. Functional testing (KAT)</h2>
+<p>Each library was checked against the submitted KAT vectors (SHA-256 manifest <code>hash-31/kat.sha256</code> in the harness) before timing.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>build flags</th>
+<th>KAT</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ZC-DMC-1280-512</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-512-avx2</code></td>
+<td>guide-performance</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-768</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-768-avx2</code></td>
+<td>guide-performance</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-1024</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-1024-avx2</code></td>
+<td>guide-performance</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-512</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-512-avx2</code></td>
+<td>guide-performance</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-768</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-768-avx2</code></td>
+<td>guide-performance</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-1024</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-1024-avx2</code></td>
+<td>guide-performance</td>
+<td class="st ok">PASS</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="4-performance">4. Performance</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>message</th>
+<th>mean cycles</th>
+<th>cycles/byte</th>
+<th>mean time</th>
+<th>MB/s</th>
+<th>n</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ZC-DMC-1280-512</code></td>
+<td>32 B</td>
+<td>5167</td>
+<td>161.5</td>
+<td>2.47 µs</td>
+<td>13.0</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-512</code></td>
+<td>128 B</td>
+<td>5728</td>
+<td>44.7</td>
+<td>2.74 µs</td>
+<td>46.7</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-512</code></td>
+<td>512 B</td>
+<td>7893</td>
+<td>15.4</td>
+<td>3.77 µs</td>
+<td>135.7</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-512</code></td>
+<td>1024 B</td>
+<td>11.4 k</td>
+<td>11.2</td>
+<td>5.46 µs</td>
+<td>187.5</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-512</code></td>
+<td>4096 B</td>
+<td>32.4 k</td>
+<td>7.9</td>
+<td>15.5 µs</td>
+<td>264.9</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-512</code></td>
+<td>8192 B</td>
+<td>60.2 k</td>
+<td>7.4</td>
+<td>28.8 µs</td>
+<td>284.8</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-512</code></td>
+<td>16384 B</td>
+<td>115.0 k</td>
+<td>7.0</td>
+<td>54.9 µs</td>
+<td>298.4</td>
+<td>81825 (5 × 16365)</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-512</code></td>
+<td>65536 B</td>
+<td>442.6 k</td>
+<td>6.8</td>
+<td>211 µs</td>
+<td>309.9</td>
+<td>21685 (5 × 4337)</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-512-avx2</code></td>
+<td>32 B</td>
+<td>3779</td>
+<td>118.1</td>
+<td>1.81 µs</td>
+<td>17.7</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-512-avx2</code></td>
+<td>128 B</td>
+<td>4161</td>
+<td>32.5</td>
+<td>1.99 µs</td>
+<td>64.3</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-512-avx2</code></td>
+<td>512 B</td>
+<td>5636</td>
+<td>11.0</td>
+<td>2.69 µs</td>
+<td>190.0</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-512-avx2</code></td>
+<td>1024 B</td>
+<td>8347</td>
+<td>8.2</td>
+<td>3.99 µs</td>
+<td>256.7</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-512-avx2</code></td>
+<td>4096 B</td>
+<td>23.6 k</td>
+<td>5.8</td>
+<td>11.3 µs</td>
+<td>363.7</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-512-avx2</code></td>
+<td>8192 B</td>
+<td>44.5 k</td>
+<td>5.4</td>
+<td>21.3 µs</td>
+<td>385.4</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-512-avx2</code></td>
+<td>16384 B</td>
+<td>84.5 k</td>
+<td>5.2</td>
+<td>40.4 µs</td>
+<td>405.7</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-512-avx2</code></td>
+<td>65536 B</td>
+<td>326.5 k</td>
+<td>5.0</td>
+<td>156 µs</td>
+<td>420.1</td>
+<td>30940 (5 × 6188)</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-768</code></td>
+<td>32 B</td>
+<td>7239</td>
+<td>226.2</td>
+<td>3.46 µs</td>
+<td>9.2</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-768</code></td>
+<td>128 B</td>
+<td>8496</td>
+<td>66.4</td>
+<td>4.06 µs</td>
+<td>31.5</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-768</code></td>
+<td>512 B</td>
+<td>12.6 k</td>
+<td>24.7</td>
+<td>6.03 µs</td>
+<td>84.9</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-768</code></td>
+<td>1024 B</td>
+<td>17.9 k</td>
+<td>17.4</td>
+<td>8.53 µs</td>
+<td>120.0</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-768</code></td>
+<td>4096 B</td>
+<td>50.5 k</td>
+<td>12.3</td>
+<td>24.1 µs</td>
+<td>169.8</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-768</code></td>
+<td>8192 B</td>
+<td>93.3 k</td>
+<td>11.4</td>
+<td>44.6 µs</td>
+<td>183.8</td>
+<td>98685 (5 × 19737)</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-768</code></td>
+<td>16384 B</td>
+<td>178.5 k</td>
+<td>10.9</td>
+<td>85.3 µs</td>
+<td>192.2</td>
+<td>23200 (5 × 4640)</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-768</code></td>
+<td>65536 B</td>
+<td>696.1 k</td>
+<td>10.6</td>
+<td>334 µs</td>
+<td>196.4</td>
+<td>15165 (5 × 3033)</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-768-avx2</code></td>
+<td>32 B</td>
+<td>5141</td>
+<td>160.7</td>
+<td>2.46 µs</td>
+<td>13.0</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-768-avx2</code></td>
+<td>128 B</td>
+<td>6160</td>
+<td>48.1</td>
+<td>2.94 µs</td>
+<td>43.5</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-768-avx2</code></td>
+<td>512 B</td>
+<td>9281</td>
+<td>18.1</td>
+<td>4.44 µs</td>
+<td>115.4</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-768-avx2</code></td>
+<td>1024 B</td>
+<td>13.1 k</td>
+<td>12.8</td>
+<td>6.27 µs</td>
+<td>163.3</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-768-avx2</code></td>
+<td>4096 B</td>
+<td>37.1 k</td>
+<td>9.1</td>
+<td>17.7 µs</td>
+<td>231.2</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-768-avx2</code></td>
+<td>8192 B</td>
+<td>68.9 k</td>
+<td>8.4</td>
+<td>32.9 µs</td>
+<td>248.8</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-768-avx2</code></td>
+<td>16384 B</td>
+<td>132.3 k</td>
+<td>8.1</td>
+<td>63.2 µs</td>
+<td>259.2</td>
+<td>71540 (5 × 14308)</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-768-avx2</code></td>
+<td>65536 B</td>
+<td>515.5 k</td>
+<td>7.9</td>
+<td>246 µs</td>
+<td>266.1</td>
+<td>19805 (5 × 3961)</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-1024</code></td>
+<td>32 B</td>
+<td>9852</td>
+<td>307.9</td>
+<td>4.71 µs</td>
+<td>6.8</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-1024</code></td>
+<td>128 B</td>
+<td>12.2 k</td>
+<td>95.2</td>
+<td>5.83 µs</td>
+<td>22.0</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-1024</code></td>
+<td>512 B</td>
+<td>21.7 k</td>
+<td>42.3</td>
+<td>10.4 µs</td>
+<td>49.5</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-1024</code></td>
+<td>1024 B</td>
+<td>34.0 k</td>
+<td>33.2</td>
+<td>16.2 µs</td>
+<td>63.1</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-1024</code></td>
+<td>4096 B</td>
+<td>109.5 k</td>
+<td>26.7</td>
+<td>52.3 µs</td>
+<td>78.3</td>
+<td>86020 (5 × 17204)</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-1024</code></td>
+<td>8192 B</td>
+<td>208.2 k</td>
+<td>25.4</td>
+<td>99.5 µs</td>
+<td>82.3</td>
+<td>46335 (5 × 9267)</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-1024</code></td>
+<td>16384 B</td>
+<td>408.7 k</td>
+<td>24.9</td>
+<td>195 µs</td>
+<td>83.9</td>
+<td>24350 (5 × 4870)</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-1024</code></td>
+<td>65536 B</td>
+<td>1.62 M</td>
+<td>24.8</td>
+<td>776 µs</td>
+<td>84.4</td>
+<td>6595 (5 × 1319)</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-1024-avx2</code></td>
+<td>32 B</td>
+<td>7150</td>
+<td>223.4</td>
+<td>3.42 µs</td>
+<td>9.4</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-1024-avx2</code></td>
+<td>128 B</td>
+<td>9043</td>
+<td>70.6</td>
+<td>4.32 µs</td>
+<td>29.6</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-1024-avx2</code></td>
+<td>512 B</td>
+<td>16.1 k</td>
+<td>31.4</td>
+<td>7.68 µs</td>
+<td>66.7</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-1024-avx2</code></td>
+<td>1024 B</td>
+<td>24.9 k</td>
+<td>24.4</td>
+<td>11.9 µs</td>
+<td>86.0</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-1024-avx2</code></td>
+<td>4096 B</td>
+<td>80.8 k</td>
+<td>19.7</td>
+<td>38.6 µs</td>
+<td>106.1</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-1024-avx2</code></td>
+<td>8192 B</td>
+<td>155.1 k</td>
+<td>18.9</td>
+<td>74.1 µs</td>
+<td>110.6</td>
+<td>62005 (5 × 12401)</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-1024-avx2</code></td>
+<td>16384 B</td>
+<td>303.5 k</td>
+<td>18.5</td>
+<td>145 µs</td>
+<td>113.0</td>
+<td>32825 (5 × 6565)</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-1024-avx2</code></td>
+<td>65536 B</td>
+<td>1.19 M</td>
+<td>18.2</td>
+<td>570 µs</td>
+<td>115.0</td>
+<td>8640 (5 × 1728)</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-512</code></td>
+<td>32 B</td>
+<td>9099</td>
+<td>284.4</td>
+<td>4.35 µs</td>
+<td>7.4</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-512</code></td>
+<td>128 B</td>
+<td>10.4 k</td>
+<td>80.9</td>
+<td>4.95 µs</td>
+<td>25.9</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-512</code></td>
+<td>512 B</td>
+<td>13.4 k</td>
+<td>26.1</td>
+<td>6.39 µs</td>
+<td>80.1</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-512</code></td>
+<td>1024 B</td>
+<td>17.4 k</td>
+<td>17.0</td>
+<td>8.33 µs</td>
+<td>122.9</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-512</code></td>
+<td>4096 B</td>
+<td>45.4 k</td>
+<td>11.1</td>
+<td>21.7 µs</td>
+<td>188.7</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-512</code></td>
+<td>8192 B</td>
+<td>81.7 k</td>
+<td>10.0</td>
+<td>39 µs</td>
+<td>210.0</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-512</code></td>
+<td>16384 B</td>
+<td>153.4 k</td>
+<td>9.4</td>
+<td>73.3 µs</td>
+<td>223.5</td>
+<td>61905 (5 × 12381)</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-512</code></td>
+<td>65536 B</td>
+<td>593.3 k</td>
+<td>9.1</td>
+<td>283 µs</td>
+<td>231.2</td>
+<td>17260 (5 × 3452)</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-512-avx2</code></td>
+<td>32 B</td>
+<td>12.3 k</td>
+<td>384.6</td>
+<td>5.88 µs</td>
+<td>5.4</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-512-avx2</code></td>
+<td>128 B</td>
+<td>13.9 k</td>
+<td>108.7</td>
+<td>6.65 µs</td>
+<td>19.3</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-512-avx2</code></td>
+<td>512 B</td>
+<td>18.0 k</td>
+<td>35.2</td>
+<td>8.61 µs</td>
+<td>59.5</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-512-avx2</code></td>
+<td>1024 B</td>
+<td>23.6 k</td>
+<td>23.0</td>
+<td>11.3 µs</td>
+<td>90.9</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-512-avx2</code></td>
+<td>4096 B</td>
+<td>63.7 k</td>
+<td>15.6</td>
+<td>30.4 µs</td>
+<td>134.6</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-512-avx2</code></td>
+<td>8192 B</td>
+<td>112.2 k</td>
+<td>13.7</td>
+<td>53.6 µs</td>
+<td>152.9</td>
+<td>83335 (5 × 16667)</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-512-avx2</code></td>
+<td>16384 B</td>
+<td>210.3 k</td>
+<td>12.8</td>
+<td>101 µs</td>
+<td>163.0</td>
+<td>37450 (5 × 7490)</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-512-avx2</code></td>
+<td>65536 B</td>
+<td>825.0 k</td>
+<td>12.6</td>
+<td>394 µs</td>
+<td>166.3</td>
+<td>12290 (5 × 2458)</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-768</code></td>
+<td>32 B</td>
+<td>12.9 k</td>
+<td>404.4</td>
+<td>6.18 µs</td>
+<td>5.2</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-768</code></td>
+<td>128 B</td>
+<td>13.9 k</td>
+<td>108.8</td>
+<td>6.65 µs</td>
+<td>19.2</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-768</code></td>
+<td>512 B</td>
+<td>18.0 k</td>
+<td>35.1</td>
+<td>8.59 µs</td>
+<td>59.6</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-768</code></td>
+<td>1024 B</td>
+<td>24.4 k</td>
+<td>23.9</td>
+<td>11.7 µs</td>
+<td>87.7</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-768</code></td>
+<td>4096 B</td>
+<td>62.0 k</td>
+<td>15.1</td>
+<td>29.6 µs</td>
+<td>138.2</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-768</code></td>
+<td>8192 B</td>
+<td>112.2 k</td>
+<td>13.7</td>
+<td>53.6 µs</td>
+<td>152.8</td>
+<td>82290 (5 × 16458)</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-768</code></td>
+<td>16384 B</td>
+<td>211.0 k</td>
+<td>12.9</td>
+<td>101 µs</td>
+<td>162.6</td>
+<td>46665 (5 × 9333)</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-768</code></td>
+<td>65536 B</td>
+<td>808.9 k</td>
+<td>12.3</td>
+<td>386 µs</td>
+<td>169.6</td>
+<td>12565 (5 × 2513)</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-768-avx2</code></td>
+<td>32 B</td>
+<td>17.7 k</td>
+<td>554.6</td>
+<td>8.48 µs</td>
+<td>3.8</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-768-avx2</code></td>
+<td>128 B</td>
+<td>19.2 k</td>
+<td>149.8</td>
+<td>9.16 µs</td>
+<td>14.0</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-768-avx2</code></td>
+<td>512 B</td>
+<td>25.0 k</td>
+<td>48.9</td>
+<td>12 µs</td>
+<td>42.8</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-768-avx2</code></td>
+<td>1024 B</td>
+<td>33.8 k</td>
+<td>33.0</td>
+<td>16.2 µs</td>
+<td>63.3</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-768-avx2</code></td>
+<td>4096 B</td>
+<td>86.2 k</td>
+<td>21.1</td>
+<td>41.2 µs</td>
+<td>99.4</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-768-avx2</code></td>
+<td>8192 B</td>
+<td>157.2 k</td>
+<td>19.2</td>
+<td>75.1 µs</td>
+<td>109.1</td>
+<td>62715 (5 × 12543)</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-768-avx2</code></td>
+<td>16384 B</td>
+<td>290.2 k</td>
+<td>17.7</td>
+<td>139 µs</td>
+<td>117.9</td>
+<td>34290 (5 × 6858)</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-768-avx2</code></td>
+<td>65536 B</td>
+<td>1.15 M</td>
+<td>17.5</td>
+<td>547 µs</td>
+<td>119.8</td>
+<td>5060 (5 × 1012)</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-1024</code></td>
+<td>32 B</td>
+<td>16.7 k</td>
+<td>521.9</td>
+<td>7.98 µs</td>
+<td>4.0</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-1024</code></td>
+<td>128 B</td>
+<td>19.0 k</td>
+<td>148.4</td>
+<td>9.08 µs</td>
+<td>14.1</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-1024</code></td>
+<td>512 B</td>
+<td>26.6 k</td>
+<td>51.9</td>
+<td>12.7 µs</td>
+<td>40.3</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-1024</code></td>
+<td>1024 B</td>
+<td>36.1 k</td>
+<td>35.3</td>
+<td>17.3 µs</td>
+<td>59.3</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-1024</code></td>
+<td>4096 B</td>
+<td>94.9 k</td>
+<td>23.2</td>
+<td>45.3 µs</td>
+<td>90.4</td>
+<td>95595 (5 × 19119)</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-1024</code></td>
+<td>8192 B</td>
+<td>172.6 k</td>
+<td>21.1</td>
+<td>82.5 µs</td>
+<td>99.3</td>
+<td>51535 (5 × 10307)</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-1024</code></td>
+<td>16384 B</td>
+<td>327.7 k</td>
+<td>20.0</td>
+<td>157 µs</td>
+<td>104.6</td>
+<td>30525 (5 × 6105)</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-1024</code></td>
+<td>65536 B</td>
+<td>1.26 M</td>
+<td>19.3</td>
+<td>604 µs</td>
+<td>108.5</td>
+<td>8155 (5 × 1631)</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-1024-avx2</code></td>
+<td>32 B</td>
+<td>23.2 k</td>
+<td>726.4</td>
+<td>11.1 µs</td>
+<td>2.9</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-1024-avx2</code></td>
+<td>128 B</td>
+<td>26.5 k</td>
+<td>206.9</td>
+<td>12.7 µs</td>
+<td>10.1</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-1024-avx2</code></td>
+<td>512 B</td>
+<td>36.5 k</td>
+<td>71.2</td>
+<td>17.4 µs</td>
+<td>29.4</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-1024-avx2</code></td>
+<td>1024 B</td>
+<td>50.4 k</td>
+<td>49.2</td>
+<td>24.1 µs</td>
+<td>42.5</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-1024-avx2</code></td>
+<td>4096 B</td>
+<td>131.8 k</td>
+<td>32.2</td>
+<td>63 µs</td>
+<td>65.0</td>
+<td>72285 (5 × 14457)</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-1024-avx2</code></td>
+<td>8192 B</td>
+<td>236.9 k</td>
+<td>28.9</td>
+<td>113 µs</td>
+<td>72.4</td>
+<td>41910 (5 × 8382)</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-1024-avx2</code></td>
+<td>16384 B</td>
+<td>451.5 k</td>
+<td>27.6</td>
+<td>216 µs</td>
+<td>76.0</td>
+<td>22540 (5 × 4508)</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-1024-avx2</code></td>
+<td>65536 B</td>
+<td>1.76 M</td>
+<td>26.8</td>
+<td>839 µs</td>
+<td>78.1</td>
+<td>6035 (5 × 1207)</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="5-resource-consumption">5. Resource consumption</h2>
+<p>Static memory is approximated by the library's loadable ELF segments; peak memory is the process high-water mark (VmHWM) including the benchmark driver and libc, so both are upper-bound proxies rather than isolated algorithm memory.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>operation</th>
+<th>static: ELF image (bytes)</th>
+<th>baseline RSS</th>
+<th>peak RSS</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ZC-DMC-1280-512</code></td>
+<td>hash_32</td>
+<td>15269</td>
+<td>1684 KiB</td>
+<td>1780 KiB</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-512</code></td>
+<td>hash_128</td>
+<td>15269</td>
+<td>1692 KiB</td>
+<td>1756 KiB</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-512</code></td>
+<td>hash_512</td>
+<td>15269</td>
+<td>1688 KiB</td>
+<td>1752 KiB</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-512</code></td>
+<td>hash_1024</td>
+<td>15269</td>
+<td>1688 KiB</td>
+<td>1784 KiB</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-512</code></td>
+<td>hash_4096</td>
+<td>15269</td>
+<td>1680 KiB</td>
+<td>1788 KiB</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-512</code></td>
+<td>hash_8192</td>
+<td>15269</td>
+<td>1700 KiB</td>
+<td>1780 KiB</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-512</code></td>
+<td>hash_16384</td>
+<td>15269</td>
+<td>1688 KiB</td>
+<td>1776 KiB</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-512</code></td>
+<td>hash_65536</td>
+<td>15269</td>
+<td>1740 KiB</td>
+<td>1832 KiB</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-512-avx2</code></td>
+<td>hash_32</td>
+<td>18401</td>
+<td>1696 KiB</td>
+<td>1776 KiB</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-512-avx2</code></td>
+<td>hash_128</td>
+<td>18401</td>
+<td>1680 KiB</td>
+<td>1744 KiB</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-512-avx2</code></td>
+<td>hash_512</td>
+<td>18401</td>
+<td>1696 KiB</td>
+<td>1784 KiB</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-512-avx2</code></td>
+<td>hash_1024</td>
+<td>18401</td>
+<td>1648 KiB</td>
+<td>1776 KiB</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-512-avx2</code></td>
+<td>hash_4096</td>
+<td>18401</td>
+<td>1692 KiB</td>
+<td>1756 KiB</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-512-avx2</code></td>
+<td>hash_8192</td>
+<td>18401</td>
+<td>1692 KiB</td>
+<td>1788 KiB</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-512-avx2</code></td>
+<td>hash_16384</td>
+<td>18401</td>
+<td>1668 KiB</td>
+<td>1796 KiB</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-512-avx2</code></td>
+<td>hash_65536</td>
+<td>18401</td>
+<td>1752 KiB</td>
+<td>1816 KiB</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-768</code></td>
+<td>hash_32</td>
+<td>15269</td>
+<td>1660 KiB</td>
+<td>1784 KiB</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-768</code></td>
+<td>hash_128</td>
+<td>15269</td>
+<td>1592 KiB</td>
+<td>1720 KiB</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-768</code></td>
+<td>hash_512</td>
+<td>15269</td>
+<td>1676 KiB</td>
+<td>1776 KiB</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-768</code></td>
+<td>hash_1024</td>
+<td>15269</td>
+<td>1684 KiB</td>
+<td>1784 KiB</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-768</code></td>
+<td>hash_4096</td>
+<td>15269</td>
+<td>1696 KiB</td>
+<td>1784 KiB</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-768</code></td>
+<td>hash_8192</td>
+<td>15269</td>
+<td>1704 KiB</td>
+<td>1780 KiB</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-768</code></td>
+<td>hash_16384</td>
+<td>15269</td>
+<td>1708 KiB</td>
+<td>1792 KiB</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-768</code></td>
+<td>hash_65536</td>
+<td>15269</td>
+<td>1744 KiB</td>
+<td>1844 KiB</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-768-avx2</code></td>
+<td>hash_32</td>
+<td>18401</td>
+<td>1688 KiB</td>
+<td>1784 KiB</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-768-avx2</code></td>
+<td>hash_128</td>
+<td>18401</td>
+<td>1688 KiB</td>
+<td>1776 KiB</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-768-avx2</code></td>
+<td>hash_512</td>
+<td>18401</td>
+<td>1676 KiB</td>
+<td>1764 KiB</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-768-avx2</code></td>
+<td>hash_1024</td>
+<td>18401</td>
+<td>1684 KiB</td>
+<td>1760 KiB</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-768-avx2</code></td>
+<td>hash_4096</td>
+<td>18401</td>
+<td>1700 KiB</td>
+<td>1764 KiB</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-768-avx2</code></td>
+<td>hash_8192</td>
+<td>18401</td>
+<td>1704 KiB</td>
+<td>1796 KiB</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-768-avx2</code></td>
+<td>hash_16384</td>
+<td>18401</td>
+<td>1692 KiB</td>
+<td>1796 KiB</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-768-avx2</code></td>
+<td>hash_65536</td>
+<td>18401</td>
+<td>1740 KiB</td>
+<td>1828 KiB</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-1024</code></td>
+<td>hash_32</td>
+<td>15269</td>
+<td>1684 KiB</td>
+<td>1772 KiB</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-1024</code></td>
+<td>hash_128</td>
+<td>15269</td>
+<td>1660 KiB</td>
+<td>1784 KiB</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-1024</code></td>
+<td>hash_512</td>
+<td>15269</td>
+<td>1688 KiB</td>
+<td>1760 KiB</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-1024</code></td>
+<td>hash_1024</td>
+<td>15269</td>
+<td>1684 KiB</td>
+<td>1748 KiB</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-1024</code></td>
+<td>hash_4096</td>
+<td>15269</td>
+<td>1664 KiB</td>
+<td>1788 KiB</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-1024</code></td>
+<td>hash_8192</td>
+<td>15269</td>
+<td>1684 KiB</td>
+<td>1748 KiB</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-1024</code></td>
+<td>hash_16384</td>
+<td>15269</td>
+<td>1692 KiB</td>
+<td>1788 KiB</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-1024</code></td>
+<td>hash_65536</td>
+<td>15269</td>
+<td>1752 KiB</td>
+<td>1816 KiB</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-1024-avx2</code></td>
+<td>hash_32</td>
+<td>18401</td>
+<td>1700 KiB</td>
+<td>1776 KiB</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-1024-avx2</code></td>
+<td>hash_128</td>
+<td>18401</td>
+<td>1672 KiB</td>
+<td>1736 KiB</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-1024-avx2</code></td>
+<td>hash_512</td>
+<td>18401</td>
+<td>1668 KiB</td>
+<td>1788 KiB</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-1024-avx2</code></td>
+<td>hash_1024</td>
+<td>18401</td>
+<td>1696 KiB</td>
+<td>1788 KiB</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-1024-avx2</code></td>
+<td>hash_4096</td>
+<td>18401</td>
+<td>1700 KiB</td>
+<td>1792 KiB</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-1024-avx2</code></td>
+<td>hash_8192</td>
+<td>18401</td>
+<td>1660 KiB</td>
+<td>1788 KiB</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-1024-avx2</code></td>
+<td>hash_16384</td>
+<td>18401</td>
+<td>1716 KiB</td>
+<td>1792 KiB</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-1024-avx2</code></td>
+<td>hash_65536</td>
+<td>18401</td>
+<td>1732 KiB</td>
+<td>1844 KiB</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-512</code></td>
+<td>hash_32</td>
+<td>23837</td>
+<td>1684 KiB</td>
+<td>1792 KiB</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-512</code></td>
+<td>hash_128</td>
+<td>23837</td>
+<td>1700 KiB</td>
+<td>1784 KiB</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-512</code></td>
+<td>hash_512</td>
+<td>23837</td>
+<td>1684 KiB</td>
+<td>1784 KiB</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-512</code></td>
+<td>hash_1024</td>
+<td>23837</td>
+<td>1676 KiB</td>
+<td>1788 KiB</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-512</code></td>
+<td>hash_4096</td>
+<td>23837</td>
+<td>1684 KiB</td>
+<td>1748 KiB</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-512</code></td>
+<td>hash_8192</td>
+<td>23837</td>
+<td>1692 KiB</td>
+<td>1800 KiB</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-512</code></td>
+<td>hash_16384</td>
+<td>23837</td>
+<td>1700 KiB</td>
+<td>1804 KiB</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-512</code></td>
+<td>hash_65536</td>
+<td>23837</td>
+<td>1736 KiB</td>
+<td>1852 KiB</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-512-avx2</code></td>
+<td>hash_32</td>
+<td>15849</td>
+<td>1692 KiB</td>
+<td>1756 KiB</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-512-avx2</code></td>
+<td>hash_128</td>
+<td>15849</td>
+<td>1692 KiB</td>
+<td>1756 KiB</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-512-avx2</code></td>
+<td>hash_512</td>
+<td>15849</td>
+<td>1696 KiB</td>
+<td>1780 KiB</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-512-avx2</code></td>
+<td>hash_1024</td>
+<td>15849</td>
+<td>1684 KiB</td>
+<td>1748 KiB</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-512-avx2</code></td>
+<td>hash_4096</td>
+<td>15849</td>
+<td>1700 KiB</td>
+<td>1764 KiB</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-512-avx2</code></td>
+<td>hash_8192</td>
+<td>15849</td>
+<td>1684 KiB</td>
+<td>1748 KiB</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-512-avx2</code></td>
+<td>hash_16384</td>
+<td>15849</td>
+<td>1696 KiB</td>
+<td>1760 KiB</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-512-avx2</code></td>
+<td>hash_65536</td>
+<td>15849</td>
+<td>1760 KiB</td>
+<td>1848 KiB</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-768</code></td>
+<td>hash_32</td>
+<td>23837</td>
+<td>1704 KiB</td>
+<td>1788 KiB</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-768</code></td>
+<td>hash_128</td>
+<td>23837</td>
+<td>1696 KiB</td>
+<td>1760 KiB</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-768</code></td>
+<td>hash_512</td>
+<td>23837</td>
+<td>1704 KiB</td>
+<td>1768 KiB</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-768</code></td>
+<td>hash_1024</td>
+<td>23837</td>
+<td>1700 KiB</td>
+<td>1768 KiB</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-768</code></td>
+<td>hash_4096</td>
+<td>23837</td>
+<td>1700 KiB</td>
+<td>1792 KiB</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-768</code></td>
+<td>hash_8192</td>
+<td>23837</td>
+<td>1692 KiB</td>
+<td>1788 KiB</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-768</code></td>
+<td>hash_16384</td>
+<td>23837</td>
+<td>1720 KiB</td>
+<td>1804 KiB</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-768</code></td>
+<td>hash_65536</td>
+<td>23837</td>
+<td>1760 KiB</td>
+<td>1856 KiB</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-768-avx2</code></td>
+<td>hash_32</td>
+<td>15849</td>
+<td>1688 KiB</td>
+<td>1784 KiB</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-768-avx2</code></td>
+<td>hash_128</td>
+<td>15849</td>
+<td>1676 KiB</td>
+<td>1780 KiB</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-768-avx2</code></td>
+<td>hash_512</td>
+<td>15849</td>
+<td>1696 KiB</td>
+<td>1780 KiB</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-768-avx2</code></td>
+<td>hash_1024</td>
+<td>15849</td>
+<td>1692 KiB</td>
+<td>1756 KiB</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-768-avx2</code></td>
+<td>hash_4096</td>
+<td>15849</td>
+<td>1696 KiB</td>
+<td>1780 KiB</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-768-avx2</code></td>
+<td>hash_8192</td>
+<td>15849</td>
+<td>1700 KiB</td>
+<td>1764 KiB</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-768-avx2</code></td>
+<td>hash_16384</td>
+<td>15849</td>
+<td>1700 KiB</td>
+<td>1764 KiB</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-768-avx2</code></td>
+<td>hash_65536</td>
+<td>15849</td>
+<td>1744 KiB</td>
+<td>1808 KiB</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-1024</code></td>
+<td>hash_32</td>
+<td>23837</td>
+<td>1684 KiB</td>
+<td>1748 KiB</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-1024</code></td>
+<td>hash_128</td>
+<td>23837</td>
+<td>1704 KiB</td>
+<td>1788 KiB</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-1024</code></td>
+<td>hash_512</td>
+<td>23837</td>
+<td>1676 KiB</td>
+<td>1780 KiB</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-1024</code></td>
+<td>hash_1024</td>
+<td>23837</td>
+<td>1696 KiB</td>
+<td>1784 KiB</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-1024</code></td>
+<td>hash_4096</td>
+<td>23837</td>
+<td>1656 KiB</td>
+<td>1784 KiB</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-1024</code></td>
+<td>hash_8192</td>
+<td>23837</td>
+<td>1708 KiB</td>
+<td>1772 KiB</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-1024</code></td>
+<td>hash_16384</td>
+<td>23837</td>
+<td>1716 KiB</td>
+<td>1804 KiB</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-1024</code></td>
+<td>hash_65536</td>
+<td>23837</td>
+<td>1760 KiB</td>
+<td>1844 KiB</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-1024-avx2</code></td>
+<td>hash_32</td>
+<td>15849</td>
+<td>1680 KiB</td>
+<td>1780 KiB</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-1024-avx2</code></td>
+<td>hash_128</td>
+<td>15849</td>
+<td>1684 KiB</td>
+<td>1748 KiB</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-1024-avx2</code></td>
+<td>hash_512</td>
+<td>15849</td>
+<td>1696 KiB</td>
+<td>1784 KiB</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-1024-avx2</code></td>
+<td>hash_1024</td>
+<td>15849</td>
+<td>1688 KiB</td>
+<td>1760 KiB</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-1024-avx2</code></td>
+<td>hash_4096</td>
+<td>15849</td>
+<td>1692 KiB</td>
+<td>1788 KiB</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-1024-avx2</code></td>
+<td>hash_8192</td>
+<td>15849</td>
+<td>1700 KiB</td>
+<td>1780 KiB</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-1024-avx2</code></td>
+<td>hash_16384</td>
+<td>15849</td>
+<td>1712 KiB</td>
+<td>1788 KiB</td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-1024-avx2</code></td>
+<td>hash_65536</td>
+<td>15849</td>
+<td>1760 KiB</td>
+<td>1824 KiB</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="7-raw-evidence-index">7. Raw evidence index</h2>
+<p>Paths are relative to <code>performance/data/x86_1/</code> in the <a href="https://github.com/ngcc-dev/ngcc-harness">harness</a>; each JSON file records its commands, environment and trials.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>item</th>
+<th>file</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ZC-DMC-1280-512</code></td>
+<td>KAT log (sha256 <code>d2a801ee1ffc203a…</code>)</td>
+<td><code>kat/hash-31/ZC-DMC-1280-512.log</code></td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-512</code></td>
+<td>timing hash_1024</td>
+<td><code>records/hash-31/ZC-DMC-1280-512__hash_1024.json</code></td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-512</code></td>
+<td>timing hash_128</td>
+<td><code>records/hash-31/ZC-DMC-1280-512__hash_128.json</code></td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-512</code></td>
+<td>timing hash_16384</td>
+<td><code>records/hash-31/ZC-DMC-1280-512__hash_16384.json</code></td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-512</code></td>
+<td>timing hash_32</td>
+<td><code>records/hash-31/ZC-DMC-1280-512__hash_32.json</code></td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-512</code></td>
+<td>timing hash_4096</td>
+<td><code>records/hash-31/ZC-DMC-1280-512__hash_4096.json</code></td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-512</code></td>
+<td>timing hash_512</td>
+<td><code>records/hash-31/ZC-DMC-1280-512__hash_512.json</code></td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-512</code></td>
+<td>timing hash_65536</td>
+<td><code>records/hash-31/ZC-DMC-1280-512__hash_65536.json</code></td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-512</code></td>
+<td>timing hash_8192</td>
+<td><code>records/hash-31/ZC-DMC-1280-512__hash_8192.json</code></td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-512-avx2</code></td>
+<td>KAT log (sha256 <code>b8d145282936c95b…</code>)</td>
+<td><code>kat/hash-31/ZC-DMC-1280-512-avx2.log</code></td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-512-avx2</code></td>
+<td>timing hash_1024</td>
+<td><code>records/hash-31/ZC-DMC-1280-512-avx2__hash_1024.json</code></td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-512-avx2</code></td>
+<td>timing hash_128</td>
+<td><code>records/hash-31/ZC-DMC-1280-512-avx2__hash_128.json</code></td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-512-avx2</code></td>
+<td>timing hash_16384</td>
+<td><code>records/hash-31/ZC-DMC-1280-512-avx2__hash_16384.json</code></td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-512-avx2</code></td>
+<td>timing hash_32</td>
+<td><code>records/hash-31/ZC-DMC-1280-512-avx2__hash_32.json</code></td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-512-avx2</code></td>
+<td>timing hash_4096</td>
+<td><code>records/hash-31/ZC-DMC-1280-512-avx2__hash_4096.json</code></td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-512-avx2</code></td>
+<td>timing hash_512</td>
+<td><code>records/hash-31/ZC-DMC-1280-512-avx2__hash_512.json</code></td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-512-avx2</code></td>
+<td>timing hash_65536</td>
+<td><code>records/hash-31/ZC-DMC-1280-512-avx2__hash_65536.json</code></td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-512-avx2</code></td>
+<td>timing hash_8192</td>
+<td><code>records/hash-31/ZC-DMC-1280-512-avx2__hash_8192.json</code></td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-768</code></td>
+<td>KAT log (sha256 <code>922719c2f3e503d1…</code>)</td>
+<td><code>kat/hash-31/ZC-DMC-1280-768.log</code></td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-768</code></td>
+<td>timing hash_1024</td>
+<td><code>records/hash-31/ZC-DMC-1280-768__hash_1024.json</code></td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-768</code></td>
+<td>timing hash_128</td>
+<td><code>records/hash-31/ZC-DMC-1280-768__hash_128.json</code></td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-768</code></td>
+<td>timing hash_16384</td>
+<td><code>records/hash-31/ZC-DMC-1280-768__hash_16384.json</code></td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-768</code></td>
+<td>timing hash_32</td>
+<td><code>records/hash-31/ZC-DMC-1280-768__hash_32.json</code></td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-768</code></td>
+<td>timing hash_4096</td>
+<td><code>records/hash-31/ZC-DMC-1280-768__hash_4096.json</code></td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-768</code></td>
+<td>timing hash_512</td>
+<td><code>records/hash-31/ZC-DMC-1280-768__hash_512.json</code></td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-768</code></td>
+<td>timing hash_65536</td>
+<td><code>records/hash-31/ZC-DMC-1280-768__hash_65536.json</code></td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-768</code></td>
+<td>timing hash_8192</td>
+<td><code>records/hash-31/ZC-DMC-1280-768__hash_8192.json</code></td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-768-avx2</code></td>
+<td>KAT log (sha256 <code>5f4872672fc53ae8…</code>)</td>
+<td><code>kat/hash-31/ZC-DMC-1280-768-avx2.log</code></td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-768-avx2</code></td>
+<td>timing hash_1024</td>
+<td><code>records/hash-31/ZC-DMC-1280-768-avx2__hash_1024.json</code></td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-768-avx2</code></td>
+<td>timing hash_128</td>
+<td><code>records/hash-31/ZC-DMC-1280-768-avx2__hash_128.json</code></td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-768-avx2</code></td>
+<td>timing hash_16384</td>
+<td><code>records/hash-31/ZC-DMC-1280-768-avx2__hash_16384.json</code></td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-768-avx2</code></td>
+<td>timing hash_32</td>
+<td><code>records/hash-31/ZC-DMC-1280-768-avx2__hash_32.json</code></td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-768-avx2</code></td>
+<td>timing hash_4096</td>
+<td><code>records/hash-31/ZC-DMC-1280-768-avx2__hash_4096.json</code></td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-768-avx2</code></td>
+<td>timing hash_512</td>
+<td><code>records/hash-31/ZC-DMC-1280-768-avx2__hash_512.json</code></td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-768-avx2</code></td>
+<td>timing hash_65536</td>
+<td><code>records/hash-31/ZC-DMC-1280-768-avx2__hash_65536.json</code></td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-768-avx2</code></td>
+<td>timing hash_8192</td>
+<td><code>records/hash-31/ZC-DMC-1280-768-avx2__hash_8192.json</code></td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-1024</code></td>
+<td>KAT log (sha256 <code>16ed045c1a595223…</code>)</td>
+<td><code>kat/hash-31/ZC-DMC-1280-1024.log</code></td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-1024</code></td>
+<td>timing hash_1024</td>
+<td><code>records/hash-31/ZC-DMC-1280-1024__hash_1024.json</code></td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-1024</code></td>
+<td>timing hash_128</td>
+<td><code>records/hash-31/ZC-DMC-1280-1024__hash_128.json</code></td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-1024</code></td>
+<td>timing hash_16384</td>
+<td><code>records/hash-31/ZC-DMC-1280-1024__hash_16384.json</code></td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-1024</code></td>
+<td>timing hash_32</td>
+<td><code>records/hash-31/ZC-DMC-1280-1024__hash_32.json</code></td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-1024</code></td>
+<td>timing hash_4096</td>
+<td><code>records/hash-31/ZC-DMC-1280-1024__hash_4096.json</code></td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-1024</code></td>
+<td>timing hash_512</td>
+<td><code>records/hash-31/ZC-DMC-1280-1024__hash_512.json</code></td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-1024</code></td>
+<td>timing hash_65536</td>
+<td><code>records/hash-31/ZC-DMC-1280-1024__hash_65536.json</code></td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-1024</code></td>
+<td>timing hash_8192</td>
+<td><code>records/hash-31/ZC-DMC-1280-1024__hash_8192.json</code></td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-1024-avx2</code></td>
+<td>KAT log (sha256 <code>b6680339215abb31…</code>)</td>
+<td><code>kat/hash-31/ZC-DMC-1280-1024-avx2.log</code></td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-1024-avx2</code></td>
+<td>timing hash_1024</td>
+<td><code>records/hash-31/ZC-DMC-1280-1024-avx2__hash_1024.json</code></td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-1024-avx2</code></td>
+<td>timing hash_128</td>
+<td><code>records/hash-31/ZC-DMC-1280-1024-avx2__hash_128.json</code></td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-1024-avx2</code></td>
+<td>timing hash_16384</td>
+<td><code>records/hash-31/ZC-DMC-1280-1024-avx2__hash_16384.json</code></td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-1024-avx2</code></td>
+<td>timing hash_32</td>
+<td><code>records/hash-31/ZC-DMC-1280-1024-avx2__hash_32.json</code></td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-1024-avx2</code></td>
+<td>timing hash_4096</td>
+<td><code>records/hash-31/ZC-DMC-1280-1024-avx2__hash_4096.json</code></td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-1024-avx2</code></td>
+<td>timing hash_512</td>
+<td><code>records/hash-31/ZC-DMC-1280-1024-avx2__hash_512.json</code></td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-1024-avx2</code></td>
+<td>timing hash_65536</td>
+<td><code>records/hash-31/ZC-DMC-1280-1024-avx2__hash_65536.json</code></td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1280-1024-avx2</code></td>
+<td>timing hash_8192</td>
+<td><code>records/hash-31/ZC-DMC-1280-1024-avx2__hash_8192.json</code></td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-512</code></td>
+<td>KAT log (sha256 <code>9fc94c017c87b5f1…</code>)</td>
+<td><code>kat/hash-31/ZC-DMC-1536-512.log</code></td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-512</code></td>
+<td>timing hash_1024</td>
+<td><code>records/hash-31/ZC-DMC-1536-512__hash_1024.json</code></td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-512</code></td>
+<td>timing hash_128</td>
+<td><code>records/hash-31/ZC-DMC-1536-512__hash_128.json</code></td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-512</code></td>
+<td>timing hash_16384</td>
+<td><code>records/hash-31/ZC-DMC-1536-512__hash_16384.json</code></td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-512</code></td>
+<td>timing hash_32</td>
+<td><code>records/hash-31/ZC-DMC-1536-512__hash_32.json</code></td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-512</code></td>
+<td>timing hash_4096</td>
+<td><code>records/hash-31/ZC-DMC-1536-512__hash_4096.json</code></td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-512</code></td>
+<td>timing hash_512</td>
+<td><code>records/hash-31/ZC-DMC-1536-512__hash_512.json</code></td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-512</code></td>
+<td>timing hash_65536</td>
+<td><code>records/hash-31/ZC-DMC-1536-512__hash_65536.json</code></td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-512</code></td>
+<td>timing hash_8192</td>
+<td><code>records/hash-31/ZC-DMC-1536-512__hash_8192.json</code></td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-512-avx2</code></td>
+<td>KAT log (sha256 <code>0ca79fd32bef0530…</code>)</td>
+<td><code>kat/hash-31/ZC-DMC-1536-512-avx2.log</code></td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-512-avx2</code></td>
+<td>timing hash_1024</td>
+<td><code>records/hash-31/ZC-DMC-1536-512-avx2__hash_1024.json</code></td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-512-avx2</code></td>
+<td>timing hash_128</td>
+<td><code>records/hash-31/ZC-DMC-1536-512-avx2__hash_128.json</code></td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-512-avx2</code></td>
+<td>timing hash_16384</td>
+<td><code>records/hash-31/ZC-DMC-1536-512-avx2__hash_16384.json</code></td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-512-avx2</code></td>
+<td>timing hash_32</td>
+<td><code>records/hash-31/ZC-DMC-1536-512-avx2__hash_32.json</code></td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-512-avx2</code></td>
+<td>timing hash_4096</td>
+<td><code>records/hash-31/ZC-DMC-1536-512-avx2__hash_4096.json</code></td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-512-avx2</code></td>
+<td>timing hash_512</td>
+<td><code>records/hash-31/ZC-DMC-1536-512-avx2__hash_512.json</code></td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-512-avx2</code></td>
+<td>timing hash_65536</td>
+<td><code>records/hash-31/ZC-DMC-1536-512-avx2__hash_65536.json</code></td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-512-avx2</code></td>
+<td>timing hash_8192</td>
+<td><code>records/hash-31/ZC-DMC-1536-512-avx2__hash_8192.json</code></td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-768</code></td>
+<td>KAT log (sha256 <code>db3e88fefab980a4…</code>)</td>
+<td><code>kat/hash-31/ZC-DMC-1536-768.log</code></td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-768</code></td>
+<td>timing hash_1024</td>
+<td><code>records/hash-31/ZC-DMC-1536-768__hash_1024.json</code></td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-768</code></td>
+<td>timing hash_128</td>
+<td><code>records/hash-31/ZC-DMC-1536-768__hash_128.json</code></td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-768</code></td>
+<td>timing hash_16384</td>
+<td><code>records/hash-31/ZC-DMC-1536-768__hash_16384.json</code></td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-768</code></td>
+<td>timing hash_32</td>
+<td><code>records/hash-31/ZC-DMC-1536-768__hash_32.json</code></td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-768</code></td>
+<td>timing hash_4096</td>
+<td><code>records/hash-31/ZC-DMC-1536-768__hash_4096.json</code></td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-768</code></td>
+<td>timing hash_512</td>
+<td><code>records/hash-31/ZC-DMC-1536-768__hash_512.json</code></td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-768</code></td>
+<td>timing hash_65536</td>
+<td><code>records/hash-31/ZC-DMC-1536-768__hash_65536.json</code></td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-768</code></td>
+<td>timing hash_8192</td>
+<td><code>records/hash-31/ZC-DMC-1536-768__hash_8192.json</code></td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-768-avx2</code></td>
+<td>KAT log (sha256 <code>94f19a7a92ad777f…</code>)</td>
+<td><code>kat/hash-31/ZC-DMC-1536-768-avx2.log</code></td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-768-avx2</code></td>
+<td>timing hash_1024</td>
+<td><code>records/hash-31/ZC-DMC-1536-768-avx2__hash_1024.json</code></td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-768-avx2</code></td>
+<td>timing hash_128</td>
+<td><code>records/hash-31/ZC-DMC-1536-768-avx2__hash_128.json</code></td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-768-avx2</code></td>
+<td>timing hash_16384</td>
+<td><code>records/hash-31/ZC-DMC-1536-768-avx2__hash_16384.json</code></td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-768-avx2</code></td>
+<td>timing hash_32</td>
+<td><code>records/hash-31/ZC-DMC-1536-768-avx2__hash_32.json</code></td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-768-avx2</code></td>
+<td>timing hash_4096</td>
+<td><code>records/hash-31/ZC-DMC-1536-768-avx2__hash_4096.json</code></td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-768-avx2</code></td>
+<td>timing hash_512</td>
+<td><code>records/hash-31/ZC-DMC-1536-768-avx2__hash_512.json</code></td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-768-avx2</code></td>
+<td>timing hash_65536</td>
+<td><code>records/hash-31/ZC-DMC-1536-768-avx2__hash_65536.json</code></td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-768-avx2</code></td>
+<td>timing hash_8192</td>
+<td><code>records/hash-31/ZC-DMC-1536-768-avx2__hash_8192.json</code></td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-1024</code></td>
+<td>KAT log (sha256 <code>90edcda80547d921…</code>)</td>
+<td><code>kat/hash-31/ZC-DMC-1536-1024.log</code></td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-1024</code></td>
+<td>timing hash_1024</td>
+<td><code>records/hash-31/ZC-DMC-1536-1024__hash_1024.json</code></td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-1024</code></td>
+<td>timing hash_128</td>
+<td><code>records/hash-31/ZC-DMC-1536-1024__hash_128.json</code></td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-1024</code></td>
+<td>timing hash_16384</td>
+<td><code>records/hash-31/ZC-DMC-1536-1024__hash_16384.json</code></td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-1024</code></td>
+<td>timing hash_32</td>
+<td><code>records/hash-31/ZC-DMC-1536-1024__hash_32.json</code></td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-1024</code></td>
+<td>timing hash_4096</td>
+<td><code>records/hash-31/ZC-DMC-1536-1024__hash_4096.json</code></td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-1024</code></td>
+<td>timing hash_512</td>
+<td><code>records/hash-31/ZC-DMC-1536-1024__hash_512.json</code></td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-1024</code></td>
+<td>timing hash_65536</td>
+<td><code>records/hash-31/ZC-DMC-1536-1024__hash_65536.json</code></td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-1024</code></td>
+<td>timing hash_8192</td>
+<td><code>records/hash-31/ZC-DMC-1536-1024__hash_8192.json</code></td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-1024-avx2</code></td>
+<td>KAT log (sha256 <code>1e27635851e03c42…</code>)</td>
+<td><code>kat/hash-31/ZC-DMC-1536-1024-avx2.log</code></td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-1024-avx2</code></td>
+<td>timing hash_1024</td>
+<td><code>records/hash-31/ZC-DMC-1536-1024-avx2__hash_1024.json</code></td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-1024-avx2</code></td>
+<td>timing hash_128</td>
+<td><code>records/hash-31/ZC-DMC-1536-1024-avx2__hash_128.json</code></td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-1024-avx2</code></td>
+<td>timing hash_16384</td>
+<td><code>records/hash-31/ZC-DMC-1536-1024-avx2__hash_16384.json</code></td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-1024-avx2</code></td>
+<td>timing hash_32</td>
+<td><code>records/hash-31/ZC-DMC-1536-1024-avx2__hash_32.json</code></td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-1024-avx2</code></td>
+<td>timing hash_4096</td>
+<td><code>records/hash-31/ZC-DMC-1536-1024-avx2__hash_4096.json</code></td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-1024-avx2</code></td>
+<td>timing hash_512</td>
+<td><code>records/hash-31/ZC-DMC-1536-1024-avx2__hash_512.json</code></td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-1024-avx2</code></td>
+<td>timing hash_65536</td>
+<td><code>records/hash-31/ZC-DMC-1536-1024-avx2__hash_65536.json</code></td>
+</tr>
+<tr>
+<td><code>ZC-DMC-1536-1024-avx2</code></td>
+<td>timing hash_8192</td>
+<td><code>records/hash-31/ZC-DMC-1536-1024-avx2__hash_8192.json</code></td>
+</tr>
+</tbody>
+</table></div>
+<p>Scripts: <code>performance/campaign.py</code>, <code>performance/ngcc_perf.c</code>, <code>performance/hashprof/</code> in the <a href="https://github.com/ngcc-dev/ngcc-harness">harness</a>.</p>
+</main>
+<footer class="site-footer">
+<p>Maintained by: <a href="mailto:markku-juhani.saarinen@tuni.fi">markku-juhani.saarinen@tuni.fi</a></p>
+<p>Submissions are welcome via <a href="https://github.com/ngcc-dev/ngcc-harness/issues">GitHub issues</a>.</p>
+</footer>
+</body>
+</html>

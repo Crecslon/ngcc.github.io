@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ngcc.dev: hash-25 TaiChi — performance on x86-64 (system x861)</title>
+<link rel="icon" type="image/png" href="../../assets/mag-glass.png">
+<link rel="stylesheet" href="../../assets/style.css?v=1fdb792d">
+</head>
+<body>
+<header class="site-header">
+<a class="brand" href="../../index.html"><img class="brand-icon" src="../../assets/mag-glass.png" alt="" width="28" height="28">ngcc.dev</a>
+<nav><a href="../../index.html">Home</a><a href="../../reports/index.html">Reports</a><a href="../../performance/x86_1/index.html">Performance</a><a href="../../constant-time/index.html">Constant-Time</a></nav>
+</header>
+<main class="">
+<!-- synchronized from harness: hash-25/perf_x86_1.md -->
+<h1 id="hash-25-taichi-performance-on-x86-64-system-x86_1">hash-25 TaiChi — performance on x86-64 (system x86_1)</h1>
+<p><a href="index.html">Performance x86_1</a> › <code>hash-25</code> · <a href="method.html">method</a> · <a href="https://www.niccs.org.cn/niccs/Round1Submissions4/pc/content/content_2101536036577955840.html">NICCS page</a></p>
+<p>Independent measurement following the structure of the NICCS x86 self-assessment guide, §3.5 (1)–(7). Not a submitter self-assessment.</p>
+<h2 id="1-basic-information">1. Basic information</h2>
+<ul>
+<li>Category: cryptographic hash algorithm; function: hash</li>
+<li>Algorithm: TaiChi</li>
+<li>Implementation versions measured: reference</li>
+<li>Parameter sets: <code>TaiChi-512</code>, <code>TaiChi-768</code>, <code>TaiChi-1024</code></li>
+</ul>
+<h2 id="2-assessment-environment">2. Assessment environment</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>item</th>
+<th>value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>processor</td>
+<td>12th Gen Intel(R) Core(TM) i7-12700 (CPU 2, one core)</td>
+</tr>
+<tr>
+<td>clock</td>
+<td>max 2.10 GHz, governor performance, turbo off, SMT off</td>
+</tr>
+<tr>
+<td>memory</td>
+<td>31788 MiB</td>
+</tr>
+<tr>
+<td>OS / kernel</td>
+<td>Debian GNU/Linux 13 (trixie) / 6.12.107+deb13-amd64</td>
+</tr>
+<tr>
+<td>compiler / build tool</td>
+<td>gcc (Debian 14.2.0-19) 14.2.0 / cmake version 3.31.6</td>
+</tr>
+<tr>
+<td>campaign start / end (UTC)</td>
+<td>2026-09-25T10:02:21 / 2026-09-28T04:35:59</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="3-functional-testing-kat">3. Functional testing (KAT)</h2>
+<p>Each library was checked against the submitted KAT vectors (SHA-256 manifest <code>hash-25/kat.sha256</code> in the harness) before timing.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>build flags</th>
+<th>KAT</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>TaiChi-512</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>TaiChi-768</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>TaiChi-1024</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="4-performance">4. Performance</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>message</th>
+<th>mean cycles</th>
+<th>cycles/byte</th>
+<th>mean time</th>
+<th>MB/s</th>
+<th>n</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>TaiChi-512</code></td>
+<td>32 B</td>
+<td>23.7 k</td>
+<td>741.4</td>
+<td>11.3 µs</td>
+<td>2.8</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>TaiChi-512</code></td>
+<td>128 B</td>
+<td>22.2 k</td>
+<td>173.6</td>
+<td>10.6 µs</td>
+<td>12.1</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>TaiChi-512</code></td>
+<td>512 B</td>
+<td>64.3 k</td>
+<td>125.5</td>
+<td>30.7 µs</td>
+<td>16.7</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>TaiChi-512</code></td>
+<td>1024 B</td>
+<td>128.4 k</td>
+<td>125.4</td>
+<td>61.3 µs</td>
+<td>16.7</td>
+<td>61150 (5 × 12230)</td>
+</tr>
+<tr>
+<td><code>TaiChi-512</code></td>
+<td>4096 B</td>
+<td>513.0 k</td>
+<td>125.2</td>
+<td>245 µs</td>
+<td>16.7</td>
+<td>18850 (5 × 3770)</td>
+</tr>
+<tr>
+<td><code>TaiChi-512</code></td>
+<td>8192 B</td>
+<td>1.00 M</td>
+<td>122.3</td>
+<td>479 µs</td>
+<td>17.1</td>
+<td>10010 (5 × 2002)</td>
+</tr>
+<tr>
+<td><code>TaiChi-512</code></td>
+<td>16384 B</td>
+<td>2.00 M</td>
+<td>122.3</td>
+<td>957 µs</td>
+<td>17.1</td>
+<td>5090 (5 × 1018)</td>
+</tr>
+<tr>
+<td><code>TaiChi-512</code></td>
+<td>65536 B</td>
+<td>7.95 M</td>
+<td>121.3</td>
+<td>3.8 ms</td>
+<td>17.3</td>
+<td>1295 (5 × 259)</td>
+</tr>
+<tr>
+<td><code>TaiChi-768</code></td>
+<td>32 B</td>
+<td>23.1 k</td>
+<td>722.9</td>
+<td>11.1 µs</td>
+<td>2.9</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>TaiChi-768</code></td>
+<td>128 B</td>
+<td>21.7 k</td>
+<td>169.8</td>
+<td>10.4 µs</td>
+<td>12.3</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>TaiChi-768</code></td>
+<td>512 B</td>
+<td>86.3 k</td>
+<td>168.6</td>
+<td>41.2 µs</td>
+<td>12.4</td>
+<td>81585 (5 × 16317)</td>
+</tr>
+<tr>
+<td><code>TaiChi-768</code></td>
+<td>1024 B</td>
+<td>172.3 k</td>
+<td>168.3</td>
+<td>82.3 µs</td>
+<td>12.4</td>
+<td>48660 (5 × 9732)</td>
+</tr>
+<tr>
+<td><code>TaiChi-768</code></td>
+<td>4096 B</td>
+<td>618.9 k</td>
+<td>151.1</td>
+<td>296 µs</td>
+<td>13.9</td>
+<td>15815 (5 × 3163)</td>
+</tr>
+<tr>
+<td><code>TaiChi-768</code></td>
+<td>8192 B</td>
+<td>1.21 M</td>
+<td>148.1</td>
+<td>580 µs</td>
+<td>14.1</td>
+<td>7450 (5 × 1490)</td>
+</tr>
+<tr>
+<td><code>TaiChi-768</code></td>
+<td>16384 B</td>
+<td>2.43 M</td>
+<td>148.1</td>
+<td>1.16 ms</td>
+<td>14.1</td>
+<td>4205 (5 × 841)</td>
+</tr>
+<tr>
+<td><code>TaiChi-768</code></td>
+<td>65536 B</td>
+<td>9.71 M</td>
+<td>148.1</td>
+<td>4.64 ms</td>
+<td>14.1</td>
+<td>1055 (5 × 211)</td>
+</tr>
+<tr>
+<td><code>TaiChi-1024</code></td>
+<td>32 B</td>
+<td>44.2 k</td>
+<td>1382.4</td>
+<td>21.2 µs</td>
+<td>1.5</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>TaiChi-1024</code></td>
+<td>128 B</td>
+<td>65.8 k</td>
+<td>514.3</td>
+<td>31.5 µs</td>
+<td>4.1</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>TaiChi-1024</code></td>
+<td>512 B</td>
+<td>129.1 k</td>
+<td>252.1</td>
+<td>61.8 µs</td>
+<td>8.3</td>
+<td>63300 (5 × 12660)</td>
+</tr>
+<tr>
+<td><code>TaiChi-1024</code></td>
+<td>1024 B</td>
+<td>236.5 k</td>
+<td>230.9</td>
+<td>113 µs</td>
+<td>9.0</td>
+<td>37720 (5 × 7544)</td>
+</tr>
+<tr>
+<td><code>TaiChi-1024</code></td>
+<td>4096 B</td>
+<td>811.7 k</td>
+<td>198.2</td>
+<td>389 µs</td>
+<td>10.5</td>
+<td>12310 (5 × 2462)</td>
+</tr>
+<tr>
+<td><code>TaiChi-1024</code></td>
+<td>8192 B</td>
+<td>1.60 M</td>
+<td>195.6</td>
+<td>768 µs</td>
+<td>10.7</td>
+<td>6375 (5 × 1275)</td>
+</tr>
+<tr>
+<td><code>TaiChi-1024</code></td>
+<td>16384 B</td>
+<td>3.16 M</td>
+<td>192.8</td>
+<td>1.51 ms</td>
+<td>10.8</td>
+<td>3235 (5 × 647)</td>
+</tr>
+<tr>
+<td><code>TaiChi-1024</code></td>
+<td>65536 B</td>
+<td>12.54 M</td>
+<td>191.4</td>
+<td>6.01 ms</td>
+<td>10.9</td>
+<td>820 (5 × 164)</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="5-resource-consumption">5. Resource consumption</h2>
+<p>Static memory is approximated by the library's loadable ELF segments; peak memory is the process high-water mark (VmHWM) including the benchmark driver and libc, so both are upper-bound proxies rather than isolated algorithm memory.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>operation</th>
+<th>static: ELF image (bytes)</th>
+<th>baseline RSS</th>
+<th>peak RSS</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>TaiChi-512</code></td>
+<td>hash_32</td>
+<td>14089</td>
+<td>1684 KiB</td>
+<td>1772 KiB</td>
+</tr>
+<tr>
+<td><code>TaiChi-512</code></td>
+<td>hash_128</td>
+<td>14089</td>
+<td>1664 KiB</td>
+<td>1772 KiB</td>
+</tr>
+<tr>
+<td><code>TaiChi-512</code></td>
+<td>hash_512</td>
+<td>14089</td>
+<td>1668 KiB</td>
+<td>1732 KiB</td>
+</tr>
+<tr>
+<td><code>TaiChi-512</code></td>
+<td>hash_1024</td>
+<td>14089</td>
+<td>1684 KiB</td>
+<td>1760 KiB</td>
+</tr>
+<tr>
+<td><code>TaiChi-512</code></td>
+<td>hash_4096</td>
+<td>14089</td>
+<td>1684 KiB</td>
+<td>1752 KiB</td>
+</tr>
+<tr>
+<td><code>TaiChi-512</code></td>
+<td>hash_8192</td>
+<td>14089</td>
+<td>1676 KiB</td>
+<td>1748 KiB</td>
+</tr>
+<tr>
+<td><code>TaiChi-512</code></td>
+<td>hash_16384</td>
+<td>14089</td>
+<td>1688 KiB</td>
+<td>1788 KiB</td>
+</tr>
+<tr>
+<td><code>TaiChi-512</code></td>
+<td>hash_65536</td>
+<td>14089</td>
+<td>1736 KiB</td>
+<td>1904 KiB</td>
+</tr>
+<tr>
+<td><code>TaiChi-768</code></td>
+<td>hash_32</td>
+<td>14089</td>
+<td>1680 KiB</td>
+<td>1744 KiB</td>
+</tr>
+<tr>
+<td><code>TaiChi-768</code></td>
+<td>hash_128</td>
+<td>14089</td>
+<td>1688 KiB</td>
+<td>1764 KiB</td>
+</tr>
+<tr>
+<td><code>TaiChi-768</code></td>
+<td>hash_512</td>
+<td>14089</td>
+<td>1664 KiB</td>
+<td>1728 KiB</td>
+</tr>
+<tr>
+<td><code>TaiChi-768</code></td>
+<td>hash_1024</td>
+<td>14089</td>
+<td>1684 KiB</td>
+<td>1764 KiB</td>
+</tr>
+<tr>
+<td><code>TaiChi-768</code></td>
+<td>hash_4096</td>
+<td>14089</td>
+<td>1668 KiB</td>
+<td>1788 KiB</td>
+</tr>
+<tr>
+<td><code>TaiChi-768</code></td>
+<td>hash_8192</td>
+<td>14089</td>
+<td>1700 KiB</td>
+<td>1788 KiB</td>
+</tr>
+<tr>
+<td><code>TaiChi-768</code></td>
+<td>hash_16384</td>
+<td>14089</td>
+<td>1680 KiB</td>
+<td>1808 KiB</td>
+</tr>
+<tr>
+<td><code>TaiChi-768</code></td>
+<td>hash_65536</td>
+<td>14089</td>
+<td>1732 KiB</td>
+<td>1884 KiB</td>
+</tr>
+<tr>
+<td><code>TaiChi-1024</code></td>
+<td>hash_32</td>
+<td>14073</td>
+<td>1664 KiB</td>
+<td>4268 KiB</td>
+</tr>
+<tr>
+<td><code>TaiChi-1024</code></td>
+<td>hash_128</td>
+<td>14073</td>
+<td>1672 KiB</td>
+<td>6456 KiB</td>
+</tr>
+<tr>
+<td><code>TaiChi-1024</code></td>
+<td>hash_512</td>
+<td>14073</td>
+<td>1640 KiB</td>
+<td>8892 KiB</td>
+</tr>
+<tr>
+<td><code>TaiChi-1024</code></td>
+<td>hash_1024</td>
+<td>14073</td>
+<td>1680 KiB</td>
+<td>10144 KiB</td>
+</tr>
+<tr>
+<td><code>TaiChi-1024</code></td>
+<td>hash_4096</td>
+<td>14073</td>
+<td>1688 KiB</td>
+<td>11792 KiB</td>
+</tr>
+<tr>
+<td><code>TaiChi-1024</code></td>
+<td>hash_8192</td>
+<td>14073</td>
+<td>1636 KiB</td>
+<td>12128 KiB</td>
+</tr>
+<tr>
+<td><code>TaiChi-1024</code></td>
+<td>hash_16384</td>
+<td>14073</td>
+<td>1644 KiB</td>
+<td>12232 KiB</td>
+</tr>
+<tr>
+<td><code>TaiChi-1024</code></td>
+<td>hash_65536</td>
+<td>14073</td>
+<td>1740 KiB</td>
+<td>12512 KiB</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="7-raw-evidence-index">7. Raw evidence index</h2>
+<p>Paths are relative to <code>performance/data/x86_1/</code> in the <a href="https://github.com/ngcc-dev/ngcc-harness">harness</a>; each JSON file records its commands, environment and trials.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>item</th>
+<th>file</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>TaiChi-512</code></td>
+<td>KAT log (sha256 <code>81d7575825cc961b…</code>)</td>
+<td><code>kat/hash-25/TaiChi-512.log</code></td>
+</tr>
+<tr>
+<td><code>TaiChi-512</code></td>
+<td>timing hash_1024</td>
+<td><code>records/hash-25/TaiChi-512__hash_1024.json</code></td>
+</tr>
+<tr>
+<td><code>TaiChi-512</code></td>
+<td>timing hash_128</td>
+<td><code>records/hash-25/TaiChi-512__hash_128.json</code></td>
+</tr>
+<tr>
+<td><code>TaiChi-512</code></td>
+<td>timing hash_16384</td>
+<td><code>records/hash-25/TaiChi-512__hash_16384.json</code></td>
+</tr>
+<tr>
+<td><code>TaiChi-512</code></td>
+<td>timing hash_32</td>
+<td><code>records/hash-25/TaiChi-512__hash_32.json</code></td>
+</tr>
+<tr>
+<td><code>TaiChi-512</code></td>
+<td>timing hash_4096</td>
+<td><code>records/hash-25/TaiChi-512__hash_4096.json</code></td>
+</tr>
+<tr>
+<td><code>TaiChi-512</code></td>
+<td>timing hash_512</td>
+<td><code>records/hash-25/TaiChi-512__hash_512.json</code></td>
+</tr>
+<tr>
+<td><code>TaiChi-512</code></td>
+<td>timing hash_65536</td>
+<td><code>records/hash-25/TaiChi-512__hash_65536.json</code></td>
+</tr>
+<tr>
+<td><code>TaiChi-512</code></td>
+<td>timing hash_8192</td>
+<td><code>records/hash-25/TaiChi-512__hash_8192.json</code></td>
+</tr>
+<tr>
+<td><code>TaiChi-768</code></td>
+<td>KAT log (sha256 <code>412d2874e1ec2ec8…</code>)</td>
+<td><code>kat/hash-25/TaiChi-768.log</code></td>
+</tr>
+<tr>
+<td><code>TaiChi-768</code></td>
+<td>timing hash_1024</td>
+<td><code>records/hash-25/TaiChi-768__hash_1024.json</code></td>
+</tr>
+<tr>
+<td><code>TaiChi-768</code></td>
+<td>timing hash_128</td>
+<td><code>records/hash-25/TaiChi-768__hash_128.json</code></td>
+</tr>
+<tr>
+<td><code>TaiChi-768</code></td>
+<td>timing hash_16384</td>
+<td><code>records/hash-25/TaiChi-768__hash_16384.json</code></td>
+</tr>
+<tr>
+<td><code>TaiChi-768</code></td>
+<td>timing hash_32</td>
+<td><code>records/hash-25/TaiChi-768__hash_32.json</code></td>
+</tr>
+<tr>
+<td><code>TaiChi-768</code></td>
+<td>timing hash_4096</td>
+<td><code>records/hash-25/TaiChi-768__hash_4096.json</code></td>
+</tr>
+<tr>
+<td><code>TaiChi-768</code></td>
+<td>timing hash_512</td>
+<td><code>records/hash-25/TaiChi-768__hash_512.json</code></td>
+</tr>
+<tr>
+<td><code>TaiChi-768</code></td>
+<td>timing hash_65536</td>
+<td><code>records/hash-25/TaiChi-768__hash_65536.json</code></td>
+</tr>
+<tr>
+<td><code>TaiChi-768</code></td>
+<td>timing hash_8192</td>
+<td><code>records/hash-25/TaiChi-768__hash_8192.json</code></td>
+</tr>
+<tr>
+<td><code>TaiChi-1024</code></td>
+<td>KAT log (sha256 <code>31b4d6afe3d0bc71…</code>)</td>
+<td><code>kat/hash-25/TaiChi-1024.log</code></td>
+</tr>
+<tr>
+<td><code>TaiChi-1024</code></td>
+<td>timing hash_1024</td>
+<td><code>records/hash-25/TaiChi-1024__hash_1024.json</code></td>
+</tr>
+<tr>
+<td><code>TaiChi-1024</code></td>
+<td>timing hash_128</td>
+<td><code>records/hash-25/TaiChi-1024__hash_128.json</code></td>
+</tr>
+<tr>
+<td><code>TaiChi-1024</code></td>
+<td>timing hash_16384</td>
+<td><code>records/hash-25/TaiChi-1024__hash_16384.json</code></td>
+</tr>
+<tr>
+<td><code>TaiChi-1024</code></td>
+<td>timing hash_32</td>
+<td><code>records/hash-25/TaiChi-1024__hash_32.json</code></td>
+</tr>
+<tr>
+<td><code>TaiChi-1024</code></td>
+<td>timing hash_4096</td>
+<td><code>records/hash-25/TaiChi-1024__hash_4096.json</code></td>
+</tr>
+<tr>
+<td><code>TaiChi-1024</code></td>
+<td>timing hash_512</td>
+<td><code>records/hash-25/TaiChi-1024__hash_512.json</code></td>
+</tr>
+<tr>
+<td><code>TaiChi-1024</code></td>
+<td>timing hash_65536</td>
+<td><code>records/hash-25/TaiChi-1024__hash_65536.json</code></td>
+</tr>
+<tr>
+<td><code>TaiChi-1024</code></td>
+<td>timing hash_8192</td>
+<td><code>records/hash-25/TaiChi-1024__hash_8192.json</code></td>
+</tr>
+</tbody>
+</table></div>
+<p>Scripts: <code>performance/campaign.py</code>, <code>performance/ngcc_perf.c</code>, <code>performance/hashprof/</code> in the <a href="https://github.com/ngcc-dev/ngcc-harness">harness</a>.</p>
+</main>
+<footer class="site-footer">
+<p>Maintained by: <a href="mailto:markku-juhani.saarinen@tuni.fi">markku-juhani.saarinen@tuni.fi</a></p>
+<p>Submissions are welcome via <a href="https://github.com/ngcc-dev/ngcc-harness/issues">GitHub issues</a>.</p>
+</footer>
+</body>
+</html>

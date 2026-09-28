@@ -5,22 +5,22 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>ngcc.dev: SQIsign2D2 (sign-25)</title>
 <link rel="icon" type="image/png" href="../assets/mag-glass.png">
-<link rel="stylesheet" href="../assets/style.css?v=996d5cfd">
+<link rel="stylesheet" href="../assets/style.css?v=1fdb792d">
 </head>
 <body>
 <header class="site-header">
 <a class="brand" href="../index.html"><img class="brand-icon" src="../assets/mag-glass.png" alt="" width="28" height="28">ngcc.dev</a>
-<nav><a href="../index.html">Home</a><a href="../reports/index.html">Reports</a><a href="../constant-time/index.html">Constant-Time</a></nav>
+<nav><a href="../index.html">Home</a><a href="../reports/index.html">Reports</a><a href="../performance/x86_1/index.html">Performance</a><a href="../constant-time/index.html">Constant-Time</a></nav>
 </header>
-<main>
-<p class="crumb"><a href="../reports/index.html">Reports</a> › <code>sign-25</code> · <a href="../constant-time/sign-25.html">Constant-time review</a></p>
+<main class="">
+<p class="crumb"><a href="../reports/index.html">Reports</a> › <code>sign-25</code> · <a href="../constant-time/sign-25.html">Constant-time review</a> · <a href="../performance/x86_1/sign-25.html">Performance</a></p>
 
 <h1 id="sqisign2d2-sign-25">SQIsign2D2 (sign-25)</h1>
 <div class="table-wrap"><table class="meta">
 <tr><th>Candidate</th><td>SQIsign2D2</td></tr>
 <tr><th>Family</th><td>Isogeny</td></tr>
 <tr><th>Archive</th><td><a href="https://www.niccs.org.cn/niccs/Proposal/Public-Key%20Cryptographic%20Algorithms/Round%201%20candidates/SQIsign2D2.zip">SQIsign2D2.zip</a> (SHA-256: <code>cf635de5eebbdeb7b2212e84f349da4ca878889e0a4a59b463d0c8cdfdb8eeab</code>)</td></tr>
-<tr><th>Specification</th><td><a href="https://github.com/ngcc-dev/ngcc-harness/raw/refs/heads/main/sign-25/sign-25-spec.pdf" title="Download sign-25-spec.pdf from GitHub">sign-25-spec.pdf</a>&nbsp;<a class="pdf-link" href="https://cdn.jsdelivr.net/gh/ngcc-dev/ngcc-harness@main/sign-25/sign-25-spec.pdf" title="Open the sign-25 specification PDF">PDF</a></td></tr>
+<tr><th>Specification</th><td><a href="https://github.com/ngcc-dev/ngcc-harness/raw/dc66c6cb3c06e75bdea0048e21fa4e13c63f00af/sign-25/sign-25-spec.pdf" title="Download sign-25-spec.pdf from GitHub">sign-25-spec.pdf</a>&nbsp;<a class="pdf-link" href="https://cdn.jsdelivr.net/gh/ngcc-dev/ngcc-harness@dc66c6cb3c06e75bdea0048e21fa4e13c63f00af/sign-25/sign-25-spec.pdf" title="Open the sign-25 specification PDF">PDF</a></td></tr>
 </table></div>
 
 <h2 class="issue-heading issue-heading-first" id="sign-25-1-verifier-verdict-is-decided-by-stale-stack-contents">sign-25-1: Verifier verdict is decided by stale stack contents</h2>
@@ -92,6 +92,30 @@ other supported runtime witnesses and their controls. See <code>tools/README.md<
 <h3 id="reproducing_1">Reproducing</h3>
 <p>Commands below run in a checkout of the <a href="https://github.com/ngcc-dev/ngcc-harness">ngcc-harness repository</a> with the candidate built (see its README).</p>
 <p>Compare §4.1 and §4.2 of <code>sign-25-spec.pdf</code> with the cited attack paper, including the Level1, Level2, Level3, and Level5 primes.</p>
+<h2 class="issue-heading" id="sign-25-3-detached-compact-challenge-enables-one-query-message-retargeting-forgeries">sign-25-3: Detached compact challenge enables one-query message-retargeting forgeries</h2>
+
+<div class="table-wrap"><table class="meta issue-meta">
+<tr><th>Severity</th><td><span class="sev sev-critical">Critical</span></td></tr>
+<tr><th>Scope</th><td>design</td></tr>
+<tr><th>Status</th><td><span class="issue-status status-confirmed">Confirmed</span></td></tr>
+<tr><th>Affected</th><td>All eight compact SQIsign2D2 parameter sets; uncompressed mode is not affected by this attack</td></tr>
+<tr><th>Discovery</th><td>Moderate</td></tr>
+<tr><th>Exploitation</th><td>One signing query, followed by one public commitment reconstruction and hash per fresh-message forgery</td></tr>
+<tr><th>Credit</th><td>Martin Feussner, with OpenAI Codex (Daybreak Blue) assistance</td></tr>
+<tr><th>Date</th><td>2026-09-28</td></tr>
+</table></div>
+<p>Original source: <a href="https://list.niccs.org.cn/archives/list/pkcforum@list.niccs.org.cn/message/2M2QPP46J6K3E623EXZXGCU2QFZFDIL6/">Feussner's PKC Forum post</a></p>
+<p>The compact verifier reconstructs the challenge curve from the response and the commitment curve from the encoded dual path before it reads the transmitted challenge. It then checks only that</p>
+<p><code>chall = H(pk || j(E_com) || message)</code>.</p>
+<p>The challenge is not used to verify that the reconstructed forward challenge isogeny has the recovered challenge curve as its codomain, or that it is compatible with the encoded dual path. Thus the geometric acceptance predicate is independent of both the transmitted challenge and the message.</p>
+<p>After obtaining one signature <code>(response,path,chall_0)</code> on any message, an attacker publicly reconstructs the same <code>E_com</code>, hashes it with an arbitrary fresh target message, and replaces only <code>chall_0</code> with that digest. Every geometric check is unchanged and the final hash comparison now holds for the target. This is a direct one-query EUF-CMA forgery, not signature malleability. It violates the submission's claimed EUF-CMA security at every level and is therefore Critical.</p>
+<p>The pinned artifact performs three fresh-message forgeries for each of the eight compact reference instances. All 24 forgeries were accepted; controls verify the original signature, reject it on the target before modification, reject each retargeted signature on the source message, and confirm that no byte outside the serialized challenge field changed. The attack uses only the public key, signature, and target message. The original 2025 CompactSQIsign2D2 construction includes an additional forward-to-dual binding equality and is outside this result.</p>
+<p>Verification must use the hash-derived challenge to construct the forward challenge kernel and check that its codomain and dual-kernel relation agree with the path reconstructed from the response.</p>
+<h3 id="reproducing_2">Reproducing</h3>
+<p>Commands below run in a checkout of the <a href="https://github.com/ngcc-dev/ngcc-harness">ngcc-harness repository</a> with the candidate built (see its README).</p>
+<pre><code class="language-sh">sh sign-25/reproduce_compact_retarget.sh
+</code></pre>
+<p>The wrapper downloads and checks out the <a href="https://github.com/martinfeussner/NGCC-Signature-Audit/tree/a30462dce48bd484d7c8c4d5b1f971e7dfebacfd/SQIsign2D2">pinned public artifact</a>, builds the unmodified compact implementations from this candidate directory, and requires eight <code>status=PASS</code> result lines.</p>
 </main>
 <footer class="site-footer">
 <p>Maintained by: <a href="mailto:markku-juhani.saarinen@tuni.fi">markku-juhani.saarinen@tuni.fi</a></p>

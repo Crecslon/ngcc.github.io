@@ -6,8 +6,9 @@ and reproduction steps.
 
 ## Reading the table
 
-- <span class="sev sev-none">No report</span> means no attack report has been
-  published here. It does **not** mean the candidate has been found secure.
+- <span class="sev sev-none">No finding</span> links to a candidate review page
+  but means no vulnerability finding has been published here. It does **not**
+  mean the candidate has been found secure.
 - Severity is color-coded:
   <span class="sev sev-critical">Critical</span>
   <span class="sev sev-high">High</span>

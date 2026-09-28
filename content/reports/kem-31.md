@@ -5,7 +5,7 @@ Archive: [QIMEN-PIKE.zip](https://www.niccs.org.cn/niccs/Proposal/Public-Key%20C
 
 ## kem-31-1: Invalid ciphertexts trigger an assertion during decapsulation
 
-Severity: Medium
+Severity: Low
 Status: Confirmed
 Layer: Implementation
 Affected: Submitted compressed reference implementation, NGCC-1/2/3
@@ -19,7 +19,7 @@ With an honestly generated key, the all-zero ciphertext aborts decapsulation in 
 
 An application that decapsulates untrusted ciphertexts in-process can therefore be terminated by a single request. This is a confirmed availability failure in the submitted assertion-enabled build, not evidence of key recovery or a failure of the underlying isogeny assumption. Disabling assertions has not been established as a safe repair: malformed points must be checked and rejected explicitly before use.
 
-Jieyu Zheng identified a concrete memory-safety root cause behind this warning. `ct_decode` decodes four attacker-controlled hint fields as signed `int` values (`pike_compressed.c:1049,1122-1128`). The reconstruction routines test only `hint < 20` before evaluating `Z_NQR_TABLE[hint]` or `NQR_TABLE[hint]` (`basis.c:1725-1727,1834-1836`), so a negative hint reads before either 20-element table. Changing any one hint of an honest ciphertext to `-1` aborted all 12 tested parameter-set/field combinations; the issue's AddressSanitizer run additionally records a 128-byte out-of-bounds read. This confirms that removing assertions is unsafe. No key recovery or disclosed-memory channel has been demonstrated, so the finding remains Medium and keeps its existing ID.
+Jieyu Zheng identified a concrete memory-safety root cause behind this warning. `ct_decode` decodes four attacker-controlled hint fields as signed `int` values (`pike_compressed.c:1049,1122-1128`). The reconstruction routines test only `hint < 20` before evaluating `Z_NQR_TABLE[hint]` or `NQR_TABLE[hint]` (`basis.c:1725-1727,1834-1836`), so a negative hint reads before either 20-element table. Changing any one hint of an honest ciphertext to `-1` aborted all 12 tested parameter-set/field combinations; the issue's AddressSanitizer run additionally records a 128-byte out-of-bounds read. This confirms that removing assertions is unsafe. The demonstrated consequence remains process termination: no read data is returned, and no disclosure, key recovery, or control-flow effect has been shown. Under the classification policy this remains Low and keeps its existing ID.
 
 ### Reproducing
 
@@ -50,6 +50,8 @@ Exploitation: One decapsulation query on a byte-distinct copy of the challenge c
 Credit: Markku-Juhani O. Saarinen <markku-juhani.saarinen@tuni.fi>, with AI assistance
 Date: 2026-09-25
 
+Additional reference: [Xiong and Wang, ePrint 2026/2232, §5](https://eprint.iacr.org/2026/2232)
+
 `fp_decode` reduces field elements modulo `p` without rejecting values at least `p`, and NGCC-1 also leaves 4 bytes of each 64-byte field slot unread. Decapsulation compares and hashes the re-encoded decoded ciphertext rather than the received bytes (`KEM_AlgorithmInstance.c:245,252`). Replacing any field element `x` by `x + p`, or changing an unread slot byte, therefore returns the honest key. The submission claims IND-CCA security, which is trivially violated.
 
 The specification's Algorithm 15 (§3.3.2, p. 36) compares the received `ct` with the re-encryption `ct′` and uses `Hct(ct)` to derive the key. Section 3.3.1 says this hash binds the full ciphertext transcript. Appendix B.1 (p. 78) describes reduced field-element serialization, while Chapter 5 notes that NGCC-1 reserves 64 bytes for a field element that needs only 60. The specification does not define a parser for malformed byte encodings. In the submitted byte API, `ct_decode` accepts them, and `compare_ct_for_kdf` and `derive_ss_from_m_and_ct` use a fresh encoding of the decoded object (`KEM_AlgorithmInstance.c:612–633,588–605`). This normalization is where the byte-distinct alias survives the specified equality and hash steps.
@@ -62,7 +64,7 @@ python3 kem-31/reproduce_ciphertext_alias.py
 
 ## kem-31-3: Malformed public keys hang or abort encapsulation
 
-Severity: Medium
+Severity: Low
 Status: Confirmed
 Layer: Implementation
 Affected: NGCC-1, NGCC-2, and NGCC-3 reference implementations

@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ngcc.dev: kem-04 BAG-Piglet — performance on x86-64 (system x861)</title>
+<link rel="icon" type="image/png" href="../../assets/mag-glass.png">
+<link rel="stylesheet" href="../../assets/style.css?v=1fdb792d">
+</head>
+<body>
+<header class="site-header">
+<a class="brand" href="../../index.html"><img class="brand-icon" src="../../assets/mag-glass.png" alt="" width="28" height="28">ngcc.dev</a>
+<nav><a href="../../index.html">Home</a><a href="../../reports/index.html">Reports</a><a href="../../performance/x86_1/index.html">Performance</a><a href="../../constant-time/index.html">Constant-Time</a></nav>
+</header>
+<main class="">
+<!-- synchronized from harness: kem-04/perf_x86_1.md -->
+<h1 id="kem-04-bag-piglet-performance-on-x86-64-system-x86_1">kem-04 BAG-Piglet — performance on x86-64 (system x86_1)</h1>
+<p><a href="index.html">Performance x86_1</a> › <code>kem-04</code> · <a href="method.html">method</a> · <a href="https://www.niccs.org.cn/niccs/Round1Additional/pc/content/content_2101560843373727744.html">NICCS page</a></p>
+<p>Independent measurement following the structure of the NICCS x86 self-assessment guide, §3.5 (1)–(7). Not a submitter self-assessment.</p>
+<h2 id="1-basic-information">1. Basic information</h2>
+<ul>
+<li>Category: public-key algorithm; function: key encapsulation</li>
+<li>Algorithm: BAG-Piglet</li>
+<li>Implementation versions measured: reference</li>
+<li>Parameter sets: <code>bag_piglet_128</code>, <code>bag_piglet_256</code>, <code>bag_piglet_384</code>, <code>bag_piglet_512</code></li>
+</ul>
+<h2 id="2-assessment-environment">2. Assessment environment</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>item</th>
+<th>value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>processor</td>
+<td>12th Gen Intel(R) Core(TM) i7-12700 (CPU 2, one core)</td>
+</tr>
+<tr>
+<td>clock</td>
+<td>max 2.10 GHz, governor performance, turbo off, SMT off</td>
+</tr>
+<tr>
+<td>memory</td>
+<td>31788 MiB</td>
+</tr>
+<tr>
+<td>OS / kernel</td>
+<td>Debian GNU/Linux 13 (trixie) / 6.12.107+deb13-amd64</td>
+</tr>
+<tr>
+<td>compiler / build tool</td>
+<td>gcc (Debian 14.2.0-19) 14.2.0 / cmake version 3.31.6</td>
+</tr>
+<tr>
+<td>campaign start / end (UTC)</td>
+<td>2026-09-25T10:02:21 / 2026-09-28T04:35:59</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="3-functional-testing-kat">3. Functional testing (KAT)</h2>
+<p>Each library was checked against the submitted KAT vectors (SHA-256 manifest <code>kem-04/kat.sha256</code> in the harness) before timing.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>build flags</th>
+<th>KAT</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>bag_piglet_128</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>bag_piglet_256</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>bag_piglet_384</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>bag_piglet_512</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="4-performance">4. Performance</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>operation</th>
+<th>mean cycles</th>
+<th>mean time</th>
+<th>ops/s</th>
+<th>median trial</th>
+<th>n (trials × iters)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>bag_piglet_128</code></td>
+<td>keygen</td>
+<td>1.61 M</td>
+<td>770 µs</td>
+<td>1.3e+03</td>
+<td>770 µs</td>
+<td>6190 (5 × 1238)</td>
+</tr>
+<tr>
+<td><code>bag_piglet_128</code></td>
+<td>enc</td>
+<td>3.45 M</td>
+<td>1.65 ms</td>
+<td>607</td>
+<td>1.65 ms</td>
+<td>3015 (5 × 603)</td>
+</tr>
+<tr>
+<td><code>bag_piglet_128</code></td>
+<td>dec</td>
+<td>12.12 M</td>
+<td>5.79 ms</td>
+<td>173</td>
+<td>5.79 ms</td>
+<td>865 (5 × 173)</td>
+</tr>
+<tr>
+<td><code>bag_piglet_256</code></td>
+<td>keygen</td>
+<td>7.19 M</td>
+<td>3.45 ms</td>
+<td>290</td>
+<td>3.44 ms</td>
+<td>1310 (5 × 262)</td>
+</tr>
+<tr>
+<td><code>bag_piglet_256</code></td>
+<td>enc</td>
+<td>22.75 M</td>
+<td>10.9 ms</td>
+<td>91.9</td>
+<td>10.9 ms</td>
+<td>460 (5 × 92)</td>
+</tr>
+<tr>
+<td><code>bag_piglet_256</code></td>
+<td>dec</td>
+<td>81.52 M</td>
+<td>39 ms</td>
+<td>25.6</td>
+<td>39 ms</td>
+<td>130 (5 × 26)</td>
+</tr>
+<tr>
+<td><code>bag_piglet_384</code></td>
+<td>keygen</td>
+<td>20.60 M</td>
+<td>9.86 ms</td>
+<td>101</td>
+<td>9.86 ms</td>
+<td>520 (5 × 104)</td>
+</tr>
+<tr>
+<td><code>bag_piglet_384</code></td>
+<td>enc</td>
+<td>55.27 M</td>
+<td>26.4 ms</td>
+<td>37.9</td>
+<td>26.4 ms</td>
+<td>190 (5 × 38)</td>
+</tr>
+<tr>
+<td><code>bag_piglet_384</code></td>
+<td>dec</td>
+<td>221.57 M</td>
+<td>106 ms</td>
+<td>9.44</td>
+<td>106 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>bag_piglet_512</code></td>
+<td>keygen</td>
+<td>92.32 M</td>
+<td>44.2 ms</td>
+<td>22.6</td>
+<td>44.2 ms</td>
+<td>115 (5 × 23)</td>
+</tr>
+<tr>
+<td><code>bag_piglet_512</code></td>
+<td>enc</td>
+<td>193.81 M</td>
+<td>92.6 ms</td>
+<td>10.8</td>
+<td>92.6 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>bag_piglet_512</code></td>
+<td>dec</td>
+<td>725.11 M</td>
+<td>348 ms</td>
+<td>2.87</td>
+<td>347 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="5-resource-consumption">5. Resource consumption</h2>
+<p>Static memory is approximated by the library's loadable ELF segments; peak memory is the process high-water mark (VmHWM) including the benchmark driver and libc, so both are upper-bound proxies rather than isolated algorithm memory.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>operation</th>
+<th>static: ELF image (bytes)</th>
+<th>baseline RSS</th>
+<th>peak RSS</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>bag_piglet_128</code></td>
+<td>keygen</td>
+<td>72473</td>
+<td>1744 KiB</td>
+<td>1876 KiB</td>
+</tr>
+<tr>
+<td><code>bag_piglet_128</code></td>
+<td>enc</td>
+<td>72473</td>
+<td>1776 KiB</td>
+<td>1880 KiB</td>
+</tr>
+<tr>
+<td><code>bag_piglet_128</code></td>
+<td>dec</td>
+<td>72473</td>
+<td>1804 KiB</td>
+<td>1896 KiB</td>
+</tr>
+<tr>
+<td><code>bag_piglet_256</code></td>
+<td>keygen</td>
+<td>73905</td>
+<td>1784 KiB</td>
+<td>1900 KiB</td>
+</tr>
+<tr>
+<td><code>bag_piglet_256</code></td>
+<td>enc</td>
+<td>73905</td>
+<td>1792 KiB</td>
+<td>1860 KiB</td>
+</tr>
+<tr>
+<td><code>bag_piglet_256</code></td>
+<td>dec</td>
+<td>73905</td>
+<td>1932 KiB</td>
+<td>2000 KiB</td>
+</tr>
+<tr>
+<td><code>bag_piglet_384</code></td>
+<td>keygen</td>
+<td>74385</td>
+<td>1756 KiB</td>
+<td>2000 KiB</td>
+</tr>
+<tr>
+<td><code>bag_piglet_384</code></td>
+<td>enc</td>
+<td>74385</td>
+<td>1896 KiB</td>
+<td>1960 KiB</td>
+</tr>
+<tr>
+<td><code>bag_piglet_384</code></td>
+<td>dec</td>
+<td>74385</td>
+<td>1972 KiB</td>
+<td>2088 KiB</td>
+</tr>
+<tr>
+<td><code>bag_piglet_512</code></td>
+<td>keygen</td>
+<td>78705</td>
+<td>1768 KiB</td>
+<td>2444 KiB</td>
+</tr>
+<tr>
+<td><code>bag_piglet_512</code></td>
+<td>enc</td>
+<td>78705</td>
+<td>2168 KiB</td>
+<td>2236 KiB</td>
+</tr>
+<tr>
+<td><code>bag_piglet_512</code></td>
+<td>dec</td>
+<td>78705</td>
+<td>2276 KiB</td>
+<td>2552 KiB</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="6-transmission-and-storage-overhead">6. Transmission and storage overhead</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>public key</th>
+<th>secret key</th>
+<th>ciphertext</th>
+<th>shared secret</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>bag_piglet_128</code></td>
+<td>522</td>
+<td>16</td>
+<td>1027</td>
+<td>16</td>
+</tr>
+<tr>
+<td><code>bag_piglet_256</code></td>
+<td>1573</td>
+<td>32</td>
+<td>3097</td>
+<td>32</td>
+</tr>
+<tr>
+<td><code>bag_piglet_384</code></td>
+<td>2778</td>
+<td>48</td>
+<td>5475</td>
+<td>48</td>
+</tr>
+<tr>
+<td><code>bag_piglet_512</code></td>
+<td>4158</td>
+<td>64</td>
+<td>8204</td>
+<td>64</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="symmetric-primitives">Symmetric primitives</h2>
+<p><a href="../symmetric-survey.html">Survey</a> verdict: <strong>ICCS-only</strong> — <code>*_using_shake</code> names parse pseudoXOF output; AES-256-CTR dead; DRNG only with -DBAG_PIGLET_KAT</p>
+<p>Share of each operation spent in the ICCS placeholder hash functions and in the ICCS DRNG (reference build, measured in the same run with link-time wrappers):</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>operation</th>
+<th>pseudohash/XOF/sm3</th>
+<th>DRNG</th>
+<th>calls per operation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>bag_piglet_128</code></td>
+<td>keygen</td>
+<td>53%</td>
+<td>0.3%</td>
+<td>drng 1, pseudoXOF 4</td>
+</tr>
+<tr>
+<td><code>bag_piglet_128</code></td>
+<td>enc</td>
+<td>17%</td>
+<td>0.5%</td>
+<td>drng 4, pseudoXOF 5</td>
+</tr>
+<tr>
+<td><code>bag_piglet_128</code></td>
+<td>dec</td>
+<td>14%</td>
+<td>0.0%</td>
+<td>pseudoXOF 10</td>
+</tr>
+<tr>
+<td><code>bag_piglet_256</code></td>
+<td>keygen</td>
+<td>24%</td>
+<td>0.1%</td>
+<td>drng 1, pseudoXOF 4</td>
+</tr>
+<tr>
+<td><code>bag_piglet_256</code></td>
+<td>enc</td>
+<td>5.6%</td>
+<td>0.1%</td>
+<td>drng 5, pseudoXOF 5</td>
+</tr>
+<tr>
+<td><code>bag_piglet_256</code></td>
+<td>dec</td>
+<td>4.4%</td>
+<td>0.0%</td>
+<td>pseudoXOF 10</td>
+</tr>
+<tr>
+<td><code>bag_piglet_384</code></td>
+<td>keygen</td>
+<td>33%</td>
+<td>0.0%</td>
+<td>drng 1, pseudoXOF 4</td>
+</tr>
+<tr>
+<td><code>bag_piglet_384</code></td>
+<td>enc</td>
+<td>8.9%</td>
+<td>0.0%</td>
+<td>drng 5, pseudoXOF 5</td>
+</tr>
+<tr>
+<td><code>bag_piglet_384</code></td>
+<td>dec</td>
+<td>6.3%</td>
+<td>0.0%</td>
+<td>pseudoXOF 10</td>
+</tr>
+<tr>
+<td><code>bag_piglet_512</code></td>
+<td>keygen</td>
+<td>56%</td>
+<td>0.0%</td>
+<td>drng 1, pseudoXOF 4</td>
+</tr>
+<tr>
+<td><code>bag_piglet_512</code></td>
+<td>enc</td>
+<td>18%</td>
+<td>0.0%</td>
+<td>drng 5, pseudoXOF 5</td>
+</tr>
+<tr>
+<td><code>bag_piglet_512</code></td>
+<td>dec</td>
+<td>14%</td>
+<td>0.0%</td>
+<td>pseudoXOF 10</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="7-raw-evidence-index">7. Raw evidence index</h2>
+<p>Paths are relative to <code>performance/data/x86_1/</code> in the <a href="https://github.com/ngcc-dev/ngcc-harness">harness</a>; each JSON file records its commands, environment and trials.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>item</th>
+<th>file</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>bag_piglet_128</code></td>
+<td>KAT log (sha256 <code>dc96d9827839f937…</code>)</td>
+<td><code>kat/kem-04/bag_piglet_128.log</code></td>
+</tr>
+<tr>
+<td><code>bag_piglet_128</code></td>
+<td>timing dec</td>
+<td><code>records/kem-04/bag_piglet_128__dec.json</code></td>
+</tr>
+<tr>
+<td><code>bag_piglet_128</code></td>
+<td>timing enc</td>
+<td><code>records/kem-04/bag_piglet_128__enc.json</code></td>
+</tr>
+<tr>
+<td><code>bag_piglet_128</code></td>
+<td>timing keygen</td>
+<td><code>records/kem-04/bag_piglet_128__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>bag_piglet_128</code></td>
+<td>hash profile dec</td>
+<td><code>profile/kem-04/bag_piglet_128__dec.json</code></td>
+</tr>
+<tr>
+<td><code>bag_piglet_128</code></td>
+<td>hash profile enc</td>
+<td><code>profile/kem-04/bag_piglet_128__enc.json</code></td>
+</tr>
+<tr>
+<td><code>bag_piglet_128</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/kem-04/bag_piglet_128__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>bag_piglet_256</code></td>
+<td>KAT log (sha256 <code>98dcd2b80e466788…</code>)</td>
+<td><code>kat/kem-04/bag_piglet_256.log</code></td>
+</tr>
+<tr>
+<td><code>bag_piglet_256</code></td>
+<td>timing dec</td>
+<td><code>records/kem-04/bag_piglet_256__dec.json</code></td>
+</tr>
+<tr>
+<td><code>bag_piglet_256</code></td>
+<td>timing enc</td>
+<td><code>records/kem-04/bag_piglet_256__enc.json</code></td>
+</tr>
+<tr>
+<td><code>bag_piglet_256</code></td>
+<td>timing keygen</td>
+<td><code>records/kem-04/bag_piglet_256__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>bag_piglet_256</code></td>
+<td>hash profile dec</td>
+<td><code>profile/kem-04/bag_piglet_256__dec.json</code></td>
+</tr>
+<tr>
+<td><code>bag_piglet_256</code></td>
+<td>hash profile enc</td>
+<td><code>profile/kem-04/bag_piglet_256__enc.json</code></td>
+</tr>
+<tr>
+<td><code>bag_piglet_256</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/kem-04/bag_piglet_256__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>bag_piglet_384</code></td>
+<td>KAT log (sha256 <code>6fe1b7d17156c860…</code>)</td>
+<td><code>kat/kem-04/bag_piglet_384.log</code></td>
+</tr>
+<tr>
+<td><code>bag_piglet_384</code></td>
+<td>timing dec</td>
+<td><code>records/kem-04/bag_piglet_384__dec.json</code></td>
+</tr>
+<tr>
+<td><code>bag_piglet_384</code></td>
+<td>timing enc</td>
+<td><code>records/kem-04/bag_piglet_384__enc.json</code></td>
+</tr>
+<tr>
+<td><code>bag_piglet_384</code></td>
+<td>timing keygen</td>
+<td><code>records/kem-04/bag_piglet_384__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>bag_piglet_384</code></td>
+<td>hash profile dec</td>
+<td><code>profile/kem-04/bag_piglet_384__dec.json</code></td>
+</tr>
+<tr>
+<td><code>bag_piglet_384</code></td>
+<td>hash profile enc</td>
+<td><code>profile/kem-04/bag_piglet_384__enc.json</code></td>
+</tr>
+<tr>
+<td><code>bag_piglet_384</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/kem-04/bag_piglet_384__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>bag_piglet_512</code></td>
+<td>KAT log (sha256 <code>43dad9934e0dc8c5…</code>)</td>
+<td><code>kat/kem-04/bag_piglet_512.log</code></td>
+</tr>
+<tr>
+<td><code>bag_piglet_512</code></td>
+<td>timing dec</td>
+<td><code>records/kem-04/bag_piglet_512__dec.json</code></td>
+</tr>
+<tr>
+<td><code>bag_piglet_512</code></td>
+<td>timing enc</td>
+<td><code>records/kem-04/bag_piglet_512__enc.json</code></td>
+</tr>
+<tr>
+<td><code>bag_piglet_512</code></td>
+<td>timing keygen</td>
+<td><code>records/kem-04/bag_piglet_512__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>bag_piglet_512</code></td>
+<td>hash profile dec</td>
+<td><code>profile/kem-04/bag_piglet_512__dec.json</code></td>
+</tr>
+<tr>
+<td><code>bag_piglet_512</code></td>
+<td>hash profile enc</td>
+<td><code>profile/kem-04/bag_piglet_512__enc.json</code></td>
+</tr>
+<tr>
+<td><code>bag_piglet_512</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/kem-04/bag_piglet_512__keygen.json</code></td>
+</tr>
+</tbody>
+</table></div>
+<p>Scripts: <code>performance/campaign.py</code>, <code>performance/ngcc_perf.c</code>, <code>performance/hashprof/</code> in the <a href="https://github.com/ngcc-dev/ngcc-harness">harness</a>.</p>
+</main>
+<footer class="site-footer">
+<p>Maintained by: <a href="mailto:markku-juhani.saarinen@tuni.fi">markku-juhani.saarinen@tuni.fi</a></p>
+<p>Submissions are welcome via <a href="https://github.com/ngcc-dev/ngcc-harness/issues">GitHub issues</a>.</p>
+</footer>
+</body>
+</html>

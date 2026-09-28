@@ -5,22 +5,22 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>ngcc.dev: Neulaser (hash-21)</title>
 <link rel="icon" type="image/png" href="../assets/mag-glass.png">
-<link rel="stylesheet" href="../assets/style.css?v=996d5cfd">
+<link rel="stylesheet" href="../assets/style.css?v=1fdb792d">
 </head>
 <body>
 <header class="site-header">
 <a class="brand" href="../index.html"><img class="brand-icon" src="../assets/mag-glass.png" alt="" width="28" height="28">ngcc.dev</a>
-<nav><a href="../index.html">Home</a><a href="../reports/index.html">Reports</a><a href="../constant-time/index.html">Constant-Time</a></nav>
+<nav><a href="../index.html">Home</a><a href="../reports/index.html">Reports</a><a href="../performance/x86_1/index.html">Performance</a><a href="../constant-time/index.html">Constant-Time</a></nav>
 </header>
-<main>
-<p class="crumb"><a href="../reports/index.html">Reports</a> › <code>hash-21</code> · <a href="../constant-time/hash-21.html">Constant-time review</a></p>
+<main class="">
+<p class="crumb"><a href="../reports/index.html">Reports</a> › <code>hash-21</code> · <a href="../constant-time/hash-21.html">Constant-time review</a> · <a href="../performance/x86_1/hash-21.html">Performance</a></p>
 
 <h1 id="neulaser-hash-21">Neulaser (hash-21)</h1>
 <div class="table-wrap"><table class="meta">
 <tr><th>Candidate</th><td>Neulaser</td></tr>
 <tr><th>Family</th><td>Symmetric (PRNG-based iterated hash)</td></tr>
 <tr><th>Archive</th><td><a href="https://www.niccs.org.cn/niccs/Proposal/Cryptographic%20Hash%20Algorithms/Round%201%20candidates/Neulaser.zip">Neulaser.zip</a> (SHA-256: <code>ffa76faaf6ae1c939ef6b1a726d6bcef19f0f0df63daddfe74a82e2831c4c6b3</code>)</td></tr>
-<tr><th>Specification</th><td><a href="https://github.com/ngcc-dev/ngcc-harness/raw/refs/heads/main/hash-21/hash-21-spec.pdf" title="Download hash-21-spec.pdf from GitHub">hash-21-spec.pdf</a>&nbsp;<a class="pdf-link" href="https://cdn.jsdelivr.net/gh/ngcc-dev/ngcc-harness@main/hash-21/hash-21-spec.pdf" title="Open the hash-21 specification PDF">PDF</a></td></tr>
+<tr><th>Specification</th><td><a href="https://github.com/ngcc-dev/ngcc-harness/raw/dc66c6cb3c06e75bdea0048e21fa4e13c63f00af/hash-21/hash-21-spec.pdf" title="Download hash-21-spec.pdf from GitHub">hash-21-spec.pdf</a>&nbsp;<a class="pdf-link" href="https://cdn.jsdelivr.net/gh/ngcc-dev/ngcc-harness@dc66c6cb3c06e75bdea0048e21fa4e13c63f00af/hash-21/hash-21-spec.pdf" title="Open the hash-21 specification PDF">PDF</a></td></tr>
 </table></div>
 
 <h2 class="issue-heading issue-heading-first" id="hash-21-1-a-local-feedback-collision-merges-complete-neulaser-states">hash-21-1: A local feedback collision merges complete Neulaser states</h2>
@@ -68,7 +68,7 @@ three submitted libraries:</p>
 <h2 class="issue-heading" id="hash-21-3-secret-state-indexes-a-256-byte-s-box">hash-21-3: Secret state indexes a 256-byte S-box</h2>
 
 <div class="table-wrap"><table class="meta issue-meta">
-<tr><th>Severity</th><td><span class="sev sev-medium">Medium</span></td></tr>
+<tr><th>Severity</th><td><span class="sev sev-low">Low</span></td></tr>
 <tr><th>Scope</th><td>side-channel</td></tr>
 <tr><th>Status</th><td><span class="issue-status status-confirmed">Confirmed</span></td></tr>
 <tr><th>Affected</th><td>Reference Neulaser-512/768/1024</td></tr>
@@ -79,6 +79,7 @@ three submitted libraries:</p>
 </table></div>
 
 <p><code>nl_sbox_word</code> reads <code>NL_SBOX</code> at four indices derived from an evolving 32-bit state word (<code>CryptHash_AlgorithmInstance.c:85-90</code>). The 256-byte table spans cache lines, so the lookup address depends on secret message content. The source also computes state-derived <code>x % (2^32-5)</code> (<code>:60-63</code>), whose timing requires target-specific code inspection; the report does not rely on it. No preimage-recovery exploit is claimed. See <a href="../constant-time/hash-21.html">constant_time.md</a>.</p>
+<p>Constant-time fix (easy, hence Low): the S-box is field inversion followed by an affine map, hence affine-equivalent to the AES S-box. It can be computed with <code>aesenclast</code> between two <code>pshufb</code> bit-matrix transforms (the technique used for SM4 on AES-NI), with GFNI <code>gf2p8affineinvqb</code>, or with a bitsliced inversion circuit. The modular reduction also needs a branch-free form.</p>
 <h3 id="reproducing_2">Reproducing</h3>
 <p>Commands below run in a checkout of the <a href="https://github.com/ngcc-dev/ngcc-harness">ngcc-harness repository</a> with the candidate built (see its README).</p>
 <p>Inspect the four <code>NL_SBOX</code> accesses in any reference variant and compare indices for unequal state words; they select different table lines.</p>

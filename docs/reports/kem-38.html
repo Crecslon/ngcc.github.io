@@ -5,22 +5,22 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>ngcc.dev: UVW Key Encapsulation Mechanism (kem-38)</title>
 <link rel="icon" type="image/png" href="../assets/mag-glass.png">
-<link rel="stylesheet" href="../assets/style.css?v=996d5cfd">
+<link rel="stylesheet" href="../assets/style.css?v=1fdb792d">
 </head>
 <body>
 <header class="site-header">
 <a class="brand" href="../index.html"><img class="brand-icon" src="../assets/mag-glass.png" alt="" width="28" height="28">ngcc.dev</a>
-<nav><a href="../index.html">Home</a><a href="../reports/index.html">Reports</a><a href="../constant-time/index.html">Constant-Time</a></nav>
+<nav><a href="../index.html">Home</a><a href="../reports/index.html">Reports</a><a href="../performance/x86_1/index.html">Performance</a><a href="../constant-time/index.html">Constant-Time</a></nav>
 </header>
-<main>
-<p class="crumb"><a href="../reports/index.html">Reports</a> › <code>kem-38</code> · <a href="../constant-time/kem-38.html">Constant-time review</a></p>
+<main class="">
+<p class="crumb"><a href="../reports/index.html">Reports</a> › <code>kem-38</code> · <a href="../constant-time/kem-38.html">Constant-time review</a> · <a href="../performance/x86_1/kem-38.html">Performance</a></p>
 
 <h1 id="uvw-key-encapsulation-mechanism-kem-38">UVW Key Encapsulation Mechanism (kem-38)</h1>
 <div class="table-wrap"><table class="meta">
 <tr><th>Candidate</th><td>UVW Key Encapsulation Mechanism</td></tr>
 <tr><th>Family</th><td>Code-based</td></tr>
 <tr><th>Archive</th><td><a href="https://www.niccs.org.cn/niccs/Proposal/Public-Key%20Cryptographic%20Algorithms/Round%201%20candidates/UVW-KEM.zip">UVW-KEM.zip</a> (SHA-256: <code>f9a1b135ea16aca0c974861732e03cd3164f1288f33ff150ff66c98326b75bcb</code>)</td></tr>
-<tr><th>Specification</th><td><a href="https://github.com/ngcc-dev/ngcc-harness/raw/refs/heads/main/kem-38/kem-38-spec.pdf" title="Download kem-38-spec.pdf from GitHub">kem-38-spec.pdf</a>&nbsp;<a class="pdf-link" href="https://cdn.jsdelivr.net/gh/ngcc-dev/ngcc-harness@main/kem-38/kem-38-spec.pdf" title="Open the kem-38 specification PDF">PDF</a></td></tr>
+<tr><th>Specification</th><td><a href="https://github.com/ngcc-dev/ngcc-harness/raw/dc66c6cb3c06e75bdea0048e21fa4e13c63f00af/kem-38/kem-38-spec.pdf" title="Download kem-38-spec.pdf from GitHub">kem-38-spec.pdf</a>&nbsp;<a class="pdf-link" href="https://cdn.jsdelivr.net/gh/ngcc-dev/ngcc-harness@dc66c6cb3c06e75bdea0048e21fa4e13c63f00af/kem-38/kem-38-spec.pdf" title="Open the kem-38 specification PDF">PDF</a></td></tr>
 </table></div>
 
 <h2 class="issue-heading issue-heading-first" id="kem-38-1-uvw-512-derives-its-encryption-pair-from-only-256-bits">kem-38-1: UVW-512 derives its encryption pair from only 256 bits</h2>
@@ -46,8 +46,8 @@
 <h2 class="issue-heading" id="kem-38-2-uvw-exposes-a-stable-list-decoding-failure-oracle">kem-38-2: UVW exposes a stable list-decoding failure oracle</h2>
 
 <div class="table-wrap"><table class="meta issue-meta">
-<tr><th>Severity</th><td><span class="sev sev-medium">Medium</span></td></tr>
-<tr><th>Scope</th><td>side-channel</td></tr>
+<tr><th>Severity</th><td><span class="sev sev-high">High</span></td></tr>
+<tr><th>Scope</th><td>design</td></tr>
 <tr><th>Status</th><td><span class="issue-status status-confirmed">Confirmed</span></td></tr>
 <tr><th>Affected</th><td>UVW-KEM reference implementation, all parameter sets</td></tr>
 <tr><th>Discovery</th><td>Trivial</td></tr>
@@ -58,6 +58,7 @@
 
 <p>The decapsulator returns <code>-2</code> when randomized PKE list decoding fails, but <code>-1</code> when decoding succeeds and a later hash or re-encryption check fails. These paths are also dramatically separated in time because the failing decoder exhausts its retry bound.</p>
 <p>For one deterministic UVW-128 key and valid ciphertext, flipping ciphertext bit 0 returned <code>-2</code> after about 49.3 seconds; flipping bit 846 returned <code>-1</code> after about 0.81 seconds on the same host. Thus an attacker can distinguish a secret-dependent decoder failure through both API status and a roughly 60-fold timing gap. This supplies the oracle primitive used by reaction attacks, but this audit has not yet converted it into full secret-key recovery.</p>
+<p>Constant-time fix (hard, hence High and Design): returning one status code is easy, but the timing gap comes from the randomized list decoder running to its retry bound on failure. The only known constant-time approach is to always do the failure path's work, about 49 s instead of 0.8 s per decapsulation in the measurement above. No competitive constant-time decoder is supplied or known, so the leakage is a property of the specified design rather than of this code.</p>
 <h3 id="reproducing_1">Reproducing</h3>
 <p>Commands below run in a checkout of the <a href="https://github.com/ngcc-dev/ngcc-harness">ngcc-harness repository</a> with the candidate built (see its README).</p>
 <pre><code class="language-sh">make -C kem-38 lib/libUVW-KEM-128.so

@@ -5,7 +5,7 @@ Archive: [CHIME.zip](https://www.niccs.org.cn/niccs/Proposal/Cryptographic%20Has
 
 ## hash-26-1: An invariant subspace reduces CHIME collision bounds to 64 and 224 bits
 
-Severity: High
+Severity: Critical
 Status: Confirmed
 Layer: Design
 Affected: Submitted CHIME-512 and CHIME-1024 specifications and implementations

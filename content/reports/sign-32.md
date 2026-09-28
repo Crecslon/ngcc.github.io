@@ -15,6 +15,8 @@ Credit: Markku-Juhani O. Saarinen <markku-juhani.saarinen@tuni.fi>, with AI assi
 Date: 2026-09-21
 Follow-up source: [LittleQ's PKC Forum post, 2026-09-23](https://list.niccs.org.cn/archives/list/pkcforum@list.niccs.org.cn/message/VT73TSZCRZVPPQDP3B4NBVVRRF36XVJ6/)
 
+Additional reference: [Xiong and Wang, ePrint 2026/2232, §15](https://eprint.iacr.org/2026/2232)
+
 The internal `uvw_verify` routine computes the intended verification predicate. The API wrapper converts that result to `0` or `-1`, stores it in a local variable, and then unconditionally returns `0`.
 
 Consequently, invalid signatures and modified messages that reach the final return are reported as valid. The modified-message witness reproduces on the 128- and 256-bit reference instances; some malformed signatures instead crash as described in `sign-32-2`. No cryptanalysis or signing query is required.
@@ -39,7 +41,7 @@ witnesses and their controls. See `tools/README.md`.
 
 ## sign-32-2: An all-zero signature crashes two verifier instances
 
-Severity: High
+Severity: Low
 Status: Confirmed
 Layer: Implementation
 Affected: UVW-128 and UVW-256 reference implementations

@@ -23,6 +23,8 @@ Date: 2026-09-23
 
 Follow-up analysis: FO re-encryption also samples from coins derived from recovered `m_prime` (`src/common/kem.c:155-160`, `src/ref/qube.c:124-136`). This resembles the setting of [Guo et al.](https://eprint.iacr.org/2021/1485.pdf), but their HQC/BIKE recovery attack has not been established for QUBE.
 
+Constant-time fix (moderate, hence Medium): store the expanded support in the private key instead of re-deriving it on every decapsulation, which changes the key format and storage, or sample it with a fixed number of draws and constant-time duplicate handling. Both are well-known techniques with moderate cost.
+
 ### Reproducing
 
 The witness instruments only the submitted sampler's draw call, without changing its decisions. From the repository root:
@@ -54,6 +56,8 @@ Credit: Markku-Juhani O. Saarinen <markku-juhani.saarinen@tuni.fi>, with AI assi
 Date: 2026-09-23
 
 QUBE re-expands the private seed into `y_support`, then multiplies the public ciphertext polynomial by that support during every decapsulation (`src/ref/qube.c:182-192`). `ring_mul_by_support` passes each private position as a shift (`src/ref/gf2x.c:59-63`); the shift controls branches and output addresses in `xor_shifted`/`xor_linear_word` (`:14-25,44-57`). A fine-grained local trace can therefore depend on private support positions, beyond the public ciphertext. Recovering the entire support would enable PKE decryption and, for a valid ciphertext, shared-secret derivation, but no physical trace or full recovery is demonstrated; see `constant_time.md`.
+
+Constant-time fix (moderate, hence Medium): multiply by the private support with a dense constant-time polynomial multiplication, or rotate by each position with a constant-time barrel shifter. Both are well-known techniques, but they replace the sparse fast path at moderate cost.
 
 ### Reproducing
 

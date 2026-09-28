@@ -32,13 +32,16 @@ CONTENT, DOCS, ASSETS = ROOT / "content", ROOT / "docs", ROOT / "assets"
 KEEP = {"CNAME", ".nojekyll"}          # never removed from docs/
 SITE = "ngcc.dev"
 HARNESS = "https://github.com/ngcc-dev/ngcc-harness"
-HARNESS_RAW = "https://cdn.jsdelivr.net/gh/ngcc-dev/ngcc-harness@main"
+HARNESS_REV = "dc66c6cb3c06e75bdea0048e21fa4e13c63f00af"
+HARNESS_RAW = f"https://cdn.jsdelivr.net/gh/ngcc-dev/ngcc-harness@{HARNESS_REV}"
 MAINTAINER = "markku-juhani.saarinen@tuni.fi"
 UPDATED_UTC = datetime.datetime.now(datetime.UTC).replace(microsecond=0).strftime("%Y-%m-%d %H:%M:%S UTC")
 TODAY = datetime.datetime.now(datetime.UTC).date().isoformat()   # <!-- date --> (prefilled access date)
 CATS = [("sign", "Signatures"), ("kem", "KEMs"), ("kex", "Key exchange"), ("hash", "Hash functions")]
 
-NAV = [("Home", "index.html"), ("Reports", "reports/index.html"), ("Constant-Time", "constant-time/index.html"), ("Candidates", "candidates/index.html"),
+NAV = [("Home", "index.html"), ("Reports", "reports/index.html"),
+       ("Performance", "performance/x86_1/index.html"), ("Constant-Time", "constant-time/index.html"),
+       ("Candidates", "candidates/index.html"),
        ("KAT results", "results.html"), ("Security survey", "security-survey.html"),
        ("Attack matrix", "attack-matrix.html"), ("Audit", "audit.html")]
 
@@ -74,7 +77,7 @@ TEMPLATE = """<!DOCTYPE html>
 <a class="brand" href="{prefix}index.html"><img class="brand-icon" src="{prefix}assets/mag-glass.png" alt="" width="28" height="28">{site}</a>
 <nav>{nav}</nav>
 </header>
-<main>
+<main class="{main_class}">
 {body}
 </main>
 <footer class="site-footer">
@@ -134,10 +137,13 @@ def candidate_pages(cid):
     for name, label in (("index.md", "findings"), ("report.md", "report"), ("pseudocode.md", "pseudocode")):
         if (d / name).is_file():
             out.append((label, f"candidates/{cid}/{name[:-3]}.html"))
-    if (CONTENT / "reports" / f"{cid}.md").is_file():
-        out.append(("report", f"reports/{cid}.html"))
+    # Every official candidate has either a finding report or a generated
+    # no-finding review page.
+    out.append(("report", f"reports/{cid}.html"))
     if (CONTENT / "constant-time" / f"{cid}.md").is_file():
         out.append(("CT review", f"constant-time/{cid}.html"))
+    if (CONTENT / "performance" / "x86_1" / f"{cid}.md").is_file():
+        out.append(("performance", f"performance/x86_1/{cid}.html"))
     return out
 
 
@@ -287,7 +293,7 @@ def pdf_link(c):
 
 def pdf_download_link(cid):
     filename = f"{cid}-spec.pdf"
-    href = f"{HARNESS}/raw/refs/heads/main/{cid}/{filename}"
+    href = f"{HARNESS}/raw/{HARNESS_REV}/{cid}/{filename}"
     return f'<a href="{href}" title="Download {filename} from GitHub">{filename}</a>'
 
 
@@ -313,8 +319,9 @@ def report_totals_html(reports):
     by_scope = {scope: sum(issue["layer"] == scope for issue in active)
                 for scope in ("implementation", "design", "side-channel", "evaluation")}
     scope_text = ", ".join(f"{count} {scope}" for scope, count in by_scope.items() if count)
+    finding_reports = sum(bool(report["issues"]) for report in reports.values())
     return (f'<p class="report-totals">{len(active)} active findings across '
-            f'{len(reports)} reports: {scope_text}; {withdrawn} withdrawn records.</p>')
+            f'{finding_reports} reports: {scope_text}; {withdrawn} withdrawn records.</p>')
 
 
 def reports_html(reports, cands, prefix):
@@ -335,6 +342,18 @@ def reports_html(reports, cands, prefix):
                          f'<td class="severity"><span class="sev sev-none">No report</span></td>'
                          f'<td class="scope">—</td><td class="updated">—</td><td>—</td></tr>')
                 continue
+            if not r["issues"]:
+                report_href = f'{prefix}reports/{cid}.html'
+                candidate = (f'<a href="{report_href}">'
+                             f'{html.escape(r["meta"].get("Candidate", c["algorithm"]))}</a> {pdf_link(c)}')
+                first_cell = id_cell(c).replace(
+                    f'<code>{cid}</code>', f'<a href="{report_href}"><code>{cid}</code></a>')
+                h.append(f'<tr>{first_cell}<td>{candidate}</td>'
+                         f'<td class="family">{html.escape(family)}</td>'
+                         f'<td class="severity"><span class="sev sev-none">No finding</span></td>'
+                         f'<td class="scope">—</td><td class="updated">—</td>'
+                         f'<td><a href="{report_href}">No published vulnerability finding</a></td></tr>')
+                continue
             for i, issue in enumerate(r["issues"]):
                 issue_href = f'{prefix}reports/{cid}.html#{issue["anchor"]}'
                 candidate = (f'<a href="{prefix}reports/{cid}.html">'
@@ -349,6 +368,9 @@ def reports_html(reports, cands, prefix):
                 if i == 0:
                     span = len(r["issues"])
                     first_cell = id_cell(c).replace('<td ', f'<td rowspan="{span}" ', 1)
+                    first_cell = first_cell.replace(
+                        f'<code>{cid}</code>',
+                        f'<a href="{prefix}reports/{cid}.html"><code>{cid}</code></a>')
                     h.append(f'<tr>{first_cell}'
                              f'<td rowspan="{span}">{candidate}</td>'
                              f'<td rowspan="{span}" class="family">{html.escape(family)}</td>'
@@ -375,6 +397,7 @@ def report_page(r, prefix):
     crumb = f'<p class="crumb"><a href="{prefix}reports/index.html">Reports</a> › <code>{r["cid"]}</code>'
     if (CONTENT / "constant-time" / f'{r["cid"]}.md').is_file():
         crumb += f' · <a href="{prefix}constant-time/{r["cid"]}.html">Constant-time review</a>'
+    crumb += f' · <a href="{prefix}performance/x86_1/{r["cid"]}.html">Performance</a>'
     crumb += '</p>'
     note = (f"\n\nCommands below run in a checkout of the [ngcc-harness repository]({HARNESS}) "
             f"with the candidate built (see its README).")
@@ -400,6 +423,30 @@ def report_page(r, prefix):
         body = body.replace(source, f"{rendered_heading}\n\n{issue_table}", 1)
     body = re.sub(r"^(###[ \t]+Reproduc\w*[ \t]*)$", lambda m: m.group(1) + note, body, flags=re.M)
     return f"{crumb}\n\n# {title}\n\n{meta_table}\n\n{body}", title
+
+
+def add_no_finding_reports(reports, cands):
+    """Give every official candidate a neutral report page without adding an issue."""
+    for cid, candidate in cands.items():
+        if cid in reports:
+            continue
+        meta = {"Candidate": candidate["algorithm"]}
+        if candidate.get("family"):
+            meta["Family"] = candidate["family"]
+        if candidate.get("zip"):
+            meta["Archive"] = f'[Official submission archive]({candidate["zip"]})'
+        official = (f' See the [official submission page]({candidate["page"]}).'
+                    if candidate.get("page") else "")
+        body = (
+            "### Review status\n\n"
+            "No vulnerability finding is currently published for this candidate. "
+            "This is not a security endorsement: it records only the present state of the public "
+            "finding inventory, and the candidate remains under review.\n\n"
+            f"See the [constant-time review](../constant-time/{cid}.md) and the "
+            f"[x86_1 performance summary](../performance/x86_1/{cid}.md).{official}"
+        )
+        reports[cid] = {"cid": cid, "meta": meta, "body": body, "issues": [], "generated": True}
+    return reports
 
 
 def expand_placeholders(text, cands, prefix, reports):
@@ -456,7 +503,15 @@ HEAD_TITLE_RE = re.compile(r"^<!--\s*head-title:\s*(.+?)\s*-->\s*$\n?", re.M)
 
 
 def render(rel, cands, reports):
-    text = (CONTENT / rel).read_text(encoding="utf-8")
+    source = CONTENT / rel
+    if source.is_file():
+        text = source.read_text(encoding="utf-8")
+    elif (rel.parts[0] == "reports" and rel.stem in reports
+          and reports[rel.stem].get("generated")):
+        # Candidates without findings have deliberately virtual report pages.
+        text = ""
+    else:
+        raise FileNotFoundError(f"missing page source: {source}")
     depth = len(rel.parts) - 1
     prefix = "../" * depth
     # <!-- head-title: ... --> sets <title> independently of the page's H1
@@ -488,6 +543,8 @@ def render(rel, cands, reports):
     body = markdown.markdown(text, extensions=["tables", "fenced_code", "toc", "sane_lists"],
                              extension_configs={"toc": {"permalink": False}})
     body = md_links_to_html(status_classes(body))
+    if len(rel.parts) == 3 and rel.parts[0] == "performance" and rel.name == "index.md":
+        body = body.replace("<table>", '<table class="performance-summary">')
     body = re.sub(r"<table\b", '<div class="table-wrap"><table', body).replace("</table>", "</table></div>")
     nav = "".join(f'<a href="{prefix}{href}">{lab}</a>' for lab, href in NAV
                   if (CONTENT / href).with_suffix(".md").is_file())
@@ -496,9 +553,12 @@ def render(rel, cands, reports):
     head_title = head_override or (title if title == SITE or title.startswith(f"{SITE}: ")
                                    else f"{SITE}: {title}")
     is_main_page = len(rel.parts) == 1 or (len(rel.parts) == 2 and rel.name == "index.md")
+    main_class = ("performance-index" if len(rel.parts) == 3
+                  and rel.parts[0] == "performance" and rel.name == "index.md" else "")
     updated_line = f"Updated {UPDATED_UTC} · " if is_main_page else ""
     out.write_text(TEMPLATE.format(head_title=html.escape(head_title), site=SITE, harness=HARNESS,
                                    css_ver=CSS_VER, prefix=prefix, nav=nav, body=body,
+                                   main_class=main_class,
                                    updated_line=updated_line, maintainer=MAINTAINER), encoding="utf-8")
 
 
@@ -521,12 +581,17 @@ def main():
         shutil.copytree(CONTENT / "data", DOCS / "data",
                         ignore=shutil.ignore_patterns("performance"))
     cands = load_candidates()
-    reports = load_reports()
-    pages = sorted(p.relative_to(CONTENT) for p in CONTENT.rglob("*.md"))
+    reports = add_no_finding_reports(load_reports(), cands)
+    pages = {p.relative_to(CONTENT) for p in CONTENT.rglob("*.md")}
+    pages.update(Path("reports") / f"{cid}.md" for cid in reports)
+    pages = sorted(pages)
     for rel in pages:
         render(rel, cands, reports)
     n_issues = sum(len(r["issues"]) for r in reports.values())
-    print(f"build: {len(pages)} pages, {len(reports)} reports ({n_issues} issues), {len(cands)} candidates -> {DOCS.relative_to(ROOT)}/")
+    finding_reports = sum(bool(report["issues"]) for report in reports.values())
+    print(f"build: {len(pages)} pages, {len(reports)} report pages "
+          f"({finding_reports} with findings; {n_issues} issues), "
+          f"{len(cands)} candidates -> {DOCS.relative_to(ROOT)}/")
 
 
 if __name__ == "__main__":

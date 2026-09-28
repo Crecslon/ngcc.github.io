@@ -41,6 +41,8 @@ Date: 2026-09-23
 
 The signing trapdoor builds a linear system from the private central map and fresh vinegar state. In `tsuov_core.c`, echelon reduction advances `j` until `EQN(j,c)` is nonzero (line 695), branches on rank (753, 785), and retries until consistency (984). These predicates contain secret intermediate values and control the signing execution trace. No full-key extraction or forgery from that trace is claimed; see `constant_time.md`.
 
+Constant-time fix (moderate, hence Medium): use constant-time Gaussian elimination that adds candidate pivot rows under masks, a well-known technique in constant-time UOV and MAYO implementations. It processes every row at every step, a moderate cost; a retry on a singular system is the usual accepted exception.
+
 ### Reproducing
 
 Inspect the included reference source at

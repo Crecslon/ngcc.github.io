@@ -5,7 +5,7 @@ Archive: [Flextree.zip](https://www.niccs.org.cn/niccs/Proposal/Public-Key%20Cry
 
 ## sign-11-1: PORS counter grinding reduces every claimed security level
 
-Severity: High
+Severity: Critical
 Status: Confirmed
 Layer: Design
 Affected: All eight parameter sets

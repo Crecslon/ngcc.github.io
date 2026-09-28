@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ngcc.dev: kem-24 MORNING-Scabbard — performance on x86-64 (system x861)</title>
+<link rel="icon" type="image/png" href="../../assets/mag-glass.png">
+<link rel="stylesheet" href="../../assets/style.css?v=1fdb792d">
+</head>
+<body>
+<header class="site-header">
+<a class="brand" href="../../index.html"><img class="brand-icon" src="../../assets/mag-glass.png" alt="" width="28" height="28">ngcc.dev</a>
+<nav><a href="../../index.html">Home</a><a href="../../reports/index.html">Reports</a><a href="../../performance/x86_1/index.html">Performance</a><a href="../../constant-time/index.html">Constant-Time</a></nav>
+</header>
+<main class="">
+<!-- synchronized from harness: kem-24/perf_x86_1.md -->
+<h1 id="kem-24-morning-scabbard-performance-on-x86-64-system-x86_1">kem-24 MORNING-Scabbard — performance on x86-64 (system x86_1)</h1>
+<p><a href="index.html">Performance x86_1</a> › <code>kem-24</code> · <a href="method.html">method</a> · <a href="https://www.niccs.org.cn/niccs/Round1Additional/pc/content/content_2101560862906601472.html">NICCS page</a></p>
+<p>Independent measurement following the structure of the NICCS x86 self-assessment guide, §3.5 (1)–(7). Not a submitter self-assessment.</p>
+<h2 id="1-basic-information">1. Basic information</h2>
+<ul>
+<li>Category: public-key algorithm; function: key encapsulation</li>
+<li>Algorithm: MORNING-Scabbard</li>
+<li>Implementation versions measured: reference</li>
+<li>Parameter sets: <code>scabbard128</code>, <code>scabbard256</code>, <code>scabbard512</code></li>
+</ul>
+<h2 id="2-assessment-environment">2. Assessment environment</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>item</th>
+<th>value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>processor</td>
+<td>12th Gen Intel(R) Core(TM) i7-12700 (CPU 2, one core)</td>
+</tr>
+<tr>
+<td>clock</td>
+<td>max 2.10 GHz, governor performance, turbo off, SMT off</td>
+</tr>
+<tr>
+<td>memory</td>
+<td>31788 MiB</td>
+</tr>
+<tr>
+<td>OS / kernel</td>
+<td>Debian GNU/Linux 13 (trixie) / 6.12.107+deb13-amd64</td>
+</tr>
+<tr>
+<td>compiler / build tool</td>
+<td>gcc (Debian 14.2.0-19) 14.2.0 / cmake version 3.31.6</td>
+</tr>
+<tr>
+<td>campaign start / end (UTC)</td>
+<td>2026-09-25T10:02:21 / 2026-09-28T04:35:59</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="3-functional-testing-kat">3. Functional testing (KAT)</h2>
+<p>Each library was checked against the submitted KAT vectors (SHA-256 manifest <code>kem-24/kat.sha256</code> in the harness) before timing.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>build flags</th>
+<th>KAT</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>scabbard128</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>scabbard256</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>scabbard512</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="4-performance">4. Performance</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>operation</th>
+<th>mean cycles</th>
+<th>mean time</th>
+<th>ops/s</th>
+<th>median trial</th>
+<th>n (trials × iters)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>scabbard128</code></td>
+<td>keygen</td>
+<td>741.6 k</td>
+<td>355 µs</td>
+<td>2.82e+03</td>
+<td>355 µs</td>
+<td>13510 (5 × 2702)</td>
+</tr>
+<tr>
+<td><code>scabbard128</code></td>
+<td>enc</td>
+<td>775.8 k</td>
+<td>371 µs</td>
+<td>2.69e+03</td>
+<td>371 µs</td>
+<td>13215 (5 × 2643)</td>
+</tr>
+<tr>
+<td><code>scabbard128</code></td>
+<td>dec</td>
+<td>779.7 k</td>
+<td>373 µs</td>
+<td>2.68e+03</td>
+<td>373 µs</td>
+<td>13150 (5 × 2630)</td>
+</tr>
+<tr>
+<td><code>scabbard256</code></td>
+<td>keygen</td>
+<td>1.72 M</td>
+<td>825 µs</td>
+<td>1.21e+03</td>
+<td>825 µs</td>
+<td>5955 (5 × 1191)</td>
+</tr>
+<tr>
+<td><code>scabbard256</code></td>
+<td>enc</td>
+<td>1.84 M</td>
+<td>882 µs</td>
+<td>1.13e+03</td>
+<td>880 µs</td>
+<td>5625 (5 × 1125)</td>
+</tr>
+<tr>
+<td><code>scabbard256</code></td>
+<td>dec</td>
+<td>1.89 M</td>
+<td>906 µs</td>
+<td>1.1e+03</td>
+<td>906 µs</td>
+<td>5450 (5 × 1090)</td>
+</tr>
+<tr>
+<td><code>scabbard512</code></td>
+<td>keygen</td>
+<td>5.12 M</td>
+<td>2.45 ms</td>
+<td>409</td>
+<td>2.45 ms</td>
+<td>2010 (5 × 402)</td>
+</tr>
+<tr>
+<td><code>scabbard512</code></td>
+<td>enc</td>
+<td>5.57 M</td>
+<td>2.66 ms</td>
+<td>375</td>
+<td>2.66 ms</td>
+<td>1875 (5 × 375)</td>
+</tr>
+<tr>
+<td><code>scabbard512</code></td>
+<td>dec</td>
+<td>5.77 M</td>
+<td>2.76 ms</td>
+<td>363</td>
+<td>2.76 ms</td>
+<td>1810 (5 × 362)</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="5-resource-consumption">5. Resource consumption</h2>
+<p>Static memory is approximated by the library's loadable ELF segments; peak memory is the process high-water mark (VmHWM) including the benchmark driver and libc, so both are upper-bound proxies rather than isolated algorithm memory.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>operation</th>
+<th>static: ELF image (bytes)</th>
+<th>baseline RSS</th>
+<th>peak RSS</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>scabbard128</code></td>
+<td>keygen</td>
+<td>26213</td>
+<td>1684 KiB</td>
+<td>1800 KiB</td>
+</tr>
+<tr>
+<td><code>scabbard128</code></td>
+<td>enc</td>
+<td>26213</td>
+<td>1704 KiB</td>
+<td>1808 KiB</td>
+</tr>
+<tr>
+<td><code>scabbard128</code></td>
+<td>dec</td>
+<td>26213</td>
+<td>1716 KiB</td>
+<td>1792 KiB</td>
+</tr>
+<tr>
+<td><code>scabbard256</code></td>
+<td>keygen</td>
+<td>26577</td>
+<td>1712 KiB</td>
+<td>1808 KiB</td>
+</tr>
+<tr>
+<td><code>scabbard256</code></td>
+<td>enc</td>
+<td>26577</td>
+<td>1652 KiB</td>
+<td>1780 KiB</td>
+</tr>
+<tr>
+<td><code>scabbard256</code></td>
+<td>dec</td>
+<td>26577</td>
+<td>1740 KiB</td>
+<td>1804 KiB</td>
+</tr>
+<tr>
+<td><code>scabbard512</code></td>
+<td>keygen</td>
+<td>26733</td>
+<td>1692 KiB</td>
+<td>1844 KiB</td>
+</tr>
+<tr>
+<td><code>scabbard512</code></td>
+<td>enc</td>
+<td>26733</td>
+<td>1756 KiB</td>
+<td>1868 KiB</td>
+</tr>
+<tr>
+<td><code>scabbard512</code></td>
+<td>dec</td>
+<td>26733</td>
+<td>1748 KiB</td>
+<td>1816 KiB</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="6-transmission-and-storage-overhead">6. Transmission and storage overhead</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>public key</th>
+<th>secret key</th>
+<th>ciphertext</th>
+<th>shared secret</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>scabbard128</code></td>
+<td>736</td>
+<td>1056</td>
+<td>760</td>
+<td>16</td>
+</tr>
+<tr>
+<td><code>scabbard256</code></td>
+<td>1616</td>
+<td>2256</td>
+<td>1648</td>
+<td>32</td>
+</tr>
+<tr>
+<td><code>scabbard512</code></td>
+<td>2880</td>
+<td>4032</td>
+<td>3072</td>
+<td>64</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="symmetric-primitives">Symmetric primitives</h2>
+<p><a href="../symmetric-survey.html">Survey</a> verdict: <strong>ICCS-only</strong></p>
+<p>Share of each operation spent in the ICCS placeholder hash functions and in the ICCS DRNG (reference build, measured in the same run with link-time wrappers):</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>operation</th>
+<th>pseudohash/XOF/sm3</th>
+<th>DRNG</th>
+<th>calls per operation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>scabbard128</code></td>
+<td>keygen</td>
+<td>70%</td>
+<td>1.8%</td>
+<td>drng 3, pseudoXOF 92</td>
+</tr>
+<tr>
+<td><code>scabbard128</code></td>
+<td>enc</td>
+<td>69%</td>
+<td>0.6%</td>
+<td>drng 1, pseudoXOF 95</td>
+</tr>
+<tr>
+<td><code>scabbard128</code></td>
+<td>dec</td>
+<td>67%</td>
+<td>0.0%</td>
+<td>pseudoXOF 93</td>
+</tr>
+<tr>
+<td><code>scabbard256</code></td>
+<td>keygen</td>
+<td>53%</td>
+<td>0.8%</td>
+<td>drng 3, pseudoXOF 92</td>
+</tr>
+<tr>
+<td><code>scabbard256</code></td>
+<td>enc</td>
+<td>52%</td>
+<td>0.3%</td>
+<td>drng 1, pseudoXOF 95</td>
+</tr>
+<tr>
+<td><code>scabbard256</code></td>
+<td>dec</td>
+<td>49%</td>
+<td>0.0%</td>
+<td>pseudoXOF 93</td>
+</tr>
+<tr>
+<td><code>scabbard512</code></td>
+<td>keygen</td>
+<td>51%</td>
+<td>0.4%</td>
+<td>drng 3, pseudoXOF 74</td>
+</tr>
+<tr>
+<td><code>scabbard512</code></td>
+<td>enc</td>
+<td>49%</td>
+<td>0.1%</td>
+<td>drng 1, pseudoXOF 77</td>
+</tr>
+<tr>
+<td><code>scabbard512</code></td>
+<td>dec</td>
+<td>45%</td>
+<td>0.0%</td>
+<td>pseudoXOF 75</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="7-raw-evidence-index">7. Raw evidence index</h2>
+<p>Paths are relative to <code>performance/data/x86_1/</code> in the <a href="https://github.com/ngcc-dev/ngcc-harness">harness</a>; each JSON file records its commands, environment and trials.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>item</th>
+<th>file</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>scabbard128</code></td>
+<td>KAT log (sha256 <code>aed56a053af9471c…</code>)</td>
+<td><code>kat/kem-24/scabbard128.log</code></td>
+</tr>
+<tr>
+<td><code>scabbard128</code></td>
+<td>timing dec</td>
+<td><code>records/kem-24/scabbard128__dec.json</code></td>
+</tr>
+<tr>
+<td><code>scabbard128</code></td>
+<td>timing enc</td>
+<td><code>records/kem-24/scabbard128__enc.json</code></td>
+</tr>
+<tr>
+<td><code>scabbard128</code></td>
+<td>timing keygen</td>
+<td><code>records/kem-24/scabbard128__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>scabbard128</code></td>
+<td>hash profile dec</td>
+<td><code>profile/kem-24/scabbard128__dec.json</code></td>
+</tr>
+<tr>
+<td><code>scabbard128</code></td>
+<td>hash profile enc</td>
+<td><code>profile/kem-24/scabbard128__enc.json</code></td>
+</tr>
+<tr>
+<td><code>scabbard128</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/kem-24/scabbard128__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>scabbard256</code></td>
+<td>KAT log (sha256 <code>cad16277ac56bc8f…</code>)</td>
+<td><code>kat/kem-24/scabbard256.log</code></td>
+</tr>
+<tr>
+<td><code>scabbard256</code></td>
+<td>timing dec</td>
+<td><code>records/kem-24/scabbard256__dec.json</code></td>
+</tr>
+<tr>
+<td><code>scabbard256</code></td>
+<td>timing enc</td>
+<td><code>records/kem-24/scabbard256__enc.json</code></td>
+</tr>
+<tr>
+<td><code>scabbard256</code></td>
+<td>timing keygen</td>
+<td><code>records/kem-24/scabbard256__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>scabbard256</code></td>
+<td>hash profile dec</td>
+<td><code>profile/kem-24/scabbard256__dec.json</code></td>
+</tr>
+<tr>
+<td><code>scabbard256</code></td>
+<td>hash profile enc</td>
+<td><code>profile/kem-24/scabbard256__enc.json</code></td>
+</tr>
+<tr>
+<td><code>scabbard256</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/kem-24/scabbard256__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>scabbard512</code></td>
+<td>KAT log (sha256 <code>e92c5a159bb1f547…</code>)</td>
+<td><code>kat/kem-24/scabbard512.log</code></td>
+</tr>
+<tr>
+<td><code>scabbard512</code></td>
+<td>timing dec</td>
+<td><code>records/kem-24/scabbard512__dec.json</code></td>
+</tr>
+<tr>
+<td><code>scabbard512</code></td>
+<td>timing enc</td>
+<td><code>records/kem-24/scabbard512__enc.json</code></td>
+</tr>
+<tr>
+<td><code>scabbard512</code></td>
+<td>timing keygen</td>
+<td><code>records/kem-24/scabbard512__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>scabbard512</code></td>
+<td>hash profile dec</td>
+<td><code>profile/kem-24/scabbard512__dec.json</code></td>
+</tr>
+<tr>
+<td><code>scabbard512</code></td>
+<td>hash profile enc</td>
+<td><code>profile/kem-24/scabbard512__enc.json</code></td>
+</tr>
+<tr>
+<td><code>scabbard512</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/kem-24/scabbard512__keygen.json</code></td>
+</tr>
+</tbody>
+</table></div>
+<p>Scripts: <code>performance/campaign.py</code>, <code>performance/ngcc_perf.c</code>, <code>performance/hashprof/</code> in the <a href="https://github.com/ngcc-dev/ngcc-harness">harness</a>.</p>
+</main>
+<footer class="site-footer">
+<p>Maintained by: <a href="mailto:markku-juhani.saarinen@tuni.fi">markku-juhani.saarinen@tuni.fi</a></p>
+<p>Submissions are welcome via <a href="https://github.com/ngcc-dev/ngcc-harness/issues">GitHub issues</a>.</p>
+</footer>
+</body>
+</html>

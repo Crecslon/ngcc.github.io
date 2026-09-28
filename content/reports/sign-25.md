@@ -81,3 +81,35 @@ Further extension to Yintong Luo's analysis: SQIsign2D2 §4.1 also chooses `log2
 ### Reproducing
 
 Compare §4.1 and §4.2 of `sign-25-spec.pdf` with the cited attack paper, including the Level1, Level2, Level3, and Level5 primes.
+
+## sign-25-3: Detached compact challenge enables one-query message-retargeting forgeries
+
+Severity: Critical
+Status: Confirmed
+Layer: Design
+Affected: All eight compact SQIsign2D2 parameter sets; uncompressed mode is not affected by this attack
+Discovery: Moderate
+Exploitation: One signing query, followed by one public commitment reconstruction and hash per fresh-message forgery
+Credit: Martin Feussner, with OpenAI Codex (Daybreak Blue) assistance
+Date: 2026-09-28
+Original source: [Feussner's PKC Forum post](https://list.niccs.org.cn/archives/list/pkcforum@list.niccs.org.cn/message/2M2QPP46J6K3E623EXZXGCU2QFZFDIL6/)
+
+The compact verifier reconstructs the challenge curve from the response and the commitment curve from the encoded dual path before it reads the transmitted challenge. It then checks only that
+
+`chall = H(pk || j(E_com) || message)`.
+
+The challenge is not used to verify that the reconstructed forward challenge isogeny has the recovered challenge curve as its codomain, or that it is compatible with the encoded dual path. Thus the geometric acceptance predicate is independent of both the transmitted challenge and the message.
+
+After obtaining one signature `(response,path,chall_0)` on any message, an attacker publicly reconstructs the same `E_com`, hashes it with an arbitrary fresh target message, and replaces only `chall_0` with that digest. Every geometric check is unchanged and the final hash comparison now holds for the target. This is a direct one-query EUF-CMA forgery, not signature malleability. It violates the submission's claimed EUF-CMA security at every level and is therefore Critical.
+
+The pinned artifact performs three fresh-message forgeries for each of the eight compact reference instances. All 24 forgeries were accepted; controls verify the original signature, reject it on the target before modification, reject each retargeted signature on the source message, and confirm that no byte outside the serialized challenge field changed. The attack uses only the public key, signature, and target message. The original 2025 CompactSQIsign2D2 construction includes an additional forward-to-dual binding equality and is outside this result.
+
+Verification must use the hash-derived challenge to construct the forward challenge kernel and check that its codomain and dual-kernel relation agree with the path reconstructed from the response.
+
+### Reproducing
+
+```sh
+sh sign-25/reproduce_compact_retarget.sh
+```
+
+The wrapper downloads and checks out the [pinned public artifact](https://github.com/martinfeussner/NGCC-Signature-Audit/tree/a30462dce48bd484d7c8c4d5b1f971e7dfebacfd/SQIsign2D2), builds the unmodified compact implementations from this candidate directory, and requires eight `status=PASS` result lines.

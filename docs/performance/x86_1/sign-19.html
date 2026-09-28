@@ -1,0 +1,2456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ngcc.dev: sign-19 Phoenix — performance on x86-64 (system x861)</title>
+<link rel="icon" type="image/png" href="../../assets/mag-glass.png">
+<link rel="stylesheet" href="../../assets/style.css?v=1fdb792d">
+</head>
+<body>
+<header class="site-header">
+<a class="brand" href="../../index.html"><img class="brand-icon" src="../../assets/mag-glass.png" alt="" width="28" height="28">ngcc.dev</a>
+<nav><a href="../../index.html">Home</a><a href="../../reports/index.html">Reports</a><a href="../../performance/x86_1/index.html">Performance</a><a href="../../constant-time/index.html">Constant-Time</a></nav>
+</header>
+<main class="">
+<!-- synchronized from harness: sign-19/perf_x86_1.md -->
+<h1 id="sign-19-phoenix-performance-on-x86-64-system-x86_1">sign-19 Phoenix — performance on x86-64 (system x86_1)</h1>
+<p><a href="index.html">Performance x86_1</a> › <code>sign-19</code> · <a href="method.html">method</a> · <a href="https://www.niccs.org.cn/niccs/Round1Additional/pc/content/content_2101561087113121792.html">NICCS page</a></p>
+<p>Independent measurement following the structure of the NICCS x86 self-assessment guide, §3.5 (1)–(7). Not a submitter self-assessment.</p>
+<h2 id="1-basic-information">1. Basic information</h2>
+<ul>
+<li>Category: public-key algorithm; function: digital signature</li>
+<li>Algorithm: Phoenix</li>
+<li>Implementation versions measured: reference</li>
+<li>Parameter sets: <code>Phoenix-SHAKE-128f</code>, <code>Phoenix-SHAKE-128s</code>, <code>Phoenix-SHAKE-192f</code>, <code>Phoenix-SHAKE-192s</code>, <code>Phoenix-SHAKE-256f</code>, <code>Phoenix-SHAKE-256s</code>, <code>Phoenix-SHAKE-384f</code>, <code>Phoenix-SHAKE-384s</code>, <code>Phoenix-SHAKE-512f</code>, <code>Phoenix-SHAKE-512s</code>, <code>Phoenix-SM3-128f</code>, <code>Phoenix-SM3-128s</code>, <code>Phoenix-SM3-192f</code>, <code>Phoenix-SM3-192s</code>, <code>Phoenix-SM3-256f</code>, <code>Phoenix-SM3-256s</code>, <code>Phoenix-SM3-384f</code>, <code>Phoenix-SM3-384s</code>, <code>Phoenix-SM3-512f</code>, <code>Phoenix-SM3-512s</code></li>
+</ul>
+<h2 id="2-assessment-environment">2. Assessment environment</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>item</th>
+<th>value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>processor</td>
+<td>12th Gen Intel(R) Core(TM) i7-12700 (CPU 2, one core)</td>
+</tr>
+<tr>
+<td>clock</td>
+<td>max 2.10 GHz, governor performance, turbo off, SMT off</td>
+</tr>
+<tr>
+<td>memory</td>
+<td>31788 MiB</td>
+</tr>
+<tr>
+<td>OS / kernel</td>
+<td>Debian GNU/Linux 13 (trixie) / 6.12.107+deb13-amd64</td>
+</tr>
+<tr>
+<td>compiler / build tool</td>
+<td>gcc (Debian 14.2.0-19) 14.2.0 / cmake version 3.31.6</td>
+</tr>
+<tr>
+<td>campaign start / end (UTC)</td>
+<td>2026-09-25T10:02:21 / 2026-09-28T04:35:59</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="3-functional-testing-kat">3. Functional testing (KAT)</h2>
+<p>Each library was checked against the submitted KAT vectors (SHA-256 manifest <code>sign-19/kat.sha256</code> in the harness) before timing.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>build flags</th>
+<th>KAT</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Phoenix-SHAKE-128f</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-128s</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-192f</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-192s</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-256f</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-256s</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-384f</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-384s</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-512f</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-512s</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-128f</code></td>
+<td>harness-default</td>
+<td class="st bad">MISMATCH [1]</td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-128s</code></td>
+<td>harness-default</td>
+<td class="st bad">MISMATCH [1]</td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-192f</code></td>
+<td>harness-default</td>
+<td class="st bad">MISMATCH [1]</td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-192s</code></td>
+<td>harness-default</td>
+<td class="st bad">MISMATCH [1]</td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-256f</code></td>
+<td>harness-default</td>
+<td class="st bad">MISMATCH [1]</td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-256s</code></td>
+<td>harness-default</td>
+<td class="st bad">MISMATCH [1]</td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-384f</code></td>
+<td>harness-default</td>
+<td class="st bad">MISMATCH [1]</td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-384s</code></td>
+<td>harness-default</td>
+<td class="st bad">MISMATCH [1]</td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-512f</code></td>
+<td>harness-default</td>
+<td class="st bad">MISMATCH [1]</td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-512s</code></td>
+<td>harness-default</td>
+<td class="st bad">MISMATCH [1]</td>
+</tr>
+</tbody>
+</table></div>
+<p>[1] The submitted SM3 KAT signatures are rejected by the submitted code's own sig_verify at -O0/-O2/-O3, so the vectors were produced by different code These instances are timed anyway; their output is not validated.</p>
+<h2 id="4-performance">4. Performance</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>operation</th>
+<th>mean cycles</th>
+<th>mean time</th>
+<th>ops/s</th>
+<th>median trial</th>
+<th>n (trials × iters)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Phoenix-SHAKE-128f</code></td>
+<td>keygen</td>
+<td>9.77 M</td>
+<td>4.7 ms</td>
+<td>213</td>
+<td>4.7 ms</td>
+<td>995 (5 × 199)</td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-128f</code></td>
+<td>sign</td>
+<td>186.43 M</td>
+<td>89.6 ms</td>
+<td>11.2</td>
+<td>89.7 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-128f</code></td>
+<td>verify</td>
+<td>4.99 M</td>
+<td>2.38 ms</td>
+<td>419</td>
+<td>2.38 ms</td>
+<td>2050 (5 × 410)</td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-128s</code></td>
+<td>keygen</td>
+<td>307.13 M</td>
+<td>147 ms</td>
+<td>6.81</td>
+<td>147 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-128s</code></td>
+<td>sign</td>
+<td>3.27 G</td>
+<td>1.57 s</td>
+<td>0.637</td>
+<td>1.57 s</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-128s</code></td>
+<td>verify</td>
+<td>12.11 M</td>
+<td>5.78 ms</td>
+<td>173</td>
+<td>5.79 ms</td>
+<td>855 (5 × 171)</td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-192f</code></td>
+<td>keygen</td>
+<td>14.64 M</td>
+<td>7.03 ms</td>
+<td>142</td>
+<td>7.02 ms</td>
+<td>735 (5 × 147)</td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-192f</code></td>
+<td>sign</td>
+<td>290.69 M</td>
+<td>139 ms</td>
+<td>7.17</td>
+<td>139 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-192f</code></td>
+<td>verify</td>
+<td>7.53 M</td>
+<td>3.6 ms</td>
+<td>278</td>
+<td>3.6 ms</td>
+<td>1375 (5 × 275)</td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-192s</code></td>
+<td>keygen</td>
+<td>538.45 M</td>
+<td>257 ms</td>
+<td>3.89</td>
+<td>257 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-192s</code></td>
+<td>sign</td>
+<td>5.59 G</td>
+<td>2.68 s</td>
+<td>0.373</td>
+<td>2.68 s</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-192s</code></td>
+<td>verify</td>
+<td>19.20 M</td>
+<td>9.17 ms</td>
+<td>109</td>
+<td>9.18 ms</td>
+<td>535 (5 × 107)</td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-256f</code></td>
+<td>keygen</td>
+<td>29.75 M</td>
+<td>14.2 ms</td>
+<td>70.2</td>
+<td>14.2 ms</td>
+<td>345 (5 × 69)</td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-256f</code></td>
+<td>sign</td>
+<td>576.55 M</td>
+<td>276 ms</td>
+<td>3.62</td>
+<td>276 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-256f</code></td>
+<td>verify</td>
+<td>14.99 M</td>
+<td>7.16 ms</td>
+<td>140</td>
+<td>7.15 ms</td>
+<td>695 (5 × 139)</td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-256s</code></td>
+<td>keygen</td>
+<td>387.92 M</td>
+<td>185 ms</td>
+<td>5.4</td>
+<td>185 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-256s</code></td>
+<td>sign</td>
+<td>5.15 G</td>
+<td>2.47 s</td>
+<td>0.405</td>
+<td>2.47 s</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-256s</code></td>
+<td>verify</td>
+<td>33.58 M</td>
+<td>16 ms</td>
+<td>62.3</td>
+<td>16 ms</td>
+<td>310 (5 × 62)</td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-384f</code></td>
+<td>keygen</td>
+<td>65.91 M</td>
+<td>31.5 ms</td>
+<td>31.7</td>
+<td>31.5 ms</td>
+<td>160 (5 × 32)</td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-384f</code></td>
+<td>sign</td>
+<td>2.05 G</td>
+<td>983 ms</td>
+<td>1.02</td>
+<td>985 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-384f</code></td>
+<td>verify</td>
+<td>36.17 M</td>
+<td>17.3 ms</td>
+<td>57.9</td>
+<td>17.3 ms</td>
+<td>295 (5 × 59)</td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-384s</code></td>
+<td>keygen</td>
+<td>651.57 M</td>
+<td>313 ms</td>
+<td>3.2</td>
+<td>311 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-384s</code></td>
+<td>sign</td>
+<td>9.03 G</td>
+<td>4.33 s</td>
+<td>0.231</td>
+<td>4.33 s</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-384s</code></td>
+<td>verify</td>
+<td>57.15 M</td>
+<td>27.6 ms</td>
+<td>36.2</td>
+<td>27.6 ms</td>
+<td>185 (5 × 37)</td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-512f</code></td>
+<td>keygen</td>
+<td>231.73 M</td>
+<td>111 ms</td>
+<td>9.03</td>
+<td>111 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-512f</code></td>
+<td>sign</td>
+<td>5.34 G</td>
+<td>2.56 s</td>
+<td>0.391</td>
+<td>2.56 s</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-512f</code></td>
+<td>verify</td>
+<td>123.82 M</td>
+<td>59.7 ms</td>
+<td>16.7</td>
+<td>59.7 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-512s</code></td>
+<td>keygen</td>
+<td>2.41 G</td>
+<td>1.16 s</td>
+<td>0.864</td>
+<td>1.16 s</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-512s</code></td>
+<td>sign</td>
+<td>22.26 G</td>
+<td>10.7 s</td>
+<td>0.0936</td>
+<td>10.7 s</td>
+<td>80 (5 × 16)</td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-512s</code></td>
+<td>verify</td>
+<td>39.06 M</td>
+<td>18.8 ms</td>
+<td>53.2</td>
+<td>18.8 ms</td>
+<td>265 (5 × 53)</td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-128f</code></td>
+<td>keygen</td>
+<td>10.80 M</td>
+<td>5.16 ms</td>
+<td>194</td>
+<td>5.16 ms</td>
+<td>970 (5 × 194)</td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-128f</code></td>
+<td>sign</td>
+<td>219.91 M</td>
+<td>105 ms</td>
+<td>9.52</td>
+<td>105 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-128f</code></td>
+<td>verify</td>
+<td>6.08 M</td>
+<td>2.9 ms</td>
+<td>345</td>
+<td>2.9 ms</td>
+<td>1715 (5 × 343)</td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-128s</code></td>
+<td>keygen</td>
+<td>343.22 M</td>
+<td>164 ms</td>
+<td>6.1</td>
+<td>164 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-128s</code></td>
+<td>sign</td>
+<td>3.90 G</td>
+<td>1.87 s</td>
+<td>0.534</td>
+<td>1.87 s</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-128s</code></td>
+<td>verify</td>
+<td>13.88 M</td>
+<td>6.63 ms</td>
+<td>151</td>
+<td>6.63 ms</td>
+<td>755 (5 × 151)</td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-192f</code></td>
+<td>keygen</td>
+<td>29.84 M</td>
+<td>14.3 ms</td>
+<td>70.2</td>
+<td>14.3 ms</td>
+<td>350 (5 × 70)</td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-192f</code></td>
+<td>sign</td>
+<td>587.62 M</td>
+<td>282 ms</td>
+<td>3.55</td>
+<td>281 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-192f</code></td>
+<td>verify</td>
+<td>15.70 M</td>
+<td>7.5 ms</td>
+<td>133</td>
+<td>7.5 ms</td>
+<td>670 (5 × 134)</td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-192s</code></td>
+<td>keygen</td>
+<td>1.11 G</td>
+<td>534 ms</td>
+<td>1.87</td>
+<td>533 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-192s</code></td>
+<td>sign</td>
+<td>11.52 G</td>
+<td>5.53 s</td>
+<td>0.181</td>
+<td>5.53 s</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-192s</code></td>
+<td>verify</td>
+<td>39.76 M</td>
+<td>19 ms</td>
+<td>52.7</td>
+<td>19 ms</td>
+<td>265 (5 × 53)</td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-256f</code></td>
+<td>keygen</td>
+<td>59.14 M</td>
+<td>28.2 ms</td>
+<td>35.4</td>
+<td>28.3 ms</td>
+<td>180 (5 × 36)</td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-256f</code></td>
+<td>sign</td>
+<td>1.12 G</td>
+<td>538 ms</td>
+<td>1.86</td>
+<td>538 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-256f</code></td>
+<td>verify</td>
+<td>30.04 M</td>
+<td>14.4 ms</td>
+<td>69.7</td>
+<td>14.3 ms</td>
+<td>350 (5 × 70)</td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-256s</code></td>
+<td>keygen</td>
+<td>777.96 M</td>
+<td>373 ms</td>
+<td>2.68</td>
+<td>372 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-256s</code></td>
+<td>sign</td>
+<td>10.54 G</td>
+<td>5.05 s</td>
+<td>0.198</td>
+<td>5.05 s</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-256s</code></td>
+<td>verify</td>
+<td>67.56 M</td>
+<td>32.3 ms</td>
+<td>31</td>
+<td>32.3 ms</td>
+<td>155 (5 × 31)</td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-384f</code></td>
+<td>keygen</td>
+<td>124.61 M</td>
+<td>59.5 ms</td>
+<td>16.8</td>
+<td>59.6 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-384f</code></td>
+<td>sign</td>
+<td>3.55 G</td>
+<td>1.7 s</td>
+<td>0.587</td>
+<td>1.7 s</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-384f</code></td>
+<td>verify</td>
+<td>67.63 M</td>
+<td>32.3 ms</td>
+<td>31</td>
+<td>32.3 ms</td>
+<td>155 (5 × 31)</td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-384s</code></td>
+<td>keygen</td>
+<td>1.22 G</td>
+<td>583 ms</td>
+<td>1.72</td>
+<td>583 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-384s</code></td>
+<td>sign</td>
+<td>16.64 G</td>
+<td>7.98 s</td>
+<td>0.125</td>
+<td>7.98 s</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-384s</code></td>
+<td>verify</td>
+<td>106.66 M</td>
+<td>50.9 ms</td>
+<td>19.6</td>
+<td>51 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-512f</code></td>
+<td>keygen</td>
+<td>248.00 M</td>
+<td>118 ms</td>
+<td>8.44</td>
+<td>119 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-512f</code></td>
+<td>sign</td>
+<td>6.03 G</td>
+<td>2.89 s</td>
+<td>0.346</td>
+<td>2.89 s</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-512f</code></td>
+<td>verify</td>
+<td>133.86 M</td>
+<td>63.9 ms</td>
+<td>15.6</td>
+<td>63.9 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-512s</code></td>
+<td>keygen</td>
+<td>2.58 G</td>
+<td>1.24 s</td>
+<td>0.808</td>
+<td>1.24 s</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-512s</code></td>
+<td>sign</td>
+<td>25.75 G</td>
+<td>12.3 s</td>
+<td>0.081</td>
+<td>12.3 s</td>
+<td>70 (5 × 14)</td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-512s</code></td>
+<td>verify</td>
+<td>43.19 M</td>
+<td>20.6 ms</td>
+<td>48.5</td>
+<td>20.6 ms</td>
+<td>245 (5 × 49)</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="5-resource-consumption">5. Resource consumption</h2>
+<p>Static memory is approximated by the library's loadable ELF segments; peak memory is the process high-water mark (VmHWM) including the benchmark driver and libc, so both are upper-bound proxies rather than isolated algorithm memory.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>operation</th>
+<th>static: ELF image (bytes)</th>
+<th>baseline RSS</th>
+<th>peak RSS</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Phoenix-SHAKE-128f</code></td>
+<td>keygen</td>
+<td>36157</td>
+<td>1720 KiB</td>
+<td>1824 KiB</td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-128f</code></td>
+<td>sign</td>
+<td>36157</td>
+<td>1708 KiB</td>
+<td>1820 KiB</td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-128f</code></td>
+<td>verify</td>
+<td>36157</td>
+<td>1712 KiB</td>
+<td>1776 KiB</td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-128s</code></td>
+<td>keygen</td>
+<td>36285</td>
+<td>1676 KiB</td>
+<td>1804 KiB</td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-128s</code></td>
+<td>sign</td>
+<td>36285</td>
+<td>1712 KiB</td>
+<td>1776 KiB</td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-128s</code></td>
+<td>verify</td>
+<td>36285</td>
+<td>1716 KiB</td>
+<td>1780 KiB</td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-192f</code></td>
+<td>keygen</td>
+<td>37101</td>
+<td>1744 KiB</td>
+<td>1820 KiB</td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-192f</code></td>
+<td>sign</td>
+<td>37101</td>
+<td>1744 KiB</td>
+<td>1832 KiB</td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-192f</code></td>
+<td>verify</td>
+<td>37101</td>
+<td>1744 KiB</td>
+<td>1812 KiB</td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-192s</code></td>
+<td>keygen</td>
+<td>37037</td>
+<td>1724 KiB</td>
+<td>1812 KiB</td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-192s</code></td>
+<td>sign</td>
+<td>37037</td>
+<td>1724 KiB</td>
+<td>1792 KiB</td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-192s</code></td>
+<td>verify</td>
+<td>37037</td>
+<td>1732 KiB</td>
+<td>1800 KiB</td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-256f</code></td>
+<td>keygen</td>
+<td>37165</td>
+<td>1764 KiB</td>
+<td>1832 KiB</td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-256f</code></td>
+<td>sign</td>
+<td>37165</td>
+<td>1768 KiB</td>
+<td>1832 KiB</td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-256f</code></td>
+<td>verify</td>
+<td>37165</td>
+<td>1740 KiB</td>
+<td>1860 KiB</td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-256s</code></td>
+<td>keygen</td>
+<td>37101</td>
+<td>1744 KiB</td>
+<td>1832 KiB</td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-256s</code></td>
+<td>sign</td>
+<td>37101</td>
+<td>1728 KiB</td>
+<td>1824 KiB</td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-256s</code></td>
+<td>verify</td>
+<td>37101</td>
+<td>1744 KiB</td>
+<td>1812 KiB</td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-384f</code></td>
+<td>keygen</td>
+<td>37741</td>
+<td>1788 KiB</td>
+<td>1880 KiB</td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-384f</code></td>
+<td>sign</td>
+<td>37741</td>
+<td>1804 KiB</td>
+<td>1868 KiB</td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-384f</code></td>
+<td>verify</td>
+<td>37741</td>
+<td>1764 KiB</td>
+<td>1900 KiB</td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-384s</code></td>
+<td>keygen</td>
+<td>37861</td>
+<td>1740 KiB</td>
+<td>1868 KiB</td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-384s</code></td>
+<td>sign</td>
+<td>37861</td>
+<td>1720 KiB</td>
+<td>1848 KiB</td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-384s</code></td>
+<td>verify</td>
+<td>37861</td>
+<td>1772 KiB</td>
+<td>1844 KiB</td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-512f</code></td>
+<td>keygen</td>
+<td>38437</td>
+<td>1656 KiB</td>
+<td>1796 KiB</td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-512f</code></td>
+<td>sign</td>
+<td>38437</td>
+<td>1708 KiB</td>
+<td>1940 KiB</td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-512f</code></td>
+<td>verify</td>
+<td>38437</td>
+<td>1856 KiB</td>
+<td>1932 KiB</td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-512s</code></td>
+<td>keygen</td>
+<td>38317</td>
+<td>1812 KiB</td>
+<td>1916 KiB</td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-512s</code></td>
+<td>sign</td>
+<td>38317</td>
+<td>1812 KiB</td>
+<td>1880 KiB</td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-512s</code></td>
+<td>verify</td>
+<td>38317</td>
+<td>1808 KiB</td>
+<td>1924 KiB</td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-128f</code></td>
+<td>keygen</td>
+<td>–</td>
+<td>1736 KiB</td>
+<td>1800 KiB</td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-128f</code></td>
+<td>sign</td>
+<td>–</td>
+<td>1720 KiB</td>
+<td>1804 KiB</td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-128f</code></td>
+<td>verify</td>
+<td>–</td>
+<td>1728 KiB</td>
+<td>1792 KiB</td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-128s</code></td>
+<td>keygen</td>
+<td>–</td>
+<td>1728 KiB</td>
+<td>1792 KiB</td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-128s</code></td>
+<td>sign</td>
+<td>–</td>
+<td>1716 KiB</td>
+<td>1780 KiB</td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-128s</code></td>
+<td>verify</td>
+<td>–</td>
+<td>1708 KiB</td>
+<td>1816 KiB</td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-192f</code></td>
+<td>keygen</td>
+<td>–</td>
+<td>1724 KiB</td>
+<td>1840 KiB</td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-192f</code></td>
+<td>sign</td>
+<td>–</td>
+<td>1740 KiB</td>
+<td>1804 KiB</td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-192f</code></td>
+<td>verify</td>
+<td>–</td>
+<td>1732 KiB</td>
+<td>1840 KiB</td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-192s</code></td>
+<td>keygen</td>
+<td>–</td>
+<td>1728 KiB</td>
+<td>1796 KiB</td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-192s</code></td>
+<td>sign</td>
+<td>–</td>
+<td>1724 KiB</td>
+<td>1792 KiB</td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-192s</code></td>
+<td>verify</td>
+<td>–</td>
+<td>1716 KiB</td>
+<td>1780 KiB</td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-256f</code></td>
+<td>keygen</td>
+<td>–</td>
+<td>1732 KiB</td>
+<td>1856 KiB</td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-256f</code></td>
+<td>sign</td>
+<td>–</td>
+<td>1744 KiB</td>
+<td>1844 KiB</td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-256f</code></td>
+<td>verify</td>
+<td>–</td>
+<td>1768 KiB</td>
+<td>1852 KiB</td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-256s</code></td>
+<td>keygen</td>
+<td>–</td>
+<td>1724 KiB</td>
+<td>1824 KiB</td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-256s</code></td>
+<td>sign</td>
+<td>–</td>
+<td>1732 KiB</td>
+<td>1836 KiB</td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-256s</code></td>
+<td>verify</td>
+<td>–</td>
+<td>1736 KiB</td>
+<td>1816 KiB</td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-384f</code></td>
+<td>keygen</td>
+<td>–</td>
+<td>1776 KiB</td>
+<td>1884 KiB</td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-384f</code></td>
+<td>sign</td>
+<td>–</td>
+<td>1804 KiB</td>
+<td>1904 KiB</td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-384f</code></td>
+<td>verify</td>
+<td>–</td>
+<td>1812 KiB</td>
+<td>1880 KiB</td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-384s</code></td>
+<td>keygen</td>
+<td>–</td>
+<td>1756 KiB</td>
+<td>1828 KiB</td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-384s</code></td>
+<td>sign</td>
+<td>–</td>
+<td>1756 KiB</td>
+<td>1820 KiB</td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-384s</code></td>
+<td>verify</td>
+<td>–</td>
+<td>1692 KiB</td>
+<td>1824 KiB</td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-512f</code></td>
+<td>keygen</td>
+<td>–</td>
+<td>1700 KiB</td>
+<td>1800 KiB</td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-512f</code></td>
+<td>sign</td>
+<td>–</td>
+<td>1736 KiB</td>
+<td>1936 KiB</td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-512f</code></td>
+<td>verify</td>
+<td>–</td>
+<td>1832 KiB</td>
+<td>1964 KiB</td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-512s</code></td>
+<td>keygen</td>
+<td>–</td>
+<td>1808 KiB</td>
+<td>1892 KiB</td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-512s</code></td>
+<td>sign</td>
+<td>–</td>
+<td>1836 KiB</td>
+<td>1924 KiB</td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-512s</code></td>
+<td>verify</td>
+<td>–</td>
+<td>1840 KiB</td>
+<td>1924 KiB</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="6-transmission-and-storage-overhead">6. Transmission and storage overhead</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>public key</th>
+<th>secret key</th>
+<th>signature</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Phoenix-SHAKE-128f</code></td>
+<td>32</td>
+<td>64</td>
+<td>13670</td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-128s</code></td>
+<td>32</td>
+<td>64</td>
+<td>6258</td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-192f</code></td>
+<td>48</td>
+<td>96</td>
+<td>30766</td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-192s</code></td>
+<td>48</td>
+<td>96</td>
+<td>13332</td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-256f</code></td>
+<td>64</td>
+<td>128</td>
+<td>44906</td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-256s</code></td>
+<td>64</td>
+<td>128</td>
+<td>24618</td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-384f</code></td>
+<td>96</td>
+<td>192</td>
+<td>88442</td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-384s</code></td>
+<td>96</td>
+<td>192</td>
+<td>54726</td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-512f</code></td>
+<td>128</td>
+<td>256</td>
+<td>138454</td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-512s</code></td>
+<td>128</td>
+<td>256</td>
+<td>98476</td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-128f</code></td>
+<td>32</td>
+<td>64</td>
+<td>13670</td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-128s</code></td>
+<td>32</td>
+<td>64</td>
+<td>6258</td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-192f</code></td>
+<td>48</td>
+<td>96</td>
+<td>30766</td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-192s</code></td>
+<td>48</td>
+<td>96</td>
+<td>13332</td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-256f</code></td>
+<td>64</td>
+<td>128</td>
+<td>44906</td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-256s</code></td>
+<td>64</td>
+<td>128</td>
+<td>24618</td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-384f</code></td>
+<td>96</td>
+<td>192</td>
+<td>88442</td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-384s</code></td>
+<td>96</td>
+<td>192</td>
+<td>54726</td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-512f</code></td>
+<td>128</td>
+<td>256</td>
+<td>138454</td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-512s</code></td>
+<td>128</td>
+<td>256</td>
+<td>98476</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="symmetric-primitives">Symmetric primitives</h2>
+<p><a href="../symmetric-survey.html">Survey</a> verdict: <strong>instance-dependent</strong> — SM3 sets mixed (own SM3 for all tree hashing/PRF, pseudoXOF for digest/indices); SHAKE sets bypass with a SHAKE-based drng.c</p>
+<p>Share of each operation spent in the ICCS placeholder hash functions and in the ICCS DRNG (reference build, measured in the same run with link-time wrappers):</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>operation</th>
+<th>pseudohash/XOF/sm3</th>
+<th>DRNG</th>
+<th>calls per operation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Phoenix-SHAKE-128f</code></td>
+<td>keygen</td>
+<td>0.0%</td>
+<td>0.1%</td>
+<td>drng 1</td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-128f</code></td>
+<td>sign</td>
+<td>0.0%</td>
+<td>0.0%</td>
+<td>drng 1</td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-128f</code></td>
+<td>verify</td>
+<td>0.0%</td>
+<td>0.0%</td>
+<td>–</td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-128s</code></td>
+<td>keygen</td>
+<td>0.0%</td>
+<td>0.0%</td>
+<td>drng 1</td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-128s</code></td>
+<td>sign</td>
+<td>0.0%</td>
+<td>0.0%</td>
+<td>drng 1</td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-128s</code></td>
+<td>verify</td>
+<td>0.0%</td>
+<td>0.0%</td>
+<td>–</td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-192f</code></td>
+<td>keygen</td>
+<td>0.0%</td>
+<td>0.1%</td>
+<td>drng 1</td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-192f</code></td>
+<td>sign</td>
+<td>0.0%</td>
+<td>0.0%</td>
+<td>drng 1</td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-192f</code></td>
+<td>verify</td>
+<td>0.0%</td>
+<td>0.0%</td>
+<td>–</td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-192s</code></td>
+<td>keygen</td>
+<td>0.0%</td>
+<td>0.0%</td>
+<td>drng 1</td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-192s</code></td>
+<td>sign</td>
+<td>0.0%</td>
+<td>0.0%</td>
+<td>drng 1</td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-192s</code></td>
+<td>verify</td>
+<td>0.0%</td>
+<td>0.0%</td>
+<td>–</td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-256f</code></td>
+<td>keygen</td>
+<td>0.0%</td>
+<td>0.0%</td>
+<td>drng 1</td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-256f</code></td>
+<td>sign</td>
+<td>0.0%</td>
+<td>0.0%</td>
+<td>drng 1</td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-256f</code></td>
+<td>verify</td>
+<td>0.0%</td>
+<td>0.0%</td>
+<td>–</td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-256s</code></td>
+<td>keygen</td>
+<td>0.0%</td>
+<td>0.0%</td>
+<td>drng 1</td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-256s</code></td>
+<td>sign</td>
+<td>0.0%</td>
+<td>0.0%</td>
+<td>drng 1</td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-256s</code></td>
+<td>verify</td>
+<td>0.0%</td>
+<td>0.0%</td>
+<td>–</td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-384f</code></td>
+<td>keygen</td>
+<td>0.0%</td>
+<td>0.0%</td>
+<td>drng 1</td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-384f</code></td>
+<td>sign</td>
+<td>0.0%</td>
+<td>0.0%</td>
+<td>drng 1</td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-384f</code></td>
+<td>verify</td>
+<td>0.0%</td>
+<td>0.0%</td>
+<td>–</td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-384s</code></td>
+<td>keygen</td>
+<td>0.0%</td>
+<td>0.0%</td>
+<td>drng 1</td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-384s</code></td>
+<td>sign</td>
+<td>0.0%</td>
+<td>0.0%</td>
+<td>drng 1</td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-384s</code></td>
+<td>verify</td>
+<td>0.0%</td>
+<td>0.0%</td>
+<td>–</td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-512f</code></td>
+<td>keygen</td>
+<td>0.0%</td>
+<td>0.0%</td>
+<td>drng 1</td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-512f</code></td>
+<td>sign</td>
+<td>0.0%</td>
+<td>0.0%</td>
+<td>drng 1</td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-512f</code></td>
+<td>verify</td>
+<td>0.0%</td>
+<td>0.0%</td>
+<td>–</td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-512s</code></td>
+<td>keygen</td>
+<td>0.0%</td>
+<td>0.0%</td>
+<td>drng 1</td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-512s</code></td>
+<td>sign</td>
+<td>0.0%</td>
+<td>0.0%</td>
+<td>drng 1</td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-512s</code></td>
+<td>verify</td>
+<td>0.0%</td>
+<td>0.0%</td>
+<td>–</td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-128f</code></td>
+<td>keygen</td>
+<td>0.0%</td>
+<td>0.1%</td>
+<td>drng 1</td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-128f</code></td>
+<td>sign</td>
+<td>4.1%</td>
+<td>0.0%</td>
+<td>drng 1, pseudoXOF 618</td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-128f</code></td>
+<td>verify</td>
+<td>1.3%</td>
+<td>0.0%</td>
+<td>pseudoXOF 20</td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-128s</code></td>
+<td>keygen</td>
+<td>0.0%</td>
+<td>0.0%</td>
+<td>drng 1</td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-128s</code></td>
+<td>sign</td>
+<td>5.3%</td>
+<td>0.0%</td>
+<td>drng 1, pseudoXOF 1.3e+04</td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-128s</code></td>
+<td>verify</td>
+<td>0.5%</td>
+<td>0.0%</td>
+<td>pseudoXOF 13</td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-192f</code></td>
+<td>keygen</td>
+<td>0.0%</td>
+<td>0.0%</td>
+<td>drng 1</td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-192f</code></td>
+<td>sign</td>
+<td>0.3%</td>
+<td>0.0%</td>
+<td>drng 1, pseudoXOF 144</td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-192f</code></td>
+<td>verify</td>
+<td>0.7%</td>
+<td>0.0%</td>
+<td>pseudoXOF 20</td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-192s</code></td>
+<td>keygen</td>
+<td>0.0%</td>
+<td>0.0%</td>
+<td>drng 1</td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-192s</code></td>
+<td>sign</td>
+<td>0.9%</td>
+<td>0.0%</td>
+<td>drng 1, pseudoXOF 7.13e+03</td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-192s</code></td>
+<td>verify</td>
+<td>0.2%</td>
+<td>0.0%</td>
+<td>pseudoXOF 12</td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-256f</code></td>
+<td>keygen</td>
+<td>0.0%</td>
+<td>0.0%</td>
+<td>drng 1</td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-256f</code></td>
+<td>sign</td>
+<td>2.0%</td>
+<td>0.0%</td>
+<td>drng 1, pseudoXOF 851</td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-256f</code></td>
+<td>verify</td>
+<td>0.5%</td>
+<td>0.0%</td>
+<td>pseudoXOF 19</td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-256s</code></td>
+<td>keygen</td>
+<td>0.0%</td>
+<td>0.0%</td>
+<td>drng 1</td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-256s</code></td>
+<td>sign</td>
+<td>12%</td>
+<td>0.0%</td>
+<td>drng 1, pseudoXOF 4.83e+04</td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-256s</code></td>
+<td>verify</td>
+<td>0.2%</td>
+<td>0.0%</td>
+<td>pseudoXOF 14</td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-384f</code></td>
+<td>keygen</td>
+<td>0.0%</td>
+<td>0.0%</td>
+<td>drng 1</td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-384f</code></td>
+<td>sign</td>
+<td>0.0%</td>
+<td>0.0%</td>
+<td>drng 1, pseudoXOF 19</td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-384f</code></td>
+<td>verify</td>
+<td>0.3%</td>
+<td>0.0%</td>
+<td>pseudoXOF 20</td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-384s</code></td>
+<td>keygen</td>
+<td>0.0%</td>
+<td>0.0%</td>
+<td>drng 1</td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-384s</code></td>
+<td>sign</td>
+<td>2.0%</td>
+<td>0.0%</td>
+<td>drng 1, pseudoXOF 1.08e+04</td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-384s</code></td>
+<td>verify</td>
+<td>0.2%</td>
+<td>0.0%</td>
+<td>pseudoXOF 14</td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-512f</code></td>
+<td>keygen</td>
+<td>0.0%</td>
+<td>0.0%</td>
+<td>drng 1</td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-512f</code></td>
+<td>sign</td>
+<td>4.8%</td>
+<td>0.0%</td>
+<td>drng 1, pseudoXOF 6.51e+03</td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-512f</code></td>
+<td>verify</td>
+<td>0.2%</td>
+<td>0.0%</td>
+<td>pseudoXOF 20</td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-512s</code></td>
+<td>keygen</td>
+<td>0.0%</td>
+<td>0.0%</td>
+<td>drng 1</td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-512s</code></td>
+<td>sign</td>
+<td>8.1%</td>
+<td>0.0%</td>
+<td>drng 1, pseudoXOF 4.78e+04</td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-512s</code></td>
+<td>verify</td>
+<td>0.5%</td>
+<td>0.0%</td>
+<td>pseudoXOF 11</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="7-raw-evidence-index">7. Raw evidence index</h2>
+<p>Paths are relative to <code>performance/data/x86_1/</code> in the <a href="https://github.com/ngcc-dev/ngcc-harness">harness</a>; each JSON file records its commands, environment and trials.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>item</th>
+<th>file</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Phoenix-SHAKE-128f</code></td>
+<td>KAT log (sha256 <code>33712e9ccf79c79d…</code>)</td>
+<td><code>kat/sign-19/Phoenix-SHAKE-128f.log</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-128f</code></td>
+<td>timing keygen</td>
+<td><code>records/sign-19/Phoenix-SHAKE-128f__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-128f</code></td>
+<td>timing sign</td>
+<td><code>records/sign-19/Phoenix-SHAKE-128f__sign.json</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-128f</code></td>
+<td>timing verify</td>
+<td><code>records/sign-19/Phoenix-SHAKE-128f__verify.json</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-128f</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/sign-19/Phoenix-SHAKE-128f__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-128f</code></td>
+<td>hash profile sign</td>
+<td><code>profile/sign-19/Phoenix-SHAKE-128f__sign.json</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-128f</code></td>
+<td>hash profile verify</td>
+<td><code>profile/sign-19/Phoenix-SHAKE-128f__verify.json</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-128s</code></td>
+<td>KAT log (sha256 <code>d9d52d2b659bdf88…</code>)</td>
+<td><code>kat/sign-19/Phoenix-SHAKE-128s.log</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-128s</code></td>
+<td>timing keygen</td>
+<td><code>records/sign-19/Phoenix-SHAKE-128s__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-128s</code></td>
+<td>timing sign</td>
+<td><code>records/sign-19/Phoenix-SHAKE-128s__sign.json</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-128s</code></td>
+<td>timing verify</td>
+<td><code>records/sign-19/Phoenix-SHAKE-128s__verify.json</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-128s</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/sign-19/Phoenix-SHAKE-128s__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-128s</code></td>
+<td>hash profile sign</td>
+<td><code>profile/sign-19/Phoenix-SHAKE-128s__sign.json</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-128s</code></td>
+<td>hash profile verify</td>
+<td><code>profile/sign-19/Phoenix-SHAKE-128s__verify.json</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-192f</code></td>
+<td>KAT log (sha256 <code>f4c56f03e2032031…</code>)</td>
+<td><code>kat/sign-19/Phoenix-SHAKE-192f.log</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-192f</code></td>
+<td>timing keygen</td>
+<td><code>records/sign-19/Phoenix-SHAKE-192f__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-192f</code></td>
+<td>timing sign</td>
+<td><code>records/sign-19/Phoenix-SHAKE-192f__sign.json</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-192f</code></td>
+<td>timing verify</td>
+<td><code>records/sign-19/Phoenix-SHAKE-192f__verify.json</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-192f</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/sign-19/Phoenix-SHAKE-192f__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-192f</code></td>
+<td>hash profile sign</td>
+<td><code>profile/sign-19/Phoenix-SHAKE-192f__sign.json</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-192f</code></td>
+<td>hash profile verify</td>
+<td><code>profile/sign-19/Phoenix-SHAKE-192f__verify.json</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-192s</code></td>
+<td>KAT log (sha256 <code>57c550c743e5ce11…</code>)</td>
+<td><code>kat/sign-19/Phoenix-SHAKE-192s.log</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-192s</code></td>
+<td>timing keygen</td>
+<td><code>records/sign-19/Phoenix-SHAKE-192s__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-192s</code></td>
+<td>timing sign</td>
+<td><code>records/sign-19/Phoenix-SHAKE-192s__sign.json</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-192s</code></td>
+<td>timing verify</td>
+<td><code>records/sign-19/Phoenix-SHAKE-192s__verify.json</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-192s</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/sign-19/Phoenix-SHAKE-192s__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-192s</code></td>
+<td>hash profile sign</td>
+<td><code>profile/sign-19/Phoenix-SHAKE-192s__sign.json</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-192s</code></td>
+<td>hash profile verify</td>
+<td><code>profile/sign-19/Phoenix-SHAKE-192s__verify.json</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-256f</code></td>
+<td>KAT log (sha256 <code>9ad07dbd3b6592cc…</code>)</td>
+<td><code>kat/sign-19/Phoenix-SHAKE-256f.log</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-256f</code></td>
+<td>timing keygen</td>
+<td><code>records/sign-19/Phoenix-SHAKE-256f__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-256f</code></td>
+<td>timing sign</td>
+<td><code>records/sign-19/Phoenix-SHAKE-256f__sign.json</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-256f</code></td>
+<td>timing verify</td>
+<td><code>records/sign-19/Phoenix-SHAKE-256f__verify.json</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-256f</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/sign-19/Phoenix-SHAKE-256f__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-256f</code></td>
+<td>hash profile sign</td>
+<td><code>profile/sign-19/Phoenix-SHAKE-256f__sign.json</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-256f</code></td>
+<td>hash profile verify</td>
+<td><code>profile/sign-19/Phoenix-SHAKE-256f__verify.json</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-256s</code></td>
+<td>KAT log (sha256 <code>abaf9597cf1bbbdb…</code>)</td>
+<td><code>kat/sign-19/Phoenix-SHAKE-256s.log</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-256s</code></td>
+<td>timing keygen</td>
+<td><code>records/sign-19/Phoenix-SHAKE-256s__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-256s</code></td>
+<td>timing sign</td>
+<td><code>records/sign-19/Phoenix-SHAKE-256s__sign.json</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-256s</code></td>
+<td>timing verify</td>
+<td><code>records/sign-19/Phoenix-SHAKE-256s__verify.json</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-256s</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/sign-19/Phoenix-SHAKE-256s__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-256s</code></td>
+<td>hash profile sign</td>
+<td><code>profile/sign-19/Phoenix-SHAKE-256s__sign.json</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-256s</code></td>
+<td>hash profile verify</td>
+<td><code>profile/sign-19/Phoenix-SHAKE-256s__verify.json</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-384f</code></td>
+<td>KAT log (sha256 <code>ffa3f642ceba8c0a…</code>)</td>
+<td><code>kat/sign-19/Phoenix-SHAKE-384f.log</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-384f</code></td>
+<td>timing keygen</td>
+<td><code>records/sign-19/Phoenix-SHAKE-384f__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-384f</code></td>
+<td>timing sign</td>
+<td><code>records/sign-19/Phoenix-SHAKE-384f__sign.json</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-384f</code></td>
+<td>timing verify</td>
+<td><code>records/sign-19/Phoenix-SHAKE-384f__verify.json</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-384f</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/sign-19/Phoenix-SHAKE-384f__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-384f</code></td>
+<td>hash profile sign</td>
+<td><code>profile/sign-19/Phoenix-SHAKE-384f__sign.json</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-384f</code></td>
+<td>hash profile verify</td>
+<td><code>profile/sign-19/Phoenix-SHAKE-384f__verify.json</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-384s</code></td>
+<td>KAT log (sha256 <code>07ceec279da5ed72…</code>)</td>
+<td><code>kat/sign-19/Phoenix-SHAKE-384s.log</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-384s</code></td>
+<td>timing keygen</td>
+<td><code>records/sign-19/Phoenix-SHAKE-384s__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-384s</code></td>
+<td>timing sign</td>
+<td><code>records/sign-19/Phoenix-SHAKE-384s__sign.json</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-384s</code></td>
+<td>timing verify</td>
+<td><code>records/sign-19/Phoenix-SHAKE-384s__verify.json</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-384s</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/sign-19/Phoenix-SHAKE-384s__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-384s</code></td>
+<td>hash profile sign</td>
+<td><code>profile/sign-19/Phoenix-SHAKE-384s__sign.json</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-384s</code></td>
+<td>hash profile verify</td>
+<td><code>profile/sign-19/Phoenix-SHAKE-384s__verify.json</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-512f</code></td>
+<td>KAT log (sha256 <code>69ea45cc0affdc37…</code>)</td>
+<td><code>kat/sign-19/Phoenix-SHAKE-512f.log</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-512f</code></td>
+<td>timing keygen</td>
+<td><code>records/sign-19/Phoenix-SHAKE-512f__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-512f</code></td>
+<td>timing sign</td>
+<td><code>records/sign-19/Phoenix-SHAKE-512f__sign.json</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-512f</code></td>
+<td>timing verify</td>
+<td><code>records/sign-19/Phoenix-SHAKE-512f__verify.json</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-512f</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/sign-19/Phoenix-SHAKE-512f__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-512f</code></td>
+<td>hash profile sign</td>
+<td><code>profile/sign-19/Phoenix-SHAKE-512f__sign.json</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-512f</code></td>
+<td>hash profile verify</td>
+<td><code>profile/sign-19/Phoenix-SHAKE-512f__verify.json</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-512s</code></td>
+<td>KAT log (sha256 <code>98c33d1867e1de95…</code>)</td>
+<td><code>kat/sign-19/Phoenix-SHAKE-512s.log</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-512s</code></td>
+<td>timing keygen</td>
+<td><code>records/sign-19/Phoenix-SHAKE-512s__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-512s</code></td>
+<td>timing sign</td>
+<td><code>records/sign-19/Phoenix-SHAKE-512s__sign.json</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-512s</code></td>
+<td>timing verify</td>
+<td><code>records/sign-19/Phoenix-SHAKE-512s__verify.json</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-512s</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/sign-19/Phoenix-SHAKE-512s__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-512s</code></td>
+<td>hash profile sign</td>
+<td><code>profile/sign-19/Phoenix-SHAKE-512s__sign.json</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SHAKE-512s</code></td>
+<td>hash profile verify</td>
+<td><code>profile/sign-19/Phoenix-SHAKE-512s__verify.json</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-128f</code></td>
+<td>KAT log (sha256 <code>38d839c3e2e37d5c…</code>)</td>
+<td><code>kat/sign-19/Phoenix-SM3-128f.log</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-128f</code></td>
+<td>timing keygen</td>
+<td><code>records/sign-19/Phoenix-SM3-128f__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-128f</code></td>
+<td>timing sign</td>
+<td><code>records/sign-19/Phoenix-SM3-128f__sign.json</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-128f</code></td>
+<td>timing verify</td>
+<td><code>records/sign-19/Phoenix-SM3-128f__verify.json</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-128f</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/sign-19/Phoenix-SM3-128f__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-128f</code></td>
+<td>hash profile sign</td>
+<td><code>profile/sign-19/Phoenix-SM3-128f__sign.json</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-128f</code></td>
+<td>hash profile verify</td>
+<td><code>profile/sign-19/Phoenix-SM3-128f__verify.json</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-128s</code></td>
+<td>KAT log (sha256 <code>f166029062654da7…</code>)</td>
+<td><code>kat/sign-19/Phoenix-SM3-128s.log</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-128s</code></td>
+<td>timing keygen</td>
+<td><code>records/sign-19/Phoenix-SM3-128s__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-128s</code></td>
+<td>timing sign</td>
+<td><code>records/sign-19/Phoenix-SM3-128s__sign.json</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-128s</code></td>
+<td>timing verify</td>
+<td><code>records/sign-19/Phoenix-SM3-128s__verify.json</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-128s</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/sign-19/Phoenix-SM3-128s__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-128s</code></td>
+<td>hash profile sign</td>
+<td><code>profile/sign-19/Phoenix-SM3-128s__sign.json</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-128s</code></td>
+<td>hash profile verify</td>
+<td><code>profile/sign-19/Phoenix-SM3-128s__verify.json</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-192f</code></td>
+<td>KAT log (sha256 <code>b7186300a7f7c32f…</code>)</td>
+<td><code>kat/sign-19/Phoenix-SM3-192f.log</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-192f</code></td>
+<td>timing keygen</td>
+<td><code>records/sign-19/Phoenix-SM3-192f__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-192f</code></td>
+<td>timing sign</td>
+<td><code>records/sign-19/Phoenix-SM3-192f__sign.json</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-192f</code></td>
+<td>timing verify</td>
+<td><code>records/sign-19/Phoenix-SM3-192f__verify.json</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-192f</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/sign-19/Phoenix-SM3-192f__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-192f</code></td>
+<td>hash profile sign</td>
+<td><code>profile/sign-19/Phoenix-SM3-192f__sign.json</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-192f</code></td>
+<td>hash profile verify</td>
+<td><code>profile/sign-19/Phoenix-SM3-192f__verify.json</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-192s</code></td>
+<td>KAT log (sha256 <code>9d9954e8b1f5e881…</code>)</td>
+<td><code>kat/sign-19/Phoenix-SM3-192s.log</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-192s</code></td>
+<td>timing keygen</td>
+<td><code>records/sign-19/Phoenix-SM3-192s__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-192s</code></td>
+<td>timing sign</td>
+<td><code>records/sign-19/Phoenix-SM3-192s__sign.json</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-192s</code></td>
+<td>timing verify</td>
+<td><code>records/sign-19/Phoenix-SM3-192s__verify.json</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-192s</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/sign-19/Phoenix-SM3-192s__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-192s</code></td>
+<td>hash profile sign</td>
+<td><code>profile/sign-19/Phoenix-SM3-192s__sign.json</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-192s</code></td>
+<td>hash profile verify</td>
+<td><code>profile/sign-19/Phoenix-SM3-192s__verify.json</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-256f</code></td>
+<td>KAT log (sha256 <code>5fb1e75749eca822…</code>)</td>
+<td><code>kat/sign-19/Phoenix-SM3-256f.log</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-256f</code></td>
+<td>timing keygen</td>
+<td><code>records/sign-19/Phoenix-SM3-256f__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-256f</code></td>
+<td>timing sign</td>
+<td><code>records/sign-19/Phoenix-SM3-256f__sign.json</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-256f</code></td>
+<td>timing verify</td>
+<td><code>records/sign-19/Phoenix-SM3-256f__verify.json</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-256f</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/sign-19/Phoenix-SM3-256f__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-256f</code></td>
+<td>hash profile sign</td>
+<td><code>profile/sign-19/Phoenix-SM3-256f__sign.json</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-256f</code></td>
+<td>hash profile verify</td>
+<td><code>profile/sign-19/Phoenix-SM3-256f__verify.json</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-256s</code></td>
+<td>KAT log (sha256 <code>aeab9f70c73d28a6…</code>)</td>
+<td><code>kat/sign-19/Phoenix-SM3-256s.log</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-256s</code></td>
+<td>timing keygen</td>
+<td><code>records/sign-19/Phoenix-SM3-256s__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-256s</code></td>
+<td>timing sign</td>
+<td><code>records/sign-19/Phoenix-SM3-256s__sign.json</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-256s</code></td>
+<td>timing verify</td>
+<td><code>records/sign-19/Phoenix-SM3-256s__verify.json</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-256s</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/sign-19/Phoenix-SM3-256s__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-256s</code></td>
+<td>hash profile sign</td>
+<td><code>profile/sign-19/Phoenix-SM3-256s__sign.json</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-256s</code></td>
+<td>hash profile verify</td>
+<td><code>profile/sign-19/Phoenix-SM3-256s__verify.json</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-384f</code></td>
+<td>KAT log (sha256 <code>f1454f14620520df…</code>)</td>
+<td><code>kat/sign-19/Phoenix-SM3-384f.log</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-384f</code></td>
+<td>timing keygen</td>
+<td><code>records/sign-19/Phoenix-SM3-384f__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-384f</code></td>
+<td>timing sign</td>
+<td><code>records/sign-19/Phoenix-SM3-384f__sign.json</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-384f</code></td>
+<td>timing verify</td>
+<td><code>records/sign-19/Phoenix-SM3-384f__verify.json</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-384f</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/sign-19/Phoenix-SM3-384f__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-384f</code></td>
+<td>hash profile sign</td>
+<td><code>profile/sign-19/Phoenix-SM3-384f__sign.json</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-384f</code></td>
+<td>hash profile verify</td>
+<td><code>profile/sign-19/Phoenix-SM3-384f__verify.json</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-384s</code></td>
+<td>KAT log (sha256 <code>e95b1f9637acff3e…</code>)</td>
+<td><code>kat/sign-19/Phoenix-SM3-384s.log</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-384s</code></td>
+<td>timing keygen</td>
+<td><code>records/sign-19/Phoenix-SM3-384s__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-384s</code></td>
+<td>timing sign</td>
+<td><code>records/sign-19/Phoenix-SM3-384s__sign.json</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-384s</code></td>
+<td>timing verify</td>
+<td><code>records/sign-19/Phoenix-SM3-384s__verify.json</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-384s</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/sign-19/Phoenix-SM3-384s__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-384s</code></td>
+<td>hash profile sign</td>
+<td><code>profile/sign-19/Phoenix-SM3-384s__sign.json</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-384s</code></td>
+<td>hash profile verify</td>
+<td><code>profile/sign-19/Phoenix-SM3-384s__verify.json</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-512f</code></td>
+<td>KAT log (sha256 <code>79d8c88f28eee52e…</code>)</td>
+<td><code>kat/sign-19/Phoenix-SM3-512f.log</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-512f</code></td>
+<td>timing keygen</td>
+<td><code>records/sign-19/Phoenix-SM3-512f__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-512f</code></td>
+<td>timing sign</td>
+<td><code>records/sign-19/Phoenix-SM3-512f__sign.json</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-512f</code></td>
+<td>timing verify</td>
+<td><code>records/sign-19/Phoenix-SM3-512f__verify.json</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-512f</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/sign-19/Phoenix-SM3-512f__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-512f</code></td>
+<td>hash profile sign</td>
+<td><code>profile/sign-19/Phoenix-SM3-512f__sign.json</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-512f</code></td>
+<td>hash profile verify</td>
+<td><code>profile/sign-19/Phoenix-SM3-512f__verify.json</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-512s</code></td>
+<td>KAT log (sha256 <code>01bf6b38ffc539b5…</code>)</td>
+<td><code>kat/sign-19/Phoenix-SM3-512s.log</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-512s</code></td>
+<td>timing keygen</td>
+<td><code>records/sign-19/Phoenix-SM3-512s__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-512s</code></td>
+<td>timing sign</td>
+<td><code>records/sign-19/Phoenix-SM3-512s__sign.json</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-512s</code></td>
+<td>timing verify</td>
+<td><code>records/sign-19/Phoenix-SM3-512s__verify.json</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-512s</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/sign-19/Phoenix-SM3-512s__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-512s</code></td>
+<td>hash profile sign</td>
+<td><code>profile/sign-19/Phoenix-SM3-512s__sign.json</code></td>
+</tr>
+<tr>
+<td><code>Phoenix-SM3-512s</code></td>
+<td>hash profile verify</td>
+<td><code>profile/sign-19/Phoenix-SM3-512s__verify.json</code></td>
+</tr>
+</tbody>
+</table></div>
+<p>Scripts: <code>performance/campaign.py</code>, <code>performance/ngcc_perf.c</code>, <code>performance/hashprof/</code> in the <a href="https://github.com/ngcc-dev/ngcc-harness">harness</a>.</p>
+</main>
+<footer class="site-footer">
+<p>Maintained by: <a href="mailto:markku-juhani.saarinen@tuni.fi">markku-juhani.saarinen@tuni.fi</a></p>
+<p>Submissions are welcome via <a href="https://github.com/ngcc-dev/ngcc-harness/issues">GitHub issues</a>.</p>
+</footer>
+</body>
+</html>

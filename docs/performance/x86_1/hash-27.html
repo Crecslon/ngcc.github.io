@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ngcc.dev: hash-27 The Vedak Hash Function Family — performance on x86-64 (system x861)</title>
+<link rel="icon" type="image/png" href="../../assets/mag-glass.png">
+<link rel="stylesheet" href="../../assets/style.css?v=1fdb792d">
+</head>
+<body>
+<header class="site-header">
+<a class="brand" href="../../index.html"><img class="brand-icon" src="../../assets/mag-glass.png" alt="" width="28" height="28">ngcc.dev</a>
+<nav><a href="../../index.html">Home</a><a href="../../reports/index.html">Reports</a><a href="../../performance/x86_1/index.html">Performance</a><a href="../../constant-time/index.html">Constant-Time</a></nav>
+</header>
+<main class="">
+<!-- synchronized from harness: hash-27/perf_x86_1.md -->
+<h1 id="hash-27-the-vedak-hash-function-family-performance-on-x86-64-system-x86_1">hash-27 The Vedak Hash Function Family — performance on x86-64 (system x86_1)</h1>
+<p><a href="index.html">Performance x86_1</a> › <code>hash-27</code> · <a href="method.html">method</a> · <a href="https://www.niccs.org.cn/niccs/Round1Submissions4/pc/content/content_2101535609849466880.html">NICCS page</a></p>
+<p>Independent measurement following the structure of the NICCS x86 self-assessment guide, §3.5 (1)–(7). Not a submitter self-assessment.</p>
+<h2 id="1-basic-information">1. Basic information</h2>
+<ul>
+<li>Category: cryptographic hash algorithm; function: hash</li>
+<li>Algorithm: The Vedak Hash Function Family</li>
+<li>Implementation versions measured: reference</li>
+<li>Parameter sets: <code>Vedak-512</code>, <code>Vedak-768</code>, <code>Vedak-1024</code></li>
+</ul>
+<h2 id="2-assessment-environment">2. Assessment environment</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>item</th>
+<th>value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>processor</td>
+<td>12th Gen Intel(R) Core(TM) i7-12700 (CPU 2, one core)</td>
+</tr>
+<tr>
+<td>clock</td>
+<td>max 2.10 GHz, governor performance, turbo off, SMT off</td>
+</tr>
+<tr>
+<td>memory</td>
+<td>31788 MiB</td>
+</tr>
+<tr>
+<td>OS / kernel</td>
+<td>Debian GNU/Linux 13 (trixie) / 6.12.107+deb13-amd64</td>
+</tr>
+<tr>
+<td>compiler / build tool</td>
+<td>gcc (Debian 14.2.0-19) 14.2.0 / cmake version 3.31.6</td>
+</tr>
+<tr>
+<td>campaign start / end (UTC)</td>
+<td>2026-09-25T10:02:21 / 2026-09-28T04:35:59</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="3-functional-testing-kat">3. Functional testing (KAT)</h2>
+<p>Each library was checked against the submitted KAT vectors (SHA-256 manifest <code>hash-27/kat.sha256</code> in the harness) before timing.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>build flags</th>
+<th>KAT</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Vedak-512</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>Vedak-768</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>Vedak-1024</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="4-performance">4. Performance</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>message</th>
+<th>mean cycles</th>
+<th>cycles/byte</th>
+<th>mean time</th>
+<th>MB/s</th>
+<th>n</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Vedak-512</code></td>
+<td>32 B</td>
+<td>24.7 k</td>
+<td>771.1</td>
+<td>11.8 µs</td>
+<td>2.7</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>Vedak-512</code></td>
+<td>128 B</td>
+<td>28.3 k</td>
+<td>221.1</td>
+<td>13.5 µs</td>
+<td>9.5</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>Vedak-512</code></td>
+<td>512 B</td>
+<td>88.1 k</td>
+<td>172.0</td>
+<td>42.1 µs</td>
+<td>12.2</td>
+<td>99745 (5 × 19949)</td>
+</tr>
+<tr>
+<td><code>Vedak-512</code></td>
+<td>1024 B</td>
+<td>174.6 k</td>
+<td>170.5</td>
+<td>83.4 µs</td>
+<td>12.3</td>
+<td>52670 (5 × 10534)</td>
+</tr>
+<tr>
+<td><code>Vedak-512</code></td>
+<td>4096 B</td>
+<td>658.8 k</td>
+<td>160.8</td>
+<td>315 µs</td>
+<td>13.0</td>
+<td>15330 (5 × 3066)</td>
+</tr>
+<tr>
+<td><code>Vedak-512</code></td>
+<td>8192 B</td>
+<td>1.29 M</td>
+<td>157.3</td>
+<td>616 µs</td>
+<td>13.3</td>
+<td>7890 (5 × 1578)</td>
+</tr>
+<tr>
+<td><code>Vedak-512</code></td>
+<td>16384 B</td>
+<td>2.57 M</td>
+<td>156.6</td>
+<td>1.23 ms</td>
+<td>13.4</td>
+<td>3990 (5 × 798)</td>
+</tr>
+<tr>
+<td><code>Vedak-512</code></td>
+<td>65536 B</td>
+<td>10.10 M</td>
+<td>154.1</td>
+<td>4.82 ms</td>
+<td>13.6</td>
+<td>1020 (5 × 204)</td>
+</tr>
+<tr>
+<td><code>Vedak-768</code></td>
+<td>32 B</td>
+<td>24.6 k</td>
+<td>768.0</td>
+<td>11.7 µs</td>
+<td>2.7</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>Vedak-768</code></td>
+<td>128 B</td>
+<td>51.0 k</td>
+<td>398.5</td>
+<td>24.4 µs</td>
+<td>5.3</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>Vedak-768</code></td>
+<td>512 B</td>
+<td>134.1 k</td>
+<td>261.9</td>
+<td>64.1 µs</td>
+<td>8.0</td>
+<td>69145 (5 × 13829)</td>
+</tr>
+<tr>
+<td><code>Vedak-768</code></td>
+<td>1024 B</td>
+<td>245.7 k</td>
+<td>240.0</td>
+<td>117 µs</td>
+<td>8.7</td>
+<td>39325 (5 × 7865)</td>
+</tr>
+<tr>
+<td><code>Vedak-768</code></td>
+<td>4096 B</td>
+<td>914.2 k</td>
+<td>223.2</td>
+<td>437 µs</td>
+<td>9.4</td>
+<td>10780 (5 × 2156)</td>
+</tr>
+<tr>
+<td><code>Vedak-768</code></td>
+<td>8192 B</td>
+<td>1.80 M</td>
+<td>219.9</td>
+<td>861 µs</td>
+<td>9.5</td>
+<td>5710 (5 × 1142)</td>
+</tr>
+<tr>
+<td><code>Vedak-768</code></td>
+<td>16384 B</td>
+<td>3.56 M</td>
+<td>217.3</td>
+<td>1.7 ms</td>
+<td>9.6</td>
+<td>2900 (5 × 580)</td>
+</tr>
+<tr>
+<td><code>Vedak-768</code></td>
+<td>65536 B</td>
+<td>14.07 M</td>
+<td>214.7</td>
+<td>6.72 ms</td>
+<td>9.7</td>
+<td>745 (5 × 149)</td>
+</tr>
+<tr>
+<td><code>Vedak-1024</code></td>
+<td>32 B</td>
+<td>47.6 k</td>
+<td>1488.5</td>
+<td>22.8 µs</td>
+<td>1.4</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>Vedak-1024</code></td>
+<td>128 B</td>
+<td>97.4 k</td>
+<td>761.0</td>
+<td>46.5 µs</td>
+<td>2.8</td>
+<td>93485 (5 × 18697)</td>
+</tr>
+<tr>
+<td><code>Vedak-1024</code></td>
+<td>512 B</td>
+<td>249.3 k</td>
+<td>486.9</td>
+<td>119 µs</td>
+<td>4.3</td>
+<td>39360 (5 × 7872)</td>
+</tr>
+<tr>
+<td><code>Vedak-1024</code></td>
+<td>1024 B</td>
+<td>453.3 k</td>
+<td>442.7</td>
+<td>217 µs</td>
+<td>4.7</td>
+<td>22130 (5 × 4426)</td>
+</tr>
+<tr>
+<td><code>Vedak-1024</code></td>
+<td>4096 B</td>
+<td>1.67 M</td>
+<td>408.9</td>
+<td>800 µs</td>
+<td>5.1</td>
+<td>6235 (5 × 1247)</td>
+</tr>
+<tr>
+<td><code>Vedak-1024</code></td>
+<td>8192 B</td>
+<td>3.29 M</td>
+<td>402.2</td>
+<td>1.57 ms</td>
+<td>5.2</td>
+<td>3010 (5 × 602)</td>
+</tr>
+<tr>
+<td><code>Vedak-1024</code></td>
+<td>16384 B</td>
+<td>6.52 M</td>
+<td>397.9</td>
+<td>3.11 ms</td>
+<td>5.3</td>
+<td>1590 (5 × 318)</td>
+</tr>
+<tr>
+<td><code>Vedak-1024</code></td>
+<td>65536 B</td>
+<td>25.93 M</td>
+<td>395.7</td>
+<td>12.4 ms</td>
+<td>5.3</td>
+<td>405 (5 × 81)</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="5-resource-consumption">5. Resource consumption</h2>
+<p>Static memory is approximated by the library's loadable ELF segments; peak memory is the process high-water mark (VmHWM) including the benchmark driver and libc, so both are upper-bound proxies rather than isolated algorithm memory.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>operation</th>
+<th>static: ELF image (bytes)</th>
+<th>baseline RSS</th>
+<th>peak RSS</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Vedak-512</code></td>
+<td>hash_32</td>
+<td>12601</td>
+<td>1680 KiB</td>
+<td>1756 KiB</td>
+</tr>
+<tr>
+<td><code>Vedak-512</code></td>
+<td>hash_128</td>
+<td>12601</td>
+<td>1692 KiB</td>
+<td>1756 KiB</td>
+</tr>
+<tr>
+<td><code>Vedak-512</code></td>
+<td>hash_512</td>
+<td>12601</td>
+<td>1684 KiB</td>
+<td>1768 KiB</td>
+</tr>
+<tr>
+<td><code>Vedak-512</code></td>
+<td>hash_1024</td>
+<td>12601</td>
+<td>1672 KiB</td>
+<td>1784 KiB</td>
+</tr>
+<tr>
+<td><code>Vedak-512</code></td>
+<td>hash_4096</td>
+<td>12601</td>
+<td>1672 KiB</td>
+<td>1764 KiB</td>
+</tr>
+<tr>
+<td><code>Vedak-512</code></td>
+<td>hash_8192</td>
+<td>12601</td>
+<td>1680 KiB</td>
+<td>1776 KiB</td>
+</tr>
+<tr>
+<td><code>Vedak-512</code></td>
+<td>hash_16384</td>
+<td>12601</td>
+<td>1708 KiB</td>
+<td>1792 KiB</td>
+</tr>
+<tr>
+<td><code>Vedak-512</code></td>
+<td>hash_65536</td>
+<td>12601</td>
+<td>1752 KiB</td>
+<td>1904 KiB</td>
+</tr>
+<tr>
+<td><code>Vedak-768</code></td>
+<td>hash_32</td>
+<td>12601</td>
+<td>1680 KiB</td>
+<td>1776 KiB</td>
+</tr>
+<tr>
+<td><code>Vedak-768</code></td>
+<td>hash_128</td>
+<td>12601</td>
+<td>1688 KiB</td>
+<td>1776 KiB</td>
+</tr>
+<tr>
+<td><code>Vedak-768</code></td>
+<td>hash_512</td>
+<td>12601</td>
+<td>1672 KiB</td>
+<td>1776 KiB</td>
+</tr>
+<tr>
+<td><code>Vedak-768</code></td>
+<td>hash_1024</td>
+<td>12601</td>
+<td>1672 KiB</td>
+<td>1772 KiB</td>
+</tr>
+<tr>
+<td><code>Vedak-768</code></td>
+<td>hash_4096</td>
+<td>12601</td>
+<td>1672 KiB</td>
+<td>1764 KiB</td>
+</tr>
+<tr>
+<td><code>Vedak-768</code></td>
+<td>hash_8192</td>
+<td>12601</td>
+<td>1696 KiB</td>
+<td>1768 KiB</td>
+</tr>
+<tr>
+<td><code>Vedak-768</code></td>
+<td>hash_16384</td>
+<td>12601</td>
+<td>1704 KiB</td>
+<td>1784 KiB</td>
+</tr>
+<tr>
+<td><code>Vedak-768</code></td>
+<td>hash_65536</td>
+<td>12601</td>
+<td>1732 KiB</td>
+<td>1904 KiB</td>
+</tr>
+<tr>
+<td><code>Vedak-1024</code></td>
+<td>hash_32</td>
+<td>12601</td>
+<td>1672 KiB</td>
+<td>1736 KiB</td>
+</tr>
+<tr>
+<td><code>Vedak-1024</code></td>
+<td>hash_128</td>
+<td>12601</td>
+<td>1664 KiB</td>
+<td>1780 KiB</td>
+</tr>
+<tr>
+<td><code>Vedak-1024</code></td>
+<td>hash_512</td>
+<td>12601</td>
+<td>1680 KiB</td>
+<td>1756 KiB</td>
+</tr>
+<tr>
+<td><code>Vedak-1024</code></td>
+<td>hash_1024</td>
+<td>12601</td>
+<td>1680 KiB</td>
+<td>1780 KiB</td>
+</tr>
+<tr>
+<td><code>Vedak-1024</code></td>
+<td>hash_4096</td>
+<td>12601</td>
+<td>1672 KiB</td>
+<td>1776 KiB</td>
+</tr>
+<tr>
+<td><code>Vedak-1024</code></td>
+<td>hash_8192</td>
+<td>12601</td>
+<td>1664 KiB</td>
+<td>1796 KiB</td>
+</tr>
+<tr>
+<td><code>Vedak-1024</code></td>
+<td>hash_16384</td>
+<td>12601</td>
+<td>1688 KiB</td>
+<td>1804 KiB</td>
+</tr>
+<tr>
+<td><code>Vedak-1024</code></td>
+<td>hash_65536</td>
+<td>12601</td>
+<td>1736 KiB</td>
+<td>1908 KiB</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="7-raw-evidence-index">7. Raw evidence index</h2>
+<p>Paths are relative to <code>performance/data/x86_1/</code> in the <a href="https://github.com/ngcc-dev/ngcc-harness">harness</a>; each JSON file records its commands, environment and trials.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>item</th>
+<th>file</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Vedak-512</code></td>
+<td>KAT log (sha256 <code>5c61763865a0a7ba…</code>)</td>
+<td><code>kat/hash-27/Vedak-512.log</code></td>
+</tr>
+<tr>
+<td><code>Vedak-512</code></td>
+<td>timing hash_1024</td>
+<td><code>records/hash-27/Vedak-512__hash_1024.json</code></td>
+</tr>
+<tr>
+<td><code>Vedak-512</code></td>
+<td>timing hash_128</td>
+<td><code>records/hash-27/Vedak-512__hash_128.json</code></td>
+</tr>
+<tr>
+<td><code>Vedak-512</code></td>
+<td>timing hash_16384</td>
+<td><code>records/hash-27/Vedak-512__hash_16384.json</code></td>
+</tr>
+<tr>
+<td><code>Vedak-512</code></td>
+<td>timing hash_32</td>
+<td><code>records/hash-27/Vedak-512__hash_32.json</code></td>
+</tr>
+<tr>
+<td><code>Vedak-512</code></td>
+<td>timing hash_4096</td>
+<td><code>records/hash-27/Vedak-512__hash_4096.json</code></td>
+</tr>
+<tr>
+<td><code>Vedak-512</code></td>
+<td>timing hash_512</td>
+<td><code>records/hash-27/Vedak-512__hash_512.json</code></td>
+</tr>
+<tr>
+<td><code>Vedak-512</code></td>
+<td>timing hash_65536</td>
+<td><code>records/hash-27/Vedak-512__hash_65536.json</code></td>
+</tr>
+<tr>
+<td><code>Vedak-512</code></td>
+<td>timing hash_8192</td>
+<td><code>records/hash-27/Vedak-512__hash_8192.json</code></td>
+</tr>
+<tr>
+<td><code>Vedak-768</code></td>
+<td>KAT log (sha256 <code>d310d9c0966f44fc…</code>)</td>
+<td><code>kat/hash-27/Vedak-768.log</code></td>
+</tr>
+<tr>
+<td><code>Vedak-768</code></td>
+<td>timing hash_1024</td>
+<td><code>records/hash-27/Vedak-768__hash_1024.json</code></td>
+</tr>
+<tr>
+<td><code>Vedak-768</code></td>
+<td>timing hash_128</td>
+<td><code>records/hash-27/Vedak-768__hash_128.json</code></td>
+</tr>
+<tr>
+<td><code>Vedak-768</code></td>
+<td>timing hash_16384</td>
+<td><code>records/hash-27/Vedak-768__hash_16384.json</code></td>
+</tr>
+<tr>
+<td><code>Vedak-768</code></td>
+<td>timing hash_32</td>
+<td><code>records/hash-27/Vedak-768__hash_32.json</code></td>
+</tr>
+<tr>
+<td><code>Vedak-768</code></td>
+<td>timing hash_4096</td>
+<td><code>records/hash-27/Vedak-768__hash_4096.json</code></td>
+</tr>
+<tr>
+<td><code>Vedak-768</code></td>
+<td>timing hash_512</td>
+<td><code>records/hash-27/Vedak-768__hash_512.json</code></td>
+</tr>
+<tr>
+<td><code>Vedak-768</code></td>
+<td>timing hash_65536</td>
+<td><code>records/hash-27/Vedak-768__hash_65536.json</code></td>
+</tr>
+<tr>
+<td><code>Vedak-768</code></td>
+<td>timing hash_8192</td>
+<td><code>records/hash-27/Vedak-768__hash_8192.json</code></td>
+</tr>
+<tr>
+<td><code>Vedak-1024</code></td>
+<td>KAT log (sha256 <code>38544b3761483697…</code>)</td>
+<td><code>kat/hash-27/Vedak-1024.log</code></td>
+</tr>
+<tr>
+<td><code>Vedak-1024</code></td>
+<td>timing hash_1024</td>
+<td><code>records/hash-27/Vedak-1024__hash_1024.json</code></td>
+</tr>
+<tr>
+<td><code>Vedak-1024</code></td>
+<td>timing hash_128</td>
+<td><code>records/hash-27/Vedak-1024__hash_128.json</code></td>
+</tr>
+<tr>
+<td><code>Vedak-1024</code></td>
+<td>timing hash_16384</td>
+<td><code>records/hash-27/Vedak-1024__hash_16384.json</code></td>
+</tr>
+<tr>
+<td><code>Vedak-1024</code></td>
+<td>timing hash_32</td>
+<td><code>records/hash-27/Vedak-1024__hash_32.json</code></td>
+</tr>
+<tr>
+<td><code>Vedak-1024</code></td>
+<td>timing hash_4096</td>
+<td><code>records/hash-27/Vedak-1024__hash_4096.json</code></td>
+</tr>
+<tr>
+<td><code>Vedak-1024</code></td>
+<td>timing hash_512</td>
+<td><code>records/hash-27/Vedak-1024__hash_512.json</code></td>
+</tr>
+<tr>
+<td><code>Vedak-1024</code></td>
+<td>timing hash_65536</td>
+<td><code>records/hash-27/Vedak-1024__hash_65536.json</code></td>
+</tr>
+<tr>
+<td><code>Vedak-1024</code></td>
+<td>timing hash_8192</td>
+<td><code>records/hash-27/Vedak-1024__hash_8192.json</code></td>
+</tr>
+</tbody>
+</table></div>
+<p>Scripts: <code>performance/campaign.py</code>, <code>performance/ngcc_perf.c</code>, <code>performance/hashprof/</code> in the <a href="https://github.com/ngcc-dev/ngcc-harness">harness</a>.</p>
+</main>
+<footer class="site-footer">
+<p>Maintained by: <a href="mailto:markku-juhani.saarinen@tuni.fi">markku-juhani.saarinen@tuni.fi</a></p>
+<p>Submissions are welcome via <a href="https://github.com/ngcc-dev/ngcc-harness/issues">GitHub issues</a>.</p>
+</footer>
+</body>
+</html>

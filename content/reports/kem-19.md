@@ -19,6 +19,10 @@ Lore-512 uses `Z_1028[x]/(x^768+1)`, where `1028 = t·q` with the specification'
 
 The forum estimates approximately 451 classical and 391 quantum bits for full recovery, below the claimed 512-bit classical level. Those figures depend on an independent-coefficient/GSA lattice model that has **not** been reproduced here and does not fully model Lore's fixed-composition secret, rounding correlations, or concrete reduction costs. This is a structurally verified parameter-selection lead, not a demonstrated full-size key recovery or a confirmed 451-bit attack.
 
+### Follow-up Analysis
+
+The Lore team's [first response](https://list.niccs.org.cn/archives/list/pkcforum@list.niccs.org.cn/message/KGBWR5YQU6ASUKNVUQEBNNJZ7TWZIOY4/) and [revised-parameter post](https://list.niccs.org.cn/archives/list/pkcforum@list.niccs.org.cn/message/W6XIOQDXGIUZPVKR3MZW4HZCDJEVYRMR/) change Lore-512 to `n=1024`, `k=2`, and the ring `Z_1028[x]/(x^1024+1)`, together with updated fixed-composition and BCH parameters. That removes the particular degree-256/512 quotient projection reported here. This report continues to describe the archived Round 1 submission identified above; it does not apply the same factorization claim to the revised set.
+
 ### Reproducing
 
 ```sh

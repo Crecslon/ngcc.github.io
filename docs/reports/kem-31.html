@@ -5,28 +5,28 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>ngcc.dev: QIMEN-PIKE (kem-31)</title>
 <link rel="icon" type="image/png" href="../assets/mag-glass.png">
-<link rel="stylesheet" href="../assets/style.css?v=996d5cfd">
+<link rel="stylesheet" href="../assets/style.css?v=1fdb792d">
 </head>
 <body>
 <header class="site-header">
 <a class="brand" href="../index.html"><img class="brand-icon" src="../assets/mag-glass.png" alt="" width="28" height="28">ngcc.dev</a>
-<nav><a href="../index.html">Home</a><a href="../reports/index.html">Reports</a><a href="../constant-time/index.html">Constant-Time</a></nav>
+<nav><a href="../index.html">Home</a><a href="../reports/index.html">Reports</a><a href="../performance/x86_1/index.html">Performance</a><a href="../constant-time/index.html">Constant-Time</a></nav>
 </header>
-<main>
-<p class="crumb"><a href="../reports/index.html">Reports</a> › <code>kem-31</code> · <a href="../constant-time/kem-31.html">Constant-time review</a></p>
+<main class="">
+<p class="crumb"><a href="../reports/index.html">Reports</a> › <code>kem-31</code> · <a href="../constant-time/kem-31.html">Constant-time review</a> · <a href="../performance/x86_1/kem-31.html">Performance</a></p>
 
 <h1 id="qimen-pike-kem-31">QIMEN-PIKE (kem-31)</h1>
 <div class="table-wrap"><table class="meta">
 <tr><th>Candidate</th><td>QIMEN-PIKE</td></tr>
 <tr><th>Family</th><td>Isogeny-based</td></tr>
 <tr><th>Archive</th><td><a href="https://www.niccs.org.cn/niccs/Proposal/Public-Key%20Cryptographic%20Algorithms/Round%201%20candidates/QIMEN-PIKE.zip">QIMEN-PIKE.zip</a> (SHA-256: <code>eff17fd345bbb44cbaeb822bece3c0b82b8d00f49278e72a89c83e2551c1752a</code>)</td></tr>
-<tr><th>Specification</th><td><a href="https://github.com/ngcc-dev/ngcc-harness/raw/refs/heads/main/kem-31/kem-31-spec.pdf" title="Download kem-31-spec.pdf from GitHub">kem-31-spec.pdf</a>&nbsp;<a class="pdf-link" href="https://cdn.jsdelivr.net/gh/ngcc-dev/ngcc-harness@main/kem-31/kem-31-spec.pdf" title="Open the kem-31 specification PDF">PDF</a></td></tr>
+<tr><th>Specification</th><td><a href="https://github.com/ngcc-dev/ngcc-harness/raw/dc66c6cb3c06e75bdea0048e21fa4e13c63f00af/kem-31/kem-31-spec.pdf" title="Download kem-31-spec.pdf from GitHub">kem-31-spec.pdf</a>&nbsp;<a class="pdf-link" href="https://cdn.jsdelivr.net/gh/ngcc-dev/ngcc-harness@dc66c6cb3c06e75bdea0048e21fa4e13c63f00af/kem-31/kem-31-spec.pdf" title="Open the kem-31 specification PDF">PDF</a></td></tr>
 </table></div>
 
 <h2 class="issue-heading issue-heading-first" id="kem-31-1-invalid-ciphertexts-trigger-an-assertion-during-decapsulation">kem-31-1: Invalid ciphertexts trigger an assertion during decapsulation</h2>
 
 <div class="table-wrap"><table class="meta issue-meta">
-<tr><th>Severity</th><td><span class="sev sev-medium">Medium</span></td></tr>
+<tr><th>Severity</th><td><span class="sev sev-low">Low</span></td></tr>
 <tr><th>Scope</th><td>implementation</td></tr>
 <tr><th>Status</th><td><span class="issue-status status-confirmed">Confirmed</span></td></tr>
 <tr><th>Affected</th><td>Submitted compressed reference implementation, NGCC-1/2/3</td></tr>
@@ -38,7 +38,7 @@
 <p>Follow-up source: <a href="https://github.com/ngcc-dev/ngcc-harness/issues/22">Jieyu Zheng's GitHub issue #22, 2026-09-26</a></p>
 <p>With an honestly generated key, the all-zero ciphertext aborts decapsulation in every submitted QIMEN-PIKE parameter set. The failing assertion is <code>is_point_equal(PnQ, P)</code> in <code>point_ratio</code> (<code>src/ec/ref/ecx/biextension.c:185</code>), reached while decoding attacker-controlled ciphertext data. The existing mutation sweep also records aborts for fixed-length bit flips. All three reference KAT sets pass, so the failure is specific to malformed input rather than routine operation.</p>
 <p>An application that decapsulates untrusted ciphertexts in-process can therefore be terminated by a single request. This is a confirmed availability failure in the submitted assertion-enabled build, not evidence of key recovery or a failure of the underlying isogeny assumption. Disabling assertions has not been established as a safe repair: malformed points must be checked and rejected explicitly before use.</p>
-<p>Jieyu Zheng identified a concrete memory-safety root cause behind this warning. <code>ct_decode</code> decodes four attacker-controlled hint fields as signed <code>int</code> values (<code>pike_compressed.c:1049,1122-1128</code>). The reconstruction routines test only <code>hint &lt; 20</code> before evaluating <code>Z_NQR_TABLE[hint]</code> or <code>NQR_TABLE[hint]</code> (<code>basis.c:1725-1727,1834-1836</code>), so a negative hint reads before either 20-element table. Changing any one hint of an honest ciphertext to <code>-1</code> aborted all 12 tested parameter-set/field combinations; the issue's AddressSanitizer run additionally records a 128-byte out-of-bounds read. This confirms that removing assertions is unsafe. No key recovery or disclosed-memory channel has been demonstrated, so the finding remains Medium and keeps its existing ID.</p>
+<p>Jieyu Zheng identified a concrete memory-safety root cause behind this warning. <code>ct_decode</code> decodes four attacker-controlled hint fields as signed <code>int</code> values (<code>pike_compressed.c:1049,1122-1128</code>). The reconstruction routines test only <code>hint &lt; 20</code> before evaluating <code>Z_NQR_TABLE[hint]</code> or <code>NQR_TABLE[hint]</code> (<code>basis.c:1725-1727,1834-1836</code>), so a negative hint reads before either 20-element table. Changing any one hint of an honest ciphertext to <code>-1</code> aborted all 12 tested parameter-set/field combinations; the issue's AddressSanitizer run additionally records a 128-byte out-of-bounds read. This confirms that removing assertions is unsafe. The demonstrated consequence remains process termination: no read data is returned, and no disclosure, key recovery, or control-flow effect has been shown. Under the classification policy this remains Low and keeps its existing ID.</p>
 <h3 id="reproducing">Reproducing</h3>
 <p>Commands below run in a checkout of the <a href="https://github.com/ngcc-dev/ngcc-harness">ngcc-harness repository</a> with the candidate built (see its README).</p>
 <pre><code class="language-sh">make -C security
@@ -64,6 +64,7 @@ security/ngcc_security kem-31/lib/libNGCC-3.so kem-zero
 <tr><th>Date</th><td>2026-09-25</td></tr>
 </table></div>
 
+<p>Additional reference: <a href="https://eprint.iacr.org/2026/2232">Xiong and Wang, ePrint 2026/2232, §5</a></p>
 <p><code>fp_decode</code> reduces field elements modulo <code>p</code> without rejecting values at least <code>p</code>, and NGCC-1 also leaves 4 bytes of each 64-byte field slot unread. Decapsulation compares and hashes the re-encoded decoded ciphertext rather than the received bytes (<code>KEM_AlgorithmInstance.c:245,252</code>). Replacing any field element <code>x</code> by <code>x + p</code>, or changing an unread slot byte, therefore returns the honest key. The submission claims IND-CCA security, which is trivially violated.</p>
 <p>The specification's Algorithm 15 (§3.3.2, p. 36) compares the received <code>ct</code> with the re-encryption <code>ct′</code> and uses <code>Hct(ct)</code> to derive the key. Section 3.3.1 says this hash binds the full ciphertext transcript. Appendix B.1 (p. 78) describes reduced field-element serialization, while Chapter 5 notes that NGCC-1 reserves 64 bytes for a field element that needs only 60. The specification does not define a parser for malformed byte encodings. In the submitted byte API, <code>ct_decode</code> accepts them, and <code>compare_ct_for_kdf</code> and <code>derive_ss_from_m_and_ct</code> use a fresh encoding of the decoded object (<code>KEM_AlgorithmInstance.c:612–633,588–605</code>). This normalization is where the byte-distinct alias survives the specified equality and hash steps.</p>
 <h3 id="reproducing_1">Reproducing</h3>
@@ -73,7 +74,7 @@ security/ngcc_security kem-31/lib/libNGCC-3.so kem-zero
 <h2 class="issue-heading" id="kem-31-3-malformed-public-keys-hang-or-abort-encapsulation">kem-31-3: Malformed public keys hang or abort encapsulation</h2>
 
 <div class="table-wrap"><table class="meta issue-meta">
-<tr><th>Severity</th><td><span class="sev sev-medium">Medium</span></td></tr>
+<tr><th>Severity</th><td><span class="sev sev-low">Low</span></td></tr>
 <tr><th>Scope</th><td>implementation</td></tr>
 <tr><th>Status</th><td><span class="issue-status status-confirmed">Confirmed</span></td></tr>
 <tr><th>Affected</th><td>NGCC-1, NGCC-2, and NGCC-3 reference implementations</td></tr>

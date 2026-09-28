@@ -5,22 +5,22 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>ngcc.dev: CheetahKEM (kem-09)</title>
 <link rel="icon" type="image/png" href="../assets/mag-glass.png">
-<link rel="stylesheet" href="../assets/style.css?v=996d5cfd">
+<link rel="stylesheet" href="../assets/style.css?v=1fdb792d">
 </head>
 <body>
 <header class="site-header">
 <a class="brand" href="../index.html"><img class="brand-icon" src="../assets/mag-glass.png" alt="" width="28" height="28">ngcc.dev</a>
-<nav><a href="../index.html">Home</a><a href="../reports/index.html">Reports</a><a href="../constant-time/index.html">Constant-Time</a></nav>
+<nav><a href="../index.html">Home</a><a href="../reports/index.html">Reports</a><a href="../performance/x86_1/index.html">Performance</a><a href="../constant-time/index.html">Constant-Time</a></nav>
 </header>
-<main>
-<p class="crumb"><a href="../reports/index.html">Reports</a> › <code>kem-09</code> · <a href="../constant-time/kem-09.html">Constant-time review</a></p>
+<main class="">
+<p class="crumb"><a href="../reports/index.html">Reports</a> › <code>kem-09</code> · <a href="../constant-time/kem-09.html">Constant-time review</a> · <a href="../performance/x86_1/kem-09.html">Performance</a></p>
 
 <h1 id="cheetahkem-kem-09">CheetahKEM (kem-09)</h1>
 <div class="table-wrap"><table class="meta">
 <tr><th>Candidate</th><td>CheetahKEM</td></tr>
 <tr><th>Family</th><td>Lattice (Ring/Module-LWE)</td></tr>
 <tr><th>Archive</th><td><a href="https://www.niccs.org.cn/niccs/Proposal/Public-Key%20Cryptographic%20Algorithms/Round%201%20candidates/CheetahKEM.zip">CheetahKEM.zip</a> (SHA-256: <code>fc321e46bac9c387535e2053bed560eac3d3cd88ba9bebc154f5bf68dd47dcd1</code>)</td></tr>
-<tr><th>Specification</th><td><a href="https://github.com/ngcc-dev/ngcc-harness/raw/refs/heads/main/kem-09/kem-09-spec.pdf" title="Download kem-09-spec.pdf from GitHub">kem-09-spec.pdf</a>&nbsp;<a class="pdf-link" href="https://cdn.jsdelivr.net/gh/ngcc-dev/ngcc-harness@main/kem-09/kem-09-spec.pdf" title="Open the kem-09 specification PDF">PDF</a></td></tr>
+<tr><th>Specification</th><td><a href="https://github.com/ngcc-dev/ngcc-harness/raw/dc66c6cb3c06e75bdea0048e21fa4e13c63f00af/kem-09/kem-09-spec.pdf" title="Download kem-09-spec.pdf from GitHub">kem-09-spec.pdf</a>&nbsp;<a class="pdf-link" href="https://cdn.jsdelivr.net/gh/ngcc-dev/ngcc-harness@dc66c6cb3c06e75bdea0048e21fa4e13c63f00af/kem-09/kem-09-spec.pdf" title="Open the kem-09 specification PDF">PDF</a></td></tr>
 </table></div>
 
 <h2 class="issue-heading issue-heading-first" id="kem-09-1-partial-rejection-mask-leaks-the-candidate-shared-secret">kem-09-1: Partial rejection mask leaks the candidate shared secret</h2>
@@ -61,9 +61,11 @@ witnesses and their controls. See <code>tools/README.md</code>.</p>
 <tr><th>Date</th><td>2026-09-22</td></tr>
 </table></div>
 <p>Original source: <a href="https://list.niccs.org.cn/archives/list/pkcforum@list.niccs.org.cn/message/IKMFXEEH5K427JC75E7364RNOJEO5OK7/">NGCC PKC Forum report</a></p>
+<p>Additional reference: <a href="https://eprint.iacr.org/2026/2232">Xiong and Wang, ePrint 2026/2232, §11</a></p>
 <p>The specified ring polynomial is reducible: <code>X^640+1 = (X^128+1)(X^512-X^384+X^256-X^128+1)</code>. Reducing a public MLWE sample modulo <code>X^128+1</code> is the public alternating fold <code>a[j]-a[j+128]+a[j+256]-a[j+384]+a[j+512]</code>. It reduces the scalar secret dimension from <code>640k</code> to <code>128k</code>; five independent <code>CBD(eta)</code> coefficients fold to <code>CBD(5*eta)</code>, and public-key compression noise folds in the same way.</p>
 <p>Re-running <code>lattice-estimator</code> with that quotient distribution reproduces XuHaomeng's <a href="https://list.niccs.org.cn/archives/list/pkcforum@list.niccs.org.cn/message/IKMFXEEH5K427JC75E7364RNOJEO5OK7/">mailing-list estimates</a>: uSVP costs of 27.7, 67.7, 99.3, and 133.4 bits, versus the specification's 159, 307, 426, and 541 bits. This establishes a much cheaper distinguisher for the underlying structured samples and invalidates estimates that treat all <code>640k</code> coordinates as one irreducible component.</p>
 <p>This remains a Lead because a complete IND-CCA attack on the KEM has not been constructed. Full secret recovery also requires solving the residual degree-512 component; the post explicitly leaves that cost unresolved.</p>
+<p>Xiong and Wang independently reproduce the quotient, estimator figures, and reduced toy recoveries. Their stronger statement that distinguishing the projected public-key distribution by itself breaks IND-CPA reverses the direction of the usual SLWE reduction: it does not provide a challenge-message or shared-key distinguisher for an honestly generated public key. The paper therefore strengthens the structural and experimental evidence but does not close the full-recovery gap recorded above.</p>
 <h3 id="reproducing_1">Reproducing</h3>
 <p>Commands below run in a checkout of the <a href="https://github.com/ngcc-dev/ngcc-harness">ngcc-harness repository</a> with the candidate built (see its README).</p>
 <p>Install Martin Albrecht's <a href="https://github.com/malb/lattice-estimator">lattice-estimator</a>

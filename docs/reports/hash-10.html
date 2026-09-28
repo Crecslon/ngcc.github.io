@@ -5,22 +5,22 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>ngcc.dev: FEILIAN (hash-10)</title>
 <link rel="icon" type="image/png" href="../assets/mag-glass.png">
-<link rel="stylesheet" href="../assets/style.css?v=996d5cfd">
+<link rel="stylesheet" href="../assets/style.css?v=1fdb792d">
 </head>
 <body>
 <header class="site-header">
 <a class="brand" href="../index.html"><img class="brand-icon" src="../assets/mag-glass.png" alt="" width="28" height="28">ngcc.dev</a>
-<nav><a href="../index.html">Home</a><a href="../reports/index.html">Reports</a><a href="../constant-time/index.html">Constant-Time</a></nav>
+<nav><a href="../index.html">Home</a><a href="../reports/index.html">Reports</a><a href="../performance/x86_1/index.html">Performance</a><a href="../constant-time/index.html">Constant-Time</a></nav>
 </header>
-<main>
-<p class="crumb"><a href="../reports/index.html">Reports</a> › <code>hash-10</code> · <a href="../constant-time/hash-10.html">Constant-time review</a></p>
+<main class="">
+<p class="crumb"><a href="../reports/index.html">Reports</a> › <code>hash-10</code> · <a href="../constant-time/hash-10.html">Constant-time review</a> · <a href="../performance/x86_1/hash-10.html">Performance</a></p>
 
 <h1 id="feilian-hash-10">FEILIAN (hash-10)</h1>
 <div class="table-wrap"><table class="meta">
 <tr><th>Candidate</th><td>FEILIAN</td></tr>
 <tr><th>Family</th><td>Symmetric (matrix-based hash)</td></tr>
 <tr><th>Archive</th><td><a href="https://www.niccs.org.cn/niccs/Proposal/Cryptographic%20Hash%20Algorithms/Round%201%20candidates/FEILIAN.zip">FEILIAN.zip</a> (SHA-256: <code>876082a40ecf3b25d8b19478cbfeab4bd5f96ff7a293aacc5b57a9f73c2ff26c</code>)</td></tr>
-<tr><th>Specification</th><td><a href="https://github.com/ngcc-dev/ngcc-harness/raw/refs/heads/main/hash-10/hash-10-spec.pdf" title="Download hash-10-spec.pdf from GitHub">hash-10-spec.pdf</a>&nbsp;<a class="pdf-link" href="https://cdn.jsdelivr.net/gh/ngcc-dev/ngcc-harness@main/hash-10/hash-10-spec.pdf" title="Open the hash-10 specification PDF">PDF</a></td></tr>
+<tr><th>Specification</th><td><a href="https://github.com/ngcc-dev/ngcc-harness/raw/dc66c6cb3c06e75bdea0048e21fa4e13c63f00af/hash-10/hash-10-spec.pdf" title="Download hash-10-spec.pdf from GitHub">hash-10-spec.pdf</a>&nbsp;<a class="pdf-link" href="https://cdn.jsdelivr.net/gh/ngcc-dev/ngcc-harness@dc66c6cb3c06e75bdea0048e21fa4e13c63f00af/hash-10/hash-10-spec.pdf" title="Open the hash-10 specification PDF">PDF</a></td></tr>
 </table></div>
 
 <h2 class="issue-heading issue-heading-first" id="hash-10-1-padding-allocation-failure-returns-a-successful-all-zero-digest">hash-10-1: Padding-allocation failure returns a successful all-zero digest</h2>
@@ -79,6 +79,7 @@
 <tr><th>Date</th><td>2026-09-26</td></tr>
 </table></div>
 <p>Original source: <a href="https://github.com/ngcc-dev/ngcc-harness/issues/19">GitHub issue #19</a></p>
+<p>Additional reference: <a href="https://eprint.iacr.org/2026/2236">Idrassi, “A Complete Classification of Whole-Output Linear Structures in FEILIAN-Type Components,” ePrint 2026/2236, Appendix</a></p>
 <p>Several definitions conflict. Chapter 2 prints IV word 7 as <code>3D84...</code> (line 101), while its stated pi derivation, C and RTL give <code>3F84...</code>. The AddConstant diagram places the tweak in row 1 and constants in row 3, while Appendix A, C and RTL reverse them. C and 2SC encode the 128-bit counter high word first, while 1SC/4SC/8SC encode it low word first. All four RTL packages hard-code version <code>0x400</code> and a 1024-bit digest even though the submitted <code>FEILIAN/Implementations/README.txt:21,23</code> labels 1SC and 4SC as 512-bit designs.</p>
 <p>Appendix B is internally mixed as well. Independent evaluation of all six examples shows that the 1024-bit examples use the true cumulative message lengths, while the 512- and 768-bit examples use cumulative padded-block lengths. The latter convention loses the logical-length binding on which zero padding relies. The ordinary C implementations and their KATs use true lengths, so this is an ambiguity and conformance defect rather than a full-round attack on those implementations.</p>
 <h3 id="reproducing_2">Reproducing</h3>

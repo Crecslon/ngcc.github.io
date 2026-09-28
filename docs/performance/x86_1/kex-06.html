@@ -1,0 +1,937 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ngcc.dev: kex-06 MAMBA-NIKE — performance on x86-64 (system x861)</title>
+<link rel="icon" type="image/png" href="../../assets/mag-glass.png">
+<link rel="stylesheet" href="../../assets/style.css?v=1fdb792d">
+</head>
+<body>
+<header class="site-header">
+<a class="brand" href="../../index.html"><img class="brand-icon" src="../../assets/mag-glass.png" alt="" width="28" height="28">ngcc.dev</a>
+<nav><a href="../../index.html">Home</a><a href="../../reports/index.html">Reports</a><a href="../../performance/x86_1/index.html">Performance</a><a href="../../constant-time/index.html">Constant-Time</a></nav>
+</header>
+<main class="">
+<!-- synchronized from harness: kex-06/perf_x86_1.md -->
+<h1 id="kex-06-mamba-nike-performance-on-x86-64-system-x86_1">kex-06 MAMBA-NIKE — performance on x86-64 (system x86_1)</h1>
+<p><a href="index.html">Performance x86_1</a> › <code>kex-06</code> · <a href="method.html">method</a> · <a href="https://www.niccs.org.cn/niccs/Round1Additional/pc/content/content_2101560625907453952.html">NICCS page</a></p>
+<p>Independent measurement following the structure of the NICCS x86 self-assessment guide, §3.5 (1)–(7). Not a submitter self-assessment.</p>
+<h2 id="1-basic-information">1. Basic information</h2>
+<ul>
+<li>Category: public-key algorithm; function: key exchange</li>
+<li>Algorithm: MAMBA-NIKE</li>
+<li>Implementation versions measured: reference</li>
+<li>Parameter sets: <code>MAMBA-NIKE-128</code>, <code>MAMBA-NIKE-192</code>, <code>MAMBA-NIKE-256</code>, <code>MAMBA-NIKE-384</code>, <code>MAMBA-NIKE-512</code></li>
+</ul>
+<h2 id="2-assessment-environment">2. Assessment environment</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>item</th>
+<th>value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>processor</td>
+<td>12th Gen Intel(R) Core(TM) i7-12700 (CPU 2, one core)</td>
+</tr>
+<tr>
+<td>clock</td>
+<td>max 2.10 GHz, governor performance, turbo off, SMT off</td>
+</tr>
+<tr>
+<td>memory</td>
+<td>31788 MiB</td>
+</tr>
+<tr>
+<td>OS / kernel</td>
+<td>Debian GNU/Linux 13 (trixie) / 6.12.107+deb13-amd64</td>
+</tr>
+<tr>
+<td>compiler / build tool</td>
+<td>gcc (Debian 14.2.0-19) 14.2.0 / cmake version 3.31.6</td>
+</tr>
+<tr>
+<td>campaign start / end (UTC)</td>
+<td>2026-09-25T10:02:21 / 2026-09-28T04:35:59</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="3-functional-testing-kat">3. Functional testing (KAT)</h2>
+<p>Each library was checked against the submitted KAT vectors (SHA-256 manifest <code>kex-06/kat.sha256</code> in the harness) before timing.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>build flags</th>
+<th>KAT</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>MAMBA-NIKE-128</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>MAMBA-NIKE-192</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>MAMBA-NIKE-256</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>MAMBA-NIKE-384</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>MAMBA-NIKE-512</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="4-performance">4. Performance</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>operation</th>
+<th>mean cycles</th>
+<th>mean time</th>
+<th>ops/s</th>
+<th>median trial</th>
+<th>n (trials × iters)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>MAMBA-NIKE-128</code></td>
+<td>exchange</td>
+<td>6.09 M</td>
+<td>2.92 ms</td>
+<td>343</td>
+<td>2.92 ms</td>
+<td>1760 (5 × 352)</td>
+</tr>
+<tr>
+<td><code>MAMBA-NIKE-128</code></td>
+<td>init_a</td>
+<td>1.29 M</td>
+<td>617 µs</td>
+<td>1.62e+03</td>
+<td>616 µs</td>
+<td>1760 (5 × 352)</td>
+</tr>
+<tr>
+<td><code>MAMBA-NIKE-128</code></td>
+<td>init_b</td>
+<td>1.28 M</td>
+<td>615 µs</td>
+<td>1.63e+03</td>
+<td>614 µs</td>
+<td>1760 (5 × 352)</td>
+</tr>
+<tr>
+<td><code>MAMBA-NIKE-128</code></td>
+<td>pass1</td>
+<td>2.49 M</td>
+<td>1.19 ms</td>
+<td>837</td>
+<td>1.19 ms</td>
+<td>1760 (5 × 352)</td>
+</tr>
+<tr>
+<td><code>MAMBA-NIKE-128</code></td>
+<td>derive_a</td>
+<td>4276</td>
+<td>1.94 µs</td>
+<td>5.16e+05</td>
+<td>1.95 µs</td>
+<td>1760 (5 × 352)</td>
+</tr>
+<tr>
+<td><code>MAMBA-NIKE-128</code></td>
+<td>derive_b</td>
+<td>1.30 M</td>
+<td>622 µs</td>
+<td>1.61e+03</td>
+<td>621 µs</td>
+<td>1760 (5 × 352)</td>
+</tr>
+<tr>
+<td><code>MAMBA-NIKE-192</code></td>
+<td>exchange</td>
+<td>6.14 M</td>
+<td>2.94 ms</td>
+<td>340</td>
+<td>2.93 ms</td>
+<td>1680 (5 × 336)</td>
+</tr>
+<tr>
+<td><code>MAMBA-NIKE-192</code></td>
+<td>init_a</td>
+<td>1.30 M</td>
+<td>622 µs</td>
+<td>1.61e+03</td>
+<td>622 µs</td>
+<td>1680 (5 × 336)</td>
+</tr>
+<tr>
+<td><code>MAMBA-NIKE-192</code></td>
+<td>init_b</td>
+<td>1.29 M</td>
+<td>620 µs</td>
+<td>1.61e+03</td>
+<td>620 µs</td>
+<td>1680 (5 × 336)</td>
+</tr>
+<tr>
+<td><code>MAMBA-NIKE-192</code></td>
+<td>pass1</td>
+<td>2.53 M</td>
+<td>1.21 ms</td>
+<td>826</td>
+<td>1.21 ms</td>
+<td>1680 (5 × 336)</td>
+</tr>
+<tr>
+<td><code>MAMBA-NIKE-192</code></td>
+<td>derive_a</td>
+<td>4231</td>
+<td>1.92 µs</td>
+<td>5.2e+05</td>
+<td>1.94 µs</td>
+<td>1680 (5 × 336)</td>
+</tr>
+<tr>
+<td><code>MAMBA-NIKE-192</code></td>
+<td>derive_b</td>
+<td>1.29 M</td>
+<td>619 µs</td>
+<td>1.61e+03</td>
+<td>621 µs</td>
+<td>1680 (5 × 336)</td>
+</tr>
+<tr>
+<td><code>MAMBA-NIKE-256</code></td>
+<td>exchange</td>
+<td>6.20 M</td>
+<td>2.97 ms</td>
+<td>337</td>
+<td>2.96 ms</td>
+<td>1785 (5 × 357)</td>
+</tr>
+<tr>
+<td><code>MAMBA-NIKE-256</code></td>
+<td>init_a</td>
+<td>1.31 M</td>
+<td>658 µs</td>
+<td>1.52e+03</td>
+<td>628 µs</td>
+<td>1785 (5 × 357)</td>
+</tr>
+<tr>
+<td><code>MAMBA-NIKE-256</code></td>
+<td>init_b</td>
+<td>1.32 M</td>
+<td>633 µs</td>
+<td>1.58e+03</td>
+<td>633 µs</td>
+<td>1785 (5 × 357)</td>
+</tr>
+<tr>
+<td><code>MAMBA-NIKE-256</code></td>
+<td>pass1</td>
+<td>2.54 M</td>
+<td>1.22 ms</td>
+<td>821</td>
+<td>1.22 ms</td>
+<td>1785 (5 × 357)</td>
+</tr>
+<tr>
+<td><code>MAMBA-NIKE-256</code></td>
+<td>derive_a</td>
+<td>4196</td>
+<td>1.9 µs</td>
+<td>5.25e+05</td>
+<td>1.9 µs</td>
+<td>1785 (5 × 357)</td>
+</tr>
+<tr>
+<td><code>MAMBA-NIKE-256</code></td>
+<td>derive_b</td>
+<td>1.30 M</td>
+<td>623 µs</td>
+<td>1.61e+03</td>
+<td>622 µs</td>
+<td>1785 (5 × 357)</td>
+</tr>
+<tr>
+<td><code>MAMBA-NIKE-384</code></td>
+<td>exchange</td>
+<td>12.94 M</td>
+<td>6.2 ms</td>
+<td>161</td>
+<td>6.19 ms</td>
+<td>810 (5 × 162)</td>
+</tr>
+<tr>
+<td><code>MAMBA-NIKE-384</code></td>
+<td>init_a</td>
+<td>2.62 M</td>
+<td>1.25 ms</td>
+<td>797</td>
+<td>1.26 ms</td>
+<td>810 (5 × 162)</td>
+</tr>
+<tr>
+<td><code>MAMBA-NIKE-384</code></td>
+<td>init_b</td>
+<td>2.67 M</td>
+<td>1.28 ms</td>
+<td>781</td>
+<td>1.28 ms</td>
+<td>810 (5 × 162)</td>
+</tr>
+<tr>
+<td><code>MAMBA-NIKE-384</code></td>
+<td>pass1</td>
+<td>5.31 M</td>
+<td>2.54 ms</td>
+<td>393</td>
+<td>2.55 ms</td>
+<td>810 (5 × 162)</td>
+</tr>
+<tr>
+<td><code>MAMBA-NIKE-384</code></td>
+<td>derive_a</td>
+<td>7858</td>
+<td>3.61 µs</td>
+<td>2.77e+05</td>
+<td>3.63 µs</td>
+<td>810 (5 × 162)</td>
+</tr>
+<tr>
+<td><code>MAMBA-NIKE-384</code></td>
+<td>derive_b</td>
+<td>2.74 M</td>
+<td>1.35 ms</td>
+<td>741</td>
+<td>1.31 ms</td>
+<td>810 (5 × 162)</td>
+</tr>
+<tr>
+<td><code>MAMBA-NIKE-512</code></td>
+<td>exchange</td>
+<td>13.11 M</td>
+<td>6.28 ms</td>
+<td>159</td>
+<td>6.29 ms</td>
+<td>800 (5 × 160)</td>
+</tr>
+<tr>
+<td><code>MAMBA-NIKE-512</code></td>
+<td>init_a</td>
+<td>2.73 M</td>
+<td>1.31 ms</td>
+<td>764</td>
+<td>1.31 ms</td>
+<td>800 (5 × 160)</td>
+</tr>
+<tr>
+<td><code>MAMBA-NIKE-512</code></td>
+<td>init_b</td>
+<td>2.73 M</td>
+<td>1.31 ms</td>
+<td>764</td>
+<td>1.31 ms</td>
+<td>800 (5 × 160)</td>
+</tr>
+<tr>
+<td><code>MAMBA-NIKE-512</code></td>
+<td>pass1</td>
+<td>5.35 M</td>
+<td>2.56 ms</td>
+<td>390</td>
+<td>2.56 ms</td>
+<td>800 (5 × 160)</td>
+</tr>
+<tr>
+<td><code>MAMBA-NIKE-512</code></td>
+<td>derive_a</td>
+<td>7819</td>
+<td>3.6 µs</td>
+<td>2.78e+05</td>
+<td>3.58 µs</td>
+<td>800 (5 × 160)</td>
+</tr>
+<tr>
+<td><code>MAMBA-NIKE-512</code></td>
+<td>derive_b</td>
+<td>2.74 M</td>
+<td>1.32 ms</td>
+<td>760</td>
+<td>1.31 ms</td>
+<td>800 (5 × 160)</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="5-resource-consumption">5. Resource consumption</h2>
+<p>Static memory is approximated by the library's loadable ELF segments; peak memory is the process high-water mark (VmHWM) including the benchmark driver and libc, so both are upper-bound proxies rather than isolated algorithm memory.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>operation</th>
+<th>static: ELF image (bytes)</th>
+<th>baseline RSS</th>
+<th>peak RSS</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>MAMBA-NIKE-128</code></td>
+<td>exchange</td>
+<td>43901</td>
+<td>2060 KiB</td>
+<td>2132 KiB</td>
+</tr>
+<tr>
+<td><code>MAMBA-NIKE-128</code></td>
+<td>init_a</td>
+<td>43901</td>
+<td>2052 KiB</td>
+<td>2124 KiB</td>
+</tr>
+<tr>
+<td><code>MAMBA-NIKE-128</code></td>
+<td>init_b</td>
+<td>43901</td>
+<td>2060 KiB</td>
+<td>2148 KiB</td>
+</tr>
+<tr>
+<td><code>MAMBA-NIKE-128</code></td>
+<td>pass1</td>
+<td>43901</td>
+<td>2048 KiB</td>
+<td>2148 KiB</td>
+</tr>
+<tr>
+<td><code>MAMBA-NIKE-128</code></td>
+<td>derive_a</td>
+<td>43901</td>
+<td>2032 KiB</td>
+<td>2132 KiB</td>
+</tr>
+<tr>
+<td><code>MAMBA-NIKE-128</code></td>
+<td>derive_b</td>
+<td>43901</td>
+<td>2060 KiB</td>
+<td>2144 KiB</td>
+</tr>
+<tr>
+<td><code>MAMBA-NIKE-192</code></td>
+<td>exchange</td>
+<td>43885</td>
+<td>2028 KiB</td>
+<td>2156 KiB</td>
+</tr>
+<tr>
+<td><code>MAMBA-NIKE-192</code></td>
+<td>init_a</td>
+<td>43885</td>
+<td>2052 KiB</td>
+<td>2136 KiB</td>
+</tr>
+<tr>
+<td><code>MAMBA-NIKE-192</code></td>
+<td>init_b</td>
+<td>43885</td>
+<td>2040 KiB</td>
+<td>2136 KiB</td>
+</tr>
+<tr>
+<td><code>MAMBA-NIKE-192</code></td>
+<td>pass1</td>
+<td>43885</td>
+<td>2044 KiB</td>
+<td>2136 KiB</td>
+</tr>
+<tr>
+<td><code>MAMBA-NIKE-192</code></td>
+<td>derive_a</td>
+<td>43885</td>
+<td>2044 KiB</td>
+<td>2156 KiB</td>
+</tr>
+<tr>
+<td><code>MAMBA-NIKE-192</code></td>
+<td>derive_b</td>
+<td>43885</td>
+<td>2036 KiB</td>
+<td>2156 KiB</td>
+</tr>
+<tr>
+<td><code>MAMBA-NIKE-256</code></td>
+<td>exchange</td>
+<td>43949</td>
+<td>2044 KiB</td>
+<td>2112 KiB</td>
+</tr>
+<tr>
+<td><code>MAMBA-NIKE-256</code></td>
+<td>init_a</td>
+<td>43949</td>
+<td>2048 KiB</td>
+<td>2116 KiB</td>
+</tr>
+<tr>
+<td><code>MAMBA-NIKE-256</code></td>
+<td>init_b</td>
+<td>43949</td>
+<td>2064 KiB</td>
+<td>2148 KiB</td>
+</tr>
+<tr>
+<td><code>MAMBA-NIKE-256</code></td>
+<td>pass1</td>
+<td>43949</td>
+<td>2048 KiB</td>
+<td>2136 KiB</td>
+</tr>
+<tr>
+<td><code>MAMBA-NIKE-256</code></td>
+<td>derive_a</td>
+<td>43949</td>
+<td>2056 KiB</td>
+<td>2124 KiB</td>
+</tr>
+<tr>
+<td><code>MAMBA-NIKE-256</code></td>
+<td>derive_b</td>
+<td>43949</td>
+<td>2040 KiB</td>
+<td>2144 KiB</td>
+</tr>
+<tr>
+<td><code>MAMBA-NIKE-384</code></td>
+<td>exchange</td>
+<td>43885</td>
+<td>2408 KiB</td>
+<td>2480 KiB</td>
+</tr>
+<tr>
+<td><code>MAMBA-NIKE-384</code></td>
+<td>init_a</td>
+<td>43885</td>
+<td>2392 KiB</td>
+<td>2500 KiB</td>
+</tr>
+<tr>
+<td><code>MAMBA-NIKE-384</code></td>
+<td>init_b</td>
+<td>43885</td>
+<td>2400 KiB</td>
+<td>2484 KiB</td>
+</tr>
+<tr>
+<td><code>MAMBA-NIKE-384</code></td>
+<td>pass1</td>
+<td>43885</td>
+<td>2408 KiB</td>
+<td>2492 KiB</td>
+</tr>
+<tr>
+<td><code>MAMBA-NIKE-384</code></td>
+<td>derive_a</td>
+<td>43885</td>
+<td>2404 KiB</td>
+<td>2492 KiB</td>
+</tr>
+<tr>
+<td><code>MAMBA-NIKE-384</code></td>
+<td>derive_b</td>
+<td>43885</td>
+<td>2396 KiB</td>
+<td>2464 KiB</td>
+</tr>
+<tr>
+<td><code>MAMBA-NIKE-512</code></td>
+<td>exchange</td>
+<td>43949</td>
+<td>2380 KiB</td>
+<td>2452 KiB</td>
+</tr>
+<tr>
+<td><code>MAMBA-NIKE-512</code></td>
+<td>init_a</td>
+<td>43949</td>
+<td>2392 KiB</td>
+<td>2500 KiB</td>
+</tr>
+<tr>
+<td><code>MAMBA-NIKE-512</code></td>
+<td>init_b</td>
+<td>43949</td>
+<td>2312 KiB</td>
+<td>2448 KiB</td>
+</tr>
+<tr>
+<td><code>MAMBA-NIKE-512</code></td>
+<td>pass1</td>
+<td>43949</td>
+<td>2408 KiB</td>
+<td>2496 KiB</td>
+</tr>
+<tr>
+<td><code>MAMBA-NIKE-512</code></td>
+<td>derive_a</td>
+<td>43949</td>
+<td>2400 KiB</td>
+<td>2500 KiB</td>
+</tr>
+<tr>
+<td><code>MAMBA-NIKE-512</code></td>
+<td>derive_b</td>
+<td>43949</td>
+<td>2388 KiB</td>
+<td>2508 KiB</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="6-transmission-and-storage-overhead">6. Transmission and storage overhead</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>passes</th>
+<th>messages (bytes)</th>
+<th>total</th>
+<th>long-term pk / sk</th>
+<th>shared secret</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>MAMBA-NIKE-128</code></td>
+<td>1</td>
+<td>1568</td>
+<td>1568</td>
+<td>1184 / 3232</td>
+<td>32</td>
+</tr>
+<tr>
+<td><code>MAMBA-NIKE-192</code></td>
+<td>1</td>
+<td>1568</td>
+<td>1568</td>
+<td>1312 / 3360</td>
+<td>32</td>
+</tr>
+<tr>
+<td><code>MAMBA-NIKE-256</code></td>
+<td>1</td>
+<td>1568</td>
+<td>1568</td>
+<td>1312 / 3360</td>
+<td>32</td>
+</tr>
+<tr>
+<td><code>MAMBA-NIKE-384</code></td>
+<td>1</td>
+<td>3360</td>
+<td>3360</td>
+<td>2848 / 6944</td>
+<td>48</td>
+</tr>
+<tr>
+<td><code>MAMBA-NIKE-512</code></td>
+<td>1</td>
+<td>3360</td>
+<td>3360</td>
+<td>2848 / 6944</td>
+<td>64</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="symmetric-primitives">Symmetric primitives</h2>
+<p><a href="../symmetric-survey.html">Survey</a> verdict: <strong>bypass</strong> — SHAKE128/256 + ChaCha20; DRNG only with -DKAT_BUILD, otherwise /dev/urandom</p>
+<p>Share of each operation spent in the ICCS placeholder hash functions and in the ICCS DRNG (reference build, measured in the same run with link-time wrappers):</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>operation</th>
+<th>pseudohash/XOF/sm3</th>
+<th>DRNG</th>
+<th>calls per operation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>MAMBA-NIKE-128</code></td>
+<td>exchange</td>
+<td>0.0%</td>
+<td>0.5%</td>
+<td>drng 6</td>
+</tr>
+<tr>
+<td><code>MAMBA-NIKE-192</code></td>
+<td>exchange</td>
+<td>0.0%</td>
+<td>0.5%</td>
+<td>drng 6</td>
+</tr>
+<tr>
+<td><code>MAMBA-NIKE-256</code></td>
+<td>exchange</td>
+<td>0.0%</td>
+<td>0.5%</td>
+<td>drng 6</td>
+</tr>
+<tr>
+<td><code>MAMBA-NIKE-384</code></td>
+<td>exchange</td>
+<td>0.0%</td>
+<td>0.2%</td>
+<td>drng 6</td>
+</tr>
+<tr>
+<td><code>MAMBA-NIKE-512</code></td>
+<td>exchange</td>
+<td>0.0%</td>
+<td>0.2%</td>
+<td>drng 6</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="7-raw-evidence-index">7. Raw evidence index</h2>
+<p>Paths are relative to <code>performance/data/x86_1/</code> in the <a href="https://github.com/ngcc-dev/ngcc-harness">harness</a>; each JSON file records its commands, environment and trials.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>item</th>
+<th>file</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>MAMBA-NIKE-128</code></td>
+<td>KAT log (sha256 <code>0228be5a1b75f7e7…</code>)</td>
+<td><code>kat/kex-06/MAMBA-NIKE-128.log</code></td>
+</tr>
+<tr>
+<td><code>MAMBA-NIKE-128</code></td>
+<td>timing derive_a</td>
+<td><code>records/kex-06/MAMBA-NIKE-128__derive_a.json</code></td>
+</tr>
+<tr>
+<td><code>MAMBA-NIKE-128</code></td>
+<td>timing derive_b</td>
+<td><code>records/kex-06/MAMBA-NIKE-128__derive_b.json</code></td>
+</tr>
+<tr>
+<td><code>MAMBA-NIKE-128</code></td>
+<td>timing exchange</td>
+<td><code>records/kex-06/MAMBA-NIKE-128__exchange.json</code></td>
+</tr>
+<tr>
+<td><code>MAMBA-NIKE-128</code></td>
+<td>timing init_a</td>
+<td><code>records/kex-06/MAMBA-NIKE-128__init_a.json</code></td>
+</tr>
+<tr>
+<td><code>MAMBA-NIKE-128</code></td>
+<td>timing init_b</td>
+<td><code>records/kex-06/MAMBA-NIKE-128__init_b.json</code></td>
+</tr>
+<tr>
+<td><code>MAMBA-NIKE-128</code></td>
+<td>timing pass1</td>
+<td><code>records/kex-06/MAMBA-NIKE-128__pass1.json</code></td>
+</tr>
+<tr>
+<td><code>MAMBA-NIKE-128</code></td>
+<td>hash profile exchange</td>
+<td><code>profile/kex-06/MAMBA-NIKE-128__exchange.json</code></td>
+</tr>
+<tr>
+<td><code>MAMBA-NIKE-192</code></td>
+<td>KAT log (sha256 <code>c0ca4648299977a1…</code>)</td>
+<td><code>kat/kex-06/MAMBA-NIKE-192.log</code></td>
+</tr>
+<tr>
+<td><code>MAMBA-NIKE-192</code></td>
+<td>timing derive_a</td>
+<td><code>records/kex-06/MAMBA-NIKE-192__derive_a.json</code></td>
+</tr>
+<tr>
+<td><code>MAMBA-NIKE-192</code></td>
+<td>timing derive_b</td>
+<td><code>records/kex-06/MAMBA-NIKE-192__derive_b.json</code></td>
+</tr>
+<tr>
+<td><code>MAMBA-NIKE-192</code></td>
+<td>timing exchange</td>
+<td><code>records/kex-06/MAMBA-NIKE-192__exchange.json</code></td>
+</tr>
+<tr>
+<td><code>MAMBA-NIKE-192</code></td>
+<td>timing init_a</td>
+<td><code>records/kex-06/MAMBA-NIKE-192__init_a.json</code></td>
+</tr>
+<tr>
+<td><code>MAMBA-NIKE-192</code></td>
+<td>timing init_b</td>
+<td><code>records/kex-06/MAMBA-NIKE-192__init_b.json</code></td>
+</tr>
+<tr>
+<td><code>MAMBA-NIKE-192</code></td>
+<td>timing pass1</td>
+<td><code>records/kex-06/MAMBA-NIKE-192__pass1.json</code></td>
+</tr>
+<tr>
+<td><code>MAMBA-NIKE-192</code></td>
+<td>hash profile exchange</td>
+<td><code>profile/kex-06/MAMBA-NIKE-192__exchange.json</code></td>
+</tr>
+<tr>
+<td><code>MAMBA-NIKE-256</code></td>
+<td>KAT log (sha256 <code>f92ef0f1f12d2904…</code>)</td>
+<td><code>kat/kex-06/MAMBA-NIKE-256.log</code></td>
+</tr>
+<tr>
+<td><code>MAMBA-NIKE-256</code></td>
+<td>timing derive_a</td>
+<td><code>records/kex-06/MAMBA-NIKE-256__derive_a.json</code></td>
+</tr>
+<tr>
+<td><code>MAMBA-NIKE-256</code></td>
+<td>timing derive_b</td>
+<td><code>records/kex-06/MAMBA-NIKE-256__derive_b.json</code></td>
+</tr>
+<tr>
+<td><code>MAMBA-NIKE-256</code></td>
+<td>timing exchange</td>
+<td><code>records/kex-06/MAMBA-NIKE-256__exchange.json</code></td>
+</tr>
+<tr>
+<td><code>MAMBA-NIKE-256</code></td>
+<td>timing init_a</td>
+<td><code>records/kex-06/MAMBA-NIKE-256__init_a.json</code></td>
+</tr>
+<tr>
+<td><code>MAMBA-NIKE-256</code></td>
+<td>timing init_b</td>
+<td><code>records/kex-06/MAMBA-NIKE-256__init_b.json</code></td>
+</tr>
+<tr>
+<td><code>MAMBA-NIKE-256</code></td>
+<td>timing pass1</td>
+<td><code>records/kex-06/MAMBA-NIKE-256__pass1.json</code></td>
+</tr>
+<tr>
+<td><code>MAMBA-NIKE-256</code></td>
+<td>hash profile exchange</td>
+<td><code>profile/kex-06/MAMBA-NIKE-256__exchange.json</code></td>
+</tr>
+<tr>
+<td><code>MAMBA-NIKE-384</code></td>
+<td>KAT log (sha256 <code>a543699cc51547e8…</code>)</td>
+<td><code>kat/kex-06/MAMBA-NIKE-384.log</code></td>
+</tr>
+<tr>
+<td><code>MAMBA-NIKE-384</code></td>
+<td>timing derive_a</td>
+<td><code>records/kex-06/MAMBA-NIKE-384__derive_a.json</code></td>
+</tr>
+<tr>
+<td><code>MAMBA-NIKE-384</code></td>
+<td>timing derive_b</td>
+<td><code>records/kex-06/MAMBA-NIKE-384__derive_b.json</code></td>
+</tr>
+<tr>
+<td><code>MAMBA-NIKE-384</code></td>
+<td>timing exchange</td>
+<td><code>records/kex-06/MAMBA-NIKE-384__exchange.json</code></td>
+</tr>
+<tr>
+<td><code>MAMBA-NIKE-384</code></td>
+<td>timing init_a</td>
+<td><code>records/kex-06/MAMBA-NIKE-384__init_a.json</code></td>
+</tr>
+<tr>
+<td><code>MAMBA-NIKE-384</code></td>
+<td>timing init_b</td>
+<td><code>records/kex-06/MAMBA-NIKE-384__init_b.json</code></td>
+</tr>
+<tr>
+<td><code>MAMBA-NIKE-384</code></td>
+<td>timing pass1</td>
+<td><code>records/kex-06/MAMBA-NIKE-384__pass1.json</code></td>
+</tr>
+<tr>
+<td><code>MAMBA-NIKE-384</code></td>
+<td>hash profile exchange</td>
+<td><code>profile/kex-06/MAMBA-NIKE-384__exchange.json</code></td>
+</tr>
+<tr>
+<td><code>MAMBA-NIKE-512</code></td>
+<td>KAT log (sha256 <code>e5689c47200de2c0…</code>)</td>
+<td><code>kat/kex-06/MAMBA-NIKE-512.log</code></td>
+</tr>
+<tr>
+<td><code>MAMBA-NIKE-512</code></td>
+<td>timing derive_a</td>
+<td><code>records/kex-06/MAMBA-NIKE-512__derive_a.json</code></td>
+</tr>
+<tr>
+<td><code>MAMBA-NIKE-512</code></td>
+<td>timing derive_b</td>
+<td><code>records/kex-06/MAMBA-NIKE-512__derive_b.json</code></td>
+</tr>
+<tr>
+<td><code>MAMBA-NIKE-512</code></td>
+<td>timing exchange</td>
+<td><code>records/kex-06/MAMBA-NIKE-512__exchange.json</code></td>
+</tr>
+<tr>
+<td><code>MAMBA-NIKE-512</code></td>
+<td>timing init_a</td>
+<td><code>records/kex-06/MAMBA-NIKE-512__init_a.json</code></td>
+</tr>
+<tr>
+<td><code>MAMBA-NIKE-512</code></td>
+<td>timing init_b</td>
+<td><code>records/kex-06/MAMBA-NIKE-512__init_b.json</code></td>
+</tr>
+<tr>
+<td><code>MAMBA-NIKE-512</code></td>
+<td>timing pass1</td>
+<td><code>records/kex-06/MAMBA-NIKE-512__pass1.json</code></td>
+</tr>
+<tr>
+<td><code>MAMBA-NIKE-512</code></td>
+<td>hash profile exchange</td>
+<td><code>profile/kex-06/MAMBA-NIKE-512__exchange.json</code></td>
+</tr>
+</tbody>
+</table></div>
+<p>Scripts: <code>performance/campaign.py</code>, <code>performance/ngcc_perf.c</code>, <code>performance/hashprof/</code> in the <a href="https://github.com/ngcc-dev/ngcc-harness">harness</a>.</p>
+</main>
+<footer class="site-footer">
+<p>Maintained by: <a href="mailto:markku-juhani.saarinen@tuni.fi">markku-juhani.saarinen@tuni.fi</a></p>
+<p>Submissions are welcome via <a href="https://github.com/ngcc-dev/ngcc-harness/issues">GitHub issues</a>.</p>
+</footer>
+</body>
+</html>

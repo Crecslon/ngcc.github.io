@@ -1,0 +1,1075 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ngcc.dev: sign-13 GreatWall Signature Algorithm — performance on x86-64 (system x861)</title>
+<link rel="icon" type="image/png" href="../../assets/mag-glass.png">
+<link rel="stylesheet" href="../../assets/style.css?v=1fdb792d">
+</head>
+<body>
+<header class="site-header">
+<a class="brand" href="../../index.html"><img class="brand-icon" src="../../assets/mag-glass.png" alt="" width="28" height="28">ngcc.dev</a>
+<nav><a href="../../index.html">Home</a><a href="../../reports/index.html">Reports</a><a href="../../performance/x86_1/index.html">Performance</a><a href="../../constant-time/index.html">Constant-Time</a></nav>
+</header>
+<main class="">
+<!-- synchronized from harness: sign-13/perf_x86_1.md -->
+<h1 id="sign-13-greatwall-signature-algorithm-performance-on-x86-64-system-x86_1">sign-13 GreatWall Signature Algorithm — performance on x86-64 (system x86_1)</h1>
+<p><a href="index.html">Performance x86_1</a> › <code>sign-13</code> · <a href="method.html">method</a> · <a href="https://www.niccs.org.cn/niccs/Round1Additional/pc/content/content_2101561077852098560.html">NICCS page</a></p>
+<p>Independent measurement following the structure of the NICCS x86 self-assessment guide, §3.5 (1)–(7). Not a submitter self-assessment.</p>
+<h2 id="1-basic-information">1. Basic information</h2>
+<ul>
+<li>Category: public-key algorithm; function: digital signature</li>
+<li>Algorithm: GreatWall Signature Algorithm</li>
+<li>Implementation versions measured: reference</li>
+<li>Parameter sets: <code>GreatWall128f</code>, <code>GreatWall128s</code>, <code>GreatWall192f</code>, <code>GreatWall192s</code>, <code>GreatWall256f</code>, <code>GreatWall256s</code>, <code>GreatWall512f</code>, <code>GreatWall512s</code></li>
+</ul>
+<h2 id="2-assessment-environment">2. Assessment environment</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>item</th>
+<th>value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>processor</td>
+<td>12th Gen Intel(R) Core(TM) i7-12700 (CPU 2, one core)</td>
+</tr>
+<tr>
+<td>clock</td>
+<td>max 2.10 GHz, governor performance, turbo off, SMT off</td>
+</tr>
+<tr>
+<td>memory</td>
+<td>31788 MiB</td>
+</tr>
+<tr>
+<td>OS / kernel</td>
+<td>Debian GNU/Linux 13 (trixie) / 6.12.107+deb13-amd64</td>
+</tr>
+<tr>
+<td>compiler / build tool</td>
+<td>gcc (Debian 14.2.0-19) 14.2.0 / cmake version 3.31.6</td>
+</tr>
+<tr>
+<td>campaign start / end (UTC)</td>
+<td>2026-09-25T10:02:21 / 2026-09-28T04:35:59</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="3-functional-testing-kat">3. Functional testing (KAT)</h2>
+<p>Each library was checked against the submitted KAT vectors (SHA-256 manifest <code>sign-13/kat.sha256</code> in the harness) before timing.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>build flags</th>
+<th>KAT</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>GreatWall128f</code></td>
+<td>harness-default</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>GreatWall128s</code></td>
+<td>harness-default</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>GreatWall192f</code></td>
+<td>harness-default</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>GreatWall192s</code></td>
+<td>harness-default</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>GreatWall256f</code></td>
+<td>harness-default</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>GreatWall256s</code></td>
+<td>harness-default</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>GreatWall512f</code></td>
+<td>harness-default</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>GreatWall512s</code></td>
+<td>harness-default</td>
+<td class="st ok">PASS</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="4-performance">4. Performance</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>operation</th>
+<th>mean cycles</th>
+<th>mean time</th>
+<th>ops/s</th>
+<th>median trial</th>
+<th>n (trials × iters)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>GreatWall128f</code></td>
+<td>keygen</td>
+<td>5.88 M</td>
+<td>2.81 ms</td>
+<td>356</td>
+<td>2.81 ms</td>
+<td>5440 (5 × 1088)</td>
+</tr>
+<tr>
+<td><code>GreatWall128f</code></td>
+<td>sign</td>
+<td>137.40 M</td>
+<td>65.7 ms</td>
+<td>15.2</td>
+<td>65.7 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>GreatWall128f</code></td>
+<td>verify</td>
+<td>101.83 M</td>
+<td>48.6 ms</td>
+<td>20.6</td>
+<td>48.6 ms</td>
+<td>105 (5 × 21)</td>
+</tr>
+<tr>
+<td><code>GreatWall128s</code></td>
+<td>keygen</td>
+<td>5.89 M</td>
+<td>2.84 ms</td>
+<td>352</td>
+<td>2.82 ms</td>
+<td>5350 (5 × 1070)</td>
+</tr>
+<tr>
+<td><code>GreatWall128s</code></td>
+<td>sign</td>
+<td>632.05 M</td>
+<td>304 ms</td>
+<td>3.29</td>
+<td>301 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>GreatWall128s</code></td>
+<td>verify</td>
+<td>538.77 M</td>
+<td>257 ms</td>
+<td>3.88</td>
+<td>257 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>GreatWall192f</code></td>
+<td>keygen</td>
+<td>13.49 M</td>
+<td>6.45 ms</td>
+<td>155</td>
+<td>6.44 ms</td>
+<td>635 (5 × 127)</td>
+</tr>
+<tr>
+<td><code>GreatWall192f</code></td>
+<td>sign</td>
+<td>450.19 M</td>
+<td>217 ms</td>
+<td>4.61</td>
+<td>216 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>GreatWall192f</code></td>
+<td>verify</td>
+<td>311.50 M</td>
+<td>149 ms</td>
+<td>6.71</td>
+<td>149 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>GreatWall192s</code></td>
+<td>keygen</td>
+<td>13.54 M</td>
+<td>6.47 ms</td>
+<td>155</td>
+<td>6.47 ms</td>
+<td>630 (5 × 126)</td>
+</tr>
+<tr>
+<td><code>GreatWall192s</code></td>
+<td>sign</td>
+<td>1.95 G</td>
+<td>938 ms</td>
+<td>1.07</td>
+<td>940 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>GreatWall192s</code></td>
+<td>verify</td>
+<td>1.81 G</td>
+<td>867 ms</td>
+<td>1.15</td>
+<td>864 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>GreatWall256f</code></td>
+<td>keygen</td>
+<td>27.35 M</td>
+<td>13.1 ms</td>
+<td>76.5</td>
+<td>13.1 ms</td>
+<td>360 (5 × 72)</td>
+</tr>
+<tr>
+<td><code>GreatWall256f</code></td>
+<td>sign</td>
+<td>1.04 G</td>
+<td>502 ms</td>
+<td>1.99</td>
+<td>499 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>GreatWall256f</code></td>
+<td>verify</td>
+<td>699.87 M</td>
+<td>336 ms</td>
+<td>2.98</td>
+<td>334 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>GreatWall256s</code></td>
+<td>keygen</td>
+<td>27.36 M</td>
+<td>13.1 ms</td>
+<td>76.5</td>
+<td>13.1 ms</td>
+<td>360 (5 × 72)</td>
+</tr>
+<tr>
+<td><code>GreatWall256s</code></td>
+<td>sign</td>
+<td>3.65 G</td>
+<td>1.75 s</td>
+<td>0.57</td>
+<td>1.75 s</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>GreatWall256s</code></td>
+<td>verify</td>
+<td>3.30 G</td>
+<td>1.58 s</td>
+<td>0.633</td>
+<td>1.58 s</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>GreatWall512f</code></td>
+<td>keygen</td>
+<td>121.94 M</td>
+<td>58.5 ms</td>
+<td>17.1</td>
+<td>58.5 ms</td>
+<td>210 (5 × 42)</td>
+</tr>
+<tr>
+<td><code>GreatWall512f</code></td>
+<td>sign</td>
+<td>9.92 G</td>
+<td>4.74 s</td>
+<td>0.211</td>
+<td>4.74 s</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>GreatWall512f</code></td>
+<td>verify</td>
+<td>5.91 G</td>
+<td>2.83 s</td>
+<td>0.353</td>
+<td>2.84 s</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>GreatWall512s</code></td>
+<td>keygen</td>
+<td>121.91 M</td>
+<td>58.5 ms</td>
+<td>17.1</td>
+<td>58.5 ms</td>
+<td>210 (5 × 42)</td>
+</tr>
+<tr>
+<td><code>GreatWall512s</code></td>
+<td>sign</td>
+<td>24.65 G</td>
+<td>11.8 s</td>
+<td>0.0846</td>
+<td>11.8 s</td>
+<td>75 (5 × 15)</td>
+</tr>
+<tr>
+<td><code>GreatWall512s</code></td>
+<td>verify</td>
+<td>20.69 G</td>
+<td>9.92 s</td>
+<td>0.101</td>
+<td>9.92 s</td>
+<td>90 (5 × 18)</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="5-resource-consumption">5. Resource consumption</h2>
+<p>Static memory is approximated by the library's loadable ELF segments; peak memory is the process high-water mark (VmHWM) including the benchmark driver and libc, so both are upper-bound proxies rather than isolated algorithm memory.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>operation</th>
+<th>static: ELF image (bytes)</th>
+<th>baseline RSS</th>
+<th>peak RSS</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>GreatWall128f</code></td>
+<td>keygen</td>
+<td>232617</td>
+<td>1788 KiB</td>
+<td>1940 KiB</td>
+</tr>
+<tr>
+<td><code>GreatWall128f</code></td>
+<td>sign</td>
+<td>232617</td>
+<td>1856 KiB</td>
+<td>2368 KiB</td>
+</tr>
+<tr>
+<td><code>GreatWall128f</code></td>
+<td>verify</td>
+<td>232617</td>
+<td>2208 KiB</td>
+<td>2360 KiB</td>
+</tr>
+<tr>
+<td><code>GreatWall128s</code></td>
+<td>keygen</td>
+<td>231553</td>
+<td>1780 KiB</td>
+<td>1948 KiB</td>
+</tr>
+<tr>
+<td><code>GreatWall128s</code></td>
+<td>sign</td>
+<td>231553</td>
+<td>1824 KiB</td>
+<td>4836 KiB</td>
+</tr>
+<tr>
+<td><code>GreatWall128s</code></td>
+<td>verify</td>
+<td>231553</td>
+<td>1992 KiB</td>
+<td>4536 KiB</td>
+</tr>
+<tr>
+<td><code>GreatWall192f</code></td>
+<td>keygen</td>
+<td>236377</td>
+<td>1804 KiB</td>
+<td>1932 KiB</td>
+</tr>
+<tr>
+<td><code>GreatWall192f</code></td>
+<td>sign</td>
+<td>236377</td>
+<td>1856 KiB</td>
+<td>3044 KiB</td>
+</tr>
+<tr>
+<td><code>GreatWall192f</code></td>
+<td>verify</td>
+<td>236377</td>
+<td>2216 KiB</td>
+<td>2680 KiB</td>
+</tr>
+<tr>
+<td><code>GreatWall192s</code></td>
+<td>keygen</td>
+<td>236433</td>
+<td>1812 KiB</td>
+<td>1960 KiB</td>
+</tr>
+<tr>
+<td><code>GreatWall192s</code></td>
+<td>sign</td>
+<td>236433</td>
+<td>1832 KiB</td>
+<td>11296 KiB</td>
+</tr>
+<tr>
+<td><code>GreatWall192s</code></td>
+<td>verify</td>
+<td>236433</td>
+<td>2112 KiB</td>
+<td>10904 KiB</td>
+</tr>
+<tr>
+<td><code>GreatWall256f</code></td>
+<td>keygen</td>
+<td>318657</td>
+<td>1804 KiB</td>
+<td>1968 KiB</td>
+</tr>
+<tr>
+<td><code>GreatWall256f</code></td>
+<td>sign</td>
+<td>318657</td>
+<td>1904 KiB</td>
+<td>4196 KiB</td>
+</tr>
+<tr>
+<td><code>GreatWall256f</code></td>
+<td>verify</td>
+<td>318657</td>
+<td>2316 KiB</td>
+<td>3524 KiB</td>
+</tr>
+<tr>
+<td><code>GreatWall256s</code></td>
+<td>keygen</td>
+<td>318977</td>
+<td>1812 KiB</td>
+<td>2012 KiB</td>
+</tr>
+<tr>
+<td><code>GreatWall256s</code></td>
+<td>sign</td>
+<td>318977</td>
+<td>1888 KiB</td>
+<td>17748 KiB</td>
+</tr>
+<tr>
+<td><code>GreatWall256s</code></td>
+<td>verify</td>
+<td>318977</td>
+<td>2328 KiB</td>
+<td>17148 KiB</td>
+</tr>
+<tr>
+<td><code>GreatWall512f</code></td>
+<td>keygen</td>
+<td>447001</td>
+<td>1860 KiB</td>
+<td>2212 KiB</td>
+</tr>
+<tr>
+<td><code>GreatWall512f</code></td>
+<td>sign</td>
+<td>447001</td>
+<td>2100 KiB</td>
+<td>11372 KiB</td>
+</tr>
+<tr>
+<td><code>GreatWall512f</code></td>
+<td>verify</td>
+<td>447001</td>
+<td>3208 KiB</td>
+<td>10156 KiB</td>
+</tr>
+<tr>
+<td><code>GreatWall512s</code></td>
+<td>keygen</td>
+<td>449169</td>
+<td>1848 KiB</td>
+<td>2152 KiB</td>
+</tr>
+<tr>
+<td><code>GreatWall512s</code></td>
+<td>sign</td>
+<td>449169</td>
+<td>2052 KiB</td>
+<td>76928 KiB</td>
+</tr>
+<tr>
+<td><code>GreatWall512s</code></td>
+<td>verify</td>
+<td>449169</td>
+<td>3196 KiB</td>
+<td>75688 KiB</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="6-transmission-and-storage-overhead">6. Transmission and storage overhead</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>public key</th>
+<th>secret key</th>
+<th>signature</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>GreatWall128f</code></td>
+<td>36</td>
+<td>36</td>
+<td>3396</td>
+</tr>
+<tr>
+<td><code>GreatWall128s</code></td>
+<td>36</td>
+<td>36</td>
+<td>2758</td>
+</tr>
+<tr>
+<td><code>GreatWall192f</code></td>
+<td>50</td>
+<td>50</td>
+<td>8012</td>
+</tr>
+<tr>
+<td><code>GreatWall192s</code></td>
+<td>50</td>
+<td>50</td>
+<td>6804</td>
+</tr>
+<tr>
+<td><code>GreatWall256f</code></td>
+<td>66</td>
+<td>66</td>
+<td>14260</td>
+</tr>
+<tr>
+<td><code>GreatWall256s</code></td>
+<td>66</td>
+<td>66</td>
+<td>12236</td>
+</tr>
+<tr>
+<td><code>GreatWall512f</code></td>
+<td>132</td>
+<td>132</td>
+<td>57812</td>
+</tr>
+<tr>
+<td><code>GreatWall512s</code></td>
+<td>132</td>
+<td>132</td>
+<td>50012</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="symmetric-primitives">Symmetric primitives</h2>
+<p><a href="../symmetric-survey.html">Survey</a> verdict: <strong>bypass</strong> — own XKCP Keccak + AES-CTR PRGs; no auxfunc.c shipped</p>
+<p>Share of each operation spent in the ICCS placeholder hash functions and in the ICCS DRNG (reference build, measured in the same run with link-time wrappers):</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>operation</th>
+<th>pseudohash/XOF/sm3</th>
+<th>DRNG</th>
+<th>calls per operation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>GreatWall128f</code></td>
+<td>keygen</td>
+<td>0.0%</td>
+<td>0.4%</td>
+<td>drng 4.12</td>
+</tr>
+<tr>
+<td><code>GreatWall128f</code></td>
+<td>sign</td>
+<td>0.0%</td>
+<td>0.0%</td>
+<td>drng 1</td>
+</tr>
+<tr>
+<td><code>GreatWall128f</code></td>
+<td>verify</td>
+<td>0.0%</td>
+<td>0.0%</td>
+<td>–</td>
+</tr>
+<tr>
+<td><code>GreatWall128s</code></td>
+<td>keygen</td>
+<td>0.0%</td>
+<td>0.4%</td>
+<td>drng 4.12</td>
+</tr>
+<tr>
+<td><code>GreatWall128s</code></td>
+<td>sign</td>
+<td>0.0%</td>
+<td>0.0%</td>
+<td>drng 1</td>
+</tr>
+<tr>
+<td><code>GreatWall128s</code></td>
+<td>verify</td>
+<td>0.0%</td>
+<td>0.0%</td>
+<td>–</td>
+</tr>
+<tr>
+<td><code>GreatWall192f</code></td>
+<td>keygen</td>
+<td>0.0%</td>
+<td>0.2%</td>
+<td>drng 3.9</td>
+</tr>
+<tr>
+<td><code>GreatWall192f</code></td>
+<td>sign</td>
+<td>0.0%</td>
+<td>0.0%</td>
+<td>drng 1</td>
+</tr>
+<tr>
+<td><code>GreatWall192f</code></td>
+<td>verify</td>
+<td>0.0%</td>
+<td>0.0%</td>
+<td>–</td>
+</tr>
+<tr>
+<td><code>GreatWall192s</code></td>
+<td>keygen</td>
+<td>0.0%</td>
+<td>0.2%</td>
+<td>drng 3.9</td>
+</tr>
+<tr>
+<td><code>GreatWall192s</code></td>
+<td>sign</td>
+<td>0.0%</td>
+<td>0.0%</td>
+<td>drng 1</td>
+</tr>
+<tr>
+<td><code>GreatWall192s</code></td>
+<td>verify</td>
+<td>0.0%</td>
+<td>0.0%</td>
+<td>–</td>
+</tr>
+<tr>
+<td><code>GreatWall256f</code></td>
+<td>keygen</td>
+<td>0.0%</td>
+<td>0.1%</td>
+<td>drng 4.44</td>
+</tr>
+<tr>
+<td><code>GreatWall256f</code></td>
+<td>sign</td>
+<td>0.0%</td>
+<td>0.0%</td>
+<td>drng 1</td>
+</tr>
+<tr>
+<td><code>GreatWall256f</code></td>
+<td>verify</td>
+<td>0.0%</td>
+<td>0.0%</td>
+<td>–</td>
+</tr>
+<tr>
+<td><code>GreatWall256s</code></td>
+<td>keygen</td>
+<td>0.0%</td>
+<td>0.1%</td>
+<td>drng 4.44</td>
+</tr>
+<tr>
+<td><code>GreatWall256s</code></td>
+<td>sign</td>
+<td>0.0%</td>
+<td>0.0%</td>
+<td>drng 1</td>
+</tr>
+<tr>
+<td><code>GreatWall256s</code></td>
+<td>verify</td>
+<td>0.0%</td>
+<td>0.0%</td>
+<td>–</td>
+</tr>
+<tr>
+<td><code>GreatWall512f</code></td>
+<td>keygen</td>
+<td>0.0%</td>
+<td>0.1%</td>
+<td>drng 4.57</td>
+</tr>
+<tr>
+<td><code>GreatWall512f</code></td>
+<td>sign</td>
+<td>0.0%</td>
+<td>0.0%</td>
+<td>drng 1</td>
+</tr>
+<tr>
+<td><code>GreatWall512f</code></td>
+<td>verify</td>
+<td>0.0%</td>
+<td>0.0%</td>
+<td>–</td>
+</tr>
+<tr>
+<td><code>GreatWall512s</code></td>
+<td>keygen</td>
+<td>0.0%</td>
+<td>0.1%</td>
+<td>drng 4.57</td>
+</tr>
+<tr>
+<td><code>GreatWall512s</code></td>
+<td>sign</td>
+<td>0.0%</td>
+<td>0.0%</td>
+<td>drng 1</td>
+</tr>
+<tr>
+<td><code>GreatWall512s</code></td>
+<td>verify</td>
+<td>0.0%</td>
+<td>0.0%</td>
+<td>–</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="7-raw-evidence-index">7. Raw evidence index</h2>
+<p>Paths are relative to <code>performance/data/x86_1/</code> in the <a href="https://github.com/ngcc-dev/ngcc-harness">harness</a>; each JSON file records its commands, environment and trials.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>item</th>
+<th>file</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>GreatWall128f</code></td>
+<td>KAT log (sha256 <code>806e3897a6245839…</code>)</td>
+<td><code>kat/sign-13/GreatWall128f.log</code></td>
+</tr>
+<tr>
+<td><code>GreatWall128f</code></td>
+<td>timing keygen</td>
+<td><code>records/sign-13/GreatWall128f__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>GreatWall128f</code></td>
+<td>timing sign</td>
+<td><code>records/sign-13/GreatWall128f__sign.json</code></td>
+</tr>
+<tr>
+<td><code>GreatWall128f</code></td>
+<td>timing verify</td>
+<td><code>records/sign-13/GreatWall128f__verify.json</code></td>
+</tr>
+<tr>
+<td><code>GreatWall128f</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/sign-13/GreatWall128f__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>GreatWall128f</code></td>
+<td>hash profile sign</td>
+<td><code>profile/sign-13/GreatWall128f__sign.json</code></td>
+</tr>
+<tr>
+<td><code>GreatWall128f</code></td>
+<td>hash profile verify</td>
+<td><code>profile/sign-13/GreatWall128f__verify.json</code></td>
+</tr>
+<tr>
+<td><code>GreatWall128s</code></td>
+<td>KAT log (sha256 <code>e131e2d63901312e…</code>)</td>
+<td><code>kat/sign-13/GreatWall128s.log</code></td>
+</tr>
+<tr>
+<td><code>GreatWall128s</code></td>
+<td>timing keygen</td>
+<td><code>records/sign-13/GreatWall128s__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>GreatWall128s</code></td>
+<td>timing sign</td>
+<td><code>records/sign-13/GreatWall128s__sign.json</code></td>
+</tr>
+<tr>
+<td><code>GreatWall128s</code></td>
+<td>timing verify</td>
+<td><code>records/sign-13/GreatWall128s__verify.json</code></td>
+</tr>
+<tr>
+<td><code>GreatWall128s</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/sign-13/GreatWall128s__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>GreatWall128s</code></td>
+<td>hash profile sign</td>
+<td><code>profile/sign-13/GreatWall128s__sign.json</code></td>
+</tr>
+<tr>
+<td><code>GreatWall128s</code></td>
+<td>hash profile verify</td>
+<td><code>profile/sign-13/GreatWall128s__verify.json</code></td>
+</tr>
+<tr>
+<td><code>GreatWall192f</code></td>
+<td>KAT log (sha256 <code>9ebb4cbdfbb76453…</code>)</td>
+<td><code>kat/sign-13/GreatWall192f.log</code></td>
+</tr>
+<tr>
+<td><code>GreatWall192f</code></td>
+<td>timing keygen</td>
+<td><code>records/sign-13/GreatWall192f__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>GreatWall192f</code></td>
+<td>timing sign</td>
+<td><code>records/sign-13/GreatWall192f__sign.json</code></td>
+</tr>
+<tr>
+<td><code>GreatWall192f</code></td>
+<td>timing verify</td>
+<td><code>records/sign-13/GreatWall192f__verify.json</code></td>
+</tr>
+<tr>
+<td><code>GreatWall192f</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/sign-13/GreatWall192f__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>GreatWall192f</code></td>
+<td>hash profile sign</td>
+<td><code>profile/sign-13/GreatWall192f__sign.json</code></td>
+</tr>
+<tr>
+<td><code>GreatWall192f</code></td>
+<td>hash profile verify</td>
+<td><code>profile/sign-13/GreatWall192f__verify.json</code></td>
+</tr>
+<tr>
+<td><code>GreatWall192s</code></td>
+<td>KAT log (sha256 <code>95220c8477f94df0…</code>)</td>
+<td><code>kat/sign-13/GreatWall192s.log</code></td>
+</tr>
+<tr>
+<td><code>GreatWall192s</code></td>
+<td>timing keygen</td>
+<td><code>records/sign-13/GreatWall192s__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>GreatWall192s</code></td>
+<td>timing sign</td>
+<td><code>records/sign-13/GreatWall192s__sign.json</code></td>
+</tr>
+<tr>
+<td><code>GreatWall192s</code></td>
+<td>timing verify</td>
+<td><code>records/sign-13/GreatWall192s__verify.json</code></td>
+</tr>
+<tr>
+<td><code>GreatWall192s</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/sign-13/GreatWall192s__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>GreatWall192s</code></td>
+<td>hash profile sign</td>
+<td><code>profile/sign-13/GreatWall192s__sign.json</code></td>
+</tr>
+<tr>
+<td><code>GreatWall192s</code></td>
+<td>hash profile verify</td>
+<td><code>profile/sign-13/GreatWall192s__verify.json</code></td>
+</tr>
+<tr>
+<td><code>GreatWall256f</code></td>
+<td>KAT log (sha256 <code>43b21cace030fd54…</code>)</td>
+<td><code>kat/sign-13/GreatWall256f.log</code></td>
+</tr>
+<tr>
+<td><code>GreatWall256f</code></td>
+<td>timing keygen</td>
+<td><code>records/sign-13/GreatWall256f__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>GreatWall256f</code></td>
+<td>timing sign</td>
+<td><code>records/sign-13/GreatWall256f__sign.json</code></td>
+</tr>
+<tr>
+<td><code>GreatWall256f</code></td>
+<td>timing verify</td>
+<td><code>records/sign-13/GreatWall256f__verify.json</code></td>
+</tr>
+<tr>
+<td><code>GreatWall256f</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/sign-13/GreatWall256f__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>GreatWall256f</code></td>
+<td>hash profile sign</td>
+<td><code>profile/sign-13/GreatWall256f__sign.json</code></td>
+</tr>
+<tr>
+<td><code>GreatWall256f</code></td>
+<td>hash profile verify</td>
+<td><code>profile/sign-13/GreatWall256f__verify.json</code></td>
+</tr>
+<tr>
+<td><code>GreatWall256s</code></td>
+<td>KAT log (sha256 <code>3716fa72e725e5b8…</code>)</td>
+<td><code>kat/sign-13/GreatWall256s.log</code></td>
+</tr>
+<tr>
+<td><code>GreatWall256s</code></td>
+<td>timing keygen</td>
+<td><code>records/sign-13/GreatWall256s__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>GreatWall256s</code></td>
+<td>timing sign</td>
+<td><code>records/sign-13/GreatWall256s__sign.json</code></td>
+</tr>
+<tr>
+<td><code>GreatWall256s</code></td>
+<td>timing verify</td>
+<td><code>records/sign-13/GreatWall256s__verify.json</code></td>
+</tr>
+<tr>
+<td><code>GreatWall256s</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/sign-13/GreatWall256s__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>GreatWall256s</code></td>
+<td>hash profile sign</td>
+<td><code>profile/sign-13/GreatWall256s__sign.json</code></td>
+</tr>
+<tr>
+<td><code>GreatWall256s</code></td>
+<td>hash profile verify</td>
+<td><code>profile/sign-13/GreatWall256s__verify.json</code></td>
+</tr>
+<tr>
+<td><code>GreatWall512f</code></td>
+<td>KAT log (sha256 <code>91811d84adca092d…</code>)</td>
+<td><code>kat/sign-13/GreatWall512f.log</code></td>
+</tr>
+<tr>
+<td><code>GreatWall512f</code></td>
+<td>timing keygen</td>
+<td><code>records/sign-13/GreatWall512f__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>GreatWall512f</code></td>
+<td>timing sign</td>
+<td><code>records/sign-13/GreatWall512f__sign.json</code></td>
+</tr>
+<tr>
+<td><code>GreatWall512f</code></td>
+<td>timing verify</td>
+<td><code>records/sign-13/GreatWall512f__verify.json</code></td>
+</tr>
+<tr>
+<td><code>GreatWall512f</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/sign-13/GreatWall512f__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>GreatWall512f</code></td>
+<td>hash profile sign</td>
+<td><code>profile/sign-13/GreatWall512f__sign.json</code></td>
+</tr>
+<tr>
+<td><code>GreatWall512f</code></td>
+<td>hash profile verify</td>
+<td><code>profile/sign-13/GreatWall512f__verify.json</code></td>
+</tr>
+<tr>
+<td><code>GreatWall512s</code></td>
+<td>KAT log (sha256 <code>2d5b89d84136e860…</code>)</td>
+<td><code>kat/sign-13/GreatWall512s.log</code></td>
+</tr>
+<tr>
+<td><code>GreatWall512s</code></td>
+<td>timing keygen</td>
+<td><code>records/sign-13/GreatWall512s__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>GreatWall512s</code></td>
+<td>timing sign</td>
+<td><code>records/sign-13/GreatWall512s__sign.json</code></td>
+</tr>
+<tr>
+<td><code>GreatWall512s</code></td>
+<td>timing verify</td>
+<td><code>records/sign-13/GreatWall512s__verify.json</code></td>
+</tr>
+<tr>
+<td><code>GreatWall512s</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/sign-13/GreatWall512s__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>GreatWall512s</code></td>
+<td>hash profile sign</td>
+<td><code>profile/sign-13/GreatWall512s__sign.json</code></td>
+</tr>
+<tr>
+<td><code>GreatWall512s</code></td>
+<td>hash profile verify</td>
+<td><code>profile/sign-13/GreatWall512s__verify.json</code></td>
+</tr>
+</tbody>
+</table></div>
+<p>Scripts: <code>performance/campaign.py</code>, <code>performance/ngcc_perf.c</code>, <code>performance/hashprof/</code> in the <a href="https://github.com/ngcc-dev/ngcc-harness">harness</a>.</p>
+</main>
+<footer class="site-footer">
+<p>Maintained by: <a href="mailto:markku-juhani.saarinen@tuni.fi">markku-juhani.saarinen@tuni.fi</a></p>
+<p>Submissions are welcome via <a href="https://github.com/ngcc-dev/ngcc-harness/issues">GitHub issues</a>.</p>
+</footer>
+</body>
+</html>

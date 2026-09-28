@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ngcc.dev: kex-01 ADKEX (Authenticated Ding Key Exchange) — performance on x86-64 (system x861)</title>
+<link rel="icon" type="image/png" href="../../assets/mag-glass.png">
+<link rel="stylesheet" href="../../assets/style.css?v=1fdb792d">
+</head>
+<body>
+<header class="site-header">
+<a class="brand" href="../../index.html"><img class="brand-icon" src="../../assets/mag-glass.png" alt="" width="28" height="28">ngcc.dev</a>
+<nav><a href="../../index.html">Home</a><a href="../../reports/index.html">Reports</a><a href="../../performance/x86_1/index.html">Performance</a><a href="../../constant-time/index.html">Constant-Time</a></nav>
+</header>
+<main class="">
+<!-- synchronized from harness: kex-01/perf_x86_1.md -->
+<h1 id="kex-01-adkex-authenticated-ding-key-exchange-performance-on-x86-64-system-x86_1">kex-01 ADKEX (Authenticated Ding Key Exchange) — performance on x86-64 (system x86_1)</h1>
+<p><a href="index.html">Performance x86_1</a> › <code>kex-01</code> · <a href="method.html">method</a> · <a href="https://www.niccs.org.cn/niccs/Round1Additional/pc/content/content_2101560625202810880.html">NICCS page</a></p>
+<p>Independent measurement following the structure of the NICCS x86 self-assessment guide, §3.5 (1)–(7). Not a submitter self-assessment.</p>
+<h2 id="1-basic-information">1. Basic information</h2>
+<ul>
+<li>Category: public-key algorithm; function: key exchange</li>
+<li>Algorithm: ADKEX (Authenticated Ding Key Exchange)</li>
+<li>Implementation versions measured: reference</li>
+<li>Parameter sets: <code>ADKEX-128</code>, <code>ADKEX-256</code>, <code>ADKEX-512</code></li>
+</ul>
+<h2 id="2-assessment-environment">2. Assessment environment</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>item</th>
+<th>value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>processor</td>
+<td>12th Gen Intel(R) Core(TM) i7-12700 (CPU 2, one core)</td>
+</tr>
+<tr>
+<td>clock</td>
+<td>max 2.10 GHz, governor performance, turbo off, SMT off</td>
+</tr>
+<tr>
+<td>memory</td>
+<td>31788 MiB</td>
+</tr>
+<tr>
+<td>OS / kernel</td>
+<td>Debian GNU/Linux 13 (trixie) / 6.12.107+deb13-amd64</td>
+</tr>
+<tr>
+<td>compiler / build tool</td>
+<td>gcc (Debian 14.2.0-19) 14.2.0 / cmake version 3.31.6</td>
+</tr>
+<tr>
+<td>campaign start / end (UTC)</td>
+<td>2026-09-25T10:02:21 / 2026-09-28T04:35:59</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="3-functional-testing-kat">3. Functional testing (KAT)</h2>
+<p>Each library was checked against the submitted KAT vectors (SHA-256 manifest <code>kex-01/kat.sha256</code> in the harness) before timing.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>build flags</th>
+<th>KAT</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ADKEX-128</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>ADKEX-256</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>ADKEX-512</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="4-performance">4. Performance</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>operation</th>
+<th>mean cycles</th>
+<th>mean time</th>
+<th>ops/s</th>
+<th>median trial</th>
+<th>n (trials × iters)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ADKEX-128</code></td>
+<td>exchange</td>
+<td>1.52 M</td>
+<td>727 µs</td>
+<td>1.37e+03</td>
+<td>728 µs</td>
+<td>6815 (5 × 1363)</td>
+</tr>
+<tr>
+<td><code>ADKEX-128</code></td>
+<td>init_a</td>
+<td>301</td>
+<td>48.1 ns</td>
+<td>2.08e+07</td>
+<td>48 ns</td>
+<td>6815 (5 × 1363)</td>
+</tr>
+<tr>
+<td><code>ADKEX-128</code></td>
+<td>init_b</td>
+<td>202.4 k</td>
+<td>96.6 µs</td>
+<td>1.04e+04</td>
+<td>96.6 µs</td>
+<td>6815 (5 × 1363)</td>
+</tr>
+<tr>
+<td><code>ADKEX-128</code></td>
+<td>pass1</td>
+<td>429.5 k</td>
+<td>205 µs</td>
+<td>4.88e+03</td>
+<td>205 µs</td>
+<td>6815 (5 × 1363)</td>
+</tr>
+<tr>
+<td><code>ADKEX-128</code></td>
+<td>pass2</td>
+<td>559.1 k</td>
+<td>267 µs</td>
+<td>3.75e+03</td>
+<td>267 µs</td>
+<td>6815 (5 × 1363)</td>
+</tr>
+<tr>
+<td><code>ADKEX-128</code></td>
+<td>derive_a</td>
+<td>332.6 k</td>
+<td>159 µs</td>
+<td>6.3e+03</td>
+<td>159 µs</td>
+<td>6815 (5 × 1363)</td>
+</tr>
+<tr>
+<td><code>ADKEX-128</code></td>
+<td>derive_b</td>
+<td>3110</td>
+<td>1.39 µs</td>
+<td>7.2e+05</td>
+<td>1.39 µs</td>
+<td>6815 (5 × 1363)</td>
+</tr>
+<tr>
+<td><code>ADKEX-256</code></td>
+<td>exchange</td>
+<td>4.05 M</td>
+<td>1.94 ms</td>
+<td>517</td>
+<td>1.94 ms</td>
+<td>2565 (5 × 513)</td>
+</tr>
+<tr>
+<td><code>ADKEX-256</code></td>
+<td>init_a</td>
+<td>315</td>
+<td>49.2 ns</td>
+<td>2.03e+07</td>
+<td>49 ns</td>
+<td>2565 (5 × 513)</td>
+</tr>
+<tr>
+<td><code>ADKEX-256</code></td>
+<td>init_b</td>
+<td>603.1 k</td>
+<td>295 µs</td>
+<td>3.39e+03</td>
+<td>288 µs</td>
+<td>2565 (5 × 513)</td>
+</tr>
+<tr>
+<td><code>ADKEX-256</code></td>
+<td>pass1</td>
+<td>1.22 M</td>
+<td>584 µs</td>
+<td>1.71e+03</td>
+<td>584 µs</td>
+<td>2565 (5 × 513)</td>
+</tr>
+<tr>
+<td><code>ADKEX-256</code></td>
+<td>pass2</td>
+<td>1.43 M</td>
+<td>681 µs</td>
+<td>1.47e+03</td>
+<td>681 µs</td>
+<td>2565 (5 × 513)</td>
+</tr>
+<tr>
+<td><code>ADKEX-256</code></td>
+<td>derive_a</td>
+<td>805.0 k</td>
+<td>384 µs</td>
+<td>2.6e+03</td>
+<td>384 µs</td>
+<td>2565 (5 × 513)</td>
+</tr>
+<tr>
+<td><code>ADKEX-256</code></td>
+<td>derive_b</td>
+<td>3187</td>
+<td>1.42 µs</td>
+<td>7.05e+05</td>
+<td>1.42 µs</td>
+<td>2565 (5 × 513)</td>
+</tr>
+<tr>
+<td><code>ADKEX-512</code></td>
+<td>exchange</td>
+<td>13.97 M</td>
+<td>6.67 ms</td>
+<td>150</td>
+<td>6.67 ms</td>
+<td>745 (5 × 149)</td>
+</tr>
+<tr>
+<td><code>ADKEX-512</code></td>
+<td>init_a</td>
+<td>327</td>
+<td>50.3 ns</td>
+<td>1.99e+07</td>
+<td>50.6 ns</td>
+<td>745 (5 × 149)</td>
+</tr>
+<tr>
+<td><code>ADKEX-512</code></td>
+<td>init_b</td>
+<td>2.04 M</td>
+<td>1.03 ms</td>
+<td>973</td>
+<td>976 µs</td>
+<td>745 (5 × 149)</td>
+</tr>
+<tr>
+<td><code>ADKEX-512</code></td>
+<td>pass1</td>
+<td>4.18 M</td>
+<td>1.99 ms</td>
+<td>501</td>
+<td>1.99 ms</td>
+<td>745 (5 × 149)</td>
+</tr>
+<tr>
+<td><code>ADKEX-512</code></td>
+<td>pass2</td>
+<td>4.94 M</td>
+<td>2.36 ms</td>
+<td>424</td>
+<td>2.36 ms</td>
+<td>745 (5 × 149)</td>
+</tr>
+<tr>
+<td><code>ADKEX-512</code></td>
+<td>derive_a</td>
+<td>2.82 M</td>
+<td>1.39 ms</td>
+<td>717</td>
+<td>1.35 ms</td>
+<td>745 (5 × 149)</td>
+</tr>
+<tr>
+<td><code>ADKEX-512</code></td>
+<td>derive_b</td>
+<td>11.8 k</td>
+<td>5.54 µs</td>
+<td>1.81e+05</td>
+<td>5.53 µs</td>
+<td>745 (5 × 149)</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="5-resource-consumption">5. Resource consumption</h2>
+<p>Static memory is approximated by the library's loadable ELF segments; peak memory is the process high-water mark (VmHWM) including the benchmark driver and libc, so both are upper-bound proxies rather than isolated algorithm memory.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>operation</th>
+<th>static: ELF image (bytes)</th>
+<th>baseline RSS</th>
+<th>peak RSS</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ADKEX-128</code></td>
+<td>exchange</td>
+<td>34525</td>
+<td>1740 KiB</td>
+<td>1832 KiB</td>
+</tr>
+<tr>
+<td><code>ADKEX-128</code></td>
+<td>init_a</td>
+<td>34525</td>
+<td>1764 KiB</td>
+<td>1836 KiB</td>
+</tr>
+<tr>
+<td><code>ADKEX-128</code></td>
+<td>init_b</td>
+<td>34525</td>
+<td>1716 KiB</td>
+<td>1844 KiB</td>
+</tr>
+<tr>
+<td><code>ADKEX-128</code></td>
+<td>pass1</td>
+<td>34525</td>
+<td>1704 KiB</td>
+<td>1832 KiB</td>
+</tr>
+<tr>
+<td><code>ADKEX-128</code></td>
+<td>pass2</td>
+<td>34525</td>
+<td>1768 KiB</td>
+<td>1856 KiB</td>
+</tr>
+<tr>
+<td><code>ADKEX-128</code></td>
+<td>derive_a</td>
+<td>34525</td>
+<td>1768 KiB</td>
+<td>1848 KiB</td>
+</tr>
+<tr>
+<td><code>ADKEX-128</code></td>
+<td>derive_b</td>
+<td>34525</td>
+<td>1760 KiB</td>
+<td>1844 KiB</td>
+</tr>
+<tr>
+<td><code>ADKEX-256</code></td>
+<td>exchange</td>
+<td>35589</td>
+<td>1788 KiB</td>
+<td>1912 KiB</td>
+</tr>
+<tr>
+<td><code>ADKEX-256</code></td>
+<td>init_a</td>
+<td>35589</td>
+<td>1808 KiB</td>
+<td>1872 KiB</td>
+</tr>
+<tr>
+<td><code>ADKEX-256</code></td>
+<td>init_b</td>
+<td>35589</td>
+<td>1820 KiB</td>
+<td>1884 KiB</td>
+</tr>
+<tr>
+<td><code>ADKEX-256</code></td>
+<td>pass1</td>
+<td>35589</td>
+<td>1824 KiB</td>
+<td>1888 KiB</td>
+</tr>
+<tr>
+<td><code>ADKEX-256</code></td>
+<td>pass2</td>
+<td>35589</td>
+<td>1804 KiB</td>
+<td>1868 KiB</td>
+</tr>
+<tr>
+<td><code>ADKEX-256</code></td>
+<td>derive_a</td>
+<td>35589</td>
+<td>1812 KiB</td>
+<td>1908 KiB</td>
+</tr>
+<tr>
+<td><code>ADKEX-256</code></td>
+<td>derive_b</td>
+<td>35589</td>
+<td>1824 KiB</td>
+<td>1908 KiB</td>
+</tr>
+<tr>
+<td><code>ADKEX-512</code></td>
+<td>exchange</td>
+<td>36957</td>
+<td>1944 KiB</td>
+<td>2020 KiB</td>
+</tr>
+<tr>
+<td><code>ADKEX-512</code></td>
+<td>init_a</td>
+<td>36957</td>
+<td>1948 KiB</td>
+<td>2024 KiB</td>
+</tr>
+<tr>
+<td><code>ADKEX-512</code></td>
+<td>init_b</td>
+<td>36957</td>
+<td>1912 KiB</td>
+<td>2036 KiB</td>
+</tr>
+<tr>
+<td><code>ADKEX-512</code></td>
+<td>pass1</td>
+<td>36957</td>
+<td>1944 KiB</td>
+<td>2036 KiB</td>
+</tr>
+<tr>
+<td><code>ADKEX-512</code></td>
+<td>pass2</td>
+<td>36957</td>
+<td>1908 KiB</td>
+<td>2044 KiB</td>
+</tr>
+<tr>
+<td><code>ADKEX-512</code></td>
+<td>derive_a</td>
+<td>36957</td>
+<td>1932 KiB</td>
+<td>2008 KiB</td>
+</tr>
+<tr>
+<td><code>ADKEX-512</code></td>
+<td>derive_b</td>
+<td>36957</td>
+<td>1920 KiB</td>
+<td>2028 KiB</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="6-transmission-and-storage-overhead">6. Transmission and storage overhead</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>passes</th>
+<th>messages (bytes)</th>
+<th>total</th>
+<th>long-term pk / sk</th>
+<th>shared secret</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ADKEX-128</code></td>
+<td>2</td>
+<td>1600 / 800</td>
+<td>2400</td>
+<td>800 / 1600</td>
+<td>32</td>
+</tr>
+<tr>
+<td><code>ADKEX-256</code></td>
+<td>2</td>
+<td>3168 / 1600</td>
+<td>4768</td>
+<td>1568 / 3136</td>
+<td>32</td>
+</tr>
+<tr>
+<td><code>ADKEX-512</code></td>
+<td>2</td>
+<td>6528 / 3136</td>
+<td>9664</td>
+<td>3392 / 6784</td>
+<td>64</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="symmetric-primitives">Symmetric primitives</h2>
+<p><a href="../symmetric-survey.html">Survey</a> verdict: <strong>ICCS-only</strong> — default DKE_HASH=0; own SM3/HMAC compiled but unreachable; DKE_HASH=2 would switch to SHAKE</p>
+<p>Share of each operation spent in the ICCS placeholder hash functions and in the ICCS DRNG (reference build, measured in the same run with link-time wrappers):</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>operation</th>
+<th>pseudohash/XOF/sm3</th>
+<th>DRNG</th>
+<th>calls per operation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ADKEX-128</code></td>
+<td>exchange</td>
+<td>63%</td>
+<td>1.2%</td>
+<td>drng 3, pseudoXOF 6, sm3hash 563</td>
+</tr>
+<tr>
+<td><code>ADKEX-256</code></td>
+<td>exchange</td>
+<td>69%</td>
+<td>0.5%</td>
+<td>drng 3, pseudoXOF 6, sm3hash 1.76e+03</td>
+</tr>
+<tr>
+<td><code>ADKEX-512</code></td>
+<td>exchange</td>
+<td>81%</td>
+<td>0.2%</td>
+<td>drng 3, pseudoXOF 10, pseudohash 6, sm3hash 3.7e+03</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="7-raw-evidence-index">7. Raw evidence index</h2>
+<p>Paths are relative to <code>performance/data/x86_1/</code> in the <a href="https://github.com/ngcc-dev/ngcc-harness">harness</a>; each JSON file records its commands, environment and trials.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>item</th>
+<th>file</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ADKEX-128</code></td>
+<td>KAT log (sha256 <code>230169395b7403b6…</code>)</td>
+<td><code>kat/kex-01/ADKEX-128.log</code></td>
+</tr>
+<tr>
+<td><code>ADKEX-128</code></td>
+<td>timing derive_a</td>
+<td><code>records/kex-01/ADKEX-128__derive_a.json</code></td>
+</tr>
+<tr>
+<td><code>ADKEX-128</code></td>
+<td>timing derive_b</td>
+<td><code>records/kex-01/ADKEX-128__derive_b.json</code></td>
+</tr>
+<tr>
+<td><code>ADKEX-128</code></td>
+<td>timing exchange</td>
+<td><code>records/kex-01/ADKEX-128__exchange.json</code></td>
+</tr>
+<tr>
+<td><code>ADKEX-128</code></td>
+<td>timing init_a</td>
+<td><code>records/kex-01/ADKEX-128__init_a.json</code></td>
+</tr>
+<tr>
+<td><code>ADKEX-128</code></td>
+<td>timing init_b</td>
+<td><code>records/kex-01/ADKEX-128__init_b.json</code></td>
+</tr>
+<tr>
+<td><code>ADKEX-128</code></td>
+<td>timing pass1</td>
+<td><code>records/kex-01/ADKEX-128__pass1.json</code></td>
+</tr>
+<tr>
+<td><code>ADKEX-128</code></td>
+<td>timing pass2</td>
+<td><code>records/kex-01/ADKEX-128__pass2.json</code></td>
+</tr>
+<tr>
+<td><code>ADKEX-128</code></td>
+<td>hash profile exchange</td>
+<td><code>profile/kex-01/ADKEX-128__exchange.json</code></td>
+</tr>
+<tr>
+<td><code>ADKEX-256</code></td>
+<td>KAT log (sha256 <code>ccb2baf2aa90ea48…</code>)</td>
+<td><code>kat/kex-01/ADKEX-256.log</code></td>
+</tr>
+<tr>
+<td><code>ADKEX-256</code></td>
+<td>timing derive_a</td>
+<td><code>records/kex-01/ADKEX-256__derive_a.json</code></td>
+</tr>
+<tr>
+<td><code>ADKEX-256</code></td>
+<td>timing derive_b</td>
+<td><code>records/kex-01/ADKEX-256__derive_b.json</code></td>
+</tr>
+<tr>
+<td><code>ADKEX-256</code></td>
+<td>timing exchange</td>
+<td><code>records/kex-01/ADKEX-256__exchange.json</code></td>
+</tr>
+<tr>
+<td><code>ADKEX-256</code></td>
+<td>timing init_a</td>
+<td><code>records/kex-01/ADKEX-256__init_a.json</code></td>
+</tr>
+<tr>
+<td><code>ADKEX-256</code></td>
+<td>timing init_b</td>
+<td><code>records/kex-01/ADKEX-256__init_b.json</code></td>
+</tr>
+<tr>
+<td><code>ADKEX-256</code></td>
+<td>timing pass1</td>
+<td><code>records/kex-01/ADKEX-256__pass1.json</code></td>
+</tr>
+<tr>
+<td><code>ADKEX-256</code></td>
+<td>timing pass2</td>
+<td><code>records/kex-01/ADKEX-256__pass2.json</code></td>
+</tr>
+<tr>
+<td><code>ADKEX-256</code></td>
+<td>hash profile exchange</td>
+<td><code>profile/kex-01/ADKEX-256__exchange.json</code></td>
+</tr>
+<tr>
+<td><code>ADKEX-512</code></td>
+<td>KAT log (sha256 <code>437526980a75426f…</code>)</td>
+<td><code>kat/kex-01/ADKEX-512.log</code></td>
+</tr>
+<tr>
+<td><code>ADKEX-512</code></td>
+<td>timing derive_a</td>
+<td><code>records/kex-01/ADKEX-512__derive_a.json</code></td>
+</tr>
+<tr>
+<td><code>ADKEX-512</code></td>
+<td>timing derive_b</td>
+<td><code>records/kex-01/ADKEX-512__derive_b.json</code></td>
+</tr>
+<tr>
+<td><code>ADKEX-512</code></td>
+<td>timing exchange</td>
+<td><code>records/kex-01/ADKEX-512__exchange.json</code></td>
+</tr>
+<tr>
+<td><code>ADKEX-512</code></td>
+<td>timing init_a</td>
+<td><code>records/kex-01/ADKEX-512__init_a.json</code></td>
+</tr>
+<tr>
+<td><code>ADKEX-512</code></td>
+<td>timing init_b</td>
+<td><code>records/kex-01/ADKEX-512__init_b.json</code></td>
+</tr>
+<tr>
+<td><code>ADKEX-512</code></td>
+<td>timing pass1</td>
+<td><code>records/kex-01/ADKEX-512__pass1.json</code></td>
+</tr>
+<tr>
+<td><code>ADKEX-512</code></td>
+<td>timing pass2</td>
+<td><code>records/kex-01/ADKEX-512__pass2.json</code></td>
+</tr>
+<tr>
+<td><code>ADKEX-512</code></td>
+<td>hash profile exchange</td>
+<td><code>profile/kex-01/ADKEX-512__exchange.json</code></td>
+</tr>
+</tbody>
+</table></div>
+<p>Scripts: <code>performance/campaign.py</code>, <code>performance/ngcc_perf.c</code>, <code>performance/hashprof/</code> in the <a href="https://github.com/ngcc-dev/ngcc-harness">harness</a>.</p>
+</main>
+<footer class="site-footer">
+<p>Maintained by: <a href="mailto:markku-juhani.saarinen@tuni.fi">markku-juhani.saarinen@tuni.fi</a></p>
+<p>Submissions are welcome via <a href="https://github.com/ngcc-dev/ngcc-harness/issues">GitHub issues</a>.</p>
+</footer>
+</body>
+</html>

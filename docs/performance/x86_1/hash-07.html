@@ -1,0 +1,1194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ngcc.dev: hash-07 Dragon Hash Family — performance on x86-64 (system x861)</title>
+<link rel="icon" type="image/png" href="../../assets/mag-glass.png">
+<link rel="stylesheet" href="../../assets/style.css?v=1fdb792d">
+</head>
+<body>
+<header class="site-header">
+<a class="brand" href="../../index.html"><img class="brand-icon" src="../../assets/mag-glass.png" alt="" width="28" height="28">ngcc.dev</a>
+<nav><a href="../../index.html">Home</a><a href="../../reports/index.html">Reports</a><a href="../../performance/x86_1/index.html">Performance</a><a href="../../constant-time/index.html">Constant-Time</a></nav>
+</header>
+<main class="">
+<!-- synchronized from harness: hash-07/perf_x86_1.md -->
+<h1 id="hash-07-dragon-hash-family-performance-on-x86-64-system-x86_1">hash-07 Dragon Hash Family — performance on x86-64 (system x86_1)</h1>
+<p><a href="index.html">Performance x86_1</a> › <code>hash-07</code> · <a href="method.html">method</a> · <a href="https://www.niccs.org.cn/niccs/Round1Submissions4/pc/content/content_2101539781751689216.html">NICCS page</a></p>
+<p>Independent measurement following the structure of the NICCS x86 self-assessment guide, §3.5 (1)–(7). Not a submitter self-assessment.</p>
+<h2 id="1-basic-information">1. Basic information</h2>
+<ul>
+<li>Category: cryptographic hash algorithm; function: hash</li>
+<li>Algorithm: Dragon Hash Family</li>
+<li>Implementation versions measured: reference</li>
+<li>Parameter sets: <code>Dragon-512</code>, <code>Dragon-768</code>, <code>Dragon-1024</code>, <code>Dragon-XOF-256</code>, <code>Dragon-XOF-384</code>, <code>Dragon-XOF-512</code></li>
+</ul>
+<h2 id="2-assessment-environment">2. Assessment environment</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>item</th>
+<th>value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>processor</td>
+<td>12th Gen Intel(R) Core(TM) i7-12700 (CPU 2, one core)</td>
+</tr>
+<tr>
+<td>clock</td>
+<td>max 2.10 GHz, governor performance, turbo off, SMT off</td>
+</tr>
+<tr>
+<td>memory</td>
+<td>31788 MiB</td>
+</tr>
+<tr>
+<td>OS / kernel</td>
+<td>Debian GNU/Linux 13 (trixie) / 6.12.107+deb13-amd64</td>
+</tr>
+<tr>
+<td>compiler / build tool</td>
+<td>gcc (Debian 14.2.0-19) 14.2.0 / cmake version 3.31.6</td>
+</tr>
+<tr>
+<td>campaign start / end (UTC)</td>
+<td>2026-09-25T10:02:21 / 2026-09-28T04:35:59</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="3-functional-testing-kat">3. Functional testing (KAT)</h2>
+<p>Each library was checked against the submitted KAT vectors (SHA-256 manifest <code>hash-07/kat.sha256</code> in the harness) before timing.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>build flags</th>
+<th>KAT</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Dragon-512</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>Dragon-768</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>Dragon-1024</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>Dragon-XOF-256</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>Dragon-XOF-384</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>Dragon-XOF-512</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="4-performance">4. Performance</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>message</th>
+<th>mean cycles</th>
+<th>cycles/byte</th>
+<th>mean time</th>
+<th>MB/s</th>
+<th>n</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Dragon-512</code></td>
+<td>32 B</td>
+<td>2436</td>
+<td>76.1</td>
+<td>1.17 µs</td>
+<td>27.4</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>Dragon-512</code></td>
+<td>128 B</td>
+<td>4791</td>
+<td>37.4</td>
+<td>2.3 µs</td>
+<td>55.7</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>Dragon-512</code></td>
+<td>512 B</td>
+<td>11.6 k</td>
+<td>22.6</td>
+<td>5.55 µs</td>
+<td>92.2</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>Dragon-512</code></td>
+<td>1024 B</td>
+<td>20.4 k</td>
+<td>19.9</td>
+<td>9.77 µs</td>
+<td>104.8</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>Dragon-512</code></td>
+<td>4096 B</td>
+<td>75.3 k</td>
+<td>18.4</td>
+<td>36 µs</td>
+<td>113.7</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>Dragon-512</code></td>
+<td>8192 B</td>
+<td>149.0 k</td>
+<td>18.2</td>
+<td>71.3 µs</td>
+<td>115.0</td>
+<td>66700 (5 × 13340)</td>
+</tr>
+<tr>
+<td><code>Dragon-512</code></td>
+<td>16384 B</td>
+<td>293.2 k</td>
+<td>17.9</td>
+<td>140 µs</td>
+<td>116.8</td>
+<td>33715 (5 × 6743)</td>
+</tr>
+<tr>
+<td><code>Dragon-512</code></td>
+<td>65536 B</td>
+<td>1.17 M</td>
+<td>17.8</td>
+<td>559 µs</td>
+<td>117.3</td>
+<td>8940 (5 × 1788)</td>
+</tr>
+<tr>
+<td><code>Dragon-768</code></td>
+<td>32 B</td>
+<td>2418</td>
+<td>75.6</td>
+<td>1.16 µs</td>
+<td>27.6</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>Dragon-768</code></td>
+<td>128 B</td>
+<td>4786</td>
+<td>37.4</td>
+<td>2.29 µs</td>
+<td>55.8</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>Dragon-768</code></td>
+<td>512 B</td>
+<td>14.0 k</td>
+<td>27.3</td>
+<td>6.68 µs</td>
+<td>76.6</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>Dragon-768</code></td>
+<td>1024 B</td>
+<td>25.4 k</td>
+<td>24.8</td>
+<td>12.2 µs</td>
+<td>84.2</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>Dragon-768</code></td>
+<td>4096 B</td>
+<td>99.3 k</td>
+<td>24.2</td>
+<td>47.5 µs</td>
+<td>86.2</td>
+<td>87440 (5 × 17488)</td>
+</tr>
+<tr>
+<td><code>Dragon-768</code></td>
+<td>8192 B</td>
+<td>196.9 k</td>
+<td>24.0</td>
+<td>94.3 µs</td>
+<td>86.9</td>
+<td>50085 (5 × 10017)</td>
+</tr>
+<tr>
+<td><code>Dragon-768</code></td>
+<td>16384 B</td>
+<td>389.0 k</td>
+<td>23.7</td>
+<td>186 µs</td>
+<td>88.0</td>
+<td>25750 (5 × 5150)</td>
+</tr>
+<tr>
+<td><code>Dragon-768</code></td>
+<td>65536 B</td>
+<td>1.57 M</td>
+<td>24.0</td>
+<td>753 µs</td>
+<td>87.1</td>
+<td>6520 (5 × 1304)</td>
+</tr>
+<tr>
+<td><code>Dragon-1024</code></td>
+<td>32 B</td>
+<td>2424</td>
+<td>75.8</td>
+<td>1.16 µs</td>
+<td>27.5</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>Dragon-1024</code></td>
+<td>128 B</td>
+<td>7257</td>
+<td>56.7</td>
+<td>3.47 µs</td>
+<td>36.8</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>Dragon-1024</code></td>
+<td>512 B</td>
+<td>21.0 k</td>
+<td>41.0</td>
+<td>10.1 µs</td>
+<td>50.9</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>Dragon-1024</code></td>
+<td>1024 B</td>
+<td>39.6 k</td>
+<td>38.7</td>
+<td>19 µs</td>
+<td>54.0</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>Dragon-1024</code></td>
+<td>4096 B</td>
+<td>151.0 k</td>
+<td>36.9</td>
+<td>72.2 µs</td>
+<td>56.7</td>
+<td>65180 (5 × 13036)</td>
+</tr>
+<tr>
+<td><code>Dragon-1024</code></td>
+<td>8192 B</td>
+<td>299.1 k</td>
+<td>36.5</td>
+<td>143 µs</td>
+<td>57.2</td>
+<td>34340 (5 × 6868)</td>
+</tr>
+<tr>
+<td><code>Dragon-1024</code></td>
+<td>16384 B</td>
+<td>588.0 k</td>
+<td>35.9</td>
+<td>281 µs</td>
+<td>58.2</td>
+<td>17340 (5 × 3468)</td>
+</tr>
+<tr>
+<td><code>Dragon-1024</code></td>
+<td>65536 B</td>
+<td>2.37 M</td>
+<td>36.2</td>
+<td>1.14 ms</td>
+<td>57.7</td>
+<td>4415 (5 × 883)</td>
+</tr>
+<tr>
+<td><code>Dragon-XOF-256</code></td>
+<td>32 B</td>
+<td>9860</td>
+<td>308.1</td>
+<td>4.72 µs</td>
+<td>6.8</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>Dragon-XOF-256</code></td>
+<td>128 B</td>
+<td>12.2 k</td>
+<td>95.0</td>
+<td>5.82 µs</td>
+<td>22.0</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>Dragon-XOF-256</code></td>
+<td>512 B</td>
+<td>19.2 k</td>
+<td>37.5</td>
+<td>9.19 µs</td>
+<td>55.7</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>Dragon-XOF-256</code></td>
+<td>1024 B</td>
+<td>28.1 k</td>
+<td>27.5</td>
+<td>13.5 µs</td>
+<td>76.1</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>Dragon-XOF-256</code></td>
+<td>4096 B</td>
+<td>82.1 k</td>
+<td>20.1</td>
+<td>39.3 µs</td>
+<td>104.2</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>Dragon-XOF-256</code></td>
+<td>8192 B</td>
+<td>154.3 k</td>
+<td>18.8</td>
+<td>73.8 µs</td>
+<td>110.9</td>
+<td>62880 (5 × 12576)</td>
+</tr>
+<tr>
+<td><code>Dragon-XOF-256</code></td>
+<td>16384 B</td>
+<td>297.0 k</td>
+<td>18.1</td>
+<td>142 µs</td>
+<td>115.3</td>
+<td>34240 (5 × 6848)</td>
+</tr>
+<tr>
+<td><code>Dragon-XOF-256</code></td>
+<td>65536 B</td>
+<td>1.20 M</td>
+<td>18.3</td>
+<td>573 µs</td>
+<td>114.4</td>
+<td>9035 (5 × 1807)</td>
+</tr>
+<tr>
+<td><code>Dragon-XOF-384</code></td>
+<td>32 B</td>
+<td>9114</td>
+<td>284.8</td>
+<td>4.36 µs</td>
+<td>7.3</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>Dragon-XOF-384</code></td>
+<td>128 B</td>
+<td>11.4 k</td>
+<td>89.4</td>
+<td>5.47 µs</td>
+<td>23.4</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>Dragon-XOF-384</code></td>
+<td>512 B</td>
+<td>20.8 k</td>
+<td>40.5</td>
+<td>9.94 µs</td>
+<td>51.5</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>Dragon-XOF-384</code></td>
+<td>1024 B</td>
+<td>32.1 k</td>
+<td>31.4</td>
+<td>15.4 µs</td>
+<td>66.6</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>Dragon-XOF-384</code></td>
+<td>4096 B</td>
+<td>106.7 k</td>
+<td>26.1</td>
+<td>51.1 µs</td>
+<td>80.2</td>
+<td>82885 (5 × 16577)</td>
+</tr>
+<tr>
+<td><code>Dragon-XOF-384</code></td>
+<td>8192 B</td>
+<td>203.2 k</td>
+<td>24.8</td>
+<td>97.2 µs</td>
+<td>84.2</td>
+<td>49045 (5 × 9809)</td>
+</tr>
+<tr>
+<td><code>Dragon-XOF-384</code></td>
+<td>16384 B</td>
+<td>400.2 k</td>
+<td>24.4</td>
+<td>192 µs</td>
+<td>85.5</td>
+<td>25670 (5 × 5134)</td>
+</tr>
+<tr>
+<td><code>Dragon-XOF-384</code></td>
+<td>65536 B</td>
+<td>1.57 M</td>
+<td>24.0</td>
+<td>751 µs</td>
+<td>87.2</td>
+<td>6665 (5 × 1333)</td>
+</tr>
+<tr>
+<td><code>Dragon-XOF-512</code></td>
+<td>32 B</td>
+<td>8367</td>
+<td>261.5</td>
+<td>4 µs</td>
+<td>8.0</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>Dragon-XOF-512</code></td>
+<td>128 B</td>
+<td>13.1 k</td>
+<td>102.5</td>
+<td>6.28 µs</td>
+<td>20.4</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>Dragon-XOF-512</code></td>
+<td>512 B</td>
+<td>27.0 k</td>
+<td>52.8</td>
+<td>12.9 µs</td>
+<td>39.6</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>Dragon-XOF-512</code></td>
+<td>1024 B</td>
+<td>45.4 k</td>
+<td>44.4</td>
+<td>21.7 µs</td>
+<td>47.1</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>Dragon-XOF-512</code></td>
+<td>4096 B</td>
+<td>156.5 k</td>
+<td>38.2</td>
+<td>74.9 µs</td>
+<td>54.7</td>
+<td>58840 (5 × 11768)</td>
+</tr>
+<tr>
+<td><code>Dragon-XOF-512</code></td>
+<td>8192 B</td>
+<td>307.4 k</td>
+<td>37.5</td>
+<td>147 µs</td>
+<td>55.7</td>
+<td>32815 (5 × 6563)</td>
+</tr>
+<tr>
+<td><code>Dragon-XOF-512</code></td>
+<td>16384 B</td>
+<td>601.5 k</td>
+<td>36.7</td>
+<td>288 µs</td>
+<td>56.9</td>
+<td>17475 (5 × 3495)</td>
+</tr>
+<tr>
+<td><code>Dragon-XOF-512</code></td>
+<td>65536 B</td>
+<td>2.38 M</td>
+<td>36.4</td>
+<td>1.14 ms</td>
+<td>57.5</td>
+<td>4405 (5 × 881)</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="5-resource-consumption">5. Resource consumption</h2>
+<p>Static memory is approximated by the library's loadable ELF segments; peak memory is the process high-water mark (VmHWM) including the benchmark driver and libc, so both are upper-bound proxies rather than isolated algorithm memory.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>operation</th>
+<th>static: ELF image (bytes)</th>
+<th>baseline RSS</th>
+<th>peak RSS</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Dragon-512</code></td>
+<td>hash_32</td>
+<td>12921</td>
+<td>1672 KiB</td>
+<td>1760 KiB</td>
+</tr>
+<tr>
+<td><code>Dragon-512</code></td>
+<td>hash_128</td>
+<td>12921</td>
+<td>1672 KiB</td>
+<td>1736 KiB</td>
+</tr>
+<tr>
+<td><code>Dragon-512</code></td>
+<td>hash_512</td>
+<td>12921</td>
+<td>1692 KiB</td>
+<td>1756 KiB</td>
+</tr>
+<tr>
+<td><code>Dragon-512</code></td>
+<td>hash_1024</td>
+<td>12921</td>
+<td>1676 KiB</td>
+<td>1740 KiB</td>
+</tr>
+<tr>
+<td><code>Dragon-512</code></td>
+<td>hash_4096</td>
+<td>12921</td>
+<td>1668 KiB</td>
+<td>1776 KiB</td>
+</tr>
+<tr>
+<td><code>Dragon-512</code></td>
+<td>hash_8192</td>
+<td>12921</td>
+<td>1684 KiB</td>
+<td>1764 KiB</td>
+</tr>
+<tr>
+<td><code>Dragon-512</code></td>
+<td>hash_16384</td>
+<td>12921</td>
+<td>1688 KiB</td>
+<td>1788 KiB</td>
+</tr>
+<tr>
+<td><code>Dragon-512</code></td>
+<td>hash_65536</td>
+<td>12921</td>
+<td>1736 KiB</td>
+<td>1840 KiB</td>
+</tr>
+<tr>
+<td><code>Dragon-768</code></td>
+<td>hash_32</td>
+<td>12953</td>
+<td>1664 KiB</td>
+<td>1728 KiB</td>
+</tr>
+<tr>
+<td><code>Dragon-768</code></td>
+<td>hash_128</td>
+<td>12953</td>
+<td>1676 KiB</td>
+<td>1740 KiB</td>
+</tr>
+<tr>
+<td><code>Dragon-768</code></td>
+<td>hash_512</td>
+<td>12953</td>
+<td>1668 KiB</td>
+<td>1732 KiB</td>
+</tr>
+<tr>
+<td><code>Dragon-768</code></td>
+<td>hash_1024</td>
+<td>12953</td>
+<td>1676 KiB</td>
+<td>1776 KiB</td>
+</tr>
+<tr>
+<td><code>Dragon-768</code></td>
+<td>hash_4096</td>
+<td>12953</td>
+<td>1668 KiB</td>
+<td>1772 KiB</td>
+</tr>
+<tr>
+<td><code>Dragon-768</code></td>
+<td>hash_8192</td>
+<td>12953</td>
+<td>1696 KiB</td>
+<td>1784 KiB</td>
+</tr>
+<tr>
+<td><code>Dragon-768</code></td>
+<td>hash_16384</td>
+<td>12953</td>
+<td>1696 KiB</td>
+<td>1760 KiB</td>
+</tr>
+<tr>
+<td><code>Dragon-768</code></td>
+<td>hash_65536</td>
+<td>12953</td>
+<td>1704 KiB</td>
+<td>1832 KiB</td>
+</tr>
+<tr>
+<td><code>Dragon-1024</code></td>
+<td>hash_32</td>
+<td>12865</td>
+<td>1688 KiB</td>
+<td>1764 KiB</td>
+</tr>
+<tr>
+<td><code>Dragon-1024</code></td>
+<td>hash_128</td>
+<td>12865</td>
+<td>1680 KiB</td>
+<td>1760 KiB</td>
+</tr>
+<tr>
+<td><code>Dragon-1024</code></td>
+<td>hash_512</td>
+<td>12865</td>
+<td>1688 KiB</td>
+<td>1760 KiB</td>
+</tr>
+<tr>
+<td><code>Dragon-1024</code></td>
+<td>hash_1024</td>
+<td>12865</td>
+<td>1684 KiB</td>
+<td>1768 KiB</td>
+</tr>
+<tr>
+<td><code>Dragon-1024</code></td>
+<td>hash_4096</td>
+<td>12865</td>
+<td>1684 KiB</td>
+<td>1784 KiB</td>
+</tr>
+<tr>
+<td><code>Dragon-1024</code></td>
+<td>hash_8192</td>
+<td>12865</td>
+<td>1680 KiB</td>
+<td>1788 KiB</td>
+</tr>
+<tr>
+<td><code>Dragon-1024</code></td>
+<td>hash_16384</td>
+<td>12865</td>
+<td>1612 KiB</td>
+<td>1740 KiB</td>
+</tr>
+<tr>
+<td><code>Dragon-1024</code></td>
+<td>hash_65536</td>
+<td>12865</td>
+<td>1732 KiB</td>
+<td>1832 KiB</td>
+</tr>
+<tr>
+<td><code>Dragon-XOF-256</code></td>
+<td>hash_32</td>
+<td>13409</td>
+<td>1664 KiB</td>
+<td>1760 KiB</td>
+</tr>
+<tr>
+<td><code>Dragon-XOF-256</code></td>
+<td>hash_128</td>
+<td>13409</td>
+<td>1664 KiB</td>
+<td>1768 KiB</td>
+</tr>
+<tr>
+<td><code>Dragon-XOF-256</code></td>
+<td>hash_512</td>
+<td>13409</td>
+<td>1668 KiB</td>
+<td>1732 KiB</td>
+</tr>
+<tr>
+<td><code>Dragon-XOF-256</code></td>
+<td>hash_1024</td>
+<td>13409</td>
+<td>1668 KiB</td>
+<td>1756 KiB</td>
+</tr>
+<tr>
+<td><code>Dragon-XOF-256</code></td>
+<td>hash_4096</td>
+<td>13409</td>
+<td>1692 KiB</td>
+<td>1772 KiB</td>
+</tr>
+<tr>
+<td><code>Dragon-XOF-256</code></td>
+<td>hash_8192</td>
+<td>13409</td>
+<td>1680 KiB</td>
+<td>1744 KiB</td>
+</tr>
+<tr>
+<td><code>Dragon-XOF-256</code></td>
+<td>hash_16384</td>
+<td>13409</td>
+<td>1704 KiB</td>
+<td>1792 KiB</td>
+</tr>
+<tr>
+<td><code>Dragon-XOF-256</code></td>
+<td>hash_65536</td>
+<td>13409</td>
+<td>1752 KiB</td>
+<td>1816 KiB</td>
+</tr>
+<tr>
+<td><code>Dragon-XOF-384</code></td>
+<td>hash_32</td>
+<td>13473</td>
+<td>1672 KiB</td>
+<td>1736 KiB</td>
+</tr>
+<tr>
+<td><code>Dragon-XOF-384</code></td>
+<td>hash_128</td>
+<td>13473</td>
+<td>1692 KiB</td>
+<td>1756 KiB</td>
+</tr>
+<tr>
+<td><code>Dragon-XOF-384</code></td>
+<td>hash_512</td>
+<td>13473</td>
+<td>1664 KiB</td>
+<td>1728 KiB</td>
+</tr>
+<tr>
+<td><code>Dragon-XOF-384</code></td>
+<td>hash_1024</td>
+<td>13473</td>
+<td>1636 KiB</td>
+<td>1764 KiB</td>
+</tr>
+<tr>
+<td><code>Dragon-XOF-384</code></td>
+<td>hash_4096</td>
+<td>13473</td>
+<td>1700 KiB</td>
+<td>1764 KiB</td>
+</tr>
+<tr>
+<td><code>Dragon-XOF-384</code></td>
+<td>hash_8192</td>
+<td>13473</td>
+<td>1704 KiB</td>
+<td>1768 KiB</td>
+</tr>
+<tr>
+<td><code>Dragon-XOF-384</code></td>
+<td>hash_16384</td>
+<td>13473</td>
+<td>1684 KiB</td>
+<td>1800 KiB</td>
+</tr>
+<tr>
+<td><code>Dragon-XOF-384</code></td>
+<td>hash_65536</td>
+<td>13473</td>
+<td>1760 KiB</td>
+<td>1848 KiB</td>
+</tr>
+<tr>
+<td><code>Dragon-XOF-512</code></td>
+<td>hash_32</td>
+<td>13361</td>
+<td>1692 KiB</td>
+<td>1776 KiB</td>
+</tr>
+<tr>
+<td><code>Dragon-XOF-512</code></td>
+<td>hash_128</td>
+<td>13361</td>
+<td>1660 KiB</td>
+<td>1724 KiB</td>
+</tr>
+<tr>
+<td><code>Dragon-XOF-512</code></td>
+<td>hash_512</td>
+<td>13361</td>
+<td>1676 KiB</td>
+<td>1756 KiB</td>
+</tr>
+<tr>
+<td><code>Dragon-XOF-512</code></td>
+<td>hash_1024</td>
+<td>13361</td>
+<td>1668 KiB</td>
+<td>1776 KiB</td>
+</tr>
+<tr>
+<td><code>Dragon-XOF-512</code></td>
+<td>hash_4096</td>
+<td>13361</td>
+<td>1668 KiB</td>
+<td>1772 KiB</td>
+</tr>
+<tr>
+<td><code>Dragon-XOF-512</code></td>
+<td>hash_8192</td>
+<td>13361</td>
+<td>1692 KiB</td>
+<td>1780 KiB</td>
+</tr>
+<tr>
+<td><code>Dragon-XOF-512</code></td>
+<td>hash_16384</td>
+<td>13361</td>
+<td>1688 KiB</td>
+<td>1752 KiB</td>
+</tr>
+<tr>
+<td><code>Dragon-XOF-512</code></td>
+<td>hash_65536</td>
+<td>13361</td>
+<td>1744 KiB</td>
+<td>1840 KiB</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="7-raw-evidence-index">7. Raw evidence index</h2>
+<p>Paths are relative to <code>performance/data/x86_1/</code> in the <a href="https://github.com/ngcc-dev/ngcc-harness">harness</a>; each JSON file records its commands, environment and trials.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>item</th>
+<th>file</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Dragon-512</code></td>
+<td>KAT log (sha256 <code>ee7e53e5b6444ac8…</code>)</td>
+<td><code>kat/hash-07/Dragon-512.log</code></td>
+</tr>
+<tr>
+<td><code>Dragon-512</code></td>
+<td>timing hash_1024</td>
+<td><code>records/hash-07/Dragon-512__hash_1024.json</code></td>
+</tr>
+<tr>
+<td><code>Dragon-512</code></td>
+<td>timing hash_128</td>
+<td><code>records/hash-07/Dragon-512__hash_128.json</code></td>
+</tr>
+<tr>
+<td><code>Dragon-512</code></td>
+<td>timing hash_16384</td>
+<td><code>records/hash-07/Dragon-512__hash_16384.json</code></td>
+</tr>
+<tr>
+<td><code>Dragon-512</code></td>
+<td>timing hash_32</td>
+<td><code>records/hash-07/Dragon-512__hash_32.json</code></td>
+</tr>
+<tr>
+<td><code>Dragon-512</code></td>
+<td>timing hash_4096</td>
+<td><code>records/hash-07/Dragon-512__hash_4096.json</code></td>
+</tr>
+<tr>
+<td><code>Dragon-512</code></td>
+<td>timing hash_512</td>
+<td><code>records/hash-07/Dragon-512__hash_512.json</code></td>
+</tr>
+<tr>
+<td><code>Dragon-512</code></td>
+<td>timing hash_65536</td>
+<td><code>records/hash-07/Dragon-512__hash_65536.json</code></td>
+</tr>
+<tr>
+<td><code>Dragon-512</code></td>
+<td>timing hash_8192</td>
+<td><code>records/hash-07/Dragon-512__hash_8192.json</code></td>
+</tr>
+<tr>
+<td><code>Dragon-768</code></td>
+<td>KAT log (sha256 <code>3fcaae89e8474427…</code>)</td>
+<td><code>kat/hash-07/Dragon-768.log</code></td>
+</tr>
+<tr>
+<td><code>Dragon-768</code></td>
+<td>timing hash_1024</td>
+<td><code>records/hash-07/Dragon-768__hash_1024.json</code></td>
+</tr>
+<tr>
+<td><code>Dragon-768</code></td>
+<td>timing hash_128</td>
+<td><code>records/hash-07/Dragon-768__hash_128.json</code></td>
+</tr>
+<tr>
+<td><code>Dragon-768</code></td>
+<td>timing hash_16384</td>
+<td><code>records/hash-07/Dragon-768__hash_16384.json</code></td>
+</tr>
+<tr>
+<td><code>Dragon-768</code></td>
+<td>timing hash_32</td>
+<td><code>records/hash-07/Dragon-768__hash_32.json</code></td>
+</tr>
+<tr>
+<td><code>Dragon-768</code></td>
+<td>timing hash_4096</td>
+<td><code>records/hash-07/Dragon-768__hash_4096.json</code></td>
+</tr>
+<tr>
+<td><code>Dragon-768</code></td>
+<td>timing hash_512</td>
+<td><code>records/hash-07/Dragon-768__hash_512.json</code></td>
+</tr>
+<tr>
+<td><code>Dragon-768</code></td>
+<td>timing hash_65536</td>
+<td><code>records/hash-07/Dragon-768__hash_65536.json</code></td>
+</tr>
+<tr>
+<td><code>Dragon-768</code></td>
+<td>timing hash_8192</td>
+<td><code>records/hash-07/Dragon-768__hash_8192.json</code></td>
+</tr>
+<tr>
+<td><code>Dragon-1024</code></td>
+<td>KAT log (sha256 <code>525de49a7c05e735…</code>)</td>
+<td><code>kat/hash-07/Dragon-1024.log</code></td>
+</tr>
+<tr>
+<td><code>Dragon-1024</code></td>
+<td>timing hash_1024</td>
+<td><code>records/hash-07/Dragon-1024__hash_1024.json</code></td>
+</tr>
+<tr>
+<td><code>Dragon-1024</code></td>
+<td>timing hash_128</td>
+<td><code>records/hash-07/Dragon-1024__hash_128.json</code></td>
+</tr>
+<tr>
+<td><code>Dragon-1024</code></td>
+<td>timing hash_16384</td>
+<td><code>records/hash-07/Dragon-1024__hash_16384.json</code></td>
+</tr>
+<tr>
+<td><code>Dragon-1024</code></td>
+<td>timing hash_32</td>
+<td><code>records/hash-07/Dragon-1024__hash_32.json</code></td>
+</tr>
+<tr>
+<td><code>Dragon-1024</code></td>
+<td>timing hash_4096</td>
+<td><code>records/hash-07/Dragon-1024__hash_4096.json</code></td>
+</tr>
+<tr>
+<td><code>Dragon-1024</code></td>
+<td>timing hash_512</td>
+<td><code>records/hash-07/Dragon-1024__hash_512.json</code></td>
+</tr>
+<tr>
+<td><code>Dragon-1024</code></td>
+<td>timing hash_65536</td>
+<td><code>records/hash-07/Dragon-1024__hash_65536.json</code></td>
+</tr>
+<tr>
+<td><code>Dragon-1024</code></td>
+<td>timing hash_8192</td>
+<td><code>records/hash-07/Dragon-1024__hash_8192.json</code></td>
+</tr>
+<tr>
+<td><code>Dragon-XOF-256</code></td>
+<td>KAT log (sha256 <code>e732e6ecbef06712…</code>)</td>
+<td><code>kat/hash-07/Dragon-XOF-256.log</code></td>
+</tr>
+<tr>
+<td><code>Dragon-XOF-256</code></td>
+<td>timing hash_1024</td>
+<td><code>records/hash-07/Dragon-XOF-256__hash_1024.json</code></td>
+</tr>
+<tr>
+<td><code>Dragon-XOF-256</code></td>
+<td>timing hash_128</td>
+<td><code>records/hash-07/Dragon-XOF-256__hash_128.json</code></td>
+</tr>
+<tr>
+<td><code>Dragon-XOF-256</code></td>
+<td>timing hash_16384</td>
+<td><code>records/hash-07/Dragon-XOF-256__hash_16384.json</code></td>
+</tr>
+<tr>
+<td><code>Dragon-XOF-256</code></td>
+<td>timing hash_32</td>
+<td><code>records/hash-07/Dragon-XOF-256__hash_32.json</code></td>
+</tr>
+<tr>
+<td><code>Dragon-XOF-256</code></td>
+<td>timing hash_4096</td>
+<td><code>records/hash-07/Dragon-XOF-256__hash_4096.json</code></td>
+</tr>
+<tr>
+<td><code>Dragon-XOF-256</code></td>
+<td>timing hash_512</td>
+<td><code>records/hash-07/Dragon-XOF-256__hash_512.json</code></td>
+</tr>
+<tr>
+<td><code>Dragon-XOF-256</code></td>
+<td>timing hash_65536</td>
+<td><code>records/hash-07/Dragon-XOF-256__hash_65536.json</code></td>
+</tr>
+<tr>
+<td><code>Dragon-XOF-256</code></td>
+<td>timing hash_8192</td>
+<td><code>records/hash-07/Dragon-XOF-256__hash_8192.json</code></td>
+</tr>
+<tr>
+<td><code>Dragon-XOF-384</code></td>
+<td>KAT log (sha256 <code>3134cee8b5b589f7…</code>)</td>
+<td><code>kat/hash-07/Dragon-XOF-384.log</code></td>
+</tr>
+<tr>
+<td><code>Dragon-XOF-384</code></td>
+<td>timing hash_1024</td>
+<td><code>records/hash-07/Dragon-XOF-384__hash_1024.json</code></td>
+</tr>
+<tr>
+<td><code>Dragon-XOF-384</code></td>
+<td>timing hash_128</td>
+<td><code>records/hash-07/Dragon-XOF-384__hash_128.json</code></td>
+</tr>
+<tr>
+<td><code>Dragon-XOF-384</code></td>
+<td>timing hash_16384</td>
+<td><code>records/hash-07/Dragon-XOF-384__hash_16384.json</code></td>
+</tr>
+<tr>
+<td><code>Dragon-XOF-384</code></td>
+<td>timing hash_32</td>
+<td><code>records/hash-07/Dragon-XOF-384__hash_32.json</code></td>
+</tr>
+<tr>
+<td><code>Dragon-XOF-384</code></td>
+<td>timing hash_4096</td>
+<td><code>records/hash-07/Dragon-XOF-384__hash_4096.json</code></td>
+</tr>
+<tr>
+<td><code>Dragon-XOF-384</code></td>
+<td>timing hash_512</td>
+<td><code>records/hash-07/Dragon-XOF-384__hash_512.json</code></td>
+</tr>
+<tr>
+<td><code>Dragon-XOF-384</code></td>
+<td>timing hash_65536</td>
+<td><code>records/hash-07/Dragon-XOF-384__hash_65536.json</code></td>
+</tr>
+<tr>
+<td><code>Dragon-XOF-384</code></td>
+<td>timing hash_8192</td>
+<td><code>records/hash-07/Dragon-XOF-384__hash_8192.json</code></td>
+</tr>
+<tr>
+<td><code>Dragon-XOF-512</code></td>
+<td>KAT log (sha256 <code>9169a0d7cf4da58b…</code>)</td>
+<td><code>kat/hash-07/Dragon-XOF-512.log</code></td>
+</tr>
+<tr>
+<td><code>Dragon-XOF-512</code></td>
+<td>timing hash_1024</td>
+<td><code>records/hash-07/Dragon-XOF-512__hash_1024.json</code></td>
+</tr>
+<tr>
+<td><code>Dragon-XOF-512</code></td>
+<td>timing hash_128</td>
+<td><code>records/hash-07/Dragon-XOF-512__hash_128.json</code></td>
+</tr>
+<tr>
+<td><code>Dragon-XOF-512</code></td>
+<td>timing hash_16384</td>
+<td><code>records/hash-07/Dragon-XOF-512__hash_16384.json</code></td>
+</tr>
+<tr>
+<td><code>Dragon-XOF-512</code></td>
+<td>timing hash_32</td>
+<td><code>records/hash-07/Dragon-XOF-512__hash_32.json</code></td>
+</tr>
+<tr>
+<td><code>Dragon-XOF-512</code></td>
+<td>timing hash_4096</td>
+<td><code>records/hash-07/Dragon-XOF-512__hash_4096.json</code></td>
+</tr>
+<tr>
+<td><code>Dragon-XOF-512</code></td>
+<td>timing hash_512</td>
+<td><code>records/hash-07/Dragon-XOF-512__hash_512.json</code></td>
+</tr>
+<tr>
+<td><code>Dragon-XOF-512</code></td>
+<td>timing hash_65536</td>
+<td><code>records/hash-07/Dragon-XOF-512__hash_65536.json</code></td>
+</tr>
+<tr>
+<td><code>Dragon-XOF-512</code></td>
+<td>timing hash_8192</td>
+<td><code>records/hash-07/Dragon-XOF-512__hash_8192.json</code></td>
+</tr>
+</tbody>
+</table></div>
+<p>Scripts: <code>performance/campaign.py</code>, <code>performance/ngcc_perf.c</code>, <code>performance/hashprof/</code> in the <a href="https://github.com/ngcc-dev/ngcc-harness">harness</a>.</p>
+</main>
+<footer class="site-footer">
+<p>Maintained by: <a href="mailto:markku-juhani.saarinen@tuni.fi">markku-juhani.saarinen@tuni.fi</a></p>
+<p>Submissions are welcome via <a href="https://github.com/ngcc-dev/ngcc-harness/issues">GitHub issues</a>.</p>
+</footer>
+</body>
+</html>

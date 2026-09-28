@@ -5,14 +5,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>ngcc.dev: Constant-time review — 05 Chinith</title>
 <link rel="icon" type="image/png" href="../assets/mag-glass.png">
-<link rel="stylesheet" href="../assets/style.css?v=996d5cfd">
+<link rel="stylesheet" href="../assets/style.css?v=1fdb792d">
 </head>
 <body>
 <header class="site-header">
 <a class="brand" href="../index.html"><img class="brand-icon" src="../assets/mag-glass.png" alt="" width="28" height="28">ngcc.dev</a>
-<nav><a href="../index.html">Home</a><a href="../reports/index.html">Reports</a><a href="../constant-time/index.html">Constant-Time</a></nav>
+<nav><a href="../index.html">Home</a><a href="../reports/index.html">Reports</a><a href="../performance/x86_1/index.html">Performance</a><a href="../constant-time/index.html">Constant-Time</a></nav>
 </header>
-<main>
+<main class="">
 <p class="crumb"><a href="../constant-time/index.html">Constant-time review</a> › <code>sign-05</code> · <a href="../reports/sign-05.html">Report</a></p>
 
 <!-- synchronized report: sign-05/constant_time.md -->
@@ -21,9 +21,14 @@
 <p>Secret: witness/secret key and per-proof random tapes until revealed. Public: verification key, message, Fiat–Shamir challenge and opened transcript.</p>
 <ul>
 <li>Branch/loop trace: <code>Implementations/Reference_Implementation/sm4th_d3_128s_tight/sig_impl.c:476</code> — Challenge-3 grinding and opening use outcome-dependent branches; the predicate is transcript/challenge derived, so this line alone is not evidence of secret-key leakage.</li>
-<li>Table lookups and division/remainder: this source triage does not certify their absence or constant-time compilation. Only the explicitly traced operands above are classified. Public lengths, fixed parameters and verifier checks are not findings.</li>
+<li>
+<p>Table lookups and division/remainder: this source triage does not certify their absence or constant-time compilation. Only the explicitly traced operands above are classified. Public lengths, fixed parameters and verifier checks are not findings.</p>
+</li>
+<li>
+<p>Table lookups outside <code>sig_impl.c</code>: key generation and every signature evaluate the one-way function on the secret key through the default table S-boxes (<code>SM4_S</code>, uBlock T-tables, AES T-tables). Finding: sign-05-2.</p>
+</li>
 </ul>
-<p>Assessment: No new vulnerability report is promoted from this representative source triage. A compiler/architecture-specific timing and cache test is still needed before claiming constant-time behavior or exploitable leakage.</p>
+<p>Assessment: sign-05-2 is promoted from the one-way-function table lookups; the <code>sig_impl.c</code> triage above found no further report. A compiler/architecture-specific timing and cache test is still needed before claiming constant-time behavior or exploitable leakage.</p>
 <p>Recheck the cited source line and its caller before reusing this result. A timing claim requires controlled same-public-input tests with changed secret state and a public-value control.</p>
 </main>
 <footer class="site-footer">

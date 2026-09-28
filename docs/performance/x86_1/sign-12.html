@@ -1,0 +1,1076 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ngcc.dev: sign-12 Galas Signature Scheme — performance on x86-64 (system x861)</title>
+<link rel="icon" type="image/png" href="../../assets/mag-glass.png">
+<link rel="stylesheet" href="../../assets/style.css?v=1fdb792d">
+</head>
+<body>
+<header class="site-header">
+<a class="brand" href="../../index.html"><img class="brand-icon" src="../../assets/mag-glass.png" alt="" width="28" height="28">ngcc.dev</a>
+<nav><a href="../../index.html">Home</a><a href="../../reports/index.html">Reports</a><a href="../../performance/x86_1/index.html">Performance</a><a href="../../constant-time/index.html">Constant-Time</a></nav>
+</header>
+<main class="">
+<!-- synchronized from harness: sign-12/perf_x86_1.md -->
+<h1 id="sign-12-galas-signature-scheme-performance-on-x86-64-system-x86_1">sign-12 Galas Signature Scheme — performance on x86-64 (system x86_1)</h1>
+<p><a href="index.html">Performance x86_1</a> › <code>sign-12</code> · <a href="method.html">method</a> · <a href="https://www.niccs.org.cn/niccs/Round1Additional/pc/content/content_2101561077713686528.html">NICCS page</a></p>
+<p>Independent measurement following the structure of the NICCS x86 self-assessment guide, §3.5 (1)–(7). Not a submitter self-assessment.</p>
+<h2 id="1-basic-information">1. Basic information</h2>
+<ul>
+<li>Category: public-key algorithm; function: digital signature</li>
+<li>Algorithm: Galas Signature Scheme</li>
+<li>Implementation versions measured: reference</li>
+<li>Parameter sets: <code>Galas-160F</code>, <code>Galas-160S</code>, <code>Galas-256F</code>, <code>Galas-256S</code>, <code>Galas-384F</code>, <code>Galas-384S</code>, <code>Galas-512F</code>, <code>Galas-512S</code></li>
+</ul>
+<h2 id="2-assessment-environment">2. Assessment environment</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>item</th>
+<th>value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>processor</td>
+<td>12th Gen Intel(R) Core(TM) i7-12700 (CPU 2, one core)</td>
+</tr>
+<tr>
+<td>clock</td>
+<td>max 2.10 GHz, governor performance, turbo off, SMT off</td>
+</tr>
+<tr>
+<td>memory</td>
+<td>31788 MiB</td>
+</tr>
+<tr>
+<td>OS / kernel</td>
+<td>Debian GNU/Linux 13 (trixie) / 6.12.107+deb13-amd64</td>
+</tr>
+<tr>
+<td>compiler / build tool</td>
+<td>gcc (Debian 14.2.0-19) 14.2.0 / cmake version 3.31.6</td>
+</tr>
+<tr>
+<td>campaign start / end (UTC)</td>
+<td>2026-09-25T10:02:21 / 2026-09-28T04:35:59</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="3-functional-testing-kat">3. Functional testing (KAT)</h2>
+<p>Each library was checked against the submitted KAT vectors (SHA-256 manifest <code>sign-12/kat.sha256</code> in the harness) before timing.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>build flags</th>
+<th>KAT</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Galas-160F</code></td>
+<td>harness-default</td>
+<td class="st bad">MISMATCH [1]</td>
+</tr>
+<tr>
+<td><code>Galas-160S</code></td>
+<td>harness-default</td>
+<td class="st bad">MISMATCH [1]</td>
+</tr>
+<tr>
+<td><code>Galas-256F</code></td>
+<td>harness-default</td>
+<td class="st bad">MISMATCH [1]</td>
+</tr>
+<tr>
+<td><code>Galas-256S</code></td>
+<td>harness-default</td>
+<td class="st bad">MISMATCH [1]</td>
+</tr>
+<tr>
+<td><code>Galas-384F</code></td>
+<td>harness-default</td>
+<td class="st bad">MISMATCH [1]</td>
+</tr>
+<tr>
+<td><code>Galas-384S</code></td>
+<td>harness-default</td>
+<td class="st bad">MISMATCH [1]</td>
+</tr>
+<tr>
+<td><code>Galas-512F</code></td>
+<td>harness-default</td>
+<td class="st bad">MISMATCH [1]</td>
+</tr>
+<tr>
+<td><code>Galas-512S</code></td>
+<td>harness-default</td>
+<td class="st warn">TIMEOUT [1]</td>
+</tr>
+</tbody>
+</table></div>
+<p>[1] API deviation: sig_keygen does not draw from drng_algorithm but seeds a private DRNG from 32 zero bytes (or from a seed set by a non-API helper used only by the submitters' own KAT generator), so the official KAT flow yields different keys These instances are timed anyway; their output is not validated.</p>
+<h2 id="4-performance">4. Performance</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>operation</th>
+<th>mean cycles</th>
+<th>mean time</th>
+<th>ops/s</th>
+<th>median trial</th>
+<th>n (trials × iters)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Galas-160F</code></td>
+<td>keygen</td>
+<td>22.14 M</td>
+<td>10.6 ms</td>
+<td>94.3</td>
+<td>10.6 ms</td>
+<td>475 (5 × 95)</td>
+</tr>
+<tr>
+<td><code>Galas-160F</code></td>
+<td>sign</td>
+<td>1.88 G</td>
+<td>901 ms</td>
+<td>1.11</td>
+<td>903 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>Galas-160F</code></td>
+<td>verify</td>
+<td>1.20 G</td>
+<td>571 ms</td>
+<td>1.75</td>
+<td>571 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>Galas-160S</code></td>
+<td>keygen</td>
+<td>22.13 M</td>
+<td>10.6 ms</td>
+<td>94.3</td>
+<td>10.6 ms</td>
+<td>475 (5 × 95)</td>
+</tr>
+<tr>
+<td><code>Galas-160S</code></td>
+<td>sign</td>
+<td>2.39 G</td>
+<td>1.14 s</td>
+<td>0.874</td>
+<td>1.15 s</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>Galas-160S</code></td>
+<td>verify</td>
+<td>1.68 G</td>
+<td>805 ms</td>
+<td>1.24</td>
+<td>802 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>Galas-256F</code></td>
+<td>keygen</td>
+<td>57.79 M</td>
+<td>27.7 ms</td>
+<td>36.1</td>
+<td>27.7 ms</td>
+<td>185 (5 × 37)</td>
+</tr>
+<tr>
+<td><code>Galas-256F</code></td>
+<td>sign</td>
+<td>7.73 G</td>
+<td>3.7 s</td>
+<td>0.271</td>
+<td>3.69 s</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>Galas-256F</code></td>
+<td>verify</td>
+<td>4.89 G</td>
+<td>2.34 s</td>
+<td>0.427</td>
+<td>2.34 s</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>Galas-256S</code></td>
+<td>keygen</td>
+<td>57.82 M</td>
+<td>27.7 ms</td>
+<td>36.1</td>
+<td>27.7 ms</td>
+<td>185 (5 × 37)</td>
+</tr>
+<tr>
+<td><code>Galas-256S</code></td>
+<td>sign</td>
+<td>12.12 G</td>
+<td>5.82 s</td>
+<td>0.172</td>
+<td>5.82 s</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>Galas-256S</code></td>
+<td>verify</td>
+<td>9.06 G</td>
+<td>4.33 s</td>
+<td>0.231</td>
+<td>4.33 s</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>Galas-384F</code></td>
+<td>keygen</td>
+<td>136.91 M</td>
+<td>65.5 ms</td>
+<td>15.3</td>
+<td>65.5 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>Galas-384F</code></td>
+<td>sign</td>
+<td>29.61 G</td>
+<td>14.2 s</td>
+<td>0.0704</td>
+<td>14.2 s</td>
+<td>60 (5 × 12)</td>
+</tr>
+<tr>
+<td><code>Galas-384F</code></td>
+<td>verify</td>
+<td>17.90 G</td>
+<td>8.59 s</td>
+<td>0.116</td>
+<td>8.59 s</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>Galas-384S</code></td>
+<td>keygen</td>
+<td>137.02 M</td>
+<td>65.5 ms</td>
+<td>15.3</td>
+<td>65.5 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>Galas-384S</code></td>
+<td>sign</td>
+<td>38.44 G</td>
+<td>18.4 s</td>
+<td>0.0544</td>
+<td>18.4 s</td>
+<td>50 (5 × 10)</td>
+</tr>
+<tr>
+<td><code>Galas-384S</code></td>
+<td>verify</td>
+<td>26.58 G</td>
+<td>12.7 s</td>
+<td>0.0785</td>
+<td>12.7 s</td>
+<td>70 (5 × 14)</td>
+</tr>
+<tr>
+<td><code>Galas-512F</code></td>
+<td>keygen</td>
+<td>254.11 M</td>
+<td>121 ms</td>
+<td>8.23</td>
+<td>121 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>Galas-512F</code></td>
+<td>sign</td>
+<td>75.51 G</td>
+<td>36.2 s</td>
+<td>0.0276</td>
+<td>35.9 s</td>
+<td>25 (5 × 5)</td>
+</tr>
+<tr>
+<td><code>Galas-512F</code></td>
+<td>verify</td>
+<td>44.76 G</td>
+<td>21.5 s</td>
+<td>0.0466</td>
+<td>21.5 s</td>
+<td>40 (5 × 8)</td>
+</tr>
+<tr>
+<td><code>Galas-512S</code></td>
+<td>keygen</td>
+<td>254.15 M</td>
+<td>121 ms</td>
+<td>8.23</td>
+<td>121 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>Galas-512S</code></td>
+<td>sign</td>
+<td>92.54 G</td>
+<td>44.4 s</td>
+<td>0.0225</td>
+<td>44 s</td>
+<td>20 (5 × 4)</td>
+</tr>
+<tr>
+<td><code>Galas-512S</code></td>
+<td>verify</td>
+<td>61.40 G</td>
+<td>29.4 s</td>
+<td>0.034</td>
+<td>29.4 s</td>
+<td>30 (5 × 6)</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="5-resource-consumption">5. Resource consumption</h2>
+<p>Static memory is approximated by the library's loadable ELF segments; peak memory is the process high-water mark (VmHWM) including the benchmark driver and libc, so both are upper-bound proxies rather than isolated algorithm memory.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>operation</th>
+<th>static: ELF image (bytes)</th>
+<th>baseline RSS</th>
+<th>peak RSS</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Galas-160F</code></td>
+<td>keygen</td>
+<td>–</td>
+<td>1920 KiB</td>
+<td>2076 KiB</td>
+</tr>
+<tr>
+<td><code>Galas-160F</code></td>
+<td>sign</td>
+<td>–</td>
+<td>1968 KiB</td>
+<td>5740 KiB</td>
+</tr>
+<tr>
+<td><code>Galas-160F</code></td>
+<td>verify</td>
+<td>–</td>
+<td>4904 KiB</td>
+<td>5448 KiB</td>
+</tr>
+<tr>
+<td><code>Galas-160S</code></td>
+<td>keygen</td>
+<td>–</td>
+<td>1896 KiB</td>
+<td>2024 KiB</td>
+</tr>
+<tr>
+<td><code>Galas-160S</code></td>
+<td>sign</td>
+<td>–</td>
+<td>1960 KiB</td>
+<td>8068 KiB</td>
+</tr>
+<tr>
+<td><code>Galas-160S</code></td>
+<td>verify</td>
+<td>–</td>
+<td>5280 KiB</td>
+<td>7636 KiB</td>
+</tr>
+<tr>
+<td><code>Galas-256F</code></td>
+<td>keygen</td>
+<td>–</td>
+<td>1924 KiB</td>
+<td>2096 KiB</td>
+</tr>
+<tr>
+<td><code>Galas-256F</code></td>
+<td>sign</td>
+<td>–</td>
+<td>2040 KiB</td>
+<td>12968 KiB</td>
+</tr>
+<tr>
+<td><code>Galas-256F</code></td>
+<td>verify</td>
+<td>–</td>
+<td>11448 KiB</td>
+<td>12712 KiB</td>
+</tr>
+<tr>
+<td><code>Galas-256S</code></td>
+<td>keygen</td>
+<td>–</td>
+<td>1908 KiB</td>
+<td>2100 KiB</td>
+</tr>
+<tr>
+<td><code>Galas-256S</code></td>
+<td>sign</td>
+<td>–</td>
+<td>2032 KiB</td>
+<td>25216 KiB</td>
+</tr>
+<tr>
+<td><code>Galas-256S</code></td>
+<td>verify</td>
+<td>–</td>
+<td>12216 KiB</td>
+<td>24456 KiB</td>
+</tr>
+<tr>
+<td><code>Galas-384F</code></td>
+<td>keygen</td>
+<td>–</td>
+<td>1916 KiB</td>
+<td>2172 KiB</td>
+</tr>
+<tr>
+<td><code>Galas-384F</code></td>
+<td>sign</td>
+<td>–</td>
+<td>2140 KiB</td>
+<td>37536 KiB</td>
+</tr>
+<tr>
+<td><code>Galas-384F</code></td>
+<td>verify</td>
+<td>–</td>
+<td>33688 KiB</td>
+<td>37372 KiB</td>
+</tr>
+<tr>
+<td><code>Galas-384S</code></td>
+<td>keygen</td>
+<td>–</td>
+<td>1916 KiB</td>
+<td>2196 KiB</td>
+</tr>
+<tr>
+<td><code>Galas-384S</code></td>
+<td>sign</td>
+<td>–</td>
+<td>2116 KiB</td>
+<td>63708 KiB</td>
+</tr>
+<tr>
+<td><code>Galas-384S</code></td>
+<td>verify</td>
+<td>–</td>
+<td>35868 KiB</td>
+<td>63552 KiB</td>
+</tr>
+<tr>
+<td><code>Galas-512F</code></td>
+<td>keygen</td>
+<td>–</td>
+<td>1976 KiB</td>
+<td>2236 KiB</td>
+</tr>
+<tr>
+<td><code>Galas-512F</code></td>
+<td>sign</td>
+<td>–</td>
+<td>2100 KiB</td>
+<td>82948 KiB</td>
+</tr>
+<tr>
+<td><code>Galas-512F</code></td>
+<td>verify</td>
+<td>–</td>
+<td>76224 KiB</td>
+<td>82596 KiB</td>
+</tr>
+<tr>
+<td><code>Galas-512S</code></td>
+<td>keygen</td>
+<td>–</td>
+<td>1928 KiB</td>
+<td>2200 KiB</td>
+</tr>
+<tr>
+<td><code>Galas-512S</code></td>
+<td>sign</td>
+<td>–</td>
+<td>2048 KiB</td>
+<td>132640 KiB</td>
+</tr>
+<tr>
+<td><code>Galas-512S</code></td>
+<td>verify</td>
+<td>–</td>
+<td>78712 KiB</td>
+<td>132376 KiB</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="6-transmission-and-storage-overhead">6. Transmission and storage overhead</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>public key</th>
+<th>secret key</th>
+<th>signature</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Galas-160F</code></td>
+<td>40</td>
+<td>40</td>
+<td>5964</td>
+</tr>
+<tr>
+<td><code>Galas-160S</code></td>
+<td>40</td>
+<td>40</td>
+<td>4812</td>
+</tr>
+<tr>
+<td><code>Galas-256F</code></td>
+<td>64</td>
+<td>64</td>
+<td>15950</td>
+</tr>
+<tr>
+<td><code>Galas-256S</code></td>
+<td>64</td>
+<td>64</td>
+<td>12114</td>
+</tr>
+<tr>
+<td><code>Galas-384F</code></td>
+<td>96</td>
+<td>96</td>
+<td>33384</td>
+</tr>
+<tr>
+<td><code>Galas-384S</code></td>
+<td>96</td>
+<td>96</td>
+<td>27784</td>
+</tr>
+<tr>
+<td><code>Galas-512F</code></td>
+<td>128</td>
+<td>128</td>
+<td>59416</td>
+</tr>
+<tr>
+<td><code>Galas-512S</code></td>
+<td>128</td>
+<td>128</td>
+<td>49516</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="symmetric-primitives">Symmetric primitives</h2>
+<p><a href="../symmetric-survey.html">Survey</a> verdict: <strong>ICCS-only</strong></p>
+<p>Share of each operation spent in the ICCS placeholder hash functions and in the ICCS DRNG (reference build, measured in the same run with link-time wrappers):</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>operation</th>
+<th>pseudohash/XOF/sm3</th>
+<th>DRNG</th>
+<th>calls per operation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Galas-160F</code></td>
+<td>keygen</td>
+<td>0.0%</td>
+<td>0.1%</td>
+<td>drng 6</td>
+</tr>
+<tr>
+<td><code>Galas-160F</code></td>
+<td>sign</td>
+<td>4.1%</td>
+<td>0.0%</td>
+<td>pseudoXOF 3.69e+04, pseudohash 102</td>
+</tr>
+<tr>
+<td><code>Galas-160F</code></td>
+<td>verify</td>
+<td>6.3%</td>
+<td>0.0%</td>
+<td>pseudoXOF 3.65e+04, pseudohash 28</td>
+</tr>
+<tr>
+<td><code>Galas-160S</code></td>
+<td>keygen</td>
+<td>0.0%</td>
+<td>0.1%</td>
+<td>drng 6</td>
+</tr>
+<tr>
+<td><code>Galas-160S</code></td>
+<td>sign</td>
+<td>23%</td>
+<td>0.0%</td>
+<td>pseudoXOF 2.49e+05, pseudohash 1.85e+03</td>
+</tr>
+<tr>
+<td><code>Galas-160S</code></td>
+<td>verify</td>
+<td>30%</td>
+<td>0.0%</td>
+<td>pseudoXOF 2.49e+05, pseudohash 22</td>
+</tr>
+<tr>
+<td><code>Galas-256F</code></td>
+<td>keygen</td>
+<td>0.0%</td>
+<td>0.0%</td>
+<td>drng 6</td>
+</tr>
+<tr>
+<td><code>Galas-256F</code></td>
+<td>sign</td>
+<td>3.1%</td>
+<td>0.0%</td>
+<td>pseudoXOF 6.18e+04, pseudohash 297</td>
+</tr>
+<tr>
+<td><code>Galas-256F</code></td>
+<td>verify</td>
+<td>4.7%</td>
+<td>0.0%</td>
+<td>pseudoXOF 6.11e+04, pseudohash 44</td>
+</tr>
+<tr>
+<td><code>Galas-256S</code></td>
+<td>keygen</td>
+<td>0.0%</td>
+<td>0.0%</td>
+<td>drng 6</td>
+</tr>
+<tr>
+<td><code>Galas-256S</code></td>
+<td>sign</td>
+<td>33%</td>
+<td>0.0%</td>
+<td>pseudoXOF 1.12e+06, pseudohash 5.65e+03</td>
+</tr>
+<tr>
+<td><code>Galas-256S</code></td>
+<td>verify</td>
+<td>46%</td>
+<td>0.0%</td>
+<td>pseudoXOF 1.12e+06, pseudohash 30</td>
+</tr>
+<tr>
+<td><code>Galas-384F</code></td>
+<td>keygen</td>
+<td>0.0%</td>
+<td>0.0%</td>
+<td>drng 6</td>
+</tr>
+<tr>
+<td><code>Galas-384F</code></td>
+<td>sign</td>
+<td>2.8%</td>
+<td>0.0%</td>
+<td>pseudoXOF 2.3e+05, pseudohash 266</td>
+</tr>
+<tr>
+<td><code>Galas-384F</code></td>
+<td>verify</td>
+<td>4.9%</td>
+<td>0.0%</td>
+<td>pseudoXOF 2.29e+05, pseudohash 57</td>
+</tr>
+<tr>
+<td><code>Galas-384S</code></td>
+<td>keygen</td>
+<td>0.0%</td>
+<td>0.0%</td>
+<td>drng 6</td>
+</tr>
+<tr>
+<td><code>Galas-384S</code></td>
+<td>sign</td>
+<td>23%</td>
+<td>0.0%</td>
+<td>pseudoXOF 2.38e+06, pseudohash 3.04e+03</td>
+</tr>
+<tr>
+<td><code>Galas-384S</code></td>
+<td>verify</td>
+<td>34%</td>
+<td>0.0%</td>
+<td>pseudoXOF 2.37e+06, pseudohash 41</td>
+</tr>
+<tr>
+<td><code>Galas-512F</code></td>
+<td>keygen</td>
+<td>0.0%</td>
+<td>0.0%</td>
+<td>drng 6</td>
+</tr>
+<tr>
+<td><code>Galas-512F</code></td>
+<td>sign</td>
+<td>2.0%</td>
+<td>0.0%</td>
+<td>pseudoXOF 4.22e+05, pseudohash 178</td>
+</tr>
+<tr>
+<td><code>Galas-512F</code></td>
+<td>verify</td>
+<td>3.5%</td>
+<td>0.0%</td>
+<td>pseudoXOF 4.19e+05, pseudohash 73</td>
+</tr>
+<tr>
+<td><code>Galas-512S</code></td>
+<td>keygen</td>
+<td>0.0%</td>
+<td>0.0%</td>
+<td>drng 6</td>
+</tr>
+<tr>
+<td><code>Galas-512S</code></td>
+<td>sign</td>
+<td>18%</td>
+<td>0.0%</td>
+<td>pseudoXOF 4.64e+06, pseudohash 3.29e+03</td>
+</tr>
+<tr>
+<td><code>Galas-512S</code></td>
+<td>verify</td>
+<td>28%</td>
+<td>0.0%</td>
+<td>pseudoXOF 4.64e+06, pseudohash 51</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="7-raw-evidence-index">7. Raw evidence index</h2>
+<p>Paths are relative to <code>performance/data/x86_1/</code> in the <a href="https://github.com/ngcc-dev/ngcc-harness">harness</a>; each JSON file records its commands, environment and trials.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>item</th>
+<th>file</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Galas-160F</code></td>
+<td>KAT log (sha256 <code>d390f96532059a82…</code>)</td>
+<td><code>kat/sign-12/Galas-160F.log</code></td>
+</tr>
+<tr>
+<td><code>Galas-160F</code></td>
+<td>timing keygen</td>
+<td><code>records/sign-12/Galas-160F__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>Galas-160F</code></td>
+<td>timing sign</td>
+<td><code>records/sign-12/Galas-160F__sign.json</code></td>
+</tr>
+<tr>
+<td><code>Galas-160F</code></td>
+<td>timing verify</td>
+<td><code>records/sign-12/Galas-160F__verify.json</code></td>
+</tr>
+<tr>
+<td><code>Galas-160F</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/sign-12/Galas-160F__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>Galas-160F</code></td>
+<td>hash profile sign</td>
+<td><code>profile/sign-12/Galas-160F__sign.json</code></td>
+</tr>
+<tr>
+<td><code>Galas-160F</code></td>
+<td>hash profile verify</td>
+<td><code>profile/sign-12/Galas-160F__verify.json</code></td>
+</tr>
+<tr>
+<td><code>Galas-160S</code></td>
+<td>KAT log (sha256 <code>422e3efbdef6caed…</code>)</td>
+<td><code>kat/sign-12/Galas-160S.log</code></td>
+</tr>
+<tr>
+<td><code>Galas-160S</code></td>
+<td>timing keygen</td>
+<td><code>records/sign-12/Galas-160S__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>Galas-160S</code></td>
+<td>timing sign</td>
+<td><code>records/sign-12/Galas-160S__sign.json</code></td>
+</tr>
+<tr>
+<td><code>Galas-160S</code></td>
+<td>timing verify</td>
+<td><code>records/sign-12/Galas-160S__verify.json</code></td>
+</tr>
+<tr>
+<td><code>Galas-160S</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/sign-12/Galas-160S__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>Galas-160S</code></td>
+<td>hash profile sign</td>
+<td><code>profile/sign-12/Galas-160S__sign.json</code></td>
+</tr>
+<tr>
+<td><code>Galas-160S</code></td>
+<td>hash profile verify</td>
+<td><code>profile/sign-12/Galas-160S__verify.json</code></td>
+</tr>
+<tr>
+<td><code>Galas-256F</code></td>
+<td>KAT log (sha256 <code>0f05989039c3406e…</code>)</td>
+<td><code>kat/sign-12/Galas-256F.log</code></td>
+</tr>
+<tr>
+<td><code>Galas-256F</code></td>
+<td>timing keygen</td>
+<td><code>records/sign-12/Galas-256F__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>Galas-256F</code></td>
+<td>timing sign</td>
+<td><code>records/sign-12/Galas-256F__sign.json</code></td>
+</tr>
+<tr>
+<td><code>Galas-256F</code></td>
+<td>timing verify</td>
+<td><code>records/sign-12/Galas-256F__verify.json</code></td>
+</tr>
+<tr>
+<td><code>Galas-256F</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/sign-12/Galas-256F__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>Galas-256F</code></td>
+<td>hash profile sign</td>
+<td><code>profile/sign-12/Galas-256F__sign.json</code></td>
+</tr>
+<tr>
+<td><code>Galas-256F</code></td>
+<td>hash profile verify</td>
+<td><code>profile/sign-12/Galas-256F__verify.json</code></td>
+</tr>
+<tr>
+<td><code>Galas-256S</code></td>
+<td>KAT log (sha256 <code>7c3471c83d5a206f…</code>)</td>
+<td><code>kat/sign-12/Galas-256S.log</code></td>
+</tr>
+<tr>
+<td><code>Galas-256S</code></td>
+<td>timing keygen</td>
+<td><code>records/sign-12/Galas-256S__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>Galas-256S</code></td>
+<td>timing sign</td>
+<td><code>records/sign-12/Galas-256S__sign.json</code></td>
+</tr>
+<tr>
+<td><code>Galas-256S</code></td>
+<td>timing verify</td>
+<td><code>records/sign-12/Galas-256S__verify.json</code></td>
+</tr>
+<tr>
+<td><code>Galas-256S</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/sign-12/Galas-256S__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>Galas-256S</code></td>
+<td>hash profile sign</td>
+<td><code>profile/sign-12/Galas-256S__sign.json</code></td>
+</tr>
+<tr>
+<td><code>Galas-256S</code></td>
+<td>hash profile verify</td>
+<td><code>profile/sign-12/Galas-256S__verify.json</code></td>
+</tr>
+<tr>
+<td><code>Galas-384F</code></td>
+<td>KAT log (sha256 <code>b71d473d8c7862ac…</code>)</td>
+<td><code>kat/sign-12/Galas-384F.log</code></td>
+</tr>
+<tr>
+<td><code>Galas-384F</code></td>
+<td>timing keygen</td>
+<td><code>records/sign-12/Galas-384F__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>Galas-384F</code></td>
+<td>timing sign</td>
+<td><code>records/sign-12/Galas-384F__sign.json</code></td>
+</tr>
+<tr>
+<td><code>Galas-384F</code></td>
+<td>timing verify</td>
+<td><code>records/sign-12/Galas-384F__verify.json</code></td>
+</tr>
+<tr>
+<td><code>Galas-384F</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/sign-12/Galas-384F__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>Galas-384F</code></td>
+<td>hash profile sign</td>
+<td><code>profile/sign-12/Galas-384F__sign.json</code></td>
+</tr>
+<tr>
+<td><code>Galas-384F</code></td>
+<td>hash profile verify</td>
+<td><code>profile/sign-12/Galas-384F__verify.json</code></td>
+</tr>
+<tr>
+<td><code>Galas-384S</code></td>
+<td>KAT log (sha256 <code>137d78ac3c2056c1…</code>)</td>
+<td><code>kat/sign-12/Galas-384S.log</code></td>
+</tr>
+<tr>
+<td><code>Galas-384S</code></td>
+<td>timing keygen</td>
+<td><code>records/sign-12/Galas-384S__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>Galas-384S</code></td>
+<td>timing sign</td>
+<td><code>records/sign-12/Galas-384S__sign.json</code></td>
+</tr>
+<tr>
+<td><code>Galas-384S</code></td>
+<td>timing verify</td>
+<td><code>records/sign-12/Galas-384S__verify.json</code></td>
+</tr>
+<tr>
+<td><code>Galas-384S</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/sign-12/Galas-384S__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>Galas-384S</code></td>
+<td>hash profile sign</td>
+<td><code>profile/sign-12/Galas-384S__sign.json</code></td>
+</tr>
+<tr>
+<td><code>Galas-384S</code></td>
+<td>hash profile verify</td>
+<td><code>profile/sign-12/Galas-384S__verify.json</code></td>
+</tr>
+<tr>
+<td><code>Galas-512F</code></td>
+<td>KAT log (sha256 <code>b6b80fc45a83d57d…</code>)</td>
+<td><code>kat/sign-12/Galas-512F.log</code></td>
+</tr>
+<tr>
+<td><code>Galas-512F</code></td>
+<td>timing keygen</td>
+<td><code>records/sign-12/Galas-512F__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>Galas-512F</code></td>
+<td>timing sign</td>
+<td><code>records/sign-12/Galas-512F__sign.json</code></td>
+</tr>
+<tr>
+<td><code>Galas-512F</code></td>
+<td>timing verify</td>
+<td><code>records/sign-12/Galas-512F__verify.json</code></td>
+</tr>
+<tr>
+<td><code>Galas-512F</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/sign-12/Galas-512F__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>Galas-512F</code></td>
+<td>hash profile sign</td>
+<td><code>profile/sign-12/Galas-512F__sign.json</code></td>
+</tr>
+<tr>
+<td><code>Galas-512F</code></td>
+<td>hash profile verify</td>
+<td><code>profile/sign-12/Galas-512F__verify.json</code></td>
+</tr>
+<tr>
+<td><code>Galas-512S</code></td>
+<td>KAT log (sha256 <code>d0cc58f59ba98ad8…</code>)</td>
+<td><code>kat/sign-12/Galas-512S.log</code></td>
+</tr>
+<tr>
+<td><code>Galas-512S</code></td>
+<td>timing keygen</td>
+<td><code>records/sign-12/Galas-512S__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>Galas-512S</code></td>
+<td>timing sign</td>
+<td><code>records/sign-12/Galas-512S__sign.json</code></td>
+</tr>
+<tr>
+<td><code>Galas-512S</code></td>
+<td>timing verify</td>
+<td><code>records/sign-12/Galas-512S__verify.json</code></td>
+</tr>
+<tr>
+<td><code>Galas-512S</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/sign-12/Galas-512S__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>Galas-512S</code></td>
+<td>hash profile sign</td>
+<td><code>profile/sign-12/Galas-512S__sign.json</code></td>
+</tr>
+<tr>
+<td><code>Galas-512S</code></td>
+<td>hash profile verify</td>
+<td><code>profile/sign-12/Galas-512S__verify.json</code></td>
+</tr>
+</tbody>
+</table></div>
+<p>Scripts: <code>performance/campaign.py</code>, <code>performance/ngcc_perf.c</code>, <code>performance/hashprof/</code> in the <a href="https://github.com/ngcc-dev/ngcc-harness">harness</a>.</p>
+</main>
+<footer class="site-footer">
+<p>Maintained by: <a href="mailto:markku-juhani.saarinen@tuni.fi">markku-juhani.saarinen@tuni.fi</a></p>
+<p>Submissions are welcome via <a href="https://github.com/ngcc-dev/ngcc-harness/issues">GitHub issues</a>.</p>
+</footer>
+</body>
+</html>

@@ -28,9 +28,9 @@ The `kem-38-1` check verifies the 512-bit claim and `H1` type in the PDF and the
 
 ## kem-38-2: UVW exposes a stable list-decoding failure oracle
 
-Severity: Medium
+Severity: High
 Status: Confirmed
-Layer: Side-channel
+Layer: Design
 Affected: UVW-KEM reference implementation, all parameter sets
 Discovery: Trivial
 Exploitation: Decryption-failure oracle; key recovery not demonstrated
@@ -40,6 +40,8 @@ Date: 2026-09-21
 The decapsulator returns `-2` when randomized PKE list decoding fails, but `-1` when decoding succeeds and a later hash or re-encryption check fails. These paths are also dramatically separated in time because the failing decoder exhausts its retry bound.
 
 For one deterministic UVW-128 key and valid ciphertext, flipping ciphertext bit 0 returned `-2` after about 49.3 seconds; flipping bit 846 returned `-1` after about 0.81 seconds on the same host. Thus an attacker can distinguish a secret-dependent decoder failure through both API status and a roughly 60-fold timing gap. This supplies the oracle primitive used by reaction attacks, but this audit has not yet converted it into full secret-key recovery.
+
+Constant-time fix (hard, hence High and Design): returning one status code is easy, but the timing gap comes from the randomized list decoder running to its retry bound on failure. The only known constant-time approach is to always do the failure path's work, about 49 s instead of 0.8 s per decapsulation in the measurement above. No competitive constant-time decoder is supplied or known, so the leakage is a property of the specified design rather than of this code.
 
 ### Reproducing
 

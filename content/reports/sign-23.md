@@ -15,6 +15,8 @@ Credit: Martin Feussner, with OpenAI Codex (Daybreak Blue) assistance
 Date: 2026-09-25
 Original source: [Feussner's pqc-forum post and attached analysis](https://groups.google.com/a/list.nist.gov/g/pqc-forum/c/5ao-Ebsa_Ow/m/zwYJk_Q-BAAJ)
 
+Additional reference: [Xiong and Wang, ePrint 2026/2232, §1](https://eprint.iacr.org/2026/2232)
+
 Figure 1, Eq. (8), and §4.1.1 define `p_v(y)` as the probability of returning `y−v`, but Algorithm 22 sets its flag on the corresponding interval event and returns `y+flag·v`. All three reference `irs.c` files implement that same sign (`irs.c:382–399`). Reversing the intended transition leaves a secret-dependent covariance in valid responses. The constant first component of Shuttle's signing secret supplies a public anchor for estimating the other secret components. An independent driver recovered an equivalent key using only ordinary signatures and the public key, then produced an accepted fresh-message forgery at every level. The original analysis also reports a corrected-sign control; that control has not been independently rerun. The authors' separate [ePrint 2026/1991](https://eprint.iacr.org/2026/1991) uses the matching `y−v` branch, so this finding concerns the NGCC submission.
 
 ### Reproducing
@@ -24,4 +26,4 @@ make -C sign-23 exploit
 tools/reproduce.sh sign-23
 ```
 
-The independent driver parses verified signatures, accumulates challenge-conditioned covariance, checks recovered secret coefficients through the public-key relation and key-generation bounds, and signs a fresh message with the resulting equivalent key. It splits ordinary signing queries over eight independent processes by default; no original secret data enters the estimator or public completion. The [original post](https://groups.google.com/a/list.nist.gov/g/pqc-forum/c/5ao-Ebsa_Ow/m/zwYJk_Q-BAAJ) describes the same mechanism.
+The [independent driver](https://github.com/ngcc-dev/ngcc-harness/blob/dc66c6cb3c06e75bdea0048e21fa4e13c63f00af/security/shuttle_covariance_recovery.c) parses verified signatures, accumulates challenge-conditioned covariance, checks recovered secret coefficients through the public-key relation and key-generation bounds, and signs a fresh message with the resulting equivalent key. It splits ordinary signing queries over eight independent processes by default; no original secret data enters the estimator or public completion. The [original post](https://groups.google.com/a/list.nist.gov/g/pqc-forum/c/5ao-Ebsa_Ow/m/zwYJk_Q-BAAJ) describes the same mechanism.

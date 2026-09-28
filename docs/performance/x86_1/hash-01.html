@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ngcc.dev: hash-01 AFS-TrEDM — performance on x86-64 (system x861)</title>
+<link rel="icon" type="image/png" href="../../assets/mag-glass.png">
+<link rel="stylesheet" href="../../assets/style.css?v=1fdb792d">
+</head>
+<body>
+<header class="site-header">
+<a class="brand" href="../../index.html"><img class="brand-icon" src="../../assets/mag-glass.png" alt="" width="28" height="28">ngcc.dev</a>
+<nav><a href="../../index.html">Home</a><a href="../../reports/index.html">Reports</a><a href="../../performance/x86_1/index.html">Performance</a><a href="../../constant-time/index.html">Constant-Time</a></nav>
+</header>
+<main class="">
+<!-- synchronized from harness: hash-01/perf_x86_1.md -->
+<h1 id="hash-01-afs-tredm-performance-on-x86-64-system-x86_1">hash-01 AFS-TrEDM — performance on x86-64 (system x86_1)</h1>
+<p><a href="index.html">Performance x86_1</a> › <code>hash-01</code> · <a href="method.html">method</a> · <a href="https://www.niccs.org.cn/niccs/Round1Submissions4/pc/content/content_2101541113569038336.html">NICCS page</a></p>
+<p>Independent measurement following the structure of the NICCS x86 self-assessment guide, §3.5 (1)–(7). Not a submitter self-assessment.</p>
+<h2 id="1-basic-information">1. Basic information</h2>
+<ul>
+<li>Category: cryptographic hash algorithm; function: hash</li>
+<li>Algorithm: AFS-TrEDM</li>
+<li>Implementation versions measured: reference</li>
+<li>Parameter sets: <code>AFS-TrEDM-512</code>, <code>AFS-TrEDM-768</code>, <code>AFS-TrEDM-1024</code></li>
+</ul>
+<h2 id="2-assessment-environment">2. Assessment environment</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>item</th>
+<th>value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>processor</td>
+<td>12th Gen Intel(R) Core(TM) i7-12700 (CPU 2, one core)</td>
+</tr>
+<tr>
+<td>clock</td>
+<td>max 2.10 GHz, governor performance, turbo off, SMT off</td>
+</tr>
+<tr>
+<td>memory</td>
+<td>31788 MiB</td>
+</tr>
+<tr>
+<td>OS / kernel</td>
+<td>Debian GNU/Linux 13 (trixie) / 6.12.107+deb13-amd64</td>
+</tr>
+<tr>
+<td>compiler / build tool</td>
+<td>gcc (Debian 14.2.0-19) 14.2.0 / cmake version 3.31.6</td>
+</tr>
+<tr>
+<td>campaign start / end (UTC)</td>
+<td>2026-09-25T10:02:21 / 2026-09-28T04:35:59</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="3-functional-testing-kat">3. Functional testing (KAT)</h2>
+<p>Each library was checked against the submitted KAT vectors (SHA-256 manifest <code>hash-01/kat.sha256</code> in the harness) before timing.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>build flags</th>
+<th>KAT</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>AFS-TrEDM-512</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>AFS-TrEDM-768</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>AFS-TrEDM-1024</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="4-performance">4. Performance</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>message</th>
+<th>mean cycles</th>
+<th>cycles/byte</th>
+<th>mean time</th>
+<th>MB/s</th>
+<th>n</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>AFS-TrEDM-512</code></td>
+<td>32 B</td>
+<td>23.7 k</td>
+<td>741.2</td>
+<td>11.3 µs</td>
+<td>2.8</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>AFS-TrEDM-512</code></td>
+<td>128 B</td>
+<td>47.1 k</td>
+<td>368.0</td>
+<td>22.5 µs</td>
+<td>5.7</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>AFS-TrEDM-512</code></td>
+<td>512 B</td>
+<td>117.8 k</td>
+<td>230.1</td>
+<td>56.3 µs</td>
+<td>9.1</td>
+<td>75050 (5 × 15010)</td>
+</tr>
+<tr>
+<td><code>AFS-TrEDM-512</code></td>
+<td>1024 B</td>
+<td>212.3 k</td>
+<td>207.4</td>
+<td>101 µs</td>
+<td>10.1</td>
+<td>44730 (5 × 8946)</td>
+</tr>
+<tr>
+<td><code>AFS-TrEDM-512</code></td>
+<td>4096 B</td>
+<td>777.0 k</td>
+<td>189.7</td>
+<td>371 µs</td>
+<td>11.0</td>
+<td>13130 (5 × 2626)</td>
+</tr>
+<tr>
+<td><code>AFS-TrEDM-512</code></td>
+<td>8192 B</td>
+<td>1.53 M</td>
+<td>186.6</td>
+<td>730 µs</td>
+<td>11.2</td>
+<td>6745 (5 × 1349)</td>
+</tr>
+<tr>
+<td><code>AFS-TrEDM-512</code></td>
+<td>16384 B</td>
+<td>3.04 M</td>
+<td>185.6</td>
+<td>1.45 ms</td>
+<td>11.3</td>
+<td>3430 (5 × 686)</td>
+</tr>
+<tr>
+<td><code>AFS-TrEDM-512</code></td>
+<td>65536 B</td>
+<td>12.08 M</td>
+<td>184.4</td>
+<td>5.77 ms</td>
+<td>11.4</td>
+<td>855 (5 × 171)</td>
+</tr>
+<tr>
+<td><code>AFS-TrEDM-768</code></td>
+<td>32 B</td>
+<td>39.4 k</td>
+<td>1232.1</td>
+<td>18.8 µs</td>
+<td>1.7</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>AFS-TrEDM-768</code></td>
+<td>128 B</td>
+<td>78.3 k</td>
+<td>612.1</td>
+<td>37.4 µs</td>
+<td>3.4</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>AFS-TrEDM-768</code></td>
+<td>512 B</td>
+<td>235.4 k</td>
+<td>459.7</td>
+<td>112 µs</td>
+<td>4.6</td>
+<td>40750 (5 × 8150)</td>
+</tr>
+<tr>
+<td><code>AFS-TrEDM-768</code></td>
+<td>1024 B</td>
+<td>431.7 k</td>
+<td>421.6</td>
+<td>206 µs</td>
+<td>5.0</td>
+<td>22990 (5 × 4598)</td>
+</tr>
+<tr>
+<td><code>AFS-TrEDM-768</code></td>
+<td>4096 B</td>
+<td>1.69 M</td>
+<td>411.4</td>
+<td>805 µs</td>
+<td>5.1</td>
+<td>6140 (5 × 1228)</td>
+</tr>
+<tr>
+<td><code>AFS-TrEDM-768</code></td>
+<td>8192 B</td>
+<td>3.37 M</td>
+<td>411.5</td>
+<td>1.61 ms</td>
+<td>5.1</td>
+<td>3085 (5 × 617)</td>
+</tr>
+<tr>
+<td><code>AFS-TrEDM-768</code></td>
+<td>16384 B</td>
+<td>6.69 M</td>
+<td>408.3</td>
+<td>3.2 ms</td>
+<td>5.1</td>
+<td>1565 (5 × 313)</td>
+</tr>
+<tr>
+<td><code>AFS-TrEDM-768</code></td>
+<td>65536 B</td>
+<td>26.80 M</td>
+<td>408.9</td>
+<td>12.8 ms</td>
+<td>5.1</td>
+<td>395 (5 × 79)</td>
+</tr>
+<tr>
+<td><code>AFS-TrEDM-1024</code></td>
+<td>32 B</td>
+<td>46.9 k</td>
+<td>1465.3</td>
+<td>22.4 µs</td>
+<td>1.4</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>AFS-TrEDM-1024</code></td>
+<td>128 B</td>
+<td>140.5 k</td>
+<td>1097.5</td>
+<td>67.1 µs</td>
+<td>1.9</td>
+<td>65095 (5 × 13019)</td>
+</tr>
+<tr>
+<td><code>AFS-TrEDM-1024</code></td>
+<td>512 B</td>
+<td>420.9 k</td>
+<td>822.0</td>
+<td>201 µs</td>
+<td>2.5</td>
+<td>23680 (5 × 4736)</td>
+</tr>
+<tr>
+<td><code>AFS-TrEDM-1024</code></td>
+<td>1024 B</td>
+<td>795.5 k</td>
+<td>776.8</td>
+<td>380 µs</td>
+<td>2.7</td>
+<td>12910 (5 × 2582)</td>
+</tr>
+<tr>
+<td><code>AFS-TrEDM-1024</code></td>
+<td>4096 B</td>
+<td>3.03 M</td>
+<td>740.6</td>
+<td>1.45 ms</td>
+<td>2.8</td>
+<td>3425 (5 × 685)</td>
+</tr>
+<tr>
+<td><code>AFS-TrEDM-1024</code></td>
+<td>8192 B</td>
+<td>6.04 M</td>
+<td>737.3</td>
+<td>2.89 ms</td>
+<td>2.8</td>
+<td>1725 (5 × 345)</td>
+</tr>
+<tr>
+<td><code>AFS-TrEDM-1024</code></td>
+<td>16384 B</td>
+<td>12.03 M</td>
+<td>734.0</td>
+<td>5.74 ms</td>
+<td>2.9</td>
+<td>870 (5 × 174)</td>
+</tr>
+<tr>
+<td><code>AFS-TrEDM-1024</code></td>
+<td>65536 B</td>
+<td>48.01 M</td>
+<td>732.6</td>
+<td>22.9 ms</td>
+<td>2.9</td>
+<td>220 (5 × 44)</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="5-resource-consumption">5. Resource consumption</h2>
+<p>Static memory is approximated by the library's loadable ELF segments; peak memory is the process high-water mark (VmHWM) including the benchmark driver and libc, so both are upper-bound proxies rather than isolated algorithm memory.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>operation</th>
+<th>static: ELF image (bytes)</th>
+<th>baseline RSS</th>
+<th>peak RSS</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>AFS-TrEDM-512</code></td>
+<td>hash_32</td>
+<td>15729</td>
+<td>1660 KiB</td>
+<td>1784 KiB</td>
+</tr>
+<tr>
+<td><code>AFS-TrEDM-512</code></td>
+<td>hash_128</td>
+<td>15729</td>
+<td>1644 KiB</td>
+<td>1772 KiB</td>
+</tr>
+<tr>
+<td><code>AFS-TrEDM-512</code></td>
+<td>hash_512</td>
+<td>15729</td>
+<td>1696 KiB</td>
+<td>1760 KiB</td>
+</tr>
+<tr>
+<td><code>AFS-TrEDM-512</code></td>
+<td>hash_1024</td>
+<td>15729</td>
+<td>1692 KiB</td>
+<td>1756 KiB</td>
+</tr>
+<tr>
+<td><code>AFS-TrEDM-512</code></td>
+<td>hash_4096</td>
+<td>15729</td>
+<td>1692 KiB</td>
+<td>1764 KiB</td>
+</tr>
+<tr>
+<td><code>AFS-TrEDM-512</code></td>
+<td>hash_8192</td>
+<td>15729</td>
+<td>1704 KiB</td>
+<td>1784 KiB</td>
+</tr>
+<tr>
+<td><code>AFS-TrEDM-512</code></td>
+<td>hash_16384</td>
+<td>15729</td>
+<td>1700 KiB</td>
+<td>1796 KiB</td>
+</tr>
+<tr>
+<td><code>AFS-TrEDM-512</code></td>
+<td>hash_65536</td>
+<td>15729</td>
+<td>1756 KiB</td>
+<td>1844 KiB</td>
+</tr>
+<tr>
+<td><code>AFS-TrEDM-768</code></td>
+<td>hash_32</td>
+<td>15729</td>
+<td>1668 KiB</td>
+<td>1760 KiB</td>
+</tr>
+<tr>
+<td><code>AFS-TrEDM-768</code></td>
+<td>hash_128</td>
+<td>15729</td>
+<td>1664 KiB</td>
+<td>1780 KiB</td>
+</tr>
+<tr>
+<td><code>AFS-TrEDM-768</code></td>
+<td>hash_512</td>
+<td>15729</td>
+<td>1668 KiB</td>
+<td>1732 KiB</td>
+</tr>
+<tr>
+<td><code>AFS-TrEDM-768</code></td>
+<td>hash_1024</td>
+<td>15729</td>
+<td>1696 KiB</td>
+<td>1764 KiB</td>
+</tr>
+<tr>
+<td><code>AFS-TrEDM-768</code></td>
+<td>hash_4096</td>
+<td>15729</td>
+<td>1680 KiB</td>
+<td>1784 KiB</td>
+</tr>
+<tr>
+<td><code>AFS-TrEDM-768</code></td>
+<td>hash_8192</td>
+<td>15729</td>
+<td>1696 KiB</td>
+<td>1760 KiB</td>
+</tr>
+<tr>
+<td><code>AFS-TrEDM-768</code></td>
+<td>hash_16384</td>
+<td>15729</td>
+<td>1688 KiB</td>
+<td>1776 KiB</td>
+</tr>
+<tr>
+<td><code>AFS-TrEDM-768</code></td>
+<td>hash_65536</td>
+<td>15729</td>
+<td>1744 KiB</td>
+<td>1808 KiB</td>
+</tr>
+<tr>
+<td><code>AFS-TrEDM-1024</code></td>
+<td>hash_32</td>
+<td>15793</td>
+<td>1668 KiB</td>
+<td>1732 KiB</td>
+</tr>
+<tr>
+<td><code>AFS-TrEDM-1024</code></td>
+<td>hash_128</td>
+<td>15793</td>
+<td>1672 KiB</td>
+<td>1736 KiB</td>
+</tr>
+<tr>
+<td><code>AFS-TrEDM-1024</code></td>
+<td>hash_512</td>
+<td>15793</td>
+<td>1676 KiB</td>
+<td>1784 KiB</td>
+</tr>
+<tr>
+<td><code>AFS-TrEDM-1024</code></td>
+<td>hash_1024</td>
+<td>15793</td>
+<td>1600 KiB</td>
+<td>1728 KiB</td>
+</tr>
+<tr>
+<td><code>AFS-TrEDM-1024</code></td>
+<td>hash_4096</td>
+<td>15793</td>
+<td>1696 KiB</td>
+<td>1768 KiB</td>
+</tr>
+<tr>
+<td><code>AFS-TrEDM-1024</code></td>
+<td>hash_8192</td>
+<td>15793</td>
+<td>1640 KiB</td>
+<td>1768 KiB</td>
+</tr>
+<tr>
+<td><code>AFS-TrEDM-1024</code></td>
+<td>hash_16384</td>
+<td>15793</td>
+<td>1696 KiB</td>
+<td>1800 KiB</td>
+</tr>
+<tr>
+<td><code>AFS-TrEDM-1024</code></td>
+<td>hash_65536</td>
+<td>15793</td>
+<td>1740 KiB</td>
+<td>1804 KiB</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="7-raw-evidence-index">7. Raw evidence index</h2>
+<p>Paths are relative to <code>performance/data/x86_1/</code> in the <a href="https://github.com/ngcc-dev/ngcc-harness">harness</a>; each JSON file records its commands, environment and trials.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>item</th>
+<th>file</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>AFS-TrEDM-512</code></td>
+<td>KAT log (sha256 <code>fc40f689e72722fa…</code>)</td>
+<td><code>kat/hash-01/AFS-TrEDM-512.log</code></td>
+</tr>
+<tr>
+<td><code>AFS-TrEDM-512</code></td>
+<td>timing hash_1024</td>
+<td><code>records/hash-01/AFS-TrEDM-512__hash_1024.json</code></td>
+</tr>
+<tr>
+<td><code>AFS-TrEDM-512</code></td>
+<td>timing hash_128</td>
+<td><code>records/hash-01/AFS-TrEDM-512__hash_128.json</code></td>
+</tr>
+<tr>
+<td><code>AFS-TrEDM-512</code></td>
+<td>timing hash_16384</td>
+<td><code>records/hash-01/AFS-TrEDM-512__hash_16384.json</code></td>
+</tr>
+<tr>
+<td><code>AFS-TrEDM-512</code></td>
+<td>timing hash_32</td>
+<td><code>records/hash-01/AFS-TrEDM-512__hash_32.json</code></td>
+</tr>
+<tr>
+<td><code>AFS-TrEDM-512</code></td>
+<td>timing hash_4096</td>
+<td><code>records/hash-01/AFS-TrEDM-512__hash_4096.json</code></td>
+</tr>
+<tr>
+<td><code>AFS-TrEDM-512</code></td>
+<td>timing hash_512</td>
+<td><code>records/hash-01/AFS-TrEDM-512__hash_512.json</code></td>
+</tr>
+<tr>
+<td><code>AFS-TrEDM-512</code></td>
+<td>timing hash_65536</td>
+<td><code>records/hash-01/AFS-TrEDM-512__hash_65536.json</code></td>
+</tr>
+<tr>
+<td><code>AFS-TrEDM-512</code></td>
+<td>timing hash_8192</td>
+<td><code>records/hash-01/AFS-TrEDM-512__hash_8192.json</code></td>
+</tr>
+<tr>
+<td><code>AFS-TrEDM-768</code></td>
+<td>KAT log (sha256 <code>d1715c767bbf5dd5…</code>)</td>
+<td><code>kat/hash-01/AFS-TrEDM-768.log</code></td>
+</tr>
+<tr>
+<td><code>AFS-TrEDM-768</code></td>
+<td>timing hash_1024</td>
+<td><code>records/hash-01/AFS-TrEDM-768__hash_1024.json</code></td>
+</tr>
+<tr>
+<td><code>AFS-TrEDM-768</code></td>
+<td>timing hash_128</td>
+<td><code>records/hash-01/AFS-TrEDM-768__hash_128.json</code></td>
+</tr>
+<tr>
+<td><code>AFS-TrEDM-768</code></td>
+<td>timing hash_16384</td>
+<td><code>records/hash-01/AFS-TrEDM-768__hash_16384.json</code></td>
+</tr>
+<tr>
+<td><code>AFS-TrEDM-768</code></td>
+<td>timing hash_32</td>
+<td><code>records/hash-01/AFS-TrEDM-768__hash_32.json</code></td>
+</tr>
+<tr>
+<td><code>AFS-TrEDM-768</code></td>
+<td>timing hash_4096</td>
+<td><code>records/hash-01/AFS-TrEDM-768__hash_4096.json</code></td>
+</tr>
+<tr>
+<td><code>AFS-TrEDM-768</code></td>
+<td>timing hash_512</td>
+<td><code>records/hash-01/AFS-TrEDM-768__hash_512.json</code></td>
+</tr>
+<tr>
+<td><code>AFS-TrEDM-768</code></td>
+<td>timing hash_65536</td>
+<td><code>records/hash-01/AFS-TrEDM-768__hash_65536.json</code></td>
+</tr>
+<tr>
+<td><code>AFS-TrEDM-768</code></td>
+<td>timing hash_8192</td>
+<td><code>records/hash-01/AFS-TrEDM-768__hash_8192.json</code></td>
+</tr>
+<tr>
+<td><code>AFS-TrEDM-1024</code></td>
+<td>KAT log (sha256 <code>cfb8e25e7cdf0f49…</code>)</td>
+<td><code>kat/hash-01/AFS-TrEDM-1024.log</code></td>
+</tr>
+<tr>
+<td><code>AFS-TrEDM-1024</code></td>
+<td>timing hash_1024</td>
+<td><code>records/hash-01/AFS-TrEDM-1024__hash_1024.json</code></td>
+</tr>
+<tr>
+<td><code>AFS-TrEDM-1024</code></td>
+<td>timing hash_128</td>
+<td><code>records/hash-01/AFS-TrEDM-1024__hash_128.json</code></td>
+</tr>
+<tr>
+<td><code>AFS-TrEDM-1024</code></td>
+<td>timing hash_16384</td>
+<td><code>records/hash-01/AFS-TrEDM-1024__hash_16384.json</code></td>
+</tr>
+<tr>
+<td><code>AFS-TrEDM-1024</code></td>
+<td>timing hash_32</td>
+<td><code>records/hash-01/AFS-TrEDM-1024__hash_32.json</code></td>
+</tr>
+<tr>
+<td><code>AFS-TrEDM-1024</code></td>
+<td>timing hash_4096</td>
+<td><code>records/hash-01/AFS-TrEDM-1024__hash_4096.json</code></td>
+</tr>
+<tr>
+<td><code>AFS-TrEDM-1024</code></td>
+<td>timing hash_512</td>
+<td><code>records/hash-01/AFS-TrEDM-1024__hash_512.json</code></td>
+</tr>
+<tr>
+<td><code>AFS-TrEDM-1024</code></td>
+<td>timing hash_65536</td>
+<td><code>records/hash-01/AFS-TrEDM-1024__hash_65536.json</code></td>
+</tr>
+<tr>
+<td><code>AFS-TrEDM-1024</code></td>
+<td>timing hash_8192</td>
+<td><code>records/hash-01/AFS-TrEDM-1024__hash_8192.json</code></td>
+</tr>
+</tbody>
+</table></div>
+<p>Scripts: <code>performance/campaign.py</code>, <code>performance/ngcc_perf.c</code>, <code>performance/hashprof/</code> in the <a href="https://github.com/ngcc-dev/ngcc-harness">harness</a>.</p>
+</main>
+<footer class="site-footer">
+<p>Maintained by: <a href="mailto:markku-juhani.saarinen@tuni.fi">markku-juhani.saarinen@tuni.fi</a></p>
+<p>Submissions are welcome via <a href="https://github.com/ngcc-dev/ngcc-harness/issues">GitHub issues</a>.</p>
+</footer>
+</body>
+</html>

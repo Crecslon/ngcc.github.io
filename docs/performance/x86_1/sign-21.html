@@ -1,0 +1,1075 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ngcc.dev: sign-21 ReSolveD-ɑ — performance on x86-64 (system x861)</title>
+<link rel="icon" type="image/png" href="../../assets/mag-glass.png">
+<link rel="stylesheet" href="../../assets/style.css?v=1fdb792d">
+</head>
+<body>
+<header class="site-header">
+<a class="brand" href="../../index.html"><img class="brand-icon" src="../../assets/mag-glass.png" alt="" width="28" height="28">ngcc.dev</a>
+<nav><a href="../../index.html">Home</a><a href="../../reports/index.html">Reports</a><a href="../../performance/x86_1/index.html">Performance</a><a href="../../constant-time/index.html">Constant-Time</a></nav>
+</header>
+<main class="">
+<!-- synchronized from harness: sign-21/perf_x86_1.md -->
+<h1 id="sign-21-resolved-performance-on-x86-64-system-x86_1">sign-21 ReSolveD-ɑ — performance on x86-64 (system x86_1)</h1>
+<p><a href="index.html">Performance x86_1</a> › <code>sign-21</code> · <a href="method.html">method</a> · <a href="https://www.niccs.org.cn/niccs/Round1Additional/pc/content/content_2101561087368974336.html">NICCS page</a></p>
+<p>Independent measurement following the structure of the NICCS x86 self-assessment guide, §3.5 (1)–(7). Not a submitter self-assessment.</p>
+<h2 id="1-basic-information">1. Basic information</h2>
+<ul>
+<li>Category: public-key algorithm; function: digital signature</li>
+<li>Algorithm: ReSolveD-ɑ</li>
+<li>Implementation versions measured: reference</li>
+<li>Parameter sets: <code>ReSolveD-alpha-160f</code>, <code>ReSolveD-alpha-160s</code>, <code>ReSolveD-alpha-256f</code>, <code>ReSolveD-alpha-256s</code>, <code>ReSolveD-alpha-384f</code>, <code>ReSolveD-alpha-384s</code>, <code>ReSolveD-alpha-512f</code>, <code>ReSolveD-alpha-512s</code></li>
+</ul>
+<h2 id="2-assessment-environment">2. Assessment environment</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>item</th>
+<th>value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>processor</td>
+<td>12th Gen Intel(R) Core(TM) i7-12700 (CPU 2, one core)</td>
+</tr>
+<tr>
+<td>clock</td>
+<td>max 2.10 GHz, governor performance, turbo off, SMT off</td>
+</tr>
+<tr>
+<td>memory</td>
+<td>31788 MiB</td>
+</tr>
+<tr>
+<td>OS / kernel</td>
+<td>Debian GNU/Linux 13 (trixie) / 6.12.107+deb13-amd64</td>
+</tr>
+<tr>
+<td>compiler / build tool</td>
+<td>gcc (Debian 14.2.0-19) 14.2.0 / cmake version 3.31.6</td>
+</tr>
+<tr>
+<td>campaign start / end (UTC)</td>
+<td>2026-09-25T10:02:21 / 2026-09-28T04:35:59</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="3-functional-testing-kat">3. Functional testing (KAT)</h2>
+<p>Each library was checked against the submitted KAT vectors (SHA-256 manifest <code>sign-21/kat.sha256</code> in the harness) before timing.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>build flags</th>
+<th>KAT</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ReSolveD-alpha-160f</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-160s</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-256f</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-256s</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-384f</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-384s</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-512f</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-512s</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="4-performance">4. Performance</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>operation</th>
+<th>mean cycles</th>
+<th>mean time</th>
+<th>ops/s</th>
+<th>median trial</th>
+<th>n (trials × iters)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ReSolveD-alpha-160f</code></td>
+<td>keygen</td>
+<td>14.25 M</td>
+<td>6.81 ms</td>
+<td>147</td>
+<td>6.81 ms</td>
+<td>720 (5 × 144)</td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-160f</code></td>
+<td>sign</td>
+<td>677.96 M</td>
+<td>324 ms</td>
+<td>3.09</td>
+<td>324 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-160f</code></td>
+<td>verify</td>
+<td>639.43 M</td>
+<td>305 ms</td>
+<td>3.27</td>
+<td>305 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-160s</code></td>
+<td>keygen</td>
+<td>14.26 M</td>
+<td>6.82 ms</td>
+<td>147</td>
+<td>6.82 ms</td>
+<td>720 (5 × 144)</td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-160s</code></td>
+<td>sign</td>
+<td>4.66 G</td>
+<td>2.24 s</td>
+<td>0.447</td>
+<td>2.24 s</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-160s</code></td>
+<td>verify</td>
+<td>4.61 G</td>
+<td>2.21 s</td>
+<td>0.452</td>
+<td>2.22 s</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-256f</code></td>
+<td>keygen</td>
+<td>32.73 M</td>
+<td>15.8 ms</td>
+<td>63.2</td>
+<td>15.8 ms</td>
+<td>315 (5 × 63)</td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-256f</code></td>
+<td>sign</td>
+<td>1.39 G</td>
+<td>667 ms</td>
+<td>1.5</td>
+<td>667 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-256f</code></td>
+<td>verify</td>
+<td>1.33 G</td>
+<td>636 ms</td>
+<td>1.57</td>
+<td>637 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-256s</code></td>
+<td>keygen</td>
+<td>32.74 M</td>
+<td>15.8 ms</td>
+<td>63.2</td>
+<td>15.8 ms</td>
+<td>315 (5 × 63)</td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-256s</code></td>
+<td>sign</td>
+<td>13.08 G</td>
+<td>6.28 s</td>
+<td>0.159</td>
+<td>6.28 s</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-256s</code></td>
+<td>verify</td>
+<td>12.98 G</td>
+<td>6.23 s</td>
+<td>0.161</td>
+<td>6.23 s</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-384f</code></td>
+<td>keygen</td>
+<td>80.53 M</td>
+<td>38.9 ms</td>
+<td>25.7</td>
+<td>38.9 ms</td>
+<td>130 (5 × 26)</td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-384f</code></td>
+<td>sign</td>
+<td>3.77 G</td>
+<td>1.81 s</td>
+<td>0.552</td>
+<td>1.81 s</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-384f</code></td>
+<td>verify</td>
+<td>3.61 G</td>
+<td>1.73 s</td>
+<td>0.577</td>
+<td>1.73 s</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-384s</code></td>
+<td>keygen</td>
+<td>80.50 M</td>
+<td>38.9 ms</td>
+<td>25.7</td>
+<td>38.9 ms</td>
+<td>130 (5 × 26)</td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-384s</code></td>
+<td>sign</td>
+<td>33.60 G</td>
+<td>16.1 s</td>
+<td>0.0621</td>
+<td>16.1 s</td>
+<td>55 (5 × 11)</td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-384s</code></td>
+<td>verify</td>
+<td>33.31 G</td>
+<td>16 s</td>
+<td>0.0627</td>
+<td>16 s</td>
+<td>55 (5 × 11)</td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-512f</code></td>
+<td>keygen</td>
+<td>133.32 M</td>
+<td>64.4 ms</td>
+<td>15.5</td>
+<td>64.4 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-512f</code></td>
+<td>sign</td>
+<td>802.75 M</td>
+<td>388 ms</td>
+<td>2.58</td>
+<td>386 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-512f</code></td>
+<td>verify</td>
+<td>640.49 M</td>
+<td>308 ms</td>
+<td>3.25</td>
+<td>307 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-512s</code></td>
+<td>keygen</td>
+<td>133.37 M</td>
+<td>64.4 ms</td>
+<td>15.5</td>
+<td>64.4 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-512s</code></td>
+<td>sign</td>
+<td>3.82 G</td>
+<td>1.84 s</td>
+<td>0.544</td>
+<td>1.84 s</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-512s</code></td>
+<td>verify</td>
+<td>3.28 G</td>
+<td>1.58 s</td>
+<td>0.633</td>
+<td>1.58 s</td>
+<td>100 (5 × 20)</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="5-resource-consumption">5. Resource consumption</h2>
+<p>Static memory is approximated by the library's loadable ELF segments; peak memory is the process high-water mark (VmHWM) including the benchmark driver and libc, so both are upper-bound proxies rather than isolated algorithm memory.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>operation</th>
+<th>static: ELF image (bytes)</th>
+<th>baseline RSS</th>
+<th>peak RSS</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ReSolveD-alpha-160f</code></td>
+<td>keygen</td>
+<td>156109</td>
+<td>1776 KiB</td>
+<td>2216 KiB</td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-160f</code></td>
+<td>sign</td>
+<td>156109</td>
+<td>2120 KiB</td>
+<td>2644 KiB</td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-160f</code></td>
+<td>verify</td>
+<td>156109</td>
+<td>2164 KiB</td>
+<td>2468 KiB</td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-160s</code></td>
+<td>keygen</td>
+<td>156109</td>
+<td>1776 KiB</td>
+<td>2212 KiB</td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-160s</code></td>
+<td>sign</td>
+<td>156109</td>
+<td>2144 KiB</td>
+<td>5456 KiB</td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-160s</code></td>
+<td>verify</td>
+<td>156109</td>
+<td>2640 KiB</td>
+<td>5204 KiB</td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-256f</code></td>
+<td>keygen</td>
+<td>156133</td>
+<td>1780 KiB</td>
+<td>2620 KiB</td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-256f</code></td>
+<td>sign</td>
+<td>156133</td>
+<td>1832 KiB</td>
+<td>3592 KiB</td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-256f</code></td>
+<td>verify</td>
+<td>156133</td>
+<td>2820 KiB</td>
+<td>3252 KiB</td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-256s</code></td>
+<td>keygen</td>
+<td>156133</td>
+<td>1776 KiB</td>
+<td>2660 KiB</td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-256s</code></td>
+<td>sign</td>
+<td>156133</td>
+<td>1848 KiB</td>
+<td>11816 KiB</td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-256s</code></td>
+<td>verify</td>
+<td>156133</td>
+<td>3612 KiB</td>
+<td>11276 KiB</td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-384f</code></td>
+<td>keygen</td>
+<td>156133</td>
+<td>1832 KiB</td>
+<td>3696 KiB</td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-384f</code></td>
+<td>sign</td>
+<td>156133</td>
+<td>1824 KiB</td>
+<td>5748 KiB</td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-384f</code></td>
+<td>verify</td>
+<td>156133</td>
+<td>3348 KiB</td>
+<td>5516 KiB</td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-384s</code></td>
+<td>keygen</td>
+<td>156133</td>
+<td>1868 KiB</td>
+<td>3684 KiB</td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-384s</code></td>
+<td>sign</td>
+<td>156133</td>
+<td>1864 KiB</td>
+<td>20572 KiB</td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-384s</code></td>
+<td>verify</td>
+<td>156133</td>
+<td>4224 KiB</td>
+<td>20372 KiB</td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-512f</code></td>
+<td>keygen</td>
+<td>156149</td>
+<td>1904 KiB</td>
+<td>5080 KiB</td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-512f</code></td>
+<td>sign</td>
+<td>156149</td>
+<td>1900 KiB</td>
+<td>8516 KiB</td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-512f</code></td>
+<td>verify</td>
+<td>156149</td>
+<td>4464 KiB</td>
+<td>8336 KiB</td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-512s</code></td>
+<td>keygen</td>
+<td>156149</td>
+<td>1824 KiB</td>
+<td>4992 KiB</td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-512s</code></td>
+<td>sign</td>
+<td>156149</td>
+<td>1868 KiB</td>
+<td>35288 KiB</td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-512s</code></td>
+<td>verify</td>
+<td>156149</td>
+<td>5812 KiB</td>
+<td>35072 KiB</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="6-transmission-and-storage-overhead">6. Transmission and storage overhead</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>public key</th>
+<th>secret key</th>
+<th>signature</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ReSolveD-alpha-160f</code></td>
+<td>121</td>
+<td>40</td>
+<td>6851</td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-160s</code></td>
+<td>121</td>
+<td>40</td>
+<td>5307</td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-256f</code></td>
+<td>194</td>
+<td>64</td>
+<td>17932</td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-256s</code></td>
+<td>194</td>
+<td>64</td>
+<td>13973</td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-384f</code></td>
+<td>288</td>
+<td>96</td>
+<td>40469</td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-384s</code></td>
+<td>288</td>
+<td>96</td>
+<td>31575</td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-512f</code></td>
+<td>385</td>
+<td>128</td>
+<td>72611</td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-512s</code></td>
+<td>385</td>
+<td>128</td>
+<td>56239</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="symmetric-primitives">Symmetric primitives</h2>
+<p><a href="../symmetric-survey.html">Survey</a> verdict: <strong>bypass</strong> — Keccak oracles + AES/Rijndael/SHACAL-2 PRGs; pseudoXOF only with -DXOF_PSEUDO (undefined)</p>
+<p>Share of each operation spent in the ICCS placeholder hash functions and in the ICCS DRNG (reference build, measured in the same run with link-time wrappers):</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>operation</th>
+<th>pseudohash/XOF/sm3</th>
+<th>DRNG</th>
+<th>calls per operation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ReSolveD-alpha-160f</code></td>
+<td>keygen</td>
+<td>34%</td>
+<td>0.1%</td>
+<td>drng 2, pseudoXOF 1</td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-160f</code></td>
+<td>sign</td>
+<td>2.5%</td>
+<td>0.0%</td>
+<td>drng 1, pseudoXOF 353</td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-160f</code></td>
+<td>verify</td>
+<td>1.8%</td>
+<td>0.0%</td>
+<td>pseudoXOF 27</td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-160s</code></td>
+<td>keygen</td>
+<td>34%</td>
+<td>0.1%</td>
+<td>drng 2, pseudoXOF 1</td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-160s</code></td>
+<td>sign</td>
+<td>1.4%</td>
+<td>0.0%</td>
+<td>drng 1, pseudoXOF 1.9e+03</td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-160s</code></td>
+<td>verify</td>
+<td>1.2%</td>
+<td>0.0%</td>
+<td>pseudoXOF 20</td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-256f</code></td>
+<td>keygen</td>
+<td>39%</td>
+<td>0.0%</td>
+<td>drng 2, pseudoXOF 1</td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-256f</code></td>
+<td>sign</td>
+<td>3.0%</td>
+<td>0.0%</td>
+<td>drng 1, pseudoXOF 407</td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-256f</code></td>
+<td>verify</td>
+<td>2.1%</td>
+<td>0.0%</td>
+<td>pseudoXOF 41</td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-256s</code></td>
+<td>keygen</td>
+<td>39%</td>
+<td>0.0%</td>
+<td>drng 2, pseudoXOF 1</td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-256s</code></td>
+<td>sign</td>
+<td>1.4%</td>
+<td>0.0%</td>
+<td>drng 1, pseudoXOF 4.71e+03</td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-256s</code></td>
+<td>verify</td>
+<td>1.1%</td>
+<td>0.0%</td>
+<td>pseudoXOF 28</td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-384f</code></td>
+<td>keygen</td>
+<td>36%</td>
+<td>0.0%</td>
+<td>drng 2, pseudoXOF 1</td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-384f</code></td>
+<td>sign</td>
+<td>3.0%</td>
+<td>0.0%</td>
+<td>drng 1, pseudoXOF 490</td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-384f</code></td>
+<td>verify</td>
+<td>2.2%</td>
+<td>0.0%</td>
+<td>pseudoXOF 59</td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-384s</code></td>
+<td>keygen</td>
+<td>36%</td>
+<td>0.0%</td>
+<td>drng 2, pseudoXOF 1</td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-384s</code></td>
+<td>sign</td>
+<td>1.7%</td>
+<td>0.0%</td>
+<td>drng 1, pseudoXOF 5.78e+03</td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-384s</code></td>
+<td>verify</td>
+<td>1.4%</td>
+<td>0.0%</td>
+<td>pseudoXOF 40</td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-512f</code></td>
+<td>keygen</td>
+<td>72%</td>
+<td>0.0%</td>
+<td>drng 2, pseudoXOF 1</td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-512f</code></td>
+<td>sign</td>
+<td>38%</td>
+<td>0.0%</td>
+<td>drng 1, pseudoXOF 190</td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-512f</code></td>
+<td>verify</td>
+<td>33%</td>
+<td>0.0%</td>
+<td>pseudoXOF 78</td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-512s</code></td>
+<td>keygen</td>
+<td>72%</td>
+<td>0.0%</td>
+<td>drng 2, pseudoXOF 1</td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-512s</code></td>
+<td>sign</td>
+<td>39%</td>
+<td>0.0%</td>
+<td>drng 1, pseudoXOF 1.3e+04</td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-512s</code></td>
+<td>verify</td>
+<td>35%</td>
+<td>0.0%</td>
+<td>pseudoXOF 52</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="7-raw-evidence-index">7. Raw evidence index</h2>
+<p>Paths are relative to <code>performance/data/x86_1/</code> in the <a href="https://github.com/ngcc-dev/ngcc-harness">harness</a>; each JSON file records its commands, environment and trials.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>item</th>
+<th>file</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ReSolveD-alpha-160f</code></td>
+<td>KAT log (sha256 <code>55b94c7c9237d7b8…</code>)</td>
+<td><code>kat/sign-21/ReSolveD-alpha-160f.log</code></td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-160f</code></td>
+<td>timing keygen</td>
+<td><code>records/sign-21/ReSolveD-alpha-160f__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-160f</code></td>
+<td>timing sign</td>
+<td><code>records/sign-21/ReSolveD-alpha-160f__sign.json</code></td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-160f</code></td>
+<td>timing verify</td>
+<td><code>records/sign-21/ReSolveD-alpha-160f__verify.json</code></td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-160f</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/sign-21/ReSolveD-alpha-160f__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-160f</code></td>
+<td>hash profile sign</td>
+<td><code>profile/sign-21/ReSolveD-alpha-160f__sign.json</code></td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-160f</code></td>
+<td>hash profile verify</td>
+<td><code>profile/sign-21/ReSolveD-alpha-160f__verify.json</code></td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-160s</code></td>
+<td>KAT log (sha256 <code>63629f9c598320bf…</code>)</td>
+<td><code>kat/sign-21/ReSolveD-alpha-160s.log</code></td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-160s</code></td>
+<td>timing keygen</td>
+<td><code>records/sign-21/ReSolveD-alpha-160s__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-160s</code></td>
+<td>timing sign</td>
+<td><code>records/sign-21/ReSolveD-alpha-160s__sign.json</code></td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-160s</code></td>
+<td>timing verify</td>
+<td><code>records/sign-21/ReSolveD-alpha-160s__verify.json</code></td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-160s</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/sign-21/ReSolveD-alpha-160s__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-160s</code></td>
+<td>hash profile sign</td>
+<td><code>profile/sign-21/ReSolveD-alpha-160s__sign.json</code></td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-160s</code></td>
+<td>hash profile verify</td>
+<td><code>profile/sign-21/ReSolveD-alpha-160s__verify.json</code></td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-256f</code></td>
+<td>KAT log (sha256 <code>879a0f292adbb08d…</code>)</td>
+<td><code>kat/sign-21/ReSolveD-alpha-256f.log</code></td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-256f</code></td>
+<td>timing keygen</td>
+<td><code>records/sign-21/ReSolveD-alpha-256f__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-256f</code></td>
+<td>timing sign</td>
+<td><code>records/sign-21/ReSolveD-alpha-256f__sign.json</code></td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-256f</code></td>
+<td>timing verify</td>
+<td><code>records/sign-21/ReSolveD-alpha-256f__verify.json</code></td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-256f</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/sign-21/ReSolveD-alpha-256f__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-256f</code></td>
+<td>hash profile sign</td>
+<td><code>profile/sign-21/ReSolveD-alpha-256f__sign.json</code></td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-256f</code></td>
+<td>hash profile verify</td>
+<td><code>profile/sign-21/ReSolveD-alpha-256f__verify.json</code></td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-256s</code></td>
+<td>KAT log (sha256 <code>1a46ca8bb75e7961…</code>)</td>
+<td><code>kat/sign-21/ReSolveD-alpha-256s.log</code></td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-256s</code></td>
+<td>timing keygen</td>
+<td><code>records/sign-21/ReSolveD-alpha-256s__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-256s</code></td>
+<td>timing sign</td>
+<td><code>records/sign-21/ReSolveD-alpha-256s__sign.json</code></td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-256s</code></td>
+<td>timing verify</td>
+<td><code>records/sign-21/ReSolveD-alpha-256s__verify.json</code></td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-256s</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/sign-21/ReSolveD-alpha-256s__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-256s</code></td>
+<td>hash profile sign</td>
+<td><code>profile/sign-21/ReSolveD-alpha-256s__sign.json</code></td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-256s</code></td>
+<td>hash profile verify</td>
+<td><code>profile/sign-21/ReSolveD-alpha-256s__verify.json</code></td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-384f</code></td>
+<td>KAT log (sha256 <code>76bd4639d02ca834…</code>)</td>
+<td><code>kat/sign-21/ReSolveD-alpha-384f.log</code></td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-384f</code></td>
+<td>timing keygen</td>
+<td><code>records/sign-21/ReSolveD-alpha-384f__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-384f</code></td>
+<td>timing sign</td>
+<td><code>records/sign-21/ReSolveD-alpha-384f__sign.json</code></td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-384f</code></td>
+<td>timing verify</td>
+<td><code>records/sign-21/ReSolveD-alpha-384f__verify.json</code></td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-384f</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/sign-21/ReSolveD-alpha-384f__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-384f</code></td>
+<td>hash profile sign</td>
+<td><code>profile/sign-21/ReSolveD-alpha-384f__sign.json</code></td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-384f</code></td>
+<td>hash profile verify</td>
+<td><code>profile/sign-21/ReSolveD-alpha-384f__verify.json</code></td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-384s</code></td>
+<td>KAT log (sha256 <code>478d27d642fab629…</code>)</td>
+<td><code>kat/sign-21/ReSolveD-alpha-384s.log</code></td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-384s</code></td>
+<td>timing keygen</td>
+<td><code>records/sign-21/ReSolveD-alpha-384s__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-384s</code></td>
+<td>timing sign</td>
+<td><code>records/sign-21/ReSolveD-alpha-384s__sign.json</code></td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-384s</code></td>
+<td>timing verify</td>
+<td><code>records/sign-21/ReSolveD-alpha-384s__verify.json</code></td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-384s</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/sign-21/ReSolveD-alpha-384s__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-384s</code></td>
+<td>hash profile sign</td>
+<td><code>profile/sign-21/ReSolveD-alpha-384s__sign.json</code></td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-384s</code></td>
+<td>hash profile verify</td>
+<td><code>profile/sign-21/ReSolveD-alpha-384s__verify.json</code></td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-512f</code></td>
+<td>KAT log (sha256 <code>985ecb3dc88da9a9…</code>)</td>
+<td><code>kat/sign-21/ReSolveD-alpha-512f.log</code></td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-512f</code></td>
+<td>timing keygen</td>
+<td><code>records/sign-21/ReSolveD-alpha-512f__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-512f</code></td>
+<td>timing sign</td>
+<td><code>records/sign-21/ReSolveD-alpha-512f__sign.json</code></td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-512f</code></td>
+<td>timing verify</td>
+<td><code>records/sign-21/ReSolveD-alpha-512f__verify.json</code></td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-512f</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/sign-21/ReSolveD-alpha-512f__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-512f</code></td>
+<td>hash profile sign</td>
+<td><code>profile/sign-21/ReSolveD-alpha-512f__sign.json</code></td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-512f</code></td>
+<td>hash profile verify</td>
+<td><code>profile/sign-21/ReSolveD-alpha-512f__verify.json</code></td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-512s</code></td>
+<td>KAT log (sha256 <code>cb37ed04e97a7f6b…</code>)</td>
+<td><code>kat/sign-21/ReSolveD-alpha-512s.log</code></td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-512s</code></td>
+<td>timing keygen</td>
+<td><code>records/sign-21/ReSolveD-alpha-512s__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-512s</code></td>
+<td>timing sign</td>
+<td><code>records/sign-21/ReSolveD-alpha-512s__sign.json</code></td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-512s</code></td>
+<td>timing verify</td>
+<td><code>records/sign-21/ReSolveD-alpha-512s__verify.json</code></td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-512s</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/sign-21/ReSolveD-alpha-512s__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-512s</code></td>
+<td>hash profile sign</td>
+<td><code>profile/sign-21/ReSolveD-alpha-512s__sign.json</code></td>
+</tr>
+<tr>
+<td><code>ReSolveD-alpha-512s</code></td>
+<td>hash profile verify</td>
+<td><code>profile/sign-21/ReSolveD-alpha-512s__verify.json</code></td>
+</tr>
+</tbody>
+</table></div>
+<p>Scripts: <code>performance/campaign.py</code>, <code>performance/ngcc_perf.c</code>, <code>performance/hashprof/</code> in the <a href="https://github.com/ngcc-dev/ngcc-harness">harness</a>.</p>
+</main>
+<footer class="site-footer">
+<p>Maintained by: <a href="mailto:markku-juhani.saarinen@tuni.fi">markku-juhani.saarinen@tuni.fi</a></p>
+<p>Submissions are welcome via <a href="https://github.com/ngcc-dev/ngcc-harness/issues">GitHub issues</a>.</p>
+</footer>
+</body>
+</html>

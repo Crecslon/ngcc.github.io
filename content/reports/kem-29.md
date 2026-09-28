@@ -68,3 +68,63 @@ python3 kem-29/reproduce_spec_alignment.py
 ```
 
 The script extracts text from the archived PDF and checks that Algorithm 1 contains the four relevant assignments. It does not run full-size basis recovery; those experiments and timings are reported in the cited ePrint.
+
+## kem-29-3: Decoding radii contradict the specified error and lattice geometry
+
+Severity: High
+Status: Confirmed
+Layer: Design
+Affected: Polar-KEM specification, all three parameter sets; PolarKEM-128 has the direct near-certain honest-failure result
+Discovery: Moderate
+Exploitation: The specified PolarKEM-128 radius rejects an honest error with probability 0.9965184962; no confidentiality attack is claimed here
+Credit: Zhenyu Xiong and Mingsheng Wang
+Date: 2026-09-27
+Reference: [Xiong and Wang, “Cryptanalysis of the ICCS NGCC Round-1 Public-Key Candidates,” ePrint 2026/2232, §13.5](https://eprint.iacr.org/2026/2232)
+
+Table 1 specifies `(N,rho)=(512,15),(1024,31),(2048,63)` and claims decryption-failure probabilities below `2^-128`, `2^-256`, and `2^-512`. The specified ternary error has `Pr[e_i != 0]=1/2`, so `||e||^2` has the distribution `Bin(N,1/2)`. For PolarKEM-128 the radius test therefore rejects with
+
+`Pr[||e|| > 15] = Pr[Bin(512,1/2) > 225] = 0.996518496182011`,
+
+rather than with probability below `2^-128`.
+
+The minimum-distance justification is independently inconsistent. Definition 2.9 includes the unscaled code `C_0` in the polar lattice, and Lemma 2.10 includes `d(C_0)` in the minimum-distance expression. The specified rate progression gives `R_0=1`, hence `C_0=F_2^N`; its unit vectors are lattice vectors and the lattice has `lambda_1=1`. Section 4.5.3 instead drops every code term and asserts `d(Lambda)^2 >= 4^L`. Appendix D also prints the false inequalities `4^5=1024 > 3844` and `4^6=4096 > 15876` for the 256- and 512-bit sets. The submitted failure bounds and unique-decoding premise therefore cannot hold simultaneously. The rectified C implementation instantiates a materially different, level-0-only object and does not repair the normative analysis.
+
+Define one coherent nested code chain, compute its actual minimum distance and decoding region, then choose the error distribution and radius from an exact tail bound and re-establish correctness before making a CCA claim.
+
+### Reproducing
+
+```sh
+python3 kem-29/reproduce_spec_defects.py
+```
+
+The standard-library-only script checks the normative constants and statements, evaluates the exact binomial tail, and verifies the two printed arithmetic inequalities.
+
+## kem-29-4: Norm-only validation gives one-query ciphertext aliases
+
+Severity: Critical
+Status: Confirmed
+Layer: Design
+Affected: Polar-KEM specification, all three parameter sets
+Discovery: Trivial
+Exploitation: One decapsulation query on a byte-distinct unit perturbation of the challenge ciphertext
+Credit: Zhenyu Xiong and Mingsheng Wang
+Date: 2026-09-27
+Reference: [Xiong and Wang, “Cryptanalysis of the ICCS NGCC Round-1 Public-Key Candidates,” ePrint 2026/2232, §13.5](https://eprint.iacr.org/2026/2232)
+
+Algorithms 6 and 7 derive the valid key only as `K=Extract(m)`. Decapsulation recovers `m_hat`, forms `e_hat=c-Embed(m_hat,pk)`, and accepts whenever `||e_hat||<=rho`; it neither reconstructs the coins from `mu` nor compares a re-encryption, and the valid key does not bind the ciphertext.
+
+Given a challenge `c=Embed(m,pk)+e`, perturb one coordinate by a uniformly random sign to obtain the distinct ciphertext `c'=c+/-u_i`. Whenever the decoder returns the same `m` and the perturbed residual remains inside the decoding ball, Algorithm 7 returns the challenge key `Extract(m)`.
+
+This conclusion does not rely on the specification's inconsistent minimum-distance argument. A signed unit perturbation leaves the changed error coefficient in the specified alphabet `{-1,0,1}` with probability `3/4`; on those outcomes, the perturbed-error distribution has point probability at most twice that of an honest error. Consequently, if the claimed honest decoding-failure probability is `delta`, decoding the perturbation to a different message costs at most `2*delta`. Including the public norm test gives alias probabilities of at least `0.0024956-2^-127`, `0.75-2^-255`, and `0.75-2^-511` for PolarKEM-128, -256, and -512. Thus either these aliases occur with the stated non-negligible probability, or the claimed correctness bound is already false.
+
+One legal CCA query and comparison with the challenge key distinguishes real from random, directly violating the claimed IND-CCA2 security. The attack is unchanged when placeholder hash/XOF functions are replaced by ideal primitives.
+
+Reconstruct the complete encapsulation randomness and compare the received ciphertext byte-for-byte with a canonical re-encryption; derive the valid key from the seed or message together with hashes of the public key and ciphertext.
+
+### Reproducing
+
+```sh
+python3 kem-29/reproduce_spec_defects.py
+```
+
+The script computes the exact safe-alias probabilities and verifies Algorithm 7's norm-only acceptance and valid-key derivation. This is a mathematical certificate against the specification, not a run against its materially different rectified implementation.

@@ -16,6 +16,8 @@ Date: 2026-09-23
 
 `crypto_kem_dec()` passes the persistent secret PKE seed to `triq_pke_decrypt()`, which calls `triq_dk_pke_from_string()` on every decapsulation. That function expands the seed through `vect_sample_fixed_weight1()`. Its support sampler repeats on rejected or duplicate secret-derived positions (`vector.c:69-90`), and refills an XOF buffer when the extra draws cross its boundary. Thus otherwise identical decapsulation calls perform a secret-key-dependent number of loop iterations and XOF calls. The four reference variants share the same sampler. This is a secret-dependent timing/control-flow leak, not an established full-key attack; see `constant_time.md` for the data-flow trace.
 
+Constant-time fix (moderate, hence Medium): store the expanded support in the private key instead of re-deriving it on every decapsulation, which changes the key format and storage, or sample it with a fixed number of draws and constant-time duplicate handling. Both are well-known techniques with moderate cost.
+
 ### Reproducing
 
 From the repository root, compile the witness against the submitted TriQ-128 source:

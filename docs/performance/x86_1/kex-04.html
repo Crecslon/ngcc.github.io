@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ngcc.dev: kex-04 DKEX (Ding Key Exchange) — performance on x86-64 (system x861)</title>
+<link rel="icon" type="image/png" href="../../assets/mag-glass.png">
+<link rel="stylesheet" href="../../assets/style.css?v=1fdb792d">
+</head>
+<body>
+<header class="site-header">
+<a class="brand" href="../../index.html"><img class="brand-icon" src="../../assets/mag-glass.png" alt="" width="28" height="28">ngcc.dev</a>
+<nav><a href="../../index.html">Home</a><a href="../../reports/index.html">Reports</a><a href="../../performance/x86_1/index.html">Performance</a><a href="../../constant-time/index.html">Constant-Time</a></nav>
+</header>
+<main class="">
+<!-- synchronized from harness: kex-04/perf_x86_1.md -->
+<h1 id="kex-04-dkex-ding-key-exchange-performance-on-x86-64-system-x86_1">kex-04 DKEX (Ding Key Exchange) — performance on x86-64 (system x86_1)</h1>
+<p><a href="index.html">Performance x86_1</a> › <code>kex-04</code> · <a href="method.html">method</a> · <a href="https://www.niccs.org.cn/niccs/Round1Additional/pc/content/content_2101560625651601408.html">NICCS page</a></p>
+<p>Independent measurement following the structure of the NICCS x86 self-assessment guide, §3.5 (1)–(7). Not a submitter self-assessment.</p>
+<h2 id="1-basic-information">1. Basic information</h2>
+<ul>
+<li>Category: public-key algorithm; function: key exchange</li>
+<li>Algorithm: DKEX (Ding Key Exchange)</li>
+<li>Implementation versions measured: reference</li>
+<li>Parameter sets: <code>DKEX-128</code>, <code>DKEX-256</code>, <code>DKEX-512</code></li>
+</ul>
+<h2 id="2-assessment-environment">2. Assessment environment</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>item</th>
+<th>value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>processor</td>
+<td>12th Gen Intel(R) Core(TM) i7-12700 (CPU 2, one core)</td>
+</tr>
+<tr>
+<td>clock</td>
+<td>max 2.10 GHz, governor performance, turbo off, SMT off</td>
+</tr>
+<tr>
+<td>memory</td>
+<td>31788 MiB</td>
+</tr>
+<tr>
+<td>OS / kernel</td>
+<td>Debian GNU/Linux 13 (trixie) / 6.12.107+deb13-amd64</td>
+</tr>
+<tr>
+<td>compiler / build tool</td>
+<td>gcc (Debian 14.2.0-19) 14.2.0 / cmake version 3.31.6</td>
+</tr>
+<tr>
+<td>campaign start / end (UTC)</td>
+<td>2026-09-25T10:02:21 / 2026-09-28T04:35:59</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="3-functional-testing-kat">3. Functional testing (KAT)</h2>
+<p>Each library was checked against the submitted KAT vectors (SHA-256 manifest <code>kex-04/kat.sha256</code> in the harness) before timing.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>build flags</th>
+<th>KAT</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>DKEX-128</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>DKEX-256</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>DKEX-512</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="4-performance">4. Performance</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>operation</th>
+<th>mean cycles</th>
+<th>mean time</th>
+<th>ops/s</th>
+<th>median trial</th>
+<th>n (trials × iters)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>DKEX-128</code></td>
+<td>exchange</td>
+<td>3.84 M</td>
+<td>1.84 ms</td>
+<td>544</td>
+<td>1.84 ms</td>
+<td>3000 (5 × 600)</td>
+</tr>
+<tr>
+<td><code>DKEX-128</code></td>
+<td>init_a</td>
+<td>267.8 k</td>
+<td>132 µs</td>
+<td>7.58e+03</td>
+<td>128 µs</td>
+<td>3000 (5 × 600)</td>
+</tr>
+<tr>
+<td><code>DKEX-128</code></td>
+<td>init_b</td>
+<td>267.3 k</td>
+<td>128 µs</td>
+<td>7.84e+03</td>
+<td>127 µs</td>
+<td>3000 (5 × 600)</td>
+</tr>
+<tr>
+<td><code>DKEX-128</code></td>
+<td>pass1</td>
+<td>203.3 k</td>
+<td>97 µs</td>
+<td>1.03e+04</td>
+<td>97 µs</td>
+<td>3000 (5 × 600)</td>
+</tr>
+<tr>
+<td><code>DKEX-128</code></td>
+<td>pass2</td>
+<td>1.39 M</td>
+<td>662 µs</td>
+<td>1.51e+03</td>
+<td>662 µs</td>
+<td>3000 (5 × 600)</td>
+</tr>
+<tr>
+<td><code>DKEX-128</code></td>
+<td>pass3</td>
+<td>1.48 M</td>
+<td>718 µs</td>
+<td>1.39e+03</td>
+<td>705 µs</td>
+<td>3000 (5 × 600)</td>
+</tr>
+<tr>
+<td><code>DKEX-128</code></td>
+<td>derive_a</td>
+<td>3243</td>
+<td>1.49 µs</td>
+<td>6.69e+05</td>
+<td>1.44 µs</td>
+<td>3000 (5 × 600)</td>
+</tr>
+<tr>
+<td><code>DKEX-128</code></td>
+<td>derive_b</td>
+<td>287.6 k</td>
+<td>137 µs</td>
+<td>7.28e+03</td>
+<td>137 µs</td>
+<td>3000 (5 × 600)</td>
+</tr>
+<tr>
+<td><code>DKEX-256</code></td>
+<td>exchange</td>
+<td>8.70 M</td>
+<td>4.16 ms</td>
+<td>240</td>
+<td>4.16 ms</td>
+<td>1030 (5 × 206)</td>
+</tr>
+<tr>
+<td><code>DKEX-256</code></td>
+<td>init_a</td>
+<td>717.9 k</td>
+<td>343 µs</td>
+<td>2.92e+03</td>
+<td>343 µs</td>
+<td>1030 (5 × 206)</td>
+</tr>
+<tr>
+<td><code>DKEX-256</code></td>
+<td>init_b</td>
+<td>724.7 k</td>
+<td>346 µs</td>
+<td>2.89e+03</td>
+<td>346 µs</td>
+<td>1030 (5 × 206)</td>
+</tr>
+<tr>
+<td><code>DKEX-256</code></td>
+<td>pass1</td>
+<td>604.8 k</td>
+<td>289 µs</td>
+<td>3.46e+03</td>
+<td>289 µs</td>
+<td>1030 (5 × 206)</td>
+</tr>
+<tr>
+<td><code>DKEX-256</code></td>
+<td>pass2</td>
+<td>2.90 M</td>
+<td>1.39 ms</td>
+<td>721</td>
+<td>1.39 ms</td>
+<td>1030 (5 × 206)</td>
+</tr>
+<tr>
+<td><code>DKEX-256</code></td>
+<td>pass3</td>
+<td>3.02 M</td>
+<td>1.44 ms</td>
+<td>693</td>
+<td>1.44 ms</td>
+<td>1030 (5 × 206)</td>
+</tr>
+<tr>
+<td><code>DKEX-256</code></td>
+<td>derive_a</td>
+<td>3242</td>
+<td>1.44 µs</td>
+<td>6.95e+05</td>
+<td>1.44 µs</td>
+<td>1030 (5 × 206)</td>
+</tr>
+<tr>
+<td><code>DKEX-256</code></td>
+<td>derive_b</td>
+<td>752.3 k</td>
+<td>359 µs</td>
+<td>2.78e+03</td>
+<td>359 µs</td>
+<td>1030 (5 × 206)</td>
+</tr>
+<tr>
+<td><code>DKEX-512</code></td>
+<td>exchange</td>
+<td>12.24 M</td>
+<td>5.85 ms</td>
+<td>171</td>
+<td>5.85 ms</td>
+<td>890 (5 × 178)</td>
+</tr>
+<tr>
+<td><code>DKEX-512</code></td>
+<td>init_a</td>
+<td>730.9 k</td>
+<td>349 µs</td>
+<td>2.86e+03</td>
+<td>349 µs</td>
+<td>890 (5 × 178)</td>
+</tr>
+<tr>
+<td><code>DKEX-512</code></td>
+<td>init_b</td>
+<td>734.3 k</td>
+<td>351 µs</td>
+<td>2.85e+03</td>
+<td>350 µs</td>
+<td>890 (5 × 178)</td>
+</tr>
+<tr>
+<td><code>DKEX-512</code></td>
+<td>pass1</td>
+<td>2.06 M</td>
+<td>1.01 ms</td>
+<td>991</td>
+<td>984 µs</td>
+<td>890 (5 × 178)</td>
+</tr>
+<tr>
+<td><code>DKEX-512</code></td>
+<td>pass2</td>
+<td>4.71 M</td>
+<td>2.25 ms</td>
+<td>444</td>
+<td>2.25 ms</td>
+<td>890 (5 × 178)</td>
+</tr>
+<tr>
+<td><code>DKEX-512</code></td>
+<td>pass3</td>
+<td>3.28 M</td>
+<td>1.57 ms</td>
+<td>637</td>
+<td>1.57 ms</td>
+<td>890 (5 × 178)</td>
+</tr>
+<tr>
+<td><code>DKEX-512</code></td>
+<td>derive_a</td>
+<td>9114</td>
+<td>4.24 µs</td>
+<td>2.36e+05</td>
+<td>4.25 µs</td>
+<td>890 (5 × 178)</td>
+</tr>
+<tr>
+<td><code>DKEX-512</code></td>
+<td>derive_b</td>
+<td>768.0 k</td>
+<td>367 µs</td>
+<td>2.73e+03</td>
+<td>367 µs</td>
+<td>890 (5 × 178)</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="5-resource-consumption">5. Resource consumption</h2>
+<p>Static memory is approximated by the library's loadable ELF segments; peak memory is the process high-water mark (VmHWM) including the benchmark driver and libc, so both are upper-bound proxies rather than isolated algorithm memory.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>operation</th>
+<th>static: ELF image (bytes)</th>
+<th>baseline RSS</th>
+<th>peak RSS</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>DKEX-128</code></td>
+<td>exchange</td>
+<td>57265</td>
+<td>1896 KiB</td>
+<td>1960 KiB</td>
+</tr>
+<tr>
+<td><code>DKEX-128</code></td>
+<td>init_a</td>
+<td>57265</td>
+<td>1884 KiB</td>
+<td>1948 KiB</td>
+</tr>
+<tr>
+<td><code>DKEX-128</code></td>
+<td>init_b</td>
+<td>57265</td>
+<td>1888 KiB</td>
+<td>1952 KiB</td>
+</tr>
+<tr>
+<td><code>DKEX-128</code></td>
+<td>pass1</td>
+<td>57265</td>
+<td>1900 KiB</td>
+<td>1980 KiB</td>
+</tr>
+<tr>
+<td><code>DKEX-128</code></td>
+<td>pass2</td>
+<td>57265</td>
+<td>1876 KiB</td>
+<td>1984 KiB</td>
+</tr>
+<tr>
+<td><code>DKEX-128</code></td>
+<td>pass3</td>
+<td>57265</td>
+<td>1896 KiB</td>
+<td>1960 KiB</td>
+</tr>
+<tr>
+<td><code>DKEX-128</code></td>
+<td>derive_a</td>
+<td>57265</td>
+<td>1892 KiB</td>
+<td>1956 KiB</td>
+</tr>
+<tr>
+<td><code>DKEX-128</code></td>
+<td>derive_b</td>
+<td>57265</td>
+<td>1876 KiB</td>
+<td>1964 KiB</td>
+</tr>
+<tr>
+<td><code>DKEX-256</code></td>
+<td>exchange</td>
+<td>58249</td>
+<td>2068 KiB</td>
+<td>2132 KiB</td>
+</tr>
+<tr>
+<td><code>DKEX-256</code></td>
+<td>init_a</td>
+<td>58249</td>
+<td>2056 KiB</td>
+<td>2120 KiB</td>
+</tr>
+<tr>
+<td><code>DKEX-256</code></td>
+<td>init_b</td>
+<td>58249</td>
+<td>2072 KiB</td>
+<td>2144 KiB</td>
+</tr>
+<tr>
+<td><code>DKEX-256</code></td>
+<td>pass1</td>
+<td>58249</td>
+<td>2064 KiB</td>
+<td>2128 KiB</td>
+</tr>
+<tr>
+<td><code>DKEX-256</code></td>
+<td>pass2</td>
+<td>58249</td>
+<td>2048 KiB</td>
+<td>2112 KiB</td>
+</tr>
+<tr>
+<td><code>DKEX-256</code></td>
+<td>pass3</td>
+<td>58249</td>
+<td>2044 KiB</td>
+<td>2140 KiB</td>
+</tr>
+<tr>
+<td><code>DKEX-256</code></td>
+<td>derive_a</td>
+<td>58249</td>
+<td>2048 KiB</td>
+<td>2112 KiB</td>
+</tr>
+<tr>
+<td><code>DKEX-256</code></td>
+<td>derive_b</td>
+<td>58249</td>
+<td>1980 KiB</td>
+<td>2108 KiB</td>
+</tr>
+<tr>
+<td><code>DKEX-512</code></td>
+<td>exchange</td>
+<td>59281</td>
+<td>2124 KiB</td>
+<td>2200 KiB</td>
+</tr>
+<tr>
+<td><code>DKEX-512</code></td>
+<td>init_a</td>
+<td>59281</td>
+<td>2108 KiB</td>
+<td>2212 KiB</td>
+</tr>
+<tr>
+<td><code>DKEX-512</code></td>
+<td>init_b</td>
+<td>59281</td>
+<td>2132 KiB</td>
+<td>2212 KiB</td>
+</tr>
+<tr>
+<td><code>DKEX-512</code></td>
+<td>pass1</td>
+<td>59281</td>
+<td>2104 KiB</td>
+<td>2232 KiB</td>
+</tr>
+<tr>
+<td><code>DKEX-512</code></td>
+<td>pass2</td>
+<td>59281</td>
+<td>2104 KiB</td>
+<td>2212 KiB</td>
+</tr>
+<tr>
+<td><code>DKEX-512</code></td>
+<td>pass3</td>
+<td>59281</td>
+<td>2124 KiB</td>
+<td>2200 KiB</td>
+</tr>
+<tr>
+<td><code>DKEX-512</code></td>
+<td>derive_a</td>
+<td>59281</td>
+<td>2124 KiB</td>
+<td>2212 KiB</td>
+</tr>
+<tr>
+<td><code>DKEX-512</code></td>
+<td>derive_b</td>
+<td>59281</td>
+<td>2124 KiB</td>
+<td>2200 KiB</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="6-transmission-and-storage-overhead">6. Transmission and storage overhead</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>passes</th>
+<th>messages (bytes)</th>
+<th>total</th>
+<th>long-term pk / sk</th>
+<th>shared secret</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>DKEX-128</code></td>
+<td>3</td>
+<td>800 / 3188 / 2420</td>
+<td>6408</td>
+<td>1312 / 2560</td>
+<td>32</td>
+</tr>
+<tr>
+<td><code>DKEX-256</code></td>
+<td>3</td>
+<td>1568 / 6195 / 4627</td>
+<td>12390</td>
+<td>2592 / 4896</td>
+<td>32</td>
+</tr>
+<tr>
+<td><code>DKEX-512</code></td>
+<td>3</td>
+<td>3392 / 7699 / 4627</td>
+<td>15718</td>
+<td>2592 / 4896</td>
+<td>64</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="symmetric-primitives">Symmetric primitives</h2>
+<p><a href="../symmetric-survey.html">Survey</a> verdict: <strong>mixed</strong> — KEX core via ICCS; embedded ML-DSA uses its own SHAKE</p>
+<p>Share of each operation spent in the ICCS placeholder hash functions and in the ICCS DRNG (reference build, measured in the same run with link-time wrappers):</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>operation</th>
+<th>pseudohash/XOF/sm3</th>
+<th>DRNG</th>
+<th>calls per operation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>DKEX-128</code></td>
+<td>exchange</td>
+<td>12%</td>
+<td>0.5%</td>
+<td>drng 4, pseudoXOF 1, sm3hash 186</td>
+</tr>
+<tr>
+<td><code>DKEX-256</code></td>
+<td>exchange</td>
+<td>14%</td>
+<td>0.2%</td>
+<td>drng 4, pseudoXOF 1, sm3hash 585</td>
+</tr>
+<tr>
+<td><code>DKEX-512</code></td>
+<td>exchange</td>
+<td>36%</td>
+<td>0.2%</td>
+<td>drng 4, pseudoXOF 5, sm3hash 1.23e+03</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="7-raw-evidence-index">7. Raw evidence index</h2>
+<p>Paths are relative to <code>performance/data/x86_1/</code> in the <a href="https://github.com/ngcc-dev/ngcc-harness">harness</a>; each JSON file records its commands, environment and trials.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>item</th>
+<th>file</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>DKEX-128</code></td>
+<td>KAT log (sha256 <code>7159b0d28cca8ce6…</code>)</td>
+<td><code>kat/kex-04/DKEX-128.log</code></td>
+</tr>
+<tr>
+<td><code>DKEX-128</code></td>
+<td>timing derive_a</td>
+<td><code>records/kex-04/DKEX-128__derive_a.json</code></td>
+</tr>
+<tr>
+<td><code>DKEX-128</code></td>
+<td>timing derive_b</td>
+<td><code>records/kex-04/DKEX-128__derive_b.json</code></td>
+</tr>
+<tr>
+<td><code>DKEX-128</code></td>
+<td>timing exchange</td>
+<td><code>records/kex-04/DKEX-128__exchange.json</code></td>
+</tr>
+<tr>
+<td><code>DKEX-128</code></td>
+<td>timing init_a</td>
+<td><code>records/kex-04/DKEX-128__init_a.json</code></td>
+</tr>
+<tr>
+<td><code>DKEX-128</code></td>
+<td>timing init_b</td>
+<td><code>records/kex-04/DKEX-128__init_b.json</code></td>
+</tr>
+<tr>
+<td><code>DKEX-128</code></td>
+<td>timing pass1</td>
+<td><code>records/kex-04/DKEX-128__pass1.json</code></td>
+</tr>
+<tr>
+<td><code>DKEX-128</code></td>
+<td>timing pass2</td>
+<td><code>records/kex-04/DKEX-128__pass2.json</code></td>
+</tr>
+<tr>
+<td><code>DKEX-128</code></td>
+<td>timing pass3</td>
+<td><code>records/kex-04/DKEX-128__pass3.json</code></td>
+</tr>
+<tr>
+<td><code>DKEX-128</code></td>
+<td>hash profile exchange</td>
+<td><code>profile/kex-04/DKEX-128__exchange.json</code></td>
+</tr>
+<tr>
+<td><code>DKEX-256</code></td>
+<td>KAT log (sha256 <code>0edc6b7375877b75…</code>)</td>
+<td><code>kat/kex-04/DKEX-256.log</code></td>
+</tr>
+<tr>
+<td><code>DKEX-256</code></td>
+<td>timing derive_a</td>
+<td><code>records/kex-04/DKEX-256__derive_a.json</code></td>
+</tr>
+<tr>
+<td><code>DKEX-256</code></td>
+<td>timing derive_b</td>
+<td><code>records/kex-04/DKEX-256__derive_b.json</code></td>
+</tr>
+<tr>
+<td><code>DKEX-256</code></td>
+<td>timing exchange</td>
+<td><code>records/kex-04/DKEX-256__exchange.json</code></td>
+</tr>
+<tr>
+<td><code>DKEX-256</code></td>
+<td>timing init_a</td>
+<td><code>records/kex-04/DKEX-256__init_a.json</code></td>
+</tr>
+<tr>
+<td><code>DKEX-256</code></td>
+<td>timing init_b</td>
+<td><code>records/kex-04/DKEX-256__init_b.json</code></td>
+</tr>
+<tr>
+<td><code>DKEX-256</code></td>
+<td>timing pass1</td>
+<td><code>records/kex-04/DKEX-256__pass1.json</code></td>
+</tr>
+<tr>
+<td><code>DKEX-256</code></td>
+<td>timing pass2</td>
+<td><code>records/kex-04/DKEX-256__pass2.json</code></td>
+</tr>
+<tr>
+<td><code>DKEX-256</code></td>
+<td>timing pass3</td>
+<td><code>records/kex-04/DKEX-256__pass3.json</code></td>
+</tr>
+<tr>
+<td><code>DKEX-256</code></td>
+<td>hash profile exchange</td>
+<td><code>profile/kex-04/DKEX-256__exchange.json</code></td>
+</tr>
+<tr>
+<td><code>DKEX-512</code></td>
+<td>KAT log (sha256 <code>1fe8edad8396601a…</code>)</td>
+<td><code>kat/kex-04/DKEX-512.log</code></td>
+</tr>
+<tr>
+<td><code>DKEX-512</code></td>
+<td>timing derive_a</td>
+<td><code>records/kex-04/DKEX-512__derive_a.json</code></td>
+</tr>
+<tr>
+<td><code>DKEX-512</code></td>
+<td>timing derive_b</td>
+<td><code>records/kex-04/DKEX-512__derive_b.json</code></td>
+</tr>
+<tr>
+<td><code>DKEX-512</code></td>
+<td>timing exchange</td>
+<td><code>records/kex-04/DKEX-512__exchange.json</code></td>
+</tr>
+<tr>
+<td><code>DKEX-512</code></td>
+<td>timing init_a</td>
+<td><code>records/kex-04/DKEX-512__init_a.json</code></td>
+</tr>
+<tr>
+<td><code>DKEX-512</code></td>
+<td>timing init_b</td>
+<td><code>records/kex-04/DKEX-512__init_b.json</code></td>
+</tr>
+<tr>
+<td><code>DKEX-512</code></td>
+<td>timing pass1</td>
+<td><code>records/kex-04/DKEX-512__pass1.json</code></td>
+</tr>
+<tr>
+<td><code>DKEX-512</code></td>
+<td>timing pass2</td>
+<td><code>records/kex-04/DKEX-512__pass2.json</code></td>
+</tr>
+<tr>
+<td><code>DKEX-512</code></td>
+<td>timing pass3</td>
+<td><code>records/kex-04/DKEX-512__pass3.json</code></td>
+</tr>
+<tr>
+<td><code>DKEX-512</code></td>
+<td>hash profile exchange</td>
+<td><code>profile/kex-04/DKEX-512__exchange.json</code></td>
+</tr>
+</tbody>
+</table></div>
+<p>Scripts: <code>performance/campaign.py</code>, <code>performance/ngcc_perf.c</code>, <code>performance/hashprof/</code> in the <a href="https://github.com/ngcc-dev/ngcc-harness">harness</a>.</p>
+</main>
+<footer class="site-footer">
+<p>Maintained by: <a href="mailto:markku-juhani.saarinen@tuni.fi">markku-juhani.saarinen@tuni.fi</a></p>
+<p>Submissions are welcome via <a href="https://github.com/ngcc-dev/ngcc-harness/issues">GitHub issues</a>.</p>
+</footer>
+</body>
+</html>

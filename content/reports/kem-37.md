@@ -18,6 +18,8 @@ Date: 2026-09-23
 
 Follow-up analysis: FO re-encryption also samples from coins derived from recovered `m_prime` (`src/common/kem.c:192-200`, `src/ref/triq_pke.c:113-115`). The [Guo et al. HQC/BIKE attack](https://eprint.iacr.org/2021/1485.pdf) suggests a test, not a proven TriQ recovery.
 
+Constant-time fix (moderate, hence Medium): store the expanded support in the private key instead of re-deriving it on every decapsulation, which changes the key format and storage, or sample it with a fixed number of draws and constant-time duplicate handling. Both are well-known techniques with moderate cost.
+
 ### Reproducing
 
 ```sh

@@ -29,19 +29,19 @@ The `kem-12-1` check verifies the short-key algorithms on physical PDF pages
 
 ## kem-12-2: CTL-512 returns only 384 shared-secret bits
 
-Severity: High
+Severity: Critical
 Status: Confirmed
 Layer: Implementation
 Affected: CTL-512 reference adapter and specification
 Discovery: Trivial
-Exploitation: Capacity/conformance defect; no IND-CCA attack demonstrated
+Exploitation: The 384-bit output is 128 bits short of the required 512-bit encapsulated key
 Credit: Markku-Juhani O. Saarinen <markku-juhani.saarinen@tuni.fi>, with AI assistance
 Date: 2026-09-21
 Follow-up source: [CTL submitters' 2026-09-23 response](https://list.niccs.org.cn/archives/list/pkcforum@list.niccs.org.cn/message/H47RU2HKEEAZQOJNKMUFWNEJEHHSLPQQ/)
 
 The CTL-512 adapter returns a 48-byte shared secret and instantiates the ciphertext hash component `c2` at 48 bytes. The specification assigns 64 bytes to CTL-512 `c2`.
 
-The returned key therefore has at most 384 bits of delivered-key capacity and the ciphertext format contradicts the PDF. Output length alone is not an IND-CCA attack, so this second issue is classified as an implementation/specification conformance break rather than a complete KEM confidentiality attack.
+The returned key therefore has at most 384 bits of delivered-key capacity and the ciphertext format contradicts the PDF. The NGCC [Submission Requirements](https://www.niccs.org.cn/niccs/Notice/lDop1mav.pdf) §2(2) require the encapsulated key to be at least as long as the corresponding classical security level. CTL-512 misses that explicit 512-bit target and is therefore Critical, even though this dimensional shortfall is not a separate IND-CCA attack.
 
 ### Reproducing
 

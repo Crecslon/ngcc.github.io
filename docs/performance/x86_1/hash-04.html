@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ngcc.dev: hash-04 CHAMP — performance on x86-64 (system x861)</title>
+<link rel="icon" type="image/png" href="../../assets/mag-glass.png">
+<link rel="stylesheet" href="../../assets/style.css?v=1fdb792d">
+</head>
+<body>
+<header class="site-header">
+<a class="brand" href="../../index.html"><img class="brand-icon" src="../../assets/mag-glass.png" alt="" width="28" height="28">ngcc.dev</a>
+<nav><a href="../../index.html">Home</a><a href="../../reports/index.html">Reports</a><a href="../../performance/x86_1/index.html">Performance</a><a href="../../constant-time/index.html">Constant-Time</a></nav>
+</header>
+<main class="">
+<!-- synchronized from harness: hash-04/perf_x86_1.md -->
+<h1 id="hash-04-champ-performance-on-x86-64-system-x86_1">hash-04 CHAMP — performance on x86-64 (system x86_1)</h1>
+<p><a href="index.html">Performance x86_1</a> › <code>hash-04</code> · <a href="method.html">method</a> · <a href="https://www.niccs.org.cn/niccs/Round1Submissions4/pc/content/content_2101540375996485632.html">NICCS page</a></p>
+<p>Independent measurement following the structure of the NICCS x86 self-assessment guide, §3.5 (1)–(7). Not a submitter self-assessment.</p>
+<h2 id="1-basic-information">1. Basic information</h2>
+<ul>
+<li>Category: cryptographic hash algorithm; function: hash</li>
+<li>Algorithm: CHAMP</li>
+<li>Implementation versions measured: reference</li>
+<li>Parameter sets: <code>CHAMP-512</code>, <code>CHAMP-1024</code></li>
+</ul>
+<h2 id="2-assessment-environment">2. Assessment environment</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>item</th>
+<th>value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>processor</td>
+<td>12th Gen Intel(R) Core(TM) i7-12700 (CPU 2, one core)</td>
+</tr>
+<tr>
+<td>clock</td>
+<td>max 2.10 GHz, governor performance, turbo off, SMT off</td>
+</tr>
+<tr>
+<td>memory</td>
+<td>31788 MiB</td>
+</tr>
+<tr>
+<td>OS / kernel</td>
+<td>Debian GNU/Linux 13 (trixie) / 6.12.107+deb13-amd64</td>
+</tr>
+<tr>
+<td>compiler / build tool</td>
+<td>gcc (Debian 14.2.0-19) 14.2.0 / cmake version 3.31.6</td>
+</tr>
+<tr>
+<td>campaign start / end (UTC)</td>
+<td>2026-09-25T10:02:21 / 2026-09-28T04:35:59</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="3-functional-testing-kat">3. Functional testing (KAT)</h2>
+<p>Each library was checked against the submitted KAT vectors (SHA-256 manifest <code>hash-04/kat.sha256</code> in the harness) before timing.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>build flags</th>
+<th>KAT</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>CHAMP-512</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>CHAMP-1024</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="4-performance">4. Performance</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>message</th>
+<th>mean cycles</th>
+<th>cycles/byte</th>
+<th>mean time</th>
+<th>MB/s</th>
+<th>n</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>CHAMP-512</code></td>
+<td>32 B</td>
+<td>66.9 k</td>
+<td>2091.7</td>
+<td>32 µs</td>
+<td>1.0</td>
+<td>10440 (5 × 2088)</td>
+</tr>
+<tr>
+<td><code>CHAMP-512</code></td>
+<td>128 B</td>
+<td>106.4 k</td>
+<td>831.3</td>
+<td>50.9 µs</td>
+<td>2.5</td>
+<td>10000 (5 × 2000)</td>
+</tr>
+<tr>
+<td><code>CHAMP-512</code></td>
+<td>512 B</td>
+<td>294.6 k</td>
+<td>575.3</td>
+<td>141 µs</td>
+<td>3.6</td>
+<td>8420 (5 × 1684)</td>
+</tr>
+<tr>
+<td><code>CHAMP-512</code></td>
+<td>1024 B</td>
+<td>564.1 k</td>
+<td>550.8</td>
+<td>269 µs</td>
+<td>3.8</td>
+<td>6875 (5 × 1375)</td>
+</tr>
+<tr>
+<td><code>CHAMP-512</code></td>
+<td>4096 B</td>
+<td>2.15 M</td>
+<td>523.8</td>
+<td>1.02 ms</td>
+<td>4.0</td>
+<td>3355 (5 × 671)</td>
+</tr>
+<tr>
+<td><code>CHAMP-512</code></td>
+<td>8192 B</td>
+<td>4.26 M</td>
+<td>519.7</td>
+<td>2.03 ms</td>
+<td>4.0</td>
+<td>2010 (5 × 402)</td>
+</tr>
+<tr>
+<td><code>CHAMP-512</code></td>
+<td>16384 B</td>
+<td>8.49 M</td>
+<td>518.1</td>
+<td>4.06 ms</td>
+<td>4.0</td>
+<td>1105 (5 × 221)</td>
+</tr>
+<tr>
+<td><code>CHAMP-512</code></td>
+<td>65536 B</td>
+<td>33.76 M</td>
+<td>515.1</td>
+<td>16.1 ms</td>
+<td>4.1</td>
+<td>300 (5 × 60)</td>
+</tr>
+<tr>
+<td><code>CHAMP-1024</code></td>
+<td>32 B</td>
+<td>369.9 k</td>
+<td>11559.2</td>
+<td>177 µs</td>
+<td>0.2</td>
+<td>3240 (5 × 648)</td>
+</tr>
+<tr>
+<td><code>CHAMP-1024</code></td>
+<td>128 B</td>
+<td>506.0 k</td>
+<td>3953.2</td>
+<td>242 µs</td>
+<td>0.5</td>
+<td>3100 (5 × 620)</td>
+</tr>
+<tr>
+<td><code>CHAMP-1024</code></td>
+<td>512 B</td>
+<td>1.06 M</td>
+<td>2060.7</td>
+<td>504 µs</td>
+<td>1.0</td>
+<td>2680 (5 × 536)</td>
+</tr>
+<tr>
+<td><code>CHAMP-1024</code></td>
+<td>1024 B</td>
+<td>1.78 M</td>
+<td>1742.0</td>
+<td>852 µs</td>
+<td>1.2</td>
+<td>2250 (5 × 450)</td>
+</tr>
+<tr>
+<td><code>CHAMP-1024</code></td>
+<td>4096 B</td>
+<td>6.16 M</td>
+<td>1503.1</td>
+<td>2.94 ms</td>
+<td>1.4</td>
+<td>1160 (5 × 232)</td>
+</tr>
+<tr>
+<td><code>CHAMP-1024</code></td>
+<td>8192 B</td>
+<td>11.99 M</td>
+<td>1463.5</td>
+<td>5.73 ms</td>
+<td>1.4</td>
+<td>705 (5 × 141)</td>
+</tr>
+<tr>
+<td><code>CHAMP-1024</code></td>
+<td>16384 B</td>
+<td>23.65 M</td>
+<td>1443.3</td>
+<td>11.3 ms</td>
+<td>1.5</td>
+<td>395 (5 × 79)</td>
+</tr>
+<tr>
+<td><code>CHAMP-1024</code></td>
+<td>65536 B</td>
+<td>93.70 M</td>
+<td>1429.8</td>
+<td>44.8 ms</td>
+<td>1.5</td>
+<td>110 (5 × 22)</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="5-resource-consumption">5. Resource consumption</h2>
+<p>Static memory is approximated by the library's loadable ELF segments; peak memory is the process high-water mark (VmHWM) including the benchmark driver and libc, so both are upper-bound proxies rather than isolated algorithm memory.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>operation</th>
+<th>static: ELF image (bytes)</th>
+<th>baseline RSS</th>
+<th>peak RSS</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>CHAMP-512</code></td>
+<td>hash_32</td>
+<td>29609</td>
+<td>1692 KiB</td>
+<td>1772 KiB</td>
+</tr>
+<tr>
+<td><code>CHAMP-512</code></td>
+<td>hash_128</td>
+<td>29609</td>
+<td>1672 KiB</td>
+<td>1772 KiB</td>
+</tr>
+<tr>
+<td><code>CHAMP-512</code></td>
+<td>hash_512</td>
+<td>29609</td>
+<td>1672 KiB</td>
+<td>1792 KiB</td>
+</tr>
+<tr>
+<td><code>CHAMP-512</code></td>
+<td>hash_1024</td>
+<td>29609</td>
+<td>1692 KiB</td>
+<td>1792 KiB</td>
+</tr>
+<tr>
+<td><code>CHAMP-512</code></td>
+<td>hash_4096</td>
+<td>29609</td>
+<td>1692 KiB</td>
+<td>1796 KiB</td>
+</tr>
+<tr>
+<td><code>CHAMP-512</code></td>
+<td>hash_8192</td>
+<td>29609</td>
+<td>1684 KiB</td>
+<td>1792 KiB</td>
+</tr>
+<tr>
+<td><code>CHAMP-512</code></td>
+<td>hash_16384</td>
+<td>29609</td>
+<td>1708 KiB</td>
+<td>1808 KiB</td>
+</tr>
+<tr>
+<td><code>CHAMP-512</code></td>
+<td>hash_65536</td>
+<td>29609</td>
+<td>1744 KiB</td>
+<td>1848 KiB</td>
+</tr>
+<tr>
+<td><code>CHAMP-1024</code></td>
+<td>hash_32</td>
+<td>47729</td>
+<td>1676 KiB</td>
+<td>1772 KiB</td>
+</tr>
+<tr>
+<td><code>CHAMP-1024</code></td>
+<td>hash_128</td>
+<td>47729</td>
+<td>1684 KiB</td>
+<td>1780 KiB</td>
+</tr>
+<tr>
+<td><code>CHAMP-1024</code></td>
+<td>hash_512</td>
+<td>47729</td>
+<td>1676 KiB</td>
+<td>1816 KiB</td>
+</tr>
+<tr>
+<td><code>CHAMP-1024</code></td>
+<td>hash_1024</td>
+<td>47729</td>
+<td>1592 KiB</td>
+<td>1752 KiB</td>
+</tr>
+<tr>
+<td><code>CHAMP-1024</code></td>
+<td>hash_4096</td>
+<td>47729</td>
+<td>1696 KiB</td>
+<td>1792 KiB</td>
+</tr>
+<tr>
+<td><code>CHAMP-1024</code></td>
+<td>hash_8192</td>
+<td>47729</td>
+<td>1696 KiB</td>
+<td>1800 KiB</td>
+</tr>
+<tr>
+<td><code>CHAMP-1024</code></td>
+<td>hash_16384</td>
+<td>47729</td>
+<td>1680 KiB</td>
+<td>1824 KiB</td>
+</tr>
+<tr>
+<td><code>CHAMP-1024</code></td>
+<td>hash_65536</td>
+<td>47729</td>
+<td>1752 KiB</td>
+<td>1876 KiB</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="7-raw-evidence-index">7. Raw evidence index</h2>
+<p>Paths are relative to <code>performance/data/x86_1/</code> in the <a href="https://github.com/ngcc-dev/ngcc-harness">harness</a>; each JSON file records its commands, environment and trials.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>item</th>
+<th>file</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>CHAMP-512</code></td>
+<td>KAT log (sha256 <code>532066ce93f9ccfa…</code>)</td>
+<td><code>kat/hash-04/CHAMP-512.log</code></td>
+</tr>
+<tr>
+<td><code>CHAMP-512</code></td>
+<td>timing hash_1024</td>
+<td><code>records/hash-04/CHAMP-512__hash_1024.json</code></td>
+</tr>
+<tr>
+<td><code>CHAMP-512</code></td>
+<td>timing hash_128</td>
+<td><code>records/hash-04/CHAMP-512__hash_128.json</code></td>
+</tr>
+<tr>
+<td><code>CHAMP-512</code></td>
+<td>timing hash_16384</td>
+<td><code>records/hash-04/CHAMP-512__hash_16384.json</code></td>
+</tr>
+<tr>
+<td><code>CHAMP-512</code></td>
+<td>timing hash_32</td>
+<td><code>records/hash-04/CHAMP-512__hash_32.json</code></td>
+</tr>
+<tr>
+<td><code>CHAMP-512</code></td>
+<td>timing hash_4096</td>
+<td><code>records/hash-04/CHAMP-512__hash_4096.json</code></td>
+</tr>
+<tr>
+<td><code>CHAMP-512</code></td>
+<td>timing hash_512</td>
+<td><code>records/hash-04/CHAMP-512__hash_512.json</code></td>
+</tr>
+<tr>
+<td><code>CHAMP-512</code></td>
+<td>timing hash_65536</td>
+<td><code>records/hash-04/CHAMP-512__hash_65536.json</code></td>
+</tr>
+<tr>
+<td><code>CHAMP-512</code></td>
+<td>timing hash_8192</td>
+<td><code>records/hash-04/CHAMP-512__hash_8192.json</code></td>
+</tr>
+<tr>
+<td><code>CHAMP-1024</code></td>
+<td>KAT log (sha256 <code>500c8b60b0fd9ccc…</code>)</td>
+<td><code>kat/hash-04/CHAMP-1024.log</code></td>
+</tr>
+<tr>
+<td><code>CHAMP-1024</code></td>
+<td>timing hash_1024</td>
+<td><code>records/hash-04/CHAMP-1024__hash_1024.json</code></td>
+</tr>
+<tr>
+<td><code>CHAMP-1024</code></td>
+<td>timing hash_128</td>
+<td><code>records/hash-04/CHAMP-1024__hash_128.json</code></td>
+</tr>
+<tr>
+<td><code>CHAMP-1024</code></td>
+<td>timing hash_16384</td>
+<td><code>records/hash-04/CHAMP-1024__hash_16384.json</code></td>
+</tr>
+<tr>
+<td><code>CHAMP-1024</code></td>
+<td>timing hash_32</td>
+<td><code>records/hash-04/CHAMP-1024__hash_32.json</code></td>
+</tr>
+<tr>
+<td><code>CHAMP-1024</code></td>
+<td>timing hash_4096</td>
+<td><code>records/hash-04/CHAMP-1024__hash_4096.json</code></td>
+</tr>
+<tr>
+<td><code>CHAMP-1024</code></td>
+<td>timing hash_512</td>
+<td><code>records/hash-04/CHAMP-1024__hash_512.json</code></td>
+</tr>
+<tr>
+<td><code>CHAMP-1024</code></td>
+<td>timing hash_65536</td>
+<td><code>records/hash-04/CHAMP-1024__hash_65536.json</code></td>
+</tr>
+<tr>
+<td><code>CHAMP-1024</code></td>
+<td>timing hash_8192</td>
+<td><code>records/hash-04/CHAMP-1024__hash_8192.json</code></td>
+</tr>
+</tbody>
+</table></div>
+<p>Scripts: <code>performance/campaign.py</code>, <code>performance/ngcc_perf.c</code>, <code>performance/hashprof/</code> in the <a href="https://github.com/ngcc-dev/ngcc-harness">harness</a>.</p>
+</main>
+<footer class="site-footer">
+<p>Maintained by: <a href="mailto:markku-juhani.saarinen@tuni.fi">markku-juhani.saarinen@tuni.fi</a></p>
+<p>Submissions are welcome via <a href="https://github.com/ngcc-dev/ngcc-harness/issues">GitHub issues</a>.</p>
+</footer>
+</body>
+</html>

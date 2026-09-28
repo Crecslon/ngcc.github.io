@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ngcc.dev: kem-33 QUBE — performance on x86-64 (system x861)</title>
+<link rel="icon" type="image/png" href="../../assets/mag-glass.png">
+<link rel="stylesheet" href="../../assets/style.css?v=1fdb792d">
+</head>
+<body>
+<header class="site-header">
+<a class="brand" href="../../index.html"><img class="brand-icon" src="../../assets/mag-glass.png" alt="" width="28" height="28">ngcc.dev</a>
+<nav><a href="../../index.html">Home</a><a href="../../reports/index.html">Reports</a><a href="../../performance/x86_1/index.html">Performance</a><a href="../../constant-time/index.html">Constant-Time</a></nav>
+</header>
+<main class="">
+<!-- synchronized from harness: kem-33/perf_x86_1.md -->
+<h1 id="kem-33-qube-performance-on-x86-64-system-x86_1">kem-33 QUBE — performance on x86-64 (system x86_1)</h1>
+<p><a href="index.html">Performance x86_1</a> › <code>kem-33</code> · <a href="method.html">method</a> · <a href="https://www.niccs.org.cn/niccs/Round1Additional/pc/content/content_2101560881000828928.html">NICCS page</a></p>
+<p>Independent measurement following the structure of the NICCS x86 self-assessment guide, §3.5 (1)–(7). Not a submitter self-assessment.</p>
+<h2 id="1-basic-information">1. Basic information</h2>
+<ul>
+<li>Category: public-key algorithm; function: key encapsulation</li>
+<li>Algorithm: QUBE</li>
+<li>Implementation versions measured: reference</li>
+<li>Parameter sets: <code>qube-128</code>, <code>qube-192</code>, <code>qube-256</code>, <code>qube-384</code>, <code>qube-512</code></li>
+</ul>
+<h2 id="2-assessment-environment">2. Assessment environment</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>item</th>
+<th>value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>processor</td>
+<td>12th Gen Intel(R) Core(TM) i7-12700 (CPU 2, one core)</td>
+</tr>
+<tr>
+<td>clock</td>
+<td>max 2.10 GHz, governor performance, turbo off, SMT off</td>
+</tr>
+<tr>
+<td>memory</td>
+<td>31788 MiB</td>
+</tr>
+<tr>
+<td>OS / kernel</td>
+<td>Debian GNU/Linux 13 (trixie) / 6.12.107+deb13-amd64</td>
+</tr>
+<tr>
+<td>compiler / build tool</td>
+<td>gcc (Debian 14.2.0-19) 14.2.0 / cmake version 3.31.6</td>
+</tr>
+<tr>
+<td>campaign start / end (UTC)</td>
+<td>2026-09-25T10:02:21 / 2026-09-28T04:35:59</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="3-functional-testing-kat">3. Functional testing (KAT)</h2>
+<p>Each library was checked against the submitted KAT vectors (SHA-256 manifest <code>kem-33/kat.sha256</code> in the harness) before timing.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>build flags</th>
+<th>KAT</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>qube-128</code></td>
+<td>harness-default</td>
+<td class="st bad">MISMATCH [1]</td>
+</tr>
+<tr>
+<td><code>qube-192</code></td>
+<td>harness-default</td>
+<td class="st warn">NOKAT [1]</td>
+</tr>
+<tr>
+<td><code>qube-256</code></td>
+<td>harness-default</td>
+<td class="st bad">MISMATCH [1]</td>
+</tr>
+<tr>
+<td><code>qube-384</code></td>
+<td>harness-default</td>
+<td class="st bad">MISMATCH [1]</td>
+</tr>
+<tr>
+<td><code>qube-512</code></td>
+<td>harness-default</td>
+<td class="st bad">MISMATCH [1]</td>
+</tr>
+</tbody>
+</table></div>
+<p>[1] The reference sources reproduce their own in-tree KAT files byte for byte, but the top-level Test_Vectors carry the optimized implementation's key and ciphertext sizes at four levels, and no top-level qube-192 vector was submitted (kem-33/README.md, pseudocode.md). These instances are timed anyway; their output is not validated.</p>
+<h2 id="4-performance">4. Performance</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>operation</th>
+<th>mean cycles</th>
+<th>mean time</th>
+<th>ops/s</th>
+<th>median trial</th>
+<th>n (trials × iters)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>qube-128</code></td>
+<td>keygen</td>
+<td>616.9 k</td>
+<td>295 µs</td>
+<td>3.39e+03</td>
+<td>295 µs</td>
+<td>15775 (5 × 3155)</td>
+</tr>
+<tr>
+<td><code>qube-128</code></td>
+<td>enc</td>
+<td>657.8 k</td>
+<td>314 µs</td>
+<td>3.18e+03</td>
+<td>314 µs</td>
+<td>15475 (5 × 3095)</td>
+</tr>
+<tr>
+<td><code>qube-128</code></td>
+<td>dec</td>
+<td>1.18 M</td>
+<td>561 µs</td>
+<td>1.78e+03</td>
+<td>561 µs</td>
+<td>8695 (5 × 1739)</td>
+</tr>
+<tr>
+<td><code>qube-192</code></td>
+<td>keygen</td>
+<td>1.41 M</td>
+<td>672 µs</td>
+<td>1.49e+03</td>
+<td>672 µs</td>
+<td>7125 (5 × 1425)</td>
+</tr>
+<tr>
+<td><code>qube-192</code></td>
+<td>enc</td>
+<td>1.48 M</td>
+<td>705 µs</td>
+<td>1.42e+03</td>
+<td>704 µs</td>
+<td>7035 (5 × 1407)</td>
+</tr>
+<tr>
+<td><code>qube-192</code></td>
+<td>dec</td>
+<td>2.83 M</td>
+<td>1.35 ms</td>
+<td>740</td>
+<td>1.35 ms</td>
+<td>3500 (5 × 700)</td>
+</tr>
+<tr>
+<td><code>qube-256</code></td>
+<td>keygen</td>
+<td>2.89 M</td>
+<td>1.38 ms</td>
+<td>725</td>
+<td>1.38 ms</td>
+<td>3510 (5 × 702)</td>
+</tr>
+<tr>
+<td><code>qube-256</code></td>
+<td>enc</td>
+<td>2.92 M</td>
+<td>1.4 ms</td>
+<td>717</td>
+<td>1.4 ms</td>
+<td>3645 (5 × 729)</td>
+</tr>
+<tr>
+<td><code>qube-256</code></td>
+<td>dec</td>
+<td>5.95 M</td>
+<td>2.84 ms</td>
+<td>352</td>
+<td>2.84 ms</td>
+<td>1740 (5 × 348)</td>
+</tr>
+<tr>
+<td><code>qube-384</code></td>
+<td>keygen</td>
+<td>7.21 M</td>
+<td>3.44 ms</td>
+<td>290</td>
+<td>3.44 ms</td>
+<td>1420 (5 × 284)</td>
+</tr>
+<tr>
+<td><code>qube-384</code></td>
+<td>enc</td>
+<td>7.17 M</td>
+<td>3.43 ms</td>
+<td>292</td>
+<td>3.43 ms</td>
+<td>1460 (5 × 292)</td>
+</tr>
+<tr>
+<td><code>qube-384</code></td>
+<td>dec</td>
+<td>13.37 M</td>
+<td>6.4 ms</td>
+<td>156</td>
+<td>6.41 ms</td>
+<td>780 (5 × 156)</td>
+</tr>
+<tr>
+<td><code>qube-512</code></td>
+<td>keygen</td>
+<td>19.03 M</td>
+<td>9.09 ms</td>
+<td>110</td>
+<td>9.09 ms</td>
+<td>545 (5 × 109)</td>
+</tr>
+<tr>
+<td><code>qube-512</code></td>
+<td>enc</td>
+<td>18.67 M</td>
+<td>8.93 ms</td>
+<td>112</td>
+<td>8.93 ms</td>
+<td>560 (5 × 112)</td>
+</tr>
+<tr>
+<td><code>qube-512</code></td>
+<td>dec</td>
+<td>29.26 M</td>
+<td>14 ms</td>
+<td>71.3</td>
+<td>14 ms</td>
+<td>360 (5 × 72)</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="5-resource-consumption">5. Resource consumption</h2>
+<p>Static memory is approximated by the library's loadable ELF segments; peak memory is the process high-water mark (VmHWM) including the benchmark driver and libc, so both are upper-bound proxies rather than isolated algorithm memory.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>operation</th>
+<th>static: ELF image (bytes)</th>
+<th>baseline RSS</th>
+<th>peak RSS</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>qube-128</code></td>
+<td>keygen</td>
+<td>–</td>
+<td>1732 KiB</td>
+<td>1844 KiB</td>
+</tr>
+<tr>
+<td><code>qube-128</code></td>
+<td>enc</td>
+<td>–</td>
+<td>1752 KiB</td>
+<td>1844 KiB</td>
+</tr>
+<tr>
+<td><code>qube-128</code></td>
+<td>dec</td>
+<td>–</td>
+<td>1740 KiB</td>
+<td>1852 KiB</td>
+</tr>
+<tr>
+<td><code>qube-192</code></td>
+<td>keygen</td>
+<td>–</td>
+<td>1720 KiB</td>
+<td>1864 KiB</td>
+</tr>
+<tr>
+<td><code>qube-192</code></td>
+<td>enc</td>
+<td>–</td>
+<td>1792 KiB</td>
+<td>1868 KiB</td>
+</tr>
+<tr>
+<td><code>qube-192</code></td>
+<td>dec</td>
+<td>–</td>
+<td>1784 KiB</td>
+<td>1860 KiB</td>
+</tr>
+<tr>
+<td><code>qube-256</code></td>
+<td>keygen</td>
+<td>–</td>
+<td>1748 KiB</td>
+<td>1888 KiB</td>
+</tr>
+<tr>
+<td><code>qube-256</code></td>
+<td>enc</td>
+<td>–</td>
+<td>1844 KiB</td>
+<td>1920 KiB</td>
+</tr>
+<tr>
+<td><code>qube-256</code></td>
+<td>dec</td>
+<td>–</td>
+<td>1856 KiB</td>
+<td>1956 KiB</td>
+</tr>
+<tr>
+<td><code>qube-384</code></td>
+<td>keygen</td>
+<td>–</td>
+<td>1756 KiB</td>
+<td>2004 KiB</td>
+</tr>
+<tr>
+<td><code>qube-384</code></td>
+<td>enc</td>
+<td>–</td>
+<td>1976 KiB</td>
+<td>2068 KiB</td>
+</tr>
+<tr>
+<td><code>qube-384</code></td>
+<td>dec</td>
+<td>–</td>
+<td>2012 KiB</td>
+<td>2132 KiB</td>
+</tr>
+<tr>
+<td><code>qube-512</code></td>
+<td>keygen</td>
+<td>–</td>
+<td>1816 KiB</td>
+<td>2164 KiB</td>
+</tr>
+<tr>
+<td><code>qube-512</code></td>
+<td>enc</td>
+<td>–</td>
+<td>2124 KiB</td>
+<td>2256 KiB</td>
+</tr>
+<tr>
+<td><code>qube-512</code></td>
+<td>dec</td>
+<td>–</td>
+<td>2212 KiB</td>
+<td>2300 KiB</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="6-transmission-and-storage-overhead">6. Transmission and storage overhead</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>public key</th>
+<th>secret key</th>
+<th>ciphertext</th>
+<th>shared secret</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>qube-128</code></td>
+<td>3294</td>
+<td>3326</td>
+<td>3287</td>
+<td>16</td>
+</tr>
+<tr>
+<td><code>qube-192</code></td>
+<td>6364</td>
+<td>6412</td>
+<td>6362</td>
+<td>24</td>
+</tr>
+<tr>
+<td><code>qube-256</code></td>
+<td>10446</td>
+<td>10510</td>
+<td>10423</td>
+<td>32</td>
+</tr>
+<tr>
+<td><code>qube-384</code></td>
+<td>20738</td>
+<td>20834</td>
+<td>20633</td>
+<td>48</td>
+</tr>
+<tr>
+<td><code>qube-512</code></td>
+<td>34028</td>
+<td>34156</td>
+<td>33846</td>
+<td>64</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="symmetric-primitives">Symmetric primitives</h2>
+<p><a href="../symmetric-survey.html">Survey</a> verdict: <strong>ICCS-only</strong></p>
+<p>Share of each operation spent in the ICCS placeholder hash functions and in the ICCS DRNG (reference build, measured in the same run with link-time wrappers):</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>operation</th>
+<th>pseudohash/XOF/sm3</th>
+<th>DRNG</th>
+<th>calls per operation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>qube-128</code></td>
+<td>keygen</td>
+<td>55%</td>
+<td>1.5%</td>
+<td>drng 2, pseudoXOF 7.07, sm3hash 1</td>
+</tr>
+<tr>
+<td><code>qube-128</code></td>
+<td>enc</td>
+<td>62%</td>
+<td>1.4%</td>
+<td>drng 2, pseudoXOF 7, sm3hash 2</td>
+</tr>
+<tr>
+<td><code>qube-128</code></td>
+<td>dec</td>
+<td>49%</td>
+<td>0.0%</td>
+<td>pseudoXOF 11, sm3hash 4</td>
+</tr>
+<tr>
+<td><code>qube-192</code></td>
+<td>keygen</td>
+<td>49%</td>
+<td>0.7%</td>
+<td>drng 2, pseudoXOF 8, pseudohash 1</td>
+</tr>
+<tr>
+<td><code>qube-192</code></td>
+<td>enc</td>
+<td>56%</td>
+<td>0.6%</td>
+<td>drng 2, pseudoXOF 8, pseudohash 1, sm3hash 1</td>
+</tr>
+<tr>
+<td><code>qube-192</code></td>
+<td>dec</td>
+<td>41%</td>
+<td>0.0%</td>
+<td>pseudoXOF 13, pseudohash 1, sm3hash 3</td>
+</tr>
+<tr>
+<td><code>qube-256</code></td>
+<td>keygen</td>
+<td>47%</td>
+<td>0.3%</td>
+<td>drng 2, pseudoXOF 9, pseudohash 1</td>
+</tr>
+<tr>
+<td><code>qube-256</code></td>
+<td>enc</td>
+<td>53%</td>
+<td>0.3%</td>
+<td>drng 2, pseudoXOF 8.59, pseudohash 1, sm3hash 1</td>
+</tr>
+<tr>
+<td><code>qube-256</code></td>
+<td>dec</td>
+<td>35%</td>
+<td>0.0%</td>
+<td>pseudoXOF 14, pseudohash 1, sm3hash 3</td>
+</tr>
+<tr>
+<td><code>qube-384</code></td>
+<td>keygen</td>
+<td>38%</td>
+<td>0.2%</td>
+<td>drng 2, pseudoXOF 10, pseudohash 1</td>
+</tr>
+<tr>
+<td><code>qube-384</code></td>
+<td>enc</td>
+<td>48%</td>
+<td>0.2%</td>
+<td>drng 2, pseudoXOF 9, pseudohash 2</td>
+</tr>
+<tr>
+<td><code>qube-384</code></td>
+<td>dec</td>
+<td>40%</td>
+<td>0.0%</td>
+<td>pseudoXOF 15, pseudohash 4</td>
+</tr>
+<tr>
+<td><code>qube-512</code></td>
+<td>keygen</td>
+<td>51%</td>
+<td>0.1%</td>
+<td>drng 2, pseudoXOF 10, pseudohash 1</td>
+</tr>
+<tr>
+<td><code>qube-512</code></td>
+<td>enc</td>
+<td>60%</td>
+<td>0.1%</td>
+<td>drng 2, pseudoXOF 10, pseudohash 2</td>
+</tr>
+<tr>
+<td><code>qube-512</code></td>
+<td>dec</td>
+<td>49%</td>
+<td>0.0%</td>
+<td>pseudoXOF 17, pseudohash 4</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="7-raw-evidence-index">7. Raw evidence index</h2>
+<p>Paths are relative to <code>performance/data/x86_1/</code> in the <a href="https://github.com/ngcc-dev/ngcc-harness">harness</a>; each JSON file records its commands, environment and trials.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>item</th>
+<th>file</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>qube-128</code></td>
+<td>KAT log (sha256 <code>d42d6cf140962d85…</code>)</td>
+<td><code>kat/kem-33/qube-128.log</code></td>
+</tr>
+<tr>
+<td><code>qube-128</code></td>
+<td>timing dec</td>
+<td><code>records/kem-33/qube-128__dec.json</code></td>
+</tr>
+<tr>
+<td><code>qube-128</code></td>
+<td>timing enc</td>
+<td><code>records/kem-33/qube-128__enc.json</code></td>
+</tr>
+<tr>
+<td><code>qube-128</code></td>
+<td>timing keygen</td>
+<td><code>records/kem-33/qube-128__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>qube-128</code></td>
+<td>hash profile dec</td>
+<td><code>profile/kem-33/qube-128__dec.json</code></td>
+</tr>
+<tr>
+<td><code>qube-128</code></td>
+<td>hash profile enc</td>
+<td><code>profile/kem-33/qube-128__enc.json</code></td>
+</tr>
+<tr>
+<td><code>qube-128</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/kem-33/qube-128__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>qube-192</code></td>
+<td>KAT log (sha256 <code>e582d4539fa49366…</code>)</td>
+<td><code>kat/kem-33/qube-192.log</code></td>
+</tr>
+<tr>
+<td><code>qube-192</code></td>
+<td>timing dec</td>
+<td><code>records/kem-33/qube-192__dec.json</code></td>
+</tr>
+<tr>
+<td><code>qube-192</code></td>
+<td>timing enc</td>
+<td><code>records/kem-33/qube-192__enc.json</code></td>
+</tr>
+<tr>
+<td><code>qube-192</code></td>
+<td>timing keygen</td>
+<td><code>records/kem-33/qube-192__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>qube-192</code></td>
+<td>hash profile dec</td>
+<td><code>profile/kem-33/qube-192__dec.json</code></td>
+</tr>
+<tr>
+<td><code>qube-192</code></td>
+<td>hash profile enc</td>
+<td><code>profile/kem-33/qube-192__enc.json</code></td>
+</tr>
+<tr>
+<td><code>qube-192</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/kem-33/qube-192__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>qube-256</code></td>
+<td>KAT log (sha256 <code>5ae74b28d91e7bcc…</code>)</td>
+<td><code>kat/kem-33/qube-256.log</code></td>
+</tr>
+<tr>
+<td><code>qube-256</code></td>
+<td>timing dec</td>
+<td><code>records/kem-33/qube-256__dec.json</code></td>
+</tr>
+<tr>
+<td><code>qube-256</code></td>
+<td>timing enc</td>
+<td><code>records/kem-33/qube-256__enc.json</code></td>
+</tr>
+<tr>
+<td><code>qube-256</code></td>
+<td>timing keygen</td>
+<td><code>records/kem-33/qube-256__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>qube-256</code></td>
+<td>hash profile dec</td>
+<td><code>profile/kem-33/qube-256__dec.json</code></td>
+</tr>
+<tr>
+<td><code>qube-256</code></td>
+<td>hash profile enc</td>
+<td><code>profile/kem-33/qube-256__enc.json</code></td>
+</tr>
+<tr>
+<td><code>qube-256</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/kem-33/qube-256__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>qube-384</code></td>
+<td>KAT log (sha256 <code>575ed37bd6a07bfb…</code>)</td>
+<td><code>kat/kem-33/qube-384.log</code></td>
+</tr>
+<tr>
+<td><code>qube-384</code></td>
+<td>timing dec</td>
+<td><code>records/kem-33/qube-384__dec.json</code></td>
+</tr>
+<tr>
+<td><code>qube-384</code></td>
+<td>timing enc</td>
+<td><code>records/kem-33/qube-384__enc.json</code></td>
+</tr>
+<tr>
+<td><code>qube-384</code></td>
+<td>timing keygen</td>
+<td><code>records/kem-33/qube-384__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>qube-384</code></td>
+<td>hash profile dec</td>
+<td><code>profile/kem-33/qube-384__dec.json</code></td>
+</tr>
+<tr>
+<td><code>qube-384</code></td>
+<td>hash profile enc</td>
+<td><code>profile/kem-33/qube-384__enc.json</code></td>
+</tr>
+<tr>
+<td><code>qube-384</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/kem-33/qube-384__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>qube-512</code></td>
+<td>KAT log (sha256 <code>735bd1cc5ccd2967…</code>)</td>
+<td><code>kat/kem-33/qube-512.log</code></td>
+</tr>
+<tr>
+<td><code>qube-512</code></td>
+<td>timing dec</td>
+<td><code>records/kem-33/qube-512__dec.json</code></td>
+</tr>
+<tr>
+<td><code>qube-512</code></td>
+<td>timing enc</td>
+<td><code>records/kem-33/qube-512__enc.json</code></td>
+</tr>
+<tr>
+<td><code>qube-512</code></td>
+<td>timing keygen</td>
+<td><code>records/kem-33/qube-512__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>qube-512</code></td>
+<td>hash profile dec</td>
+<td><code>profile/kem-33/qube-512__dec.json</code></td>
+</tr>
+<tr>
+<td><code>qube-512</code></td>
+<td>hash profile enc</td>
+<td><code>profile/kem-33/qube-512__enc.json</code></td>
+</tr>
+<tr>
+<td><code>qube-512</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/kem-33/qube-512__keygen.json</code></td>
+</tr>
+</tbody>
+</table></div>
+<p>Scripts: <code>performance/campaign.py</code>, <code>performance/ngcc_perf.c</code>, <code>performance/hashprof/</code> in the <a href="https://github.com/ngcc-dev/ngcc-harness">harness</a>.</p>
+</main>
+<footer class="site-footer">
+<p>Maintained by: <a href="mailto:markku-juhani.saarinen@tuni.fi">markku-juhani.saarinen@tuni.fi</a></p>
+<p>Submissions are welcome via <a href="https://github.com/ngcc-dev/ngcc-harness/issues">GitHub issues</a>.</p>
+</footer>
+</body>
+</html>

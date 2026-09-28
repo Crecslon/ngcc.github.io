@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ngcc.dev: hash-16 LLH — performance on x86-64 (system x861)</title>
+<link rel="icon" type="image/png" href="../../assets/mag-glass.png">
+<link rel="stylesheet" href="../../assets/style.css?v=1fdb792d">
+</head>
+<body>
+<header class="site-header">
+<a class="brand" href="../../index.html"><img class="brand-icon" src="../../assets/mag-glass.png" alt="" width="28" height="28">ngcc.dev</a>
+<nav><a href="../../index.html">Home</a><a href="../../reports/index.html">Reports</a><a href="../../performance/x86_1/index.html">Performance</a><a href="../../constant-time/index.html">Constant-Time</a></nav>
+</header>
+<main class="">
+<!-- synchronized from harness: hash-16/perf_x86_1.md -->
+<h1 id="hash-16-llh-performance-on-x86-64-system-x86_1">hash-16 LLH — performance on x86-64 (system x86_1)</h1>
+<p><a href="index.html">Performance x86_1</a> › <code>hash-16</code> · <a href="method.html">method</a> · <a href="https://www.niccs.org.cn/niccs/Round1Submissions4/pc/content/content_2101537750001471488.html">NICCS page</a></p>
+<p>Independent measurement following the structure of the NICCS x86 self-assessment guide, §3.5 (1)–(7). Not a submitter self-assessment.</p>
+<h2 id="1-basic-information">1. Basic information</h2>
+<ul>
+<li>Category: cryptographic hash algorithm; function: hash</li>
+<li>Algorithm: LLH</li>
+<li>Implementation versions measured: reference</li>
+<li>Parameter sets: <code>LLH-256</code>, <code>LLH-512</code>, <code>LLH-768</code>, <code>LLH-1024</code></li>
+</ul>
+<h2 id="2-assessment-environment">2. Assessment environment</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>item</th>
+<th>value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>processor</td>
+<td>12th Gen Intel(R) Core(TM) i7-12700 (CPU 2, one core)</td>
+</tr>
+<tr>
+<td>clock</td>
+<td>max 2.10 GHz, governor performance, turbo off, SMT off</td>
+</tr>
+<tr>
+<td>memory</td>
+<td>31788 MiB</td>
+</tr>
+<tr>
+<td>OS / kernel</td>
+<td>Debian GNU/Linux 13 (trixie) / 6.12.107+deb13-amd64</td>
+</tr>
+<tr>
+<td>compiler / build tool</td>
+<td>gcc (Debian 14.2.0-19) 14.2.0 / cmake version 3.31.6</td>
+</tr>
+<tr>
+<td>campaign start / end (UTC)</td>
+<td>2026-09-25T10:02:21 / 2026-09-28T04:35:59</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="3-functional-testing-kat">3. Functional testing (KAT)</h2>
+<p>Each library was checked against the submitted KAT vectors (SHA-256 manifest <code>hash-16/kat.sha256</code> in the harness) before timing.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>build flags</th>
+<th>KAT</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>LLH-256</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>LLH-512</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>LLH-768</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>LLH-1024</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="4-performance">4. Performance</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>message</th>
+<th>mean cycles</th>
+<th>cycles/byte</th>
+<th>mean time</th>
+<th>MB/s</th>
+<th>n</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>LLH-256</code></td>
+<td>32 B</td>
+<td>2006</td>
+<td>62.7</td>
+<td>961 ns</td>
+<td>33.3</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>LLH-256</code></td>
+<td>128 B</td>
+<td>5098</td>
+<td>39.8</td>
+<td>2.44 µs</td>
+<td>52.5</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>LLH-256</code></td>
+<td>512 B</td>
+<td>17.8 k</td>
+<td>34.8</td>
+<td>8.52 µs</td>
+<td>60.1</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>LLH-256</code></td>
+<td>1024 B</td>
+<td>34.2 k</td>
+<td>33.4</td>
+<td>16.4 µs</td>
+<td>62.6</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>LLH-256</code></td>
+<td>4096 B</td>
+<td>135.3 k</td>
+<td>33.0</td>
+<td>64.6 µs</td>
+<td>63.4</td>
+<td>66225 (5 × 13245)</td>
+</tr>
+<tr>
+<td><code>LLH-256</code></td>
+<td>8192 B</td>
+<td>269.3 k</td>
+<td>32.9</td>
+<td>129 µs</td>
+<td>63.7</td>
+<td>38045 (5 × 7609)</td>
+</tr>
+<tr>
+<td><code>LLH-256</code></td>
+<td>16384 B</td>
+<td>537.8 k</td>
+<td>32.8</td>
+<td>257 µs</td>
+<td>63.8</td>
+<td>19510 (5 × 3902)</td>
+</tr>
+<tr>
+<td><code>LLH-256</code></td>
+<td>65536 B</td>
+<td>2.14 M</td>
+<td>32.7</td>
+<td>1.02 ms</td>
+<td>64.1</td>
+<td>4565 (5 × 913)</td>
+</tr>
+<tr>
+<td><code>LLH-512</code></td>
+<td>32 B</td>
+<td>2993</td>
+<td>93.5</td>
+<td>1.43 µs</td>
+<td>22.3</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>LLH-512</code></td>
+<td>128 B</td>
+<td>4482</td>
+<td>35.0</td>
+<td>2.14 µs</td>
+<td>59.7</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>LLH-512</code></td>
+<td>512 B</td>
+<td>13.7 k</td>
+<td>26.8</td>
+<td>6.57 µs</td>
+<td>78.0</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>LLH-512</code></td>
+<td>1024 B</td>
+<td>26.4 k</td>
+<td>25.8</td>
+<td>12.6 µs</td>
+<td>81.2</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>LLH-512</code></td>
+<td>4096 B</td>
+<td>102.2 k</td>
+<td>25.0</td>
+<td>48.8 µs</td>
+<td>83.9</td>
+<td>72390 (5 × 14478)</td>
+</tr>
+<tr>
+<td><code>LLH-512</code></td>
+<td>8192 B</td>
+<td>204.4 k</td>
+<td>25.0</td>
+<td>97.7 µs</td>
+<td>83.9</td>
+<td>46055 (5 × 9211)</td>
+</tr>
+<tr>
+<td><code>LLH-512</code></td>
+<td>16384 B</td>
+<td>407.6 k</td>
+<td>24.9</td>
+<td>195 µs</td>
+<td>84.2</td>
+<td>21215 (5 × 4243)</td>
+</tr>
+<tr>
+<td><code>LLH-512</code></td>
+<td>65536 B</td>
+<td>1.62 M</td>
+<td>24.7</td>
+<td>774 µs</td>
+<td>84.6</td>
+<td>5770 (5 × 1154)</td>
+</tr>
+<tr>
+<td><code>LLH-768</code></td>
+<td>32 B</td>
+<td>10.3 k</td>
+<td>323.1</td>
+<td>4.94 µs</td>
+<td>6.5</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>LLH-768</code></td>
+<td>128 B</td>
+<td>15.5 k</td>
+<td>121.4</td>
+<td>7.43 µs</td>
+<td>17.2</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>LLH-768</code></td>
+<td>512 B</td>
+<td>36.7 k</td>
+<td>71.7</td>
+<td>17.5 µs</td>
+<td>29.2</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>LLH-768</code></td>
+<td>1024 B</td>
+<td>62.3 k</td>
+<td>60.8</td>
+<td>29.7 µs</td>
+<td>34.4</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>LLH-768</code></td>
+<td>4096 B</td>
+<td>231.8 k</td>
+<td>56.6</td>
+<td>111 µs</td>
+<td>37.0</td>
+<td>40905 (5 × 8181)</td>
+</tr>
+<tr>
+<td><code>LLH-768</code></td>
+<td>8192 B</td>
+<td>459.3 k</td>
+<td>56.1</td>
+<td>219 µs</td>
+<td>37.3</td>
+<td>23275 (5 × 4655)</td>
+</tr>
+<tr>
+<td><code>LLH-768</code></td>
+<td>16384 B</td>
+<td>914.9 k</td>
+<td>55.8</td>
+<td>437 µs</td>
+<td>37.5</td>
+<td>9230 (5 × 1846)</td>
+</tr>
+<tr>
+<td><code>LLH-768</code></td>
+<td>65536 B</td>
+<td>3.68 M</td>
+<td>56.2</td>
+<td>1.76 ms</td>
+<td>37.3</td>
+<td>3090 (5 × 618)</td>
+</tr>
+<tr>
+<td><code>LLH-1024</code></td>
+<td>32 B</td>
+<td>10.3 k</td>
+<td>322.5</td>
+<td>4.94 µs</td>
+<td>6.5</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>LLH-1024</code></td>
+<td>128 B</td>
+<td>10.5 k</td>
+<td>82.0</td>
+<td>5.03 µs</td>
+<td>25.5</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>LLH-1024</code></td>
+<td>512 B</td>
+<td>26.4 k</td>
+<td>51.5</td>
+<td>12.6 µs</td>
+<td>40.6</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>LLH-1024</code></td>
+<td>1024 B</td>
+<td>47.8 k</td>
+<td>46.6</td>
+<td>22.8 µs</td>
+<td>44.8</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>LLH-1024</code></td>
+<td>4096 B</td>
+<td>174.8 k</td>
+<td>42.7</td>
+<td>83.6 µs</td>
+<td>49.0</td>
+<td>55505 (5 × 11101)</td>
+</tr>
+<tr>
+<td><code>LLH-1024</code></td>
+<td>8192 B</td>
+<td>346.0 k</td>
+<td>42.2</td>
+<td>166 µs</td>
+<td>49.5</td>
+<td>29560 (5 × 5912)</td>
+</tr>
+<tr>
+<td><code>LLH-1024</code></td>
+<td>16384 B</td>
+<td>685.1 k</td>
+<td>41.8</td>
+<td>328 µs</td>
+<td>50.0</td>
+<td>14840 (5 × 2968)</td>
+</tr>
+<tr>
+<td><code>LLH-1024</code></td>
+<td>65536 B</td>
+<td>2.74 M</td>
+<td>41.8</td>
+<td>1.31 ms</td>
+<td>50.0</td>
+<td>3875 (5 × 775)</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="5-resource-consumption">5. Resource consumption</h2>
+<p>Static memory is approximated by the library's loadable ELF segments; peak memory is the process high-water mark (VmHWM) including the benchmark driver and libc, so both are upper-bound proxies rather than isolated algorithm memory.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>operation</th>
+<th>static: ELF image (bytes)</th>
+<th>baseline RSS</th>
+<th>peak RSS</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>LLH-256</code></td>
+<td>hash_32</td>
+<td>12737</td>
+<td>1692 KiB</td>
+<td>1756 KiB</td>
+</tr>
+<tr>
+<td><code>LLH-256</code></td>
+<td>hash_128</td>
+<td>12737</td>
+<td>1680 KiB</td>
+<td>1744 KiB</td>
+</tr>
+<tr>
+<td><code>LLH-256</code></td>
+<td>hash_512</td>
+<td>12737</td>
+<td>1692 KiB</td>
+<td>1768 KiB</td>
+</tr>
+<tr>
+<td><code>LLH-256</code></td>
+<td>hash_1024</td>
+<td>12737</td>
+<td>1692 KiB</td>
+<td>1768 KiB</td>
+</tr>
+<tr>
+<td><code>LLH-256</code></td>
+<td>hash_4096</td>
+<td>12737</td>
+<td>1680 KiB</td>
+<td>1764 KiB</td>
+</tr>
+<tr>
+<td><code>LLH-256</code></td>
+<td>hash_8192</td>
+<td>12737</td>
+<td>1692 KiB</td>
+<td>1756 KiB</td>
+</tr>
+<tr>
+<td><code>LLH-256</code></td>
+<td>hash_16384</td>
+<td>12737</td>
+<td>1688 KiB</td>
+<td>1752 KiB</td>
+</tr>
+<tr>
+<td><code>LLH-256</code></td>
+<td>hash_65536</td>
+<td>12737</td>
+<td>1752 KiB</td>
+<td>1816 KiB</td>
+</tr>
+<tr>
+<td><code>LLH-512</code></td>
+<td>hash_32</td>
+<td>13129</td>
+<td>1676 KiB</td>
+<td>1768 KiB</td>
+</tr>
+<tr>
+<td><code>LLH-512</code></td>
+<td>hash_128</td>
+<td>13129</td>
+<td>1680 KiB</td>
+<td>1744 KiB</td>
+</tr>
+<tr>
+<td><code>LLH-512</code></td>
+<td>hash_512</td>
+<td>13129</td>
+<td>1656 KiB</td>
+<td>1780 KiB</td>
+</tr>
+<tr>
+<td><code>LLH-512</code></td>
+<td>hash_1024</td>
+<td>13129</td>
+<td>1672 KiB</td>
+<td>1780 KiB</td>
+</tr>
+<tr>
+<td><code>LLH-512</code></td>
+<td>hash_4096</td>
+<td>13129</td>
+<td>1676 KiB</td>
+<td>1740 KiB</td>
+</tr>
+<tr>
+<td><code>LLH-512</code></td>
+<td>hash_8192</td>
+<td>13129</td>
+<td>1672 KiB</td>
+<td>1788 KiB</td>
+</tr>
+<tr>
+<td><code>LLH-512</code></td>
+<td>hash_16384</td>
+<td>13129</td>
+<td>1704 KiB</td>
+<td>1792 KiB</td>
+</tr>
+<tr>
+<td><code>LLH-512</code></td>
+<td>hash_65536</td>
+<td>13129</td>
+<td>1756 KiB</td>
+<td>1824 KiB</td>
+</tr>
+<tr>
+<td><code>LLH-768</code></td>
+<td>hash_32</td>
+<td>15497</td>
+<td>1684 KiB</td>
+<td>1780 KiB</td>
+</tr>
+<tr>
+<td><code>LLH-768</code></td>
+<td>hash_128</td>
+<td>15497</td>
+<td>1668 KiB</td>
+<td>1772 KiB</td>
+</tr>
+<tr>
+<td><code>LLH-768</code></td>
+<td>hash_512</td>
+<td>15497</td>
+<td>1672 KiB</td>
+<td>1780 KiB</td>
+</tr>
+<tr>
+<td><code>LLH-768</code></td>
+<td>hash_1024</td>
+<td>15497</td>
+<td>1692 KiB</td>
+<td>1772 KiB</td>
+</tr>
+<tr>
+<td><code>LLH-768</code></td>
+<td>hash_4096</td>
+<td>15497</td>
+<td>1692 KiB</td>
+<td>1756 KiB</td>
+</tr>
+<tr>
+<td><code>LLH-768</code></td>
+<td>hash_8192</td>
+<td>15497</td>
+<td>1688 KiB</td>
+<td>1780 KiB</td>
+</tr>
+<tr>
+<td><code>LLH-768</code></td>
+<td>hash_16384</td>
+<td>15497</td>
+<td>1688 KiB</td>
+<td>1800 KiB</td>
+</tr>
+<tr>
+<td><code>LLH-768</code></td>
+<td>hash_65536</td>
+<td>15497</td>
+<td>1740 KiB</td>
+<td>1804 KiB</td>
+</tr>
+<tr>
+<td><code>LLH-1024</code></td>
+<td>hash_32</td>
+<td>15977</td>
+<td>1668 KiB</td>
+<td>1776 KiB</td>
+</tr>
+<tr>
+<td><code>LLH-1024</code></td>
+<td>hash_128</td>
+<td>15977</td>
+<td>1688 KiB</td>
+<td>1752 KiB</td>
+</tr>
+<tr>
+<td><code>LLH-1024</code></td>
+<td>hash_512</td>
+<td>15977</td>
+<td>1648 KiB</td>
+<td>1776 KiB</td>
+</tr>
+<tr>
+<td><code>LLH-1024</code></td>
+<td>hash_1024</td>
+<td>15977</td>
+<td>1672 KiB</td>
+<td>1736 KiB</td>
+</tr>
+<tr>
+<td><code>LLH-1024</code></td>
+<td>hash_4096</td>
+<td>15977</td>
+<td>1696 KiB</td>
+<td>1760 KiB</td>
+</tr>
+<tr>
+<td><code>LLH-1024</code></td>
+<td>hash_8192</td>
+<td>15977</td>
+<td>1652 KiB</td>
+<td>1780 KiB</td>
+</tr>
+<tr>
+<td><code>LLH-1024</code></td>
+<td>hash_16384</td>
+<td>15977</td>
+<td>1692 KiB</td>
+<td>1760 KiB</td>
+</tr>
+<tr>
+<td><code>LLH-1024</code></td>
+<td>hash_65536</td>
+<td>15977</td>
+<td>1736 KiB</td>
+<td>1828 KiB</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="7-raw-evidence-index">7. Raw evidence index</h2>
+<p>Paths are relative to <code>performance/data/x86_1/</code> in the <a href="https://github.com/ngcc-dev/ngcc-harness">harness</a>; each JSON file records its commands, environment and trials.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>item</th>
+<th>file</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>LLH-256</code></td>
+<td>KAT log (sha256 <code>978f6d2cfe261bd0…</code>)</td>
+<td><code>kat/hash-16/LLH-256.log</code></td>
+</tr>
+<tr>
+<td><code>LLH-256</code></td>
+<td>timing hash_1024</td>
+<td><code>records/hash-16/LLH-256__hash_1024.json</code></td>
+</tr>
+<tr>
+<td><code>LLH-256</code></td>
+<td>timing hash_128</td>
+<td><code>records/hash-16/LLH-256__hash_128.json</code></td>
+</tr>
+<tr>
+<td><code>LLH-256</code></td>
+<td>timing hash_16384</td>
+<td><code>records/hash-16/LLH-256__hash_16384.json</code></td>
+</tr>
+<tr>
+<td><code>LLH-256</code></td>
+<td>timing hash_32</td>
+<td><code>records/hash-16/LLH-256__hash_32.json</code></td>
+</tr>
+<tr>
+<td><code>LLH-256</code></td>
+<td>timing hash_4096</td>
+<td><code>records/hash-16/LLH-256__hash_4096.json</code></td>
+</tr>
+<tr>
+<td><code>LLH-256</code></td>
+<td>timing hash_512</td>
+<td><code>records/hash-16/LLH-256__hash_512.json</code></td>
+</tr>
+<tr>
+<td><code>LLH-256</code></td>
+<td>timing hash_65536</td>
+<td><code>records/hash-16/LLH-256__hash_65536.json</code></td>
+</tr>
+<tr>
+<td><code>LLH-256</code></td>
+<td>timing hash_8192</td>
+<td><code>records/hash-16/LLH-256__hash_8192.json</code></td>
+</tr>
+<tr>
+<td><code>LLH-512</code></td>
+<td>KAT log (sha256 <code>68e4bcb43caea355…</code>)</td>
+<td><code>kat/hash-16/LLH-512.log</code></td>
+</tr>
+<tr>
+<td><code>LLH-512</code></td>
+<td>timing hash_1024</td>
+<td><code>records/hash-16/LLH-512__hash_1024.json</code></td>
+</tr>
+<tr>
+<td><code>LLH-512</code></td>
+<td>timing hash_128</td>
+<td><code>records/hash-16/LLH-512__hash_128.json</code></td>
+</tr>
+<tr>
+<td><code>LLH-512</code></td>
+<td>timing hash_16384</td>
+<td><code>records/hash-16/LLH-512__hash_16384.json</code></td>
+</tr>
+<tr>
+<td><code>LLH-512</code></td>
+<td>timing hash_32</td>
+<td><code>records/hash-16/LLH-512__hash_32.json</code></td>
+</tr>
+<tr>
+<td><code>LLH-512</code></td>
+<td>timing hash_4096</td>
+<td><code>records/hash-16/LLH-512__hash_4096.json</code></td>
+</tr>
+<tr>
+<td><code>LLH-512</code></td>
+<td>timing hash_512</td>
+<td><code>records/hash-16/LLH-512__hash_512.json</code></td>
+</tr>
+<tr>
+<td><code>LLH-512</code></td>
+<td>timing hash_65536</td>
+<td><code>records/hash-16/LLH-512__hash_65536.json</code></td>
+</tr>
+<tr>
+<td><code>LLH-512</code></td>
+<td>timing hash_8192</td>
+<td><code>records/hash-16/LLH-512__hash_8192.json</code></td>
+</tr>
+<tr>
+<td><code>LLH-768</code></td>
+<td>KAT log (sha256 <code>eceffc3393ccb92f…</code>)</td>
+<td><code>kat/hash-16/LLH-768.log</code></td>
+</tr>
+<tr>
+<td><code>LLH-768</code></td>
+<td>timing hash_1024</td>
+<td><code>records/hash-16/LLH-768__hash_1024.json</code></td>
+</tr>
+<tr>
+<td><code>LLH-768</code></td>
+<td>timing hash_128</td>
+<td><code>records/hash-16/LLH-768__hash_128.json</code></td>
+</tr>
+<tr>
+<td><code>LLH-768</code></td>
+<td>timing hash_16384</td>
+<td><code>records/hash-16/LLH-768__hash_16384.json</code></td>
+</tr>
+<tr>
+<td><code>LLH-768</code></td>
+<td>timing hash_32</td>
+<td><code>records/hash-16/LLH-768__hash_32.json</code></td>
+</tr>
+<tr>
+<td><code>LLH-768</code></td>
+<td>timing hash_4096</td>
+<td><code>records/hash-16/LLH-768__hash_4096.json</code></td>
+</tr>
+<tr>
+<td><code>LLH-768</code></td>
+<td>timing hash_512</td>
+<td><code>records/hash-16/LLH-768__hash_512.json</code></td>
+</tr>
+<tr>
+<td><code>LLH-768</code></td>
+<td>timing hash_65536</td>
+<td><code>records/hash-16/LLH-768__hash_65536.json</code></td>
+</tr>
+<tr>
+<td><code>LLH-768</code></td>
+<td>timing hash_8192</td>
+<td><code>records/hash-16/LLH-768__hash_8192.json</code></td>
+</tr>
+<tr>
+<td><code>LLH-1024</code></td>
+<td>KAT log (sha256 <code>389f632c0669f0e6…</code>)</td>
+<td><code>kat/hash-16/LLH-1024.log</code></td>
+</tr>
+<tr>
+<td><code>LLH-1024</code></td>
+<td>timing hash_1024</td>
+<td><code>records/hash-16/LLH-1024__hash_1024.json</code></td>
+</tr>
+<tr>
+<td><code>LLH-1024</code></td>
+<td>timing hash_128</td>
+<td><code>records/hash-16/LLH-1024__hash_128.json</code></td>
+</tr>
+<tr>
+<td><code>LLH-1024</code></td>
+<td>timing hash_16384</td>
+<td><code>records/hash-16/LLH-1024__hash_16384.json</code></td>
+</tr>
+<tr>
+<td><code>LLH-1024</code></td>
+<td>timing hash_32</td>
+<td><code>records/hash-16/LLH-1024__hash_32.json</code></td>
+</tr>
+<tr>
+<td><code>LLH-1024</code></td>
+<td>timing hash_4096</td>
+<td><code>records/hash-16/LLH-1024__hash_4096.json</code></td>
+</tr>
+<tr>
+<td><code>LLH-1024</code></td>
+<td>timing hash_512</td>
+<td><code>records/hash-16/LLH-1024__hash_512.json</code></td>
+</tr>
+<tr>
+<td><code>LLH-1024</code></td>
+<td>timing hash_65536</td>
+<td><code>records/hash-16/LLH-1024__hash_65536.json</code></td>
+</tr>
+<tr>
+<td><code>LLH-1024</code></td>
+<td>timing hash_8192</td>
+<td><code>records/hash-16/LLH-1024__hash_8192.json</code></td>
+</tr>
+</tbody>
+</table></div>
+<p>Scripts: <code>performance/campaign.py</code>, <code>performance/ngcc_perf.c</code>, <code>performance/hashprof/</code> in the <a href="https://github.com/ngcc-dev/ngcc-harness">harness</a>.</p>
+</main>
+<footer class="site-footer">
+<p>Maintained by: <a href="mailto:markku-juhani.saarinen@tuni.fi">markku-juhani.saarinen@tuni.fi</a></p>
+<p>Submissions are welcome via <a href="https://github.com/ngcc-dev/ngcc-harness/issues">GitHub issues</a>.</p>
+</footer>
+</body>
+</html>

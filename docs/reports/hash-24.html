@@ -5,22 +5,22 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>ngcc.dev: QuantaSylva Hash (QSH) (hash-24)</title>
 <link rel="icon" type="image/png" href="../assets/mag-glass.png">
-<link rel="stylesheet" href="../assets/style.css?v=996d5cfd">
+<link rel="stylesheet" href="../assets/style.css?v=1fdb792d">
 </head>
 <body>
 <header class="site-header">
 <a class="brand" href="../index.html"><img class="brand-icon" src="../assets/mag-glass.png" alt="" width="28" height="28">ngcc.dev</a>
-<nav><a href="../index.html">Home</a><a href="../reports/index.html">Reports</a><a href="../constant-time/index.html">Constant-Time</a></nav>
+<nav><a href="../index.html">Home</a><a href="../reports/index.html">Reports</a><a href="../performance/x86_1/index.html">Performance</a><a href="../constant-time/index.html">Constant-Time</a></nav>
 </header>
-<main>
-<p class="crumb"><a href="../reports/index.html">Reports</a> › <code>hash-24</code> · <a href="../constant-time/hash-24.html">Constant-time review</a></p>
+<main class="">
+<p class="crumb"><a href="../reports/index.html">Reports</a> › <code>hash-24</code> · <a href="../constant-time/hash-24.html">Constant-time review</a> · <a href="../performance/x86_1/hash-24.html">Performance</a></p>
 
 <h1 id="quantasylva-hash-qsh-hash-24">QuantaSylva Hash (QSH) (hash-24)</h1>
 <div class="table-wrap"><table class="meta">
 <tr><th>Candidate</th><td>QuantaSylva Hash (QSH)</td></tr>
 <tr><th>Family</th><td>Symmetric (tree hash, ARX permutation)</td></tr>
 <tr><th>Archive</th><td><a href="https://www.niccs.org.cn/niccs/Proposal/Cryptographic%20Hash%20Algorithms/Round%201%20candidates/QSH.zip">QSH.zip</a> (SHA-256: <code>d2b33441b42825ea10fd374adfdafea64525ad471159b4787c6dc2bd420f05d9</code>)</td></tr>
-<tr><th>Specification</th><td><a href="https://github.com/ngcc-dev/ngcc-harness/raw/refs/heads/main/hash-24/hash-24-spec.pdf" title="Download hash-24-spec.pdf from GitHub">hash-24-spec.pdf</a>&nbsp;<a class="pdf-link" href="https://cdn.jsdelivr.net/gh/ngcc-dev/ngcc-harness@main/hash-24/hash-24-spec.pdf" title="Open the hash-24 specification PDF">PDF</a></td></tr>
+<tr><th>Specification</th><td><a href="https://github.com/ngcc-dev/ngcc-harness/raw/dc66c6cb3c06e75bdea0048e21fa4e13c63f00af/hash-24/hash-24-spec.pdf" title="Download hash-24-spec.pdf from GitHub">hash-24-spec.pdf</a>&nbsp;<a class="pdf-link" href="https://cdn.jsdelivr.net/gh/ngcc-dev/ngcc-harness@dc66c6cb3c06e75bdea0048e21fa4e13c63f00af/hash-24/hash-24-spec.pdf" title="Open the hash-24 specification PDF">PDF</a></td></tr>
 </table></div>
 
 <h2 class="issue-heading issue-heading-first" id="hash-24-1-full-round-core-permutation-has-a-one-query-invariant-subspace-distinguisher">hash-24-1: Full-round core permutation has a one-query invariant-subspace distinguisher</h2>
@@ -38,9 +38,9 @@
 <p>Original source: <a href="https://list.niccs.org.cn/archives/list/crypthashforum@list.niccs.org.cn/message/BUUGULWWDDQT2XCVX5GICOLHQB5H6CXT/">CryptHashForum report</a>
 Follow-up source: <a href="https://list.niccs.org.cn/archives/list/crypthashforum@list.niccs.org.cn/message/XUAXWJADVANE33OZYPLNT4IEOLJU4IOJ/">QSH submitters' 2026-09-24 response</a></p>
 <p>As <a href="https://list.niccs.org.cn/archives/list/crypthashforum@list.niccs.org.cn/message/BUUGULWWDDQT2XCVX5GICOLHQB5H6CXT/">reported on the CryptHash mailing list</a>, the full ChaCha Bahru permutation commutes with translation of the <code>x2</code> coordinate. Consequently the subspace in which the four words differing only in <code>x2</code> are equal is invariant through every round and the final layer. It has dimension <code>16w</code> inside the <code>64w</code>-bit state. One evaluation on a chosen member therefore distinguishes the permutation from random with advantage <code>1 - 2^-1536</code> for QSH-512 and <code>1 - 2^-3072</code> for QSH-768/1024.</p>
-<p>This is a structural distinguisher on the independently specified core permutation, not a collision, preimage, or distinguisher through the QSH hash interface. The fixed IV and compression-function injection do not give an attacker a chosen full-state permutation input, and no whole-hash attack is presently known.</p>
+<p>This is a structural distinguisher on the independently specified core permutation, not by itself a collision, preimage, or distinguisher through the prescribed QSH hash interface. The fixed IV and compression-function injection do not give an attacker a chosen full-state permutation input. It has since been extended to full-mode free-start and semi-free-start collisions in <code>hash-24-3</code>, but no sub-generic ordinary collision under QSH's prescribed initialization is presently known.</p>
 <p>The <a href="https://list.niccs.org.cn/archives/list/crypthashforum@list.niccs.org.cn/message/XUAXWJADVANE33OZYPLNT4IEOLJU4IOJ/">QSH submitters' response</a> makes the same interface distinction and notes that the fixed IV places the first compression input outside this subspace. The core-permutation finding is unchanged; no whole-hash weakness is inferred from it.</p>
-<p>Further analysis: <a href="https://eprint.iacr.org/2026/2152">Yufei Yuan et al., <em>Structural Analysis of Seven Hash Functions Submitted to the NGCC</em></a>, Section 7 (2026-09-23), proves the invariant and likewise does not claim a whole-hash attack.</p>
+<p>Further analysis: <a href="https://eprint.iacr.org/2026/2152">Yufei Yuan et al., <em>Structural Analysis of Seven Hash Functions Submitted to the NGCC</em></a>, Section 7 (revised 2026-09-28), proves the invariant and derives the separate free-start results recorded in <code>hash-24-3</code>.</p>
 <h3 id="reproducing">Reproducing</h3>
 <p>Commands below run in a checkout of the <a href="https://github.com/ngcc-dev/ngcc-harness">ngcc-harness repository</a> with the candidate built (see its README).</p>
 <p>The witness calls the submitted QSH-512 permutation on the mailing-list input, checks all 48 defining equalities, and also checks the published exact output:</p>
@@ -55,7 +55,7 @@ random-permutation probability: 2^-1536
 <h2 class="issue-heading" id="hash-24-2-truncated-tree-chaining-values-cap-qsh-second-preimage-security">hash-24-2: Truncated tree chaining values cap QSH second-preimage security</h2>
 
 <div class="table-wrap"><table class="meta issue-meta">
-<tr><th>Severity</th><td><span class="sev sev-medium">Medium</span></td></tr>
+<tr><th>Severity</th><td><span class="sev sev-critical">Critical</span></td></tr>
 <tr><th>Scope</th><td>design</td></tr>
 <tr><th>Status</th><td><span class="issue-status status-confirmed">Confirmed</span></td></tr>
 <tr><th>Affected</th><td>QSH-512 and QSH-1024 specifications and implementations</td></tr>
@@ -70,6 +70,29 @@ random-permutation probability: 2^-1536
 <h3 id="reproducing_1">Reproducing</h3>
 <p>Commands below run in a checkout of the <a href="https://github.com/ngcc-dev/ngcc-harness">ngcc-harness repository</a> with the candidate built (see its README).</p>
 <p>Compare the claim on physical PDF page 21 with the chaining-value truncation on pages 15–16 and at the cited source lines.</p>
+<h2 class="issue-heading" id="hash-24-3-qsh-admits-full-mode-free-start-and-low-cost-semi-free-start-collisions">hash-24-3: QSH admits full-mode free-start and low-cost semi-free-start collisions</h2>
+
+<div class="table-wrap"><table class="meta issue-meta">
+<tr><th>Severity</th><td><span class="sev sev-medium">Medium</span></td></tr>
+<tr><th>Scope</th><td>design</td></tr>
+<tr><th>Status</th><td><span class="issue-status status-confirmed">Confirmed</span></td></tr>
+<tr><th>Affected</th><td>QSH-512, QSH-768, and QSH-1024</td></tr>
+<tr><th>Discovery</th><td>Non-trivial</td></tr>
+<tr><th>Exploitation</th><td>Explicit free-start collisions; theoretical semi-free-start bounds of 2^64, 2^128, and 2^128 compression calls under one chosen reset</td></tr>
+<tr><th>Credit</th><td>Yufei Yuan, Ruichen Wu, Shanpeng Wei, Junxu Shen, Jinpeng Liu, and Yixin Zhang</td></tr>
+<tr><th>Date</th><td>2026-09-28</td></tr>
+</table></div>
+<p>Reference: <a href="https://eprint.iacr.org/2026/2152"><em>Structural Analysis of Seven Hash Functions Submitted to the NGCC</em>, ePrint 2026/2152, revised 2026-09-28</a></p>
+<p>For every message block <code>M</code> and flag <code>f</code>, QSH compression is invertible in the complete incoming state. Given a chosen output <code>Z</code>, subtracting the feed-forwarded <code>M</code>, inverting the public core permutation, undoing the flag XOR, and subtracting <code>M</code> from the right half recovers the unique input state. Two distinct messages can therefore be inverted from the same final state to give explicit collisions in the complete hash mode when each message may use its own full reset.</p>
+<p>The revised paper also propagates a four-step periodic-state invariant through padding and tree processing. With one chosen complete reset shared by both messages and every tree node, its semi-free-start search costs at most <code>2^64</code>, <code>2^128</code>, and <code>2^128</code> compression calls for QSH-512, -768, and -1024, respectively, plus 15 inverse-core evaluations and three final compressions. The proof bounds the success probability above 0.39 without assuming uniform outputs.</p>
+<p>These are not ordinary collisions for the submitted API: its reset is fixed, while the free-start construction uses separate resets and the semi-free-start construction chooses one common reset. Under the prescribed reset, the paper obtains reusable four-way multicollisions at the complete-CV birthday cost (<code>2^256</code>, <code>2^512</code>, and <code>2^512</code>), which does not lower the ordinary digest collision exponent. The relaxed initialization keeps this at Medium rather than making it a primary hash-claim break.</p>
+<h3 id="reproducing_2">Reproducing</h3>
+<p>Commands below run in a checkout of the <a href="https://github.com/ngcc-dev/ngcc-harness">ngcc-harness repository</a> with the candidate built (see its README).</p>
+<p>The witness independently implements the inverse of the submitted core and reconstructs the paper's two-message free-start collision for all three variants. It checks the published first reset words, distinct resets, and an identical all-zero final state:</p>
+<pre><code class="language-sh">cc -O2 -std=c99 -Ihash-24 hash-24/reproduce_free_start.c -o /tmp/qsh-free-start
+/tmp/qsh-free-start
+</code></pre>
+<p>The semi-free-start bounds are proof-level results and are not exhaustively searched by this witness.</p>
 </main>
 <footer class="site-footer">
 <p>Maintained by: <a href="mailto:markku-juhani.saarinen@tuni.fi">markku-juhani.saarinen@tuni.fi</a></p>

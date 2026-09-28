@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ngcc.dev: kem-08 BW-KEM — performance on x86-64 (system x861)</title>
+<link rel="icon" type="image/png" href="../../assets/mag-glass.png">
+<link rel="stylesheet" href="../../assets/style.css?v=1fdb792d">
+</head>
+<body>
+<header class="site-header">
+<a class="brand" href="../../index.html"><img class="brand-icon" src="../../assets/mag-glass.png" alt="" width="28" height="28">ngcc.dev</a>
+<nav><a href="../../index.html">Home</a><a href="../../reports/index.html">Reports</a><a href="../../performance/x86_1/index.html">Performance</a><a href="../../constant-time/index.html">Constant-Time</a></nav>
+</header>
+<main class="">
+<!-- synchronized from harness: kem-08/perf_x86_1.md -->
+<h1 id="kem-08-bw-kem-performance-on-x86-64-system-x86_1">kem-08 BW-KEM — performance on x86-64 (system x86_1)</h1>
+<p><a href="index.html">Performance x86_1</a> › <code>kem-08</code> · <a href="method.html">method</a> · <a href="https://www.niccs.org.cn/niccs/Round1Additional/pc/content/content_2101560843877044224.html">NICCS page</a></p>
+<p>Independent measurement following the structure of the NICCS x86 self-assessment guide, §3.5 (1)–(7). Not a submitter self-assessment.</p>
+<h2 id="1-basic-information">1. Basic information</h2>
+<ul>
+<li>Category: public-key algorithm; function: key encapsulation</li>
+<li>Algorithm: BW-KEM</li>
+<li>Implementation versions measured: reference</li>
+<li>Parameter sets: <code>BW_KEM_C128</code>, <code>BW_KEM_C256</code>, <code>BW_KEM_C512</code></li>
+</ul>
+<h2 id="2-assessment-environment">2. Assessment environment</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>item</th>
+<th>value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>processor</td>
+<td>12th Gen Intel(R) Core(TM) i7-12700 (CPU 2, one core)</td>
+</tr>
+<tr>
+<td>clock</td>
+<td>max 2.10 GHz, governor performance, turbo off, SMT off</td>
+</tr>
+<tr>
+<td>memory</td>
+<td>31788 MiB</td>
+</tr>
+<tr>
+<td>OS / kernel</td>
+<td>Debian GNU/Linux 13 (trixie) / 6.12.107+deb13-amd64</td>
+</tr>
+<tr>
+<td>compiler / build tool</td>
+<td>gcc (Debian 14.2.0-19) 14.2.0 / cmake version 3.31.6</td>
+</tr>
+<tr>
+<td>campaign start / end (UTC)</td>
+<td>2026-09-25T10:02:21 / 2026-09-28T04:35:59</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="3-functional-testing-kat">3. Functional testing (KAT)</h2>
+<p>Each library was checked against the submitted KAT vectors (SHA-256 manifest <code>kem-08/kat.sha256</code> in the harness) before timing.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>build flags</th>
+<th>KAT</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>BW_KEM_C128</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>BW_KEM_C256</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>BW_KEM_C512</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="4-performance">4. Performance</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>operation</th>
+<th>mean cycles</th>
+<th>mean time</th>
+<th>ops/s</th>
+<th>median trial</th>
+<th>n (trials × iters)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>BW_KEM_C128</code></td>
+<td>keygen</td>
+<td>256.8 k</td>
+<td>123 µs</td>
+<td>8.15e+03</td>
+<td>123 µs</td>
+<td>36695 (5 × 7339)</td>
+</tr>
+<tr>
+<td><code>BW_KEM_C128</code></td>
+<td>enc</td>
+<td>288.5 k</td>
+<td>138 µs</td>
+<td>7.25e+03</td>
+<td>138 µs</td>
+<td>34045 (5 × 6809)</td>
+</tr>
+<tr>
+<td><code>BW_KEM_C128</code></td>
+<td>dec</td>
+<td>338.7 k</td>
+<td>162 µs</td>
+<td>6.18e+03</td>
+<td>162 µs</td>
+<td>28755 (5 × 5751)</td>
+</tr>
+<tr>
+<td><code>BW_KEM_C256</code></td>
+<td>keygen</td>
+<td>645.6 k</td>
+<td>308 µs</td>
+<td>3.24e+03</td>
+<td>308 µs</td>
+<td>15405 (5 × 3081)</td>
+</tr>
+<tr>
+<td><code>BW_KEM_C256</code></td>
+<td>enc</td>
+<td>664.0 k</td>
+<td>317 µs</td>
+<td>3.15e+03</td>
+<td>317 µs</td>
+<td>15235 (5 × 3047)</td>
+</tr>
+<tr>
+<td><code>BW_KEM_C256</code></td>
+<td>dec</td>
+<td>793.0 k</td>
+<td>379 µs</td>
+<td>2.64e+03</td>
+<td>379 µs</td>
+<td>12960 (5 × 2592)</td>
+</tr>
+<tr>
+<td><code>BW_KEM_C512</code></td>
+<td>keygen</td>
+<td>2.14 M</td>
+<td>1.02 ms</td>
+<td>978</td>
+<td>1.02 ms</td>
+<td>4780 (5 × 956)</td>
+</tr>
+<tr>
+<td><code>BW_KEM_C512</code></td>
+<td>enc</td>
+<td>2.16 M</td>
+<td>1.03 ms</td>
+<td>970</td>
+<td>1.03 ms</td>
+<td>4760 (5 × 952)</td>
+</tr>
+<tr>
+<td><code>BW_KEM_C512</code></td>
+<td>dec</td>
+<td>2.51 M</td>
+<td>1.2 ms</td>
+<td>835</td>
+<td>1.2 ms</td>
+<td>4115 (5 × 823)</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="5-resource-consumption">5. Resource consumption</h2>
+<p>Static memory is approximated by the library's loadable ELF segments; peak memory is the process high-water mark (VmHWM) including the benchmark driver and libc, so both are upper-bound proxies rather than isolated algorithm memory.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>operation</th>
+<th>static: ELF image (bytes)</th>
+<th>baseline RSS</th>
+<th>peak RSS</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>BW_KEM_C128</code></td>
+<td>keygen</td>
+<td>29209</td>
+<td>1704 KiB</td>
+<td>1768 KiB</td>
+</tr>
+<tr>
+<td><code>BW_KEM_C128</code></td>
+<td>enc</td>
+<td>29209</td>
+<td>1688 KiB</td>
+<td>1808 KiB</td>
+</tr>
+<tr>
+<td><code>BW_KEM_C128</code></td>
+<td>dec</td>
+<td>29209</td>
+<td>1628 KiB</td>
+<td>1756 KiB</td>
+</tr>
+<tr>
+<td><code>BW_KEM_C256</code></td>
+<td>keygen</td>
+<td>37177</td>
+<td>1724 KiB</td>
+<td>1812 KiB</td>
+</tr>
+<tr>
+<td><code>BW_KEM_C256</code></td>
+<td>enc</td>
+<td>37177</td>
+<td>1728 KiB</td>
+<td>1792 KiB</td>
+</tr>
+<tr>
+<td><code>BW_KEM_C256</code></td>
+<td>dec</td>
+<td>37177</td>
+<td>1740 KiB</td>
+<td>1828 KiB</td>
+</tr>
+<tr>
+<td><code>BW_KEM_C512</code></td>
+<td>keygen</td>
+<td>37761</td>
+<td>1700 KiB</td>
+<td>1824 KiB</td>
+</tr>
+<tr>
+<td><code>BW_KEM_C512</code></td>
+<td>enc</td>
+<td>37761</td>
+<td>1732 KiB</td>
+<td>1800 KiB</td>
+</tr>
+<tr>
+<td><code>BW_KEM_C512</code></td>
+<td>dec</td>
+<td>37761</td>
+<td>1764 KiB</td>
+<td>1832 KiB</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="6-transmission-and-storage-overhead">6. Transmission and storage overhead</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>public key</th>
+<th>secret key</th>
+<th>ciphertext</th>
+<th>shared secret</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>BW_KEM_C128</code></td>
+<td>784</td>
+<td>1585</td>
+<td>768</td>
+<td>16</td>
+</tr>
+<tr>
+<td><code>BW_KEM_C256</code></td>
+<td>1568</td>
+<td>3169</td>
+<td>1440</td>
+<td>32</td>
+</tr>
+<tr>
+<td><code>BW_KEM_C512</code></td>
+<td>3136</td>
+<td>6337</td>
+<td>2944</td>
+<td>64</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="symmetric-primitives">Symmetric primitives</h2>
+<p><a href="../symmetric-survey.html">Survey</a> verdict: <strong>ICCS-only</strong> — optimized AVX2 auxfunc.c adds an SM3 counter-block fast path</p>
+<p>Share of each operation spent in the ICCS placeholder hash functions and in the ICCS DRNG (reference build, measured in the same run with link-time wrappers):</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>operation</th>
+<th>pseudohash/XOF/sm3</th>
+<th>DRNG</th>
+<th>calls per operation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>BW_KEM_C128</code></td>
+<td>keygen</td>
+<td>65%</td>
+<td>1.8%</td>
+<td>drng 1, pseudoXOF 8.02, sm3hash 1</td>
+</tr>
+<tr>
+<td><code>BW_KEM_C128</code></td>
+<td>enc</td>
+<td>63%</td>
+<td>1.6%</td>
+<td>drng 1, pseudoXOF 9, sm3hash 1</td>
+</tr>
+<tr>
+<td><code>BW_KEM_C128</code></td>
+<td>dec</td>
+<td>59%</td>
+<td>0.0%</td>
+<td>pseudoXOF 10, sm3hash 1</td>
+</tr>
+<tr>
+<td><code>BW_KEM_C256</code></td>
+<td>keygen</td>
+<td>72%</td>
+<td>1.0%</td>
+<td>drng 1, pseudoXOF 24.1, pseudohash 1</td>
+</tr>
+<tr>
+<td><code>BW_KEM_C256</code></td>
+<td>enc</td>
+<td>71%</td>
+<td>0.7%</td>
+<td>drng 1, pseudoXOF 25, pseudohash 1</td>
+</tr>
+<tr>
+<td><code>BW_KEM_C256</code></td>
+<td>dec</td>
+<td>64%</td>
+<td>0.0%</td>
+<td>pseudoXOF 26, pseudohash 1</td>
+</tr>
+<tr>
+<td><code>BW_KEM_C512</code></td>
+<td>keygen</td>
+<td>77%</td>
+<td>0.4%</td>
+<td>drng 1, pseudoXOF 24, pseudohash 1</td>
+</tr>
+<tr>
+<td><code>BW_KEM_C512</code></td>
+<td>enc</td>
+<td>78%</td>
+<td>0.3%</td>
+<td>drng 1, pseudoXOF 25, pseudohash 1</td>
+</tr>
+<tr>
+<td><code>BW_KEM_C512</code></td>
+<td>dec</td>
+<td>72%</td>
+<td>0.0%</td>
+<td>pseudoXOF 26, pseudohash 1</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="7-raw-evidence-index">7. Raw evidence index</h2>
+<p>Paths are relative to <code>performance/data/x86_1/</code> in the <a href="https://github.com/ngcc-dev/ngcc-harness">harness</a>; each JSON file records its commands, environment and trials.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>item</th>
+<th>file</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>BW_KEM_C128</code></td>
+<td>KAT log (sha256 <code>2cac5db0705e2b71…</code>)</td>
+<td><code>kat/kem-08/BW_KEM_C128.log</code></td>
+</tr>
+<tr>
+<td><code>BW_KEM_C128</code></td>
+<td>timing dec</td>
+<td><code>records/kem-08/BW_KEM_C128__dec.json</code></td>
+</tr>
+<tr>
+<td><code>BW_KEM_C128</code></td>
+<td>timing enc</td>
+<td><code>records/kem-08/BW_KEM_C128__enc.json</code></td>
+</tr>
+<tr>
+<td><code>BW_KEM_C128</code></td>
+<td>timing keygen</td>
+<td><code>records/kem-08/BW_KEM_C128__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>BW_KEM_C128</code></td>
+<td>hash profile dec</td>
+<td><code>profile/kem-08/BW_KEM_C128__dec.json</code></td>
+</tr>
+<tr>
+<td><code>BW_KEM_C128</code></td>
+<td>hash profile enc</td>
+<td><code>profile/kem-08/BW_KEM_C128__enc.json</code></td>
+</tr>
+<tr>
+<td><code>BW_KEM_C128</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/kem-08/BW_KEM_C128__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>BW_KEM_C256</code></td>
+<td>KAT log (sha256 <code>73dc5b29806dd55c…</code>)</td>
+<td><code>kat/kem-08/BW_KEM_C256.log</code></td>
+</tr>
+<tr>
+<td><code>BW_KEM_C256</code></td>
+<td>timing dec</td>
+<td><code>records/kem-08/BW_KEM_C256__dec.json</code></td>
+</tr>
+<tr>
+<td><code>BW_KEM_C256</code></td>
+<td>timing enc</td>
+<td><code>records/kem-08/BW_KEM_C256__enc.json</code></td>
+</tr>
+<tr>
+<td><code>BW_KEM_C256</code></td>
+<td>timing keygen</td>
+<td><code>records/kem-08/BW_KEM_C256__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>BW_KEM_C256</code></td>
+<td>hash profile dec</td>
+<td><code>profile/kem-08/BW_KEM_C256__dec.json</code></td>
+</tr>
+<tr>
+<td><code>BW_KEM_C256</code></td>
+<td>hash profile enc</td>
+<td><code>profile/kem-08/BW_KEM_C256__enc.json</code></td>
+</tr>
+<tr>
+<td><code>BW_KEM_C256</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/kem-08/BW_KEM_C256__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>BW_KEM_C512</code></td>
+<td>KAT log (sha256 <code>7dae74ef633306b0…</code>)</td>
+<td><code>kat/kem-08/BW_KEM_C512.log</code></td>
+</tr>
+<tr>
+<td><code>BW_KEM_C512</code></td>
+<td>timing dec</td>
+<td><code>records/kem-08/BW_KEM_C512__dec.json</code></td>
+</tr>
+<tr>
+<td><code>BW_KEM_C512</code></td>
+<td>timing enc</td>
+<td><code>records/kem-08/BW_KEM_C512__enc.json</code></td>
+</tr>
+<tr>
+<td><code>BW_KEM_C512</code></td>
+<td>timing keygen</td>
+<td><code>records/kem-08/BW_KEM_C512__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>BW_KEM_C512</code></td>
+<td>hash profile dec</td>
+<td><code>profile/kem-08/BW_KEM_C512__dec.json</code></td>
+</tr>
+<tr>
+<td><code>BW_KEM_C512</code></td>
+<td>hash profile enc</td>
+<td><code>profile/kem-08/BW_KEM_C512__enc.json</code></td>
+</tr>
+<tr>
+<td><code>BW_KEM_C512</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/kem-08/BW_KEM_C512__keygen.json</code></td>
+</tr>
+</tbody>
+</table></div>
+<p>Scripts: <code>performance/campaign.py</code>, <code>performance/ngcc_perf.c</code>, <code>performance/hashprof/</code> in the <a href="https://github.com/ngcc-dev/ngcc-harness">harness</a>.</p>
+</main>
+<footer class="site-footer">
+<p>Maintained by: <a href="mailto:markku-juhani.saarinen@tuni.fi">markku-juhani.saarinen@tuni.fi</a></p>
+<p>Submissions are welcome via <a href="https://github.com/ngcc-dev/ngcc-harness/issues">GitHub issues</a>.</p>
+</footer>
+</body>
+</html>

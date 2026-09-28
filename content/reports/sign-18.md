@@ -68,13 +68,15 @@ Date: 2026-09-23
 
 Signing builds a linear system from the expanded secret zone structure and sampled hidden variables, then solves it with first-nonzero pivot search and data-dependent row skips. The reference `origami_ref.c` branches on matrix entries at lines 636 and 659, and on the solve result at line 798. Thus a local trace can distinguish properties of intermediate private systems. This does not by itself establish recovery of the master seed or a forgery; see `constant_time.md` for the secret/public classification.
 
+Constant-time fix (moderate, hence Medium): use constant-time Gaussian elimination that adds candidate pivot rows under masks, a well-known technique in constant-time UOV and MAYO implementations. It processes every row at every step, a moderate cost; a retry on a singular system is the usual accepted exception.
+
 ### Reproducing
 
 In each reference instance, follow `sign` → `build_zone_system` → `solve_rect_random` in `origami_ref.c`; inspect the pivot test and early break at lines 633–640, row skip at 659, and attempt retry at 794–811. This is a source/dataflow witness, not a measured remote timing exploit.
 
 ## sign-18-4: Signing indexes field tables and signature state with private values
 
-Severity: Medium
+Severity: Low
 Status: Probable
 Layer: Side-channel
 Affected: Origami reference signer, all four parameter sets
@@ -84,6 +86,8 @@ Credit: Markku-Juhani O. Saarinen <markku-juhani.saarinen@tuni.fi>, with AI assi
 Date: 2026-09-23
 
 Origami's `gf_mult` and `gf_inv` index 256-byte and 16-byte tables by field operands (`origami_gf.h:25,32-37`), including private central-map and solver values during signing (`origami_ref.c:400,599-601,653-661`). The signer also derives `w_vars` from private permutation `rho` and writes `secret_y[w_vars[i]]` (`origami_ref.c:421-426,798-800`). These addresses can depend on private values even for the same public message. No measured cache channel or EUF-CMA forgery is established; see `constant_time.md`.
+
+Constant-time fix (easy, hence Low): replace the `gf_mult`/`gf_inv` tables with table-free or `pshufb`-based GF(2^8) arithmetic, and write `secret_y` through a masked scan over all positions instead of indexing it by the private permutation. The scan costs about n^2 byte operations for n variables, small next to signing.
 
 ### Reproducing
 
@@ -100,6 +104,8 @@ Exploitation: Public-key-only forgery for a chosen message, with no signing quer
 Credit: Pierre Pébereau
 Date: 2026-09-24
 Original source: [NGCC PKC Forum post](https://list.niccs.org.cn/archives/list/pkcforum@list.niccs.org.cn/message/HTZTMJ42AUXCWEDA3AURP4ZOEGSGSV4Z/), [UnfoldOrigami code](https://github.com/pi-r2/UnfoldOrigami/tree/defa3405d66e763580729b14d6f81c1300fbb219)
+
+Additional reference: [Xiong and Wang, ePrint 2026/2232, §12](https://eprint.iacr.org/2026/2232)
 
 Origami §2.5.6 explicitly derives the change of variables `Π_pub` from the *public* expansion seed and defines `P_pub = G ∘ Π_pub^-1`. Undoing that permutation exposes the zone order. The public-key expansion supplies each zone's affine coefficients, so an attacker can choose its vinegar coordinates and solve the resulting linear system for oil coordinates, proceeding zone by zone. This reproduces the signer's easy inversion without its secret seed or a signing oracle. It is distinct from `sign-18-2`'s signature-derived subspace observation.
 

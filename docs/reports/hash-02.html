@@ -5,22 +5,22 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>ngcc.dev: AXIS (hash-02)</title>
 <link rel="icon" type="image/png" href="../assets/mag-glass.png">
-<link rel="stylesheet" href="../assets/style.css?v=996d5cfd">
+<link rel="stylesheet" href="../assets/style.css?v=1fdb792d">
 </head>
 <body>
 <header class="site-header">
 <a class="brand" href="../index.html"><img class="brand-icon" src="../assets/mag-glass.png" alt="" width="28" height="28">ngcc.dev</a>
-<nav><a href="../index.html">Home</a><a href="../reports/index.html">Reports</a><a href="../constant-time/index.html">Constant-Time</a></nav>
+<nav><a href="../index.html">Home</a><a href="../reports/index.html">Reports</a><a href="../performance/x86_1/index.html">Performance</a><a href="../constant-time/index.html">Constant-Time</a></nav>
 </header>
-<main>
-<p class="crumb"><a href="../reports/index.html">Reports</a> › <code>hash-02</code> · <a href="../constant-time/hash-02.html">Constant-time review</a></p>
+<main class="">
+<p class="crumb"><a href="../reports/index.html">Reports</a> › <code>hash-02</code> · <a href="../constant-time/hash-02.html">Constant-time review</a> · <a href="../performance/x86_1/hash-02.html">Performance</a></p>
 
 <h1 id="axis-hash-02">AXIS (hash-02)</h1>
 <div class="table-wrap"><table class="meta">
 <tr><th>Candidate</th><td>AXIS</td></tr>
 <tr><th>Family</th><td>Symmetric (stream-cipher-style hash)</td></tr>
 <tr><th>Archive</th><td><a href="https://www.niccs.org.cn/niccs/Proposal/Cryptographic%20Hash%20Algorithms/Round%201%20candidates/AXIS.zip">AXIS.zip</a> (SHA-256: <code>a7c6aa6d30642cc05207acb4d2aa3701dd40945cb21f1bc0e51305ca8f57f81d</code>)</td></tr>
-<tr><th>Specification</th><td><a href="https://github.com/ngcc-dev/ngcc-harness/raw/refs/heads/main/hash-02/hash-02-spec.pdf" title="Download hash-02-spec.pdf from GitHub">hash-02-spec.pdf</a>&nbsp;<a class="pdf-link" href="https://cdn.jsdelivr.net/gh/ngcc-dev/ngcc-harness@main/hash-02/hash-02-spec.pdf" title="Open the hash-02 specification PDF">PDF</a></td></tr>
+<tr><th>Specification</th><td><a href="https://github.com/ngcc-dev/ngcc-harness/raw/dc66c6cb3c06e75bdea0048e21fa4e13c63f00af/hash-02/hash-02-spec.pdf" title="Download hash-02-spec.pdf from GitHub">hash-02-spec.pdf</a>&nbsp;<a class="pdf-link" href="https://cdn.jsdelivr.net/gh/ngcc-dev/ngcc-harness@dc66c6cb3c06e75bdea0048e21fa4e13c63f00af/hash-02/hash-02-spec.pdf" title="Open the hash-02 specification PDF">PDF</a></td></tr>
 </table></div>
 
 <h2 class="issue-heading issue-heading-first" id="hash-02-1-allocation-failure-returns-a-successful-all-zero-digest">hash-02-1: Allocation failure returns a successful all-zero digest</h2>
@@ -46,7 +46,7 @@
 <h2 class="issue-heading" id="hash-02-2-partial-bit-axis-update-branches-on-secret-state">hash-02-2: Partial-bit AXIS update branches on secret state</h2>
 
 <div class="table-wrap"><table class="meta issue-meta">
-<tr><th>Severity</th><td><span class="sev sev-medium">Medium</span></td></tr>
+<tr><th>Severity</th><td><span class="sev sev-low">Low</span></td></tr>
 <tr><th>Scope</th><td>side-channel</td></tr>
 <tr><th>Status</th><td><span class="issue-status status-confirmed">Confirmed</span></td></tr>
 <tr><th>Affected</th><td>Reference AXIS-512/768/1024 on non-byte-aligned messages</td></tr>
@@ -57,13 +57,14 @@
 </table></div>
 
 <p>For non-byte-aligned input, <code>axis_core_hash_bits</code> leaves the bit-sliced byte-aligned fast path (<code>axis_core.c:1698-1704</code>). The scalar nonlinear update calls <code>axis_flip_bit</code> on state-derived bits (<code>:160,633-638,685-690</code>); its generic and finalization paths retain conditional jumps under GCC <code>-O2</code>. Equal-length secret bitstrings can therefore change the branch trace. This does not apply to the ordinary byte-aligned fast path, and no timing extraction was demonstrated. See <a href="../constant-time/hash-02.html">constant_time.md</a>.</p>
+<p>Constant-time fix (easy, hence Low): apply each flip as a masked XOR, <code>reg[w] ^= (uint64_t)(-(bit &amp; 1)) &amp; mask</code>; the byte-aligned bitsliced path is already branch-free.</p>
 <h3 id="reproducing_1">Reproducing</h3>
 <p>Commands below run in a checkout of the <a href="https://github.com/ngcc-dev/ngcc-harness">ngcc-harness repository</a> with the candidate built (see its README).</p>
 <p>Compile <code>AXIS-768/axis_core.c</code> with <code>gcc -O2 -g -c</code>; <code>objdump -dSl</code> shows conditional jumps at <code>axis_flip_bit</code> in <code>axis_step_generic</code>.</p>
 <h2 class="issue-heading" id="hash-02-3-the-invertible-axis-state-caps-axis-1024-second-preimage-security-at-768-bits">hash-02-3: The invertible AXIS state caps AXIS-1024 second-preimage security at 768 bits</h2>
 
 <div class="table-wrap"><table class="meta issue-meta">
-<tr><th>Severity</th><td><span class="sev sev-high">High</span></td></tr>
+<tr><th>Severity</th><td><span class="sev sev-critical">Critical</span></td></tr>
 <tr><th>Scope</th><td>design</td></tr>
 <tr><th>Status</th><td><span class="issue-status status-confirmed">Confirmed</span></td></tr>
 <tr><th>Affected</th><td>AXIS-1024 specification and implementations; AXIS-768 is exactly at the bound</td></tr>

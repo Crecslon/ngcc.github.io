@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ngcc.dev: Symmetric cryptography survey</title>
+<link rel="icon" type="image/png" href="../assets/mag-glass.png">
+<link rel="stylesheet" href="../assets/style.css?v=1fdb792d">
+</head>
+<body>
+<header class="site-header">
+<a class="brand" href="../index.html"><img class="brand-icon" src="../assets/mag-glass.png" alt="" width="28" height="28">ngcc.dev</a>
+<nav><a href="../index.html">Home</a><a href="../reports/index.html">Reports</a><a href="../performance/x86_1/index.html">Performance</a><a href="../constant-time/index.html">Constant-Time</a></nav>
+</header>
+<main class="">
+<!-- synchronized from harness: performance/symmetric-survey.md -->
+<h1 id="symmetric-cryptography-survey">Symmetric cryptography survey</h1>
+<p>The NGCC public-key submissions were asked to use the ICCS placeholder functions <code>pseudohash</code> (SM3/HMAC-SM3), <code>pseudoXOF</code> (KDF-SM3) and <code>sm3hash</code> for hashing, and the ICCS SM3 DRNG for randomness, so that the selected NGCC hash can later be substituted. This survey records which reference implementations do so, which bypass the helpers with their own primitives, and how much of each operation the helpers take.</p>
+<p>Totals: 67 ICCS-only, 7 bypass, 6 mixed, 4 instance-dependent.</p>
+<p>Evidence: call-graph reachability from the exported API in the harness-built libraries, object-level constant scans (Keccak, SHA-2, SM3, AES, SM4, ChaCha), and source reading for candidates without a harness build. A primitive that is compiled but unreachable is not counted.</p>
+<p>The last column is measured on system x86_1 (Intel Core i7-12700 (Alder Lake), one performance core, turbo off, fixed 2.1 GHz, SMT off); see its <a href="x86_1/index.html">summary</a>.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>id</th>
+<th>algorithm</th>
+<th>verdict</th>
+<th>notes</th>
+<th>largest hash share on x86_1 (op)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="x86_1/kem-01.html">kem-01</a></td>
+<td>Aigis-Enc+</td>
+<td>ICCS-only</td>
+<td>own fips202.c compiled but unreachable from the API</td>
+<td>39% (Aigis-enc3 enc)</td>
+</tr>
+<tr>
+<td><a href="x86_1/kem-02.html">kem-02</a></td>
+<td>Amoeba</td>
+<td>ICCS-only</td>
+<td></td>
+<td>74% (Amoeba128 keygen)</td>
+</tr>
+<tr>
+<td><a href="x86_1/kem-03.html">kem-03</a></td>
+<td>BAG-Loong</td>
+<td>ICCS-only</td>
+<td><code>loong_hash_tagged_sm3_256</code> wraps sm3hash</td>
+<td>79% (BAG-Loong-128 enc)</td>
+</tr>
+<tr>
+<td><a href="x86_1/kem-04.html">kem-04</a></td>
+<td>BAG-Piglet</td>
+<td>ICCS-only</td>
+<td><code>*_using_shake</code> names parse pseudoXOF output; AES-256-CTR dead; DRNG only with -DBAG_PIGLET_KAT</td>
+<td>56% (bag_piglet_512 keygen)</td>
+</tr>
+<tr>
+<td><a href="x86_1/kem-05.html">kem-05</a></td>
+<td>BIKE-MLThre</td>
+<td>mixed</td>
+<td>hash/XOF via ICCS; seeds from NIST AES-256-CTR-DRBG (OpenSSL) only with -DNIST_RAND, otherwise libc rand()</td>
+<td>1.2% (BIKE_v2_128 enc)</td>
+</tr>
+<tr>
+<td><a href="x86_1/kem-06.html">kem-06</a></td>
+<td>BRA</td>
+<td>ICCS-only</td>
+<td>pseudohash for G/H; seed expansion via per-seed ICCS DRNG instances; XKCP Keccak dead</td>
+<td>4.5% (BRA-128 enc)</td>
+</tr>
+<tr>
+<td><a href="x86_1/kem-07.html">kem-07</a></td>
+<td>BRQC</td>
+<td>ICCS-only</td>
+<td>pseudohash for G/H; seed expansion via per-seed ICCS DRNG instances; XKCP Keccak dead</td>
+<td>5.3% (BRQC-128 enc)</td>
+</tr>
+<tr>
+<td><a href="x86_1/kem-08.html">kem-08</a></td>
+<td>BW-KEM</td>
+<td>ICCS-only</td>
+<td>optimized AVX2 auxfunc.c adds an SM3 counter-block fast path</td>
+<td>78% (BW_KEM_C512 enc)</td>
+</tr>
+<tr>
+<td><a href="x86_1/kem-09.html">kem-09</a></td>
+<td>CheetahKEM</td>
+<td>ICCS-only</td>
+<td></td>
+<td>83% (Cheetah512 keygen)</td>
+</tr>
+<tr>
+<td><a href="x86_1/kem-10.html">kem-10</a></td>
+<td>C-Multi-UR-AG</td>
+<td>ICCS-only</td>
+<td>own fips202.c compiled but unreachable from the API</td>
+<td>2.9% (CMultiURAG-256 enc)</td>
+</tr>
+<tr>
+<td><a href="x86_1/kem-11.html">kem-11</a></td>
+<td>COMPASS-KEM</td>
+<td>ICCS-only</td>
+<td><code>shake*</code> names are shims over pseudoXOF</td>
+<td>97% (COMPASS-KEM-256 keygen)</td>
+</tr>
+<tr>
+<td><a href="x86_1/kem-12.html">kem-12</a></td>
+<td>CTL Algorithm</td>
+<td>ICCS-only</td>
+<td>sha3.c shim has no permutation and is unused</td>
+<td>12% (CTL-257-512 enc)</td>
+</tr>
+<tr>
+<td><a href="x86_1/kem-13.html">kem-13</a></td>
+<td>DKEM (Ding Key Encapsulation)</td>
+<td>ICCS-only</td>
+<td>default DKE_HASH=0; own SM3/HMAC compiled but unreachable; DKE_HASH=2 would switch to SHAKE</td>
+<td>82% (DKEM-512 keygen)</td>
+</tr>
+<tr>
+<td><a href="x86_1/kem-14.html">kem-14</a></td>
+<td>DTRU</td>
+<td>ICCS-only</td>
+<td></td>
+<td>33% (DTRU-768 enc)</td>
+</tr>
+<tr>
+<td><a href="x86_1/kem-15.html">kem-15</a></td>
+<td>FLIT</td>
+<td>ICCS-only</td>
+<td></td>
+<td>52% (FLIT128_REF enc)</td>
+</tr>
+<tr>
+<td><a href="x86_1/kem-16.html">kem-16</a></td>
+<td>HARE</td>
+<td>ICCS-only</td>
+<td>pseudoXOF only (recomputes prefix per call); lives under _shared/</td>
+<td>3.0% (HARE-128-kr keygen)</td>
+</tr>
+<tr>
+<td><a href="x86_1/kem-17.html">kem-17</a></td>
+<td>Hybrid Equivalent Punctured and Quasi-Cyclic</td>
+<td>ICCS-only</td>
+<td>never calls the DRNG: zero-initialised PRNG (known kem-17-1/-3)</td>
+<td>89% (hep-qc-1 dec)</td>
+</tr>
+<tr>
+<td><a href="x86_1/kem-18.html">kem-18</a></td>
+<td>LoongKEM</td>
+<td>ICCS-only</td>
+<td></td>
+<td>87% (Loong512 keygen)</td>
+</tr>
+<tr>
+<td><a href="x86_1/kem-19.html">kem-19</a></td>
+<td>Lore</td>
+<td>instance-dependent</td>
+<td>Lore-SM3: ICCS-only; Lore-SHAKE: own FIPS 202 (bypass); AVX2/NEON SIMD SM3 in auxfunc</td>
+<td>73% (Lore-SM3-L1 keygen)</td>
+</tr>
+<tr>
+<td><a href="x86_1/kem-20.html">kem-20</a></td>
+<td>MAMBA-Frost</td>
+<td>mixed</td>
+<td>all SHAKE calls are pseudoXOF shims; matrix A via own AES-128 with -D_AES128_FOR_A_</td>
+<td>3.8% (MAMBA-Frost-128 dec)</td>
+</tr>
+<tr>
+<td><a href="x86_1/kem-21.html">kem-21</a></td>
+<td>MAMBA-Viper</td>
+<td>ICCS-only</td>
+<td><code>shake*</code> names are shims over pseudoXOF</td>
+<td>48% (MAMBA-Viper-128 enc)</td>
+</tr>
+<tr>
+<td><a href="x86_1/kem-22.html">kem-22</a></td>
+<td>Mithril</td>
+<td>ICCS-only</td>
+<td></td>
+<td>40% (Mithril-128 keygen)</td>
+</tr>
+<tr>
+<td><a href="x86_1/kem-23.html">kem-23</a></td>
+<td>Mito</td>
+<td>ICCS-only</td>
+<td></td>
+<td>1.7% (Mito-2-E-128 dec)</td>
+</tr>
+<tr>
+<td><a href="x86_1/kem-24.html">kem-24</a></td>
+<td>MORNING-Scabbard</td>
+<td>ICCS-only</td>
+<td></td>
+<td>70% (scabbard128 keygen)</td>
+</tr>
+<tr>
+<td><a href="x86_1/kem-25.html">kem-25</a></td>
+<td>NEV</td>
+<td>ICCS-only</td>
+<td>with -DUSE_ICCS (SHA3 build selectable)</td>
+<td>69% (NEV_2048_3329_ICCS enc)</td>
+</tr>
+<tr>
+<td><a href="x86_1/kem-26.html">kem-26</a></td>
+<td>NSS-HQC</td>
+<td>bypass</td>
+<td>own inline Keccak (SHA3-512, SHAKE256) for everything; DRNG for randomness</td>
+<td>0.0% (HQC-128 dec)</td>
+</tr>
+<tr>
+<td><a href="x86_1/kem-27.html">kem-27</a></td>
+<td>NTRE Key Encapsulation Mechanism</td>
+<td>ICCS-only</td>
+<td></td>
+<td>49% (NTRE-128 enc)</td>
+</tr>
+<tr>
+<td><a href="x86_1/kem-28.html">kem-28</a></td>
+<td>OAEP-NTRU</td>
+<td>ICCS-only</td>
+<td></td>
+<td>66% (OAEP-NTRU-2592 enc)</td>
+</tr>
+<tr>
+<td><a href="x86_1/kem-29.html">kem-29</a></td>
+<td>Polar-KEM</td>
+<td>ICCS-only</td>
+<td></td>
+<td>98% (PolarKEM-512 keygen)</td>
+</tr>
+<tr>
+<td><a href="x86_1/kem-30.html">kem-30</a></td>
+<td>PolarLAC</td>
+<td>ICCS-only</td>
+<td>default BIT_USE_SHAKE=0</td>
+<td>73% (POLARLAC-512 enc)</td>
+</tr>
+<tr>
+<td><a href="x86_1/kem-31.html">kem-31</a></td>
+<td>QIMEN-PIKE</td>
+<td>bypass</td>
+<td>own SM3 + counter XOF (pike_hash.c) for G, KDF and streams; DRNG only</td>
+<td>0.0% (NGCC-1 dec)</td>
+</tr>
+<tr>
+<td><a href="x86_1/kem-32.html">kem-32</a></td>
+<td>Quasi-Cyclic Twisted McEliece Key Encapsulation Mechanism</td>
+<td>bypass</td>
+<td>own SHAKE256 for session key/keygen expansion; OpenSSL AES-256-CTR-DRBG seeded by the ICCS DRNG; auxfunc not linked</td>
+<td>0.0% (QCTM128 dec)</td>
+</tr>
+<tr>
+<td><a href="x86_1/kem-33.html">kem-33</a></td>
+<td>QUBE</td>
+<td>ICCS-only</td>
+<td></td>
+<td>62% (qube-128 enc)</td>
+</tr>
+<tr>
+<td><a href="x86_1/kem-34.html">kem-34</a></td>
+<td>Rudraksh2</td>
+<td>ICCS-only</td>
+<td></td>
+<td>96% (lwekem512 enc)</td>
+</tr>
+<tr>
+<td><a href="x86_1/kem-35.html">kem-35</a></td>
+<td>Scloud+</td>
+<td>instance-dependent</td>
+<td>SM3 sets: private modified copy of auxfunc (official not linked); AES/SHAKE sets: own AES/Keccak (bypass); benchmark pilot uses SHAKE</td>
+<td>93% (Scloudplus-192-SM3-packed10 keygen)</td>
+</tr>
+<tr>
+<td><a href="x86_1/kem-36.html">kem-36</a></td>
+<td>TRIKE</td>
+<td>ICCS-only</td>
+<td></td>
+<td>4.7% (TRIKE-2 enc)</td>
+</tr>
+<tr>
+<td><a href="x86_1/kem-37.html">kem-37</a></td>
+<td>TriQ-KEM</td>
+<td>ICCS-only</td>
+<td></td>
+<td>12% (TriQ-KEM-128 keygen)</td>
+</tr>
+<tr>
+<td><a href="x86_1/kem-38.html">kem-38</a></td>
+<td>UVW Key Encapsulation Mechanism</td>
+<td>ICCS-only</td>
+<td></td>
+<td>14% (UVW-KEM-128 enc)</td>
+</tr>
+<tr>
+<td><a href="x86_1/kem-39.html">kem-39</a></td>
+<td>Weaver</td>
+<td>ICCS-only</td>
+<td>grep hits for AES/Keccak/OpenSSL are not reachable in the built library</td>
+<td>82% (WeaverKEM-128 keygen)</td>
+</tr>
+<tr>
+<td><a href="x86_1/kem-40.html">kem-40</a></td>
+<td>YuanYang.KEM</td>
+<td>ICCS-only</td>
+<td></td>
+<td>42% (yuanyang-512 enc)</td>
+</tr>
+<tr>
+<td><a href="x86_1/kem-41.html">kem-41</a></td>
+<td>ZEN</td>
+<td>ICCS-only</td>
+<td></td>
+<td>67% (ZEN_128 enc)</td>
+</tr>
+<tr>
+<td><a href="x86_1/kex-01.html">kex-01</a></td>
+<td>ADKEX (Authenticated Ding Key Exchange)</td>
+<td>ICCS-only</td>
+<td>default DKE_HASH=0; own SM3/HMAC compiled but unreachable; DKE_HASH=2 would switch to SHAKE</td>
+<td>81% (ADKEX-512 exchange)</td>
+</tr>
+<tr>
+<td><a href="x86_1/kex-02.html">kex-02</a></td>
+<td>AFS-KEX</td>
+<td>ICCS-only</td>
+<td>optimized AVX2 auxfunc.c adds an SM3 counter-block fast path</td>
+<td>76% (AFS_KEX_C512 exchange)</td>
+</tr>
+<tr>
+<td><a href="x86_1/kex-03.html">kex-03</a></td>
+<td>CreTAKE</td>
+<td>ICCS-only</td>
+<td>PolarLAC/ZEN/BiT components; Keccak only if BIT_USE_SHAKE=1</td>
+<td>78% (CreTAKE-S2S-BiT512-ePLAC512 exchange)</td>
+</tr>
+<tr>
+<td><a href="x86_1/kex-04.html">kex-04</a></td>
+<td>DKEX (Ding Key Exchange)</td>
+<td>mixed</td>
+<td>KEX core via ICCS; embedded ML-DSA uses its own SHAKE</td>
+<td>36% (DKEX-512 exchange)</td>
+</tr>
+<tr>
+<td><a href="x86_1/kex-05.html">kex-05</a></td>
+<td>Loom</td>
+<td>ICCS-only</td>
+<td>grep hits for AES/Keccak/OpenSSL are not reachable in the built library</td>
+<td>6.2% (LoomKEX-512 exchange)</td>
+</tr>
+<tr>
+<td><a href="x86_1/kex-06.html">kex-06</a></td>
+<td>MAMBA-NIKE</td>
+<td>bypass</td>
+<td>SHAKE128/256 + ChaCha20; DRNG only with -DKAT_BUILD, otherwise /dev/urandom</td>
+<td>0.0% (MAMBA-NIKE-128 exchange)</td>
+</tr>
+<tr>
+<td><a href="x86_1/kex-07.html">kex-07</a></td>
+<td>NEV-AKE</td>
+<td>ICCS-only</td>
+<td>own fips202.c compiled but unreachable</td>
+<td>55% (NEV_AKE_2048_769 exchange)</td>
+</tr>
+<tr>
+<td><a href="x86_1/kex-08.html">kex-08</a></td>
+<td>NIIKE</td>
+<td>bypass</td>
+<td>no hash or KDF at all: raw j-invariant (known kex-08-1)</td>
+<td>0.0% (NIIKE-lv128 exchange)</td>
+</tr>
+<tr>
+<td><a href="x86_1/kex-09.html">kex-09</a></td>
+<td>TriQ-KEX</td>
+<td>ICCS-only</td>
+<td></td>
+<td>7.0% (TriQ-KEX-128 exchange)</td>
+</tr>
+<tr>
+<td><a href="x86_1/sign-01.html">sign-01</a></td>
+<td>Aigis-Sig+</td>
+<td>ICCS-only</td>
+<td>own fips202.c compiled but unreachable from the API</td>
+<td>64% (Aigis-sig1 sign)</td>
+</tr>
+<tr>
+<td><a href="x86_1/sign-02.html">sign-02</a></td>
+<td>BIT: Bimodal Triangular distribution based lattice signatures</td>
+<td>ICCS-only</td>
+<td>own fips202.c compiled but unreachable (BIT_USE_SHAKE=0)</td>
+<td>88% (BiT-512 keygen)</td>
+</tr>
+<tr>
+<td><a href="x86_1/sign-03.html">sign-03</a></td>
+<td>CEDRUS+C</td>
+<td>ICCS-only</td>
+<td></td>
+<td>99% (CEDRUSC-384s keygen)</td>
+</tr>
+<tr>
+<td><a href="x86_1/sign-04.html">sign-04</a></td>
+<td>CEDRUSɑ</td>
+<td>ICCS-only</td>
+<td></td>
+<td>99% (CEDRUSALPHA-384f keygen)</td>
+</tr>
+<tr>
+<td><a href="x86_1/sign-05.html">sign-05</a></td>
+<td>Chinith</td>
+<td>mixed</td>
+<td>random oracles via ICCS; seed-tree/VOLE PRG via SM4 / Ballet / Vistrutah</td>
+<td>36% (sm4th_em_d2_128s_tight sign)</td>
+</tr>
+<tr>
+<td><a href="x86_1/sign-06.html">sign-06</a></td>
+<td>COMPASS-SIG</td>
+<td>ICCS-only</td>
+<td><code>shake*</code> names are shims over pseudoXOF</td>
+<td>95% (COMPASS-SIG-256 keygen)</td>
+</tr>
+<tr>
+<td><a href="x86_1/sign-07.html">sign-07</a></td>
+<td>CS</td>
+<td>ICCS-only</td>
+<td></td>
+<td>62% (CS-512 sign)</td>
+</tr>
+<tr>
+<td><a href="x86_1/sign-08.html">sign-08</a></td>
+<td>DARTS</td>
+<td>ICCS-only</td>
+<td>x4 shake names loop over the ICCS XOF</td>
+<td>88% (DARTS128 sign)</td>
+</tr>
+<tr>
+<td><a href="x86_1/sign-09.html">sign-09</a></td>
+<td>DOVE</td>
+<td>ICCS-only</td>
+<td></td>
+<td>63% (dove_pkc_skc_512 verify)</td>
+</tr>
+<tr>
+<td><a href="x86_1/sign-10.html">sign-10</a></td>
+<td>Facto-DSA</td>
+<td>ICCS-only</td>
+<td></td>
+<td>88% (Facto-DSA-512 verify)</td>
+</tr>
+<tr>
+<td><a href="x86_1/sign-11.html">sign-11</a></td>
+<td>FlexTree</td>
+<td>ICCS-only</td>
+<td></td>
+<td>99% (Flextree-384f keygen)</td>
+</tr>
+<tr>
+<td><a href="x86_1/sign-12.html">sign-12</a></td>
+<td>Galas Signature Scheme</td>
+<td>ICCS-only</td>
+<td></td>
+<td>46% (Galas-256S verify)</td>
+</tr>
+<tr>
+<td><a href="x86_1/sign-13.html">sign-13</a></td>
+<td>GreatWall Signature Algorithm</td>
+<td>bypass</td>
+<td>own XKCP Keccak + AES-CTR PRGs; no auxfunc.c shipped</td>
+<td>0.0% (GreatWall128f keygen)</td>
+</tr>
+<tr>
+<td><a href="x86_1/sign-14.html">sign-14</a></td>
+<td>Lynxer</td>
+<td>mixed</td>
+<td>with -DXOF_PSEUDO (as the KATs need): oracles via pseudoXOF, PRG via AES/Rijndael/SHACAL-2; source default is own Keccak (bypass)</td>
+<td>99% (Lynxer-512f keygen)</td>
+</tr>
+<tr>
+<td><a href="x86_1/sign-15.html">sign-15</a></td>
+<td>MORNING-ATLAS</td>
+<td>ICCS-only</td>
+<td></td>
+<td>83% (lwrdsa192 keygen)</td>
+</tr>
+<tr>
+<td><a href="x86_1/sign-16.html">sign-16</a></td>
+<td>Octarine</td>
+<td>ICCS-only</td>
+<td></td>
+<td>60% (Octarine-128 keygen)</td>
+</tr>
+<tr>
+<td><a href="x86_1/sign-17.html">sign-17</a></td>
+<td>OPS Digital Signature Algorithm</td>
+<td>ICCS-only</td>
+<td>optimized AVX2 auxfunc.c adds sm3x4 / pseudoXOF_4x</td>
+<td>92% (OPSsig-512 keygen)</td>
+</tr>
+<tr>
+<td><a href="x86_1/sign-18.html">sign-18</a></td>
+<td>Origami</td>
+<td>ICCS-only</td>
+<td><code>shake*</code> names are shims over pseudoXOF</td>
+<td>100% (Origami-512 keygen)</td>
+</tr>
+<tr>
+<td><a href="x86_1/sign-19.html">sign-19</a></td>
+<td>Phoenix</td>
+<td>instance-dependent</td>
+<td>SM3 sets mixed (own SM3 for all tree hashing/PRF, pseudoXOF for digest/indices); SHAKE sets bypass with a SHAKE-based drng.c</td>
+<td>12% (Phoenix-SM3-256s sign)</td>
+</tr>
+<tr>
+<td><a href="x86_1/sign-20.html">sign-20</a></td>
+<td>Qing Luan</td>
+<td>ICCS-only</td>
+<td>builds wide hash and counter XOF on sm3hash, not pseudohash/pseudoXOF</td>
+<td>88% (QingLuan-512 keygen)</td>
+</tr>
+<tr>
+<td><a href="x86_1/sign-21.html">sign-21</a></td>
+<td>ReSolveD-ɑ</td>
+<td>bypass</td>
+<td>Keccak oracles + AES/Rijndael/SHACAL-2 PRGs; pseudoXOF only with -DXOF_PSEUDO (undefined)</td>
+<td>72% (ReSolveD-alpha-512f keygen)</td>
+</tr>
+<tr>
+<td><a href="x86_1/sign-22.html">sign-22</a></td>
+<td>Rhyme</td>
+<td>instance-dependent</td>
+<td>SM3 sets: counter XOF on sm3hash; SHAKE sets: own FIPS 202 (bypass)</td>
+<td>77% (Rhyme-SM3-256 sign)</td>
+</tr>
+<tr>
+<td><a href="x86_1/sign-23.html">sign-23</a></td>
+<td>Shuttle</td>
+<td>ICCS-only</td>
+<td>uses the ICCS SM3 DRBG (init/get_random_number) as its XOF; AVX2/AVX-512 SM3 DRBG in optimized</td>
+<td>0.0% (SHUTTLE-128 keygen)</td>
+</tr>
+<tr>
+<td><a href="x86_1/sign-24.html">sign-24</a></td>
+<td>Sigurd</td>
+<td>ICCS-only</td>
+<td></td>
+<td>62% (Sigurd-512 sign)</td>
+</tr>
+<tr>
+<td><a href="x86_1/sign-25.html">sign-25</a></td>
+<td>SQIsign2D2</td>
+<td>ICCS-only</td>
+<td></td>
+<td>17% (SQISign2Dsquare-Level2-eff_uncompressed verify)</td>
+</tr>
+<tr>
+<td><a href="x86_1/sign-26.html">sign-26</a></td>
+<td>SQIsign2D-push1/2</td>
+<td>ICCS-only</td>
+<td>iccs/xof_iccs.c glue; NIST SHAKE/AES leftovers unused</td>
+<td>0.0% (SQIsign2D-lvl1 verify)</td>
+</tr>
+<tr>
+<td><a href="x86_1/sign-27.html">sign-27</a></td>
+<td>SQIsignTriangle</td>
+<td>ICCS-only</td>
+<td><code>shake*</code> names are shims over pseudoXOF</td>
+<td>83% (SQIsignTriangle_lvl6 verify)</td>
+</tr>
+<tr>
+<td><a href="x86_1/sign-28.html">sign-28</a></td>
+<td>SYDO</td>
+<td>mixed</td>
+<td>hashing via pseudoXOF; PRGs via own AES/Rijndael and a BLAKE2s-round cipher</td>
+<td>26% (sydo_512s sign)</td>
+</tr>
+<tr>
+<td><a href="x86_1/sign-29.html">sign-29</a></td>
+<td>Tins</td>
+<td>ICCS-only</td>
+<td></td>
+<td>55% (Tins512 verify)</td>
+</tr>
+<tr>
+<td><a href="x86_1/sign-30.html">sign-30</a></td>
+<td>TRINE</td>
+<td>ICCS-only</td>
+<td>with -DUSE_ICCS (SHA3 build selectable)</td>
+<td>64% (TRINE-128-Balanced keygen)</td>
+</tr>
+<tr>
+<td><a href="x86_1/sign-31.html">sign-31</a></td>
+<td>TSUOV</td>
+<td>ICCS-only</td>
+<td></td>
+<td>79% (TSUOV_512 sign)</td>
+</tr>
+<tr>
+<td><a href="x86_1/sign-32.html">sign-32</a></td>
+<td>UVW signature</td>
+<td>ICCS-only</td>
+<td>grep hits for AES/Keccak/OpenSSL are not reachable in the built library</td>
+<td>1.0% (UVW-128 verify)</td>
+</tr>
+<tr>
+<td><a href="x86_1/sign-33.html">sign-33</a></td>
+<td>VDOO: Vinegar-Diagonal-Oil-Oil</td>
+<td>ICCS-only</td>
+<td></td>
+<td>0.3% (vdoo_128 verify)</td>
+</tr>
+<tr>
+<td><a href="x86_1/sign-34.html">sign-34</a></td>
+<td>YuanYang.DSA</td>
+<td>ICCS-only</td>
+<td></td>
+<td>59% (yuanyang-512 verify)</td>
+</tr>
+</tbody>
+</table></div>
+</main>
+<footer class="site-footer">
+<p>Maintained by: <a href="mailto:markku-juhani.saarinen@tuni.fi">markku-juhani.saarinen@tuni.fi</a></p>
+<p>Submissions are welcome via <a href="https://github.com/ngcc-dev/ngcc-harness/issues">GitHub issues</a>.</p>
+</footer>
+</body>
+</html>

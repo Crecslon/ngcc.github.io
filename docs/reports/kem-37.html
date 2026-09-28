@@ -5,22 +5,22 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>ngcc.dev: TriQ-KEM (kem-37)</title>
 <link rel="icon" type="image/png" href="../assets/mag-glass.png">
-<link rel="stylesheet" href="../assets/style.css?v=996d5cfd">
+<link rel="stylesheet" href="../assets/style.css?v=1fdb792d">
 </head>
 <body>
 <header class="site-header">
 <a class="brand" href="../index.html"><img class="brand-icon" src="../assets/mag-glass.png" alt="" width="28" height="28">ngcc.dev</a>
-<nav><a href="../index.html">Home</a><a href="../reports/index.html">Reports</a><a href="../constant-time/index.html">Constant-Time</a></nav>
+<nav><a href="../index.html">Home</a><a href="../reports/index.html">Reports</a><a href="../performance/x86_1/index.html">Performance</a><a href="../constant-time/index.html">Constant-Time</a></nav>
 </header>
-<main>
-<p class="crumb"><a href="../reports/index.html">Reports</a> › <code>kem-37</code> · <a href="../constant-time/kem-37.html">Constant-time review</a></p>
+<main class="">
+<p class="crumb"><a href="../reports/index.html">Reports</a> › <code>kem-37</code> · <a href="../constant-time/kem-37.html">Constant-time review</a> · <a href="../performance/x86_1/kem-37.html">Performance</a></p>
 
 <h1 id="triq-kem-kem-37">TriQ-KEM (kem-37)</h1>
 <div class="table-wrap"><table class="meta">
 <tr><th>Candidate</th><td>TriQ-KEM</td></tr>
 <tr><th>Family</th><td>Code-based</td></tr>
 <tr><th>Archive</th><td><a href="https://www.niccs.org.cn/niccs/Proposal/Public-Key%20Cryptographic%20Algorithms/Round%201%20candidates/TriQ-KEM.zip">TriQ-KEM.zip</a> (SHA-256: <code>1e4b96e7a849c95b4a6511c5739be9e0b4adf19b00195c2c0ce14f66be316876</code>)</td></tr>
-<tr><th>Specification</th><td><a href="https://github.com/ngcc-dev/ngcc-harness/raw/refs/heads/main/kem-37/kem-37-spec.pdf" title="Download kem-37-spec.pdf from GitHub">kem-37-spec.pdf</a>&nbsp;<a class="pdf-link" href="https://cdn.jsdelivr.net/gh/ngcc-dev/ngcc-harness@main/kem-37/kem-37-spec.pdf" title="Open the kem-37 specification PDF">PDF</a></td></tr>
+<tr><th>Specification</th><td><a href="https://github.com/ngcc-dev/ngcc-harness/raw/dc66c6cb3c06e75bdea0048e21fa4e13c63f00af/kem-37/kem-37-spec.pdf" title="Download kem-37-spec.pdf from GitHub">kem-37-spec.pdf</a>&nbsp;<a class="pdf-link" href="https://cdn.jsdelivr.net/gh/ngcc-dev/ngcc-harness@dc66c6cb3c06e75bdea0048e21fa4e13c63f00af/kem-37/kem-37-spec.pdf" title="Open the kem-37 specification PDF">PDF</a></td></tr>
 </table></div>
 
 <h2 class="issue-heading issue-heading-first" id="kem-37-1-decapsulation-re-expands-its-private-support-with-variable-work">kem-37-1: Decapsulation re-expands its private support with variable work</h2>
@@ -38,6 +38,7 @@
 
 <p><code>crypto_kem_dec</code> decrypts with a persistent PKE seed. The decryption path calls <code>triq_dk_pke_from_string</code> on every decapsulation, which regenerates the private support using <code>vect_sample_fixed_weight1</code>. Its sampler rejects out-of-range or duplicate positions and fetches more XOF bytes when extra draws exhaust a block (<code>src/ref/vector.c:61-91</code>). Thus the same public ciphertext can take seed-dependent work. The FO validity selection remains masked, but does not hide this earlier trace. No key-recovery attack is claimed; see <code>constant_time.md</code>.</p>
 <p>Follow-up analysis: FO re-encryption also samples from coins derived from recovered <code>m_prime</code> (<code>src/common/kem.c:192-200</code>, <code>src/ref/triq_pke.c:113-115</code>). The <a href="https://eprint.iacr.org/2021/1485.pdf">Guo et al. HQC/BIKE attack</a> suggests a test, not a proven TriQ recovery.</p>
+<p>Constant-time fix (moderate, hence Medium): store the expanded support in the private key instead of re-deriving it on every decapsulation, which changes the key format and storage, or sample it with a fixed number of draws and constant-time duplicate handling. Both are well-known techniques with moderate cost.</p>
 <h3 id="reproducing">Reproducing</h3>
 <p>Commands below run in a checkout of the <a href="https://github.com/ngcc-dev/ngcc-harness">ngcc-harness repository</a> with the candidate built (see its README).</p>
 <pre><code class="language-sh">ct_dir=$(mktemp -d)

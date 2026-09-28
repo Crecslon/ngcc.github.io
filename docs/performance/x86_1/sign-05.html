@@ -1,0 +1,1765 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ngcc.dev: sign-05 Chinith — performance on x86-64 (system x861)</title>
+<link rel="icon" type="image/png" href="../../assets/mag-glass.png">
+<link rel="stylesheet" href="../../assets/style.css?v=1fdb792d">
+</head>
+<body>
+<header class="site-header">
+<a class="brand" href="../../index.html"><img class="brand-icon" src="../../assets/mag-glass.png" alt="" width="28" height="28">ngcc.dev</a>
+<nav><a href="../../index.html">Home</a><a href="../../reports/index.html">Reports</a><a href="../../performance/x86_1/index.html">Performance</a><a href="../../constant-time/index.html">Constant-Time</a></nav>
+</header>
+<main class="">
+<!-- synchronized from harness: sign-05/perf_x86_1.md -->
+<h1 id="sign-05-chinith-performance-on-x86-64-system-x86_1">sign-05 Chinith — performance on x86-64 (system x86_1)</h1>
+<p><a href="index.html">Performance x86_1</a> › <code>sign-05</code> · <a href="method.html">method</a> · <a href="https://www.niccs.org.cn/niccs/Round1Additional/pc/content/content_2101561076774162432.html">NICCS page</a></p>
+<p>Independent measurement following the structure of the NICCS x86 self-assessment guide, §3.5 (1)–(7). Not a submitter self-assessment.</p>
+<h2 id="1-basic-information">1. Basic information</h2>
+<ul>
+<li>Category: public-key algorithm; function: digital signature</li>
+<li>Algorithm: Chinith</li>
+<li>Implementation versions measured: reference</li>
+<li>Parameter sets: <code>sm4th_d3_128f_loose</code>, <code>sm4th_d3_128f_tight</code>, <code>sm4th_d3_128s_loose</code>, <code>sm4th_d3_128s_tight</code>, <code>sm4th_em_d2_128f_loose</code>, <code>sm4th_em_d2_128f_tight</code>, <code>sm4th_em_d2_128s_loose</code>, <code>sm4th_em_d2_128s_tight</code>, <code>ublockith_d3_256f</code>, <code>ublockith_d3_256s</code>, <code>ublockith_em_d3_256f</code>, <code>ublockith_em_d3_256s</code>, <code>vistrutith_d3_512f</code>, <code>vistrutith_d3_512s</code></li>
+</ul>
+<h2 id="2-assessment-environment">2. Assessment environment</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>item</th>
+<th>value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>processor</td>
+<td>12th Gen Intel(R) Core(TM) i7-12700 (CPU 2, one core)</td>
+</tr>
+<tr>
+<td>clock</td>
+<td>max 2.10 GHz, governor performance, turbo off, SMT off</td>
+</tr>
+<tr>
+<td>memory</td>
+<td>31788 MiB</td>
+</tr>
+<tr>
+<td>OS / kernel</td>
+<td>Debian GNU/Linux 13 (trixie) / 6.12.107+deb13-amd64</td>
+</tr>
+<tr>
+<td>compiler / build tool</td>
+<td>gcc (Debian 14.2.0-19) 14.2.0 / cmake version 3.31.6</td>
+</tr>
+<tr>
+<td>campaign start / end (UTC)</td>
+<td>2026-09-25T10:02:21 / 2026-09-28T04:35:59</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="3-functional-testing-kat">3. Functional testing (KAT)</h2>
+<p>Each library was checked against the submitted KAT vectors (SHA-256 manifest <code>sign-05/kat.sha256</code> in the harness) before timing.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>build flags</th>
+<th>KAT</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>sm4th_d3_128f_loose</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>sm4th_d3_128f_tight</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>sm4th_d3_128s_loose</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>sm4th_d3_128s_tight</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>sm4th_em_d2_128f_loose</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>sm4th_em_d2_128f_tight</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>sm4th_em_d2_128s_loose</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>sm4th_em_d2_128s_tight</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>ublockith_d3_256f</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>ublockith_d3_256s</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>ublockith_em_d3_256f</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>ublockith_em_d3_256s</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>vistrutith_d3_512f</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>vistrutith_d3_512s</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="4-performance">4. Performance</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>operation</th>
+<th>mean cycles</th>
+<th>mean time</th>
+<th>ops/s</th>
+<th>median trial</th>
+<th>n (trials × iters)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>sm4th_d3_128f_loose</code></td>
+<td>keygen</td>
+<td>12.0 k</td>
+<td>5.72 µs</td>
+<td>1.75e+05</td>
+<td>5.72 µs</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>sm4th_d3_128f_loose</code></td>
+<td>sign</td>
+<td>125.86 M</td>
+<td>60.1 ms</td>
+<td>16.6</td>
+<td>60.1 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>sm4th_d3_128f_loose</code></td>
+<td>verify</td>
+<td>83.72 M</td>
+<td>40 ms</td>
+<td>25</td>
+<td>40 ms</td>
+<td>130 (5 × 26)</td>
+</tr>
+<tr>
+<td><code>sm4th_d3_128f_tight</code></td>
+<td>keygen</td>
+<td>11.9 k</td>
+<td>5.7 µs</td>
+<td>1.76e+05</td>
+<td>5.7 µs</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>sm4th_d3_128f_tight</code></td>
+<td>sign</td>
+<td>194.81 M</td>
+<td>93.1 ms</td>
+<td>10.7</td>
+<td>93.1 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>sm4th_d3_128f_tight</code></td>
+<td>verify</td>
+<td>120.51 M</td>
+<td>57.6 ms</td>
+<td>17.4</td>
+<td>57.6 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>sm4th_d3_128s_loose</code></td>
+<td>keygen</td>
+<td>12.0 k</td>
+<td>5.73 µs</td>
+<td>1.74e+05</td>
+<td>5.72 µs</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>sm4th_d3_128s_loose</code></td>
+<td>sign</td>
+<td>354.25 M</td>
+<td>171 ms</td>
+<td>5.86</td>
+<td>169 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>sm4th_d3_128s_loose</code></td>
+<td>verify</td>
+<td>296.38 M</td>
+<td>143 ms</td>
+<td>6.99</td>
+<td>141 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>sm4th_d3_128s_tight</code></td>
+<td>keygen</td>
+<td>11.9 k</td>
+<td>5.7 µs</td>
+<td>1.75e+05</td>
+<td>5.7 µs</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>sm4th_d3_128s_tight</code></td>
+<td>sign</td>
+<td>422.51 M</td>
+<td>203 ms</td>
+<td>4.93</td>
+<td>202 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>sm4th_d3_128s_tight</code></td>
+<td>verify</td>
+<td>338.39 M</td>
+<td>162 ms</td>
+<td>6.18</td>
+<td>162 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>sm4th_em_d2_128f_loose</code></td>
+<td>keygen</td>
+<td>11.9 k</td>
+<td>5.7 µs</td>
+<td>1.76e+05</td>
+<td>5.69 µs</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>sm4th_em_d2_128f_loose</code></td>
+<td>sign</td>
+<td>29.92 M</td>
+<td>14.3 ms</td>
+<td>70</td>
+<td>14.3 ms</td>
+<td>350 (5 × 70)</td>
+</tr>
+<tr>
+<td><code>sm4th_em_d2_128f_loose</code></td>
+<td>verify</td>
+<td>28.37 M</td>
+<td>13.6 ms</td>
+<td>73.8</td>
+<td>13.6 ms</td>
+<td>370 (5 × 74)</td>
+</tr>
+<tr>
+<td><code>sm4th_em_d2_128f_tight</code></td>
+<td>keygen</td>
+<td>11.9 k</td>
+<td>5.71 µs</td>
+<td>1.75e+05</td>
+<td>5.7 µs</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>sm4th_em_d2_128f_tight</code></td>
+<td>sign</td>
+<td>34.15 M</td>
+<td>16.3 ms</td>
+<td>61.3</td>
+<td>16.3 ms</td>
+<td>310 (5 × 62)</td>
+</tr>
+<tr>
+<td><code>sm4th_em_d2_128f_tight</code></td>
+<td>verify</td>
+<td>32.63 M</td>
+<td>15.6 ms</td>
+<td>64.2</td>
+<td>15.6 ms</td>
+<td>320 (5 × 64)</td>
+</tr>
+<tr>
+<td><code>sm4th_em_d2_128s_loose</code></td>
+<td>keygen</td>
+<td>11.9 k</td>
+<td>5.69 µs</td>
+<td>1.76e+05</td>
+<td>5.69 µs</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>sm4th_em_d2_128s_loose</code></td>
+<td>sign</td>
+<td>196.83 M</td>
+<td>94.1 ms</td>
+<td>10.6</td>
+<td>94.1 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>sm4th_em_d2_128s_loose</code></td>
+<td>verify</td>
+<td>186.07 M</td>
+<td>88.9 ms</td>
+<td>11.2</td>
+<td>89 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>sm4th_em_d2_128s_tight</code></td>
+<td>keygen</td>
+<td>11.9 k</td>
+<td>5.68 µs</td>
+<td>1.76e+05</td>
+<td>5.68 µs</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>sm4th_em_d2_128s_tight</code></td>
+<td>sign</td>
+<td>232.02 M</td>
+<td>114 ms</td>
+<td>8.8</td>
+<td>114 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>sm4th_em_d2_128s_tight</code></td>
+<td>verify</td>
+<td>220.22 M</td>
+<td>105 ms</td>
+<td>9.49</td>
+<td>105 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>ublockith_d3_256f</code></td>
+<td>keygen</td>
+<td>14.6 k</td>
+<td>6.99 µs</td>
+<td>1.43e+05</td>
+<td>7 µs</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>ublockith_d3_256f</code></td>
+<td>sign</td>
+<td>351.34 M</td>
+<td>169 ms</td>
+<td>5.9</td>
+<td>168 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>ublockith_d3_256f</code></td>
+<td>verify</td>
+<td>407.09 M</td>
+<td>196 ms</td>
+<td>5.1</td>
+<td>195 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>ublockith_d3_256s</code></td>
+<td>keygen</td>
+<td>14.6 k</td>
+<td>6.99 µs</td>
+<td>1.43e+05</td>
+<td>6.99 µs</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>ublockith_d3_256s</code></td>
+<td>sign</td>
+<td>1.08 G</td>
+<td>521 ms</td>
+<td>1.92</td>
+<td>521 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>ublockith_d3_256s</code></td>
+<td>verify</td>
+<td>1.14 G</td>
+<td>544 ms</td>
+<td>1.84</td>
+<td>544 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>ublockith_em_d3_256f</code></td>
+<td>keygen</td>
+<td>14.7 k</td>
+<td>7.01 µs</td>
+<td>1.43e+05</td>
+<td>7.01 µs</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>ublockith_em_d3_256f</code></td>
+<td>sign</td>
+<td>267.51 M</td>
+<td>128 ms</td>
+<td>7.79</td>
+<td>128 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>ublockith_em_d3_256f</code></td>
+<td>verify</td>
+<td>310.14 M</td>
+<td>150 ms</td>
+<td>6.69</td>
+<td>148 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>ublockith_em_d3_256s</code></td>
+<td>keygen</td>
+<td>14.7 k</td>
+<td>7.01 µs</td>
+<td>1.43e+05</td>
+<td>7 µs</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>ublockith_em_d3_256s</code></td>
+<td>sign</td>
+<td>897.43 M</td>
+<td>436 ms</td>
+<td>2.3</td>
+<td>434 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>ublockith_em_d3_256s</code></td>
+<td>verify</td>
+<td>923.48 M</td>
+<td>442 ms</td>
+<td>2.26</td>
+<td>442 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>vistrutith_d3_512f</code></td>
+<td>keygen</td>
+<td>15.9 k</td>
+<td>7.6 µs</td>
+<td>1.32e+05</td>
+<td>7.61 µs</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>vistrutith_d3_512f</code></td>
+<td>sign</td>
+<td>6.37 G</td>
+<td>3.05 s</td>
+<td>0.328</td>
+<td>3.05 s</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>vistrutith_d3_512f</code></td>
+<td>verify</td>
+<td>5.27 G</td>
+<td>2.52 s</td>
+<td>0.396</td>
+<td>2.52 s</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>vistrutith_d3_512s</code></td>
+<td>keygen</td>
+<td>15.9 k</td>
+<td>7.59 µs</td>
+<td>1.32e+05</td>
+<td>7.6 µs</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>vistrutith_d3_512s</code></td>
+<td>sign</td>
+<td>11.79 G</td>
+<td>5.67 s</td>
+<td>0.176</td>
+<td>5.67 s</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>vistrutith_d3_512s</code></td>
+<td>verify</td>
+<td>10.70 G</td>
+<td>5.12 s</td>
+<td>0.195</td>
+<td>5.12 s</td>
+<td>100 (5 × 20)</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="5-resource-consumption">5. Resource consumption</h2>
+<p>Static memory is approximated by the library's loadable ELF segments; peak memory is the process high-water mark (VmHWM) including the benchmark driver and libc, so both are upper-bound proxies rather than isolated algorithm memory.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>operation</th>
+<th>static: ELF image (bytes)</th>
+<th>baseline RSS</th>
+<th>peak RSS</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>sm4th_d3_128f_loose</code></td>
+<td>keygen</td>
+<td>143905</td>
+<td>1756 KiB</td>
+<td>1836 KiB</td>
+</tr>
+<tr>
+<td><code>sm4th_d3_128f_loose</code></td>
+<td>sign</td>
+<td>143905</td>
+<td>1772 KiB</td>
+<td>3316 KiB</td>
+</tr>
+<tr>
+<td><code>sm4th_d3_128f_loose</code></td>
+<td>verify</td>
+<td>143905</td>
+<td>2264 KiB</td>
+<td>3260 KiB</td>
+</tr>
+<tr>
+<td><code>sm4th_d3_128f_tight</code></td>
+<td>keygen</td>
+<td>184837</td>
+<td>1788 KiB</td>
+<td>1868 KiB</td>
+</tr>
+<tr>
+<td><code>sm4th_d3_128f_tight</code></td>
+<td>sign</td>
+<td>184837</td>
+<td>1808 KiB</td>
+<td>3908 KiB</td>
+</tr>
+<tr>
+<td><code>sm4th_d3_128f_tight</code></td>
+<td>verify</td>
+<td>184837</td>
+<td>2372 KiB</td>
+<td>4764 KiB</td>
+</tr>
+<tr>
+<td><code>sm4th_d3_128s_loose</code></td>
+<td>keygen</td>
+<td>143905</td>
+<td>1764 KiB</td>
+<td>1844 KiB</td>
+</tr>
+<tr>
+<td><code>sm4th_d3_128s_loose</code></td>
+<td>sign</td>
+<td>143905</td>
+<td>1784 KiB</td>
+<td>10600 KiB</td>
+</tr>
+<tr>
+<td><code>sm4th_d3_128s_loose</code></td>
+<td>verify</td>
+<td>143905</td>
+<td>2460 KiB</td>
+<td>16500 KiB</td>
+</tr>
+<tr>
+<td><code>sm4th_d3_128s_tight</code></td>
+<td>keygen</td>
+<td>184837</td>
+<td>1792 KiB</td>
+<td>1892 KiB</td>
+</tr>
+<tr>
+<td><code>sm4th_d3_128s_tight</code></td>
+<td>sign</td>
+<td>184837</td>
+<td>1800 KiB</td>
+<td>15748 KiB</td>
+</tr>
+<tr>
+<td><code>sm4th_d3_128s_tight</code></td>
+<td>verify</td>
+<td>184837</td>
+<td>2972 KiB</td>
+<td>15820 KiB</td>
+</tr>
+<tr>
+<td><code>sm4th_em_d2_128f_loose</code></td>
+<td>keygen</td>
+<td>104225</td>
+<td>1768 KiB</td>
+<td>1852 KiB</td>
+</tr>
+<tr>
+<td><code>sm4th_em_d2_128f_loose</code></td>
+<td>sign</td>
+<td>104225</td>
+<td>1768 KiB</td>
+<td>2780 KiB</td>
+</tr>
+<tr>
+<td><code>sm4th_em_d2_128f_loose</code></td>
+<td>verify</td>
+<td>104225</td>
+<td>2172 KiB</td>
+<td>2772 KiB</td>
+</tr>
+<tr>
+<td><code>sm4th_em_d2_128f_tight</code></td>
+<td>keygen</td>
+<td>131853</td>
+<td>1804 KiB</td>
+<td>1868 KiB</td>
+</tr>
+<tr>
+<td><code>sm4th_em_d2_128f_tight</code></td>
+<td>sign</td>
+<td>131853</td>
+<td>1788 KiB</td>
+<td>3212 KiB</td>
+</tr>
+<tr>
+<td><code>sm4th_em_d2_128f_tight</code></td>
+<td>verify</td>
+<td>131853</td>
+<td>2120 KiB</td>
+<td>3268 KiB</td>
+</tr>
+<tr>
+<td><code>sm4th_em_d2_128s_loose</code></td>
+<td>keygen</td>
+<td>104225</td>
+<td>1744 KiB</td>
+<td>1848 KiB</td>
+</tr>
+<tr>
+<td><code>sm4th_em_d2_128s_loose</code></td>
+<td>sign</td>
+<td>104225</td>
+<td>1764 KiB</td>
+<td>7800 KiB</td>
+</tr>
+<tr>
+<td><code>sm4th_em_d2_128s_loose</code></td>
+<td>verify</td>
+<td>104225</td>
+<td>2152 KiB</td>
+<td>7848 KiB</td>
+</tr>
+<tr>
+<td><code>sm4th_em_d2_128s_tight</code></td>
+<td>keygen</td>
+<td>131853</td>
+<td>1800 KiB</td>
+<td>1892 KiB</td>
+</tr>
+<tr>
+<td><code>sm4th_em_d2_128s_tight</code></td>
+<td>sign</td>
+<td>131853</td>
+<td>1788 KiB</td>
+<td>12036 KiB</td>
+</tr>
+<tr>
+<td><code>sm4th_em_d2_128s_tight</code></td>
+<td>verify</td>
+<td>131853</td>
+<td>2408 KiB</td>
+<td>12200 KiB</td>
+</tr>
+<tr>
+<td><code>ublockith_d3_256f</code></td>
+<td>keygen</td>
+<td>150513</td>
+<td>1792 KiB</td>
+<td>1920 KiB</td>
+</tr>
+<tr>
+<td><code>ublockith_d3_256f</code></td>
+<td>sign</td>
+<td>150513</td>
+<td>1848 KiB</td>
+<td>9284 KiB</td>
+</tr>
+<tr>
+<td><code>ublockith_d3_256f</code></td>
+<td>verify</td>
+<td>150513</td>
+<td>2520 KiB</td>
+<td>13296 KiB</td>
+</tr>
+<tr>
+<td><code>ublockith_d3_256s</code></td>
+<td>keygen</td>
+<td>145913</td>
+<td>1784 KiB</td>
+<td>1908 KiB</td>
+</tr>
+<tr>
+<td><code>ublockith_d3_256s</code></td>
+<td>sign</td>
+<td>145913</td>
+<td>1748 KiB</td>
+<td>17148 KiB</td>
+</tr>
+<tr>
+<td><code>ublockith_d3_256s</code></td>
+<td>verify</td>
+<td>145913</td>
+<td>6872 KiB</td>
+<td>17136 KiB</td>
+</tr>
+<tr>
+<td><code>ublockith_em_d3_256f</code></td>
+<td>keygen</td>
+<td>149537</td>
+<td>1752 KiB</td>
+<td>1936 KiB</td>
+</tr>
+<tr>
+<td><code>ublockith_em_d3_256f</code></td>
+<td>sign</td>
+<td>149537</td>
+<td>1836 KiB</td>
+<td>4232 KiB</td>
+</tr>
+<tr>
+<td><code>ublockith_em_d3_256f</code></td>
+<td>verify</td>
+<td>149537</td>
+<td>2656 KiB</td>
+<td>3980 KiB</td>
+</tr>
+<tr>
+<td><code>ublockith_em_d3_256s</code></td>
+<td>keygen</td>
+<td>149537</td>
+<td>1772 KiB</td>
+<td>1900 KiB</td>
+</tr>
+<tr>
+<td><code>ublockith_em_d3_256s</code></td>
+<td>sign</td>
+<td>149537</td>
+<td>1816 KiB</td>
+<td>16380 KiB</td>
+</tr>
+<tr>
+<td><code>ublockith_em_d3_256s</code></td>
+<td>verify</td>
+<td>149537</td>
+<td>6328 KiB</td>
+<td>17792 KiB</td>
+</tr>
+<tr>
+<td><code>vistrutith_d3_512f</code></td>
+<td>keygen</td>
+<td>191201</td>
+<td>1908 KiB</td>
+<td>1992 KiB</td>
+</tr>
+<tr>
+<td><code>vistrutith_d3_512f</code></td>
+<td>sign</td>
+<td>191201</td>
+<td>1920 KiB</td>
+<td>9332 KiB</td>
+</tr>
+<tr>
+<td><code>vistrutith_d3_512f</code></td>
+<td>verify</td>
+<td>191201</td>
+<td>3556 KiB</td>
+<td>9104 KiB</td>
+</tr>
+<tr>
+<td><code>vistrutith_d3_512s</code></td>
+<td>keygen</td>
+<td>191201</td>
+<td>1876 KiB</td>
+<td>1948 KiB</td>
+</tr>
+<tr>
+<td><code>vistrutith_d3_512s</code></td>
+<td>sign</td>
+<td>191201</td>
+<td>1896 KiB</td>
+<td>55724 KiB</td>
+</tr>
+<tr>
+<td><code>vistrutith_d3_512s</code></td>
+<td>verify</td>
+<td>191201</td>
+<td>11692 KiB</td>
+<td>63592 KiB</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="6-transmission-and-storage-overhead">6. Transmission and storage overhead</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>public key</th>
+<th>secret key</th>
+<th>signature</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>sm4th_d3_128f_loose</code></td>
+<td>32</td>
+<td>32</td>
+<td>6724</td>
+</tr>
+<tr>
+<td><code>sm4th_d3_128f_tight</code></td>
+<td>32</td>
+<td>32</td>
+<td>11864</td>
+</tr>
+<tr>
+<td><code>sm4th_d3_128s_loose</code></td>
+<td>32</td>
+<td>32</td>
+<td>5056</td>
+</tr>
+<tr>
+<td><code>sm4th_d3_128s_tight</code></td>
+<td>32</td>
+<td>32</td>
+<td>9176</td>
+</tr>
+<tr>
+<td><code>sm4th_em_d2_128f_loose</code></td>
+<td>32</td>
+<td>32</td>
+<td>4932</td>
+</tr>
+<tr>
+<td><code>sm4th_em_d2_128f_tight</code></td>
+<td>32</td>
+<td>32</td>
+<td>9450</td>
+</tr>
+<tr>
+<td><code>sm4th_em_d2_128s_loose</code></td>
+<td>32</td>
+<td>32</td>
+<td>3818</td>
+</tr>
+<tr>
+<td><code>sm4th_em_d2_128s_tight</code></td>
+<td>32</td>
+<td>32</td>
+<td>7556</td>
+</tr>
+<tr>
+<td><code>ublockith_d3_256f</code></td>
+<td>64</td>
+<td>64</td>
+<td>31556</td>
+</tr>
+<tr>
+<td><code>ublockith_d3_256s</code></td>
+<td>64</td>
+<td>64</td>
+<td>24144</td>
+</tr>
+<tr>
+<td><code>ublockith_em_d3_256f</code></td>
+<td>64</td>
+<td>64</td>
+<td>25028</td>
+</tr>
+<tr>
+<td><code>ublockith_em_d3_256s</code></td>
+<td>64</td>
+<td>64</td>
+<td>19056</td>
+</tr>
+<tr>
+<td><code>vistrutith_d3_512f</code></td>
+<td>128</td>
+<td>128</td>
+<td>106788</td>
+</tr>
+<tr>
+<td><code>vistrutith_d3_512s</code></td>
+<td>128</td>
+<td>128</td>
+<td>83004</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="symmetric-primitives">Symmetric primitives</h2>
+<p><a href="../symmetric-survey.html">Survey</a> verdict: <strong>mixed</strong> — random oracles via ICCS; seed-tree/VOLE PRG via SM4 / Ballet / Vistrutah</p>
+<p>Share of each operation spent in the ICCS placeholder hash functions and in the ICCS DRNG (reference build, measured in the same run with link-time wrappers):</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>operation</th>
+<th>pseudohash/XOF/sm3</th>
+<th>DRNG</th>
+<th>calls per operation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>sm4th_d3_128f_loose</code></td>
+<td>keygen</td>
+<td>0.0%</td>
+<td>88%</td>
+<td>drng 2.34</td>
+</tr>
+<tr>
+<td><code>sm4th_d3_128f_loose</code></td>
+<td>sign</td>
+<td>2.7%</td>
+<td>0.0%</td>
+<td>drng 1, pseudoXOF 2, sm3hash 352</td>
+</tr>
+<tr>
+<td><code>sm4th_d3_128f_loose</code></td>
+<td>verify</td>
+<td>3.0%</td>
+<td>0.0%</td>
+<td>pseudoXOF 2, sm3hash 20</td>
+</tr>
+<tr>
+<td><code>sm4th_d3_128f_tight</code></td>
+<td>keygen</td>
+<td>0.0%</td>
+<td>88%</td>
+<td>drng 2.34</td>
+</tr>
+<tr>
+<td><code>sm4th_d3_128f_tight</code></td>
+<td>sign</td>
+<td>5.9%</td>
+<td>0.0%</td>
+<td>drng 1, pseudoXOF 2, pseudohash 23, sm3hash 529</td>
+</tr>
+<tr>
+<td><code>sm4th_d3_128f_tight</code></td>
+<td>verify</td>
+<td>8.3%</td>
+<td>0.0%</td>
+<td>pseudoXOF 2, pseudohash 22, sm3hash 3</td>
+</tr>
+<tr>
+<td><code>sm4th_d3_128s_loose</code></td>
+<td>keygen</td>
+<td>0.0%</td>
+<td>88%</td>
+<td>drng 2.34</td>
+</tr>
+<tr>
+<td><code>sm4th_d3_128s_loose</code></td>
+<td>sign</td>
+<td>11%</td>
+<td>0.0%</td>
+<td>drng 1, pseudoXOF 2, sm3hash 7.98e+03</td>
+</tr>
+<tr>
+<td><code>sm4th_d3_128s_loose</code></td>
+<td>verify</td>
+<td>5.3%</td>
+<td>0.0%</td>
+<td>pseudoXOF 2, sm3hash 15</td>
+</tr>
+<tr>
+<td><code>sm4th_d3_128s_tight</code></td>
+<td>keygen</td>
+<td>0.0%</td>
+<td>88%</td>
+<td>drng 2.34</td>
+</tr>
+<tr>
+<td><code>sm4th_d3_128s_tight</code></td>
+<td>sign</td>
+<td>21%</td>
+<td>0.0%</td>
+<td>drng 1, pseudoXOF 2, pseudohash 16, sm3hash 4.43e+03</td>
+</tr>
+<tr>
+<td><code>sm4th_d3_128s_tight</code></td>
+<td>verify</td>
+<td>22%</td>
+<td>0.0%</td>
+<td>pseudoXOF 2, pseudohash 15, sm3hash 3</td>
+</tr>
+<tr>
+<td><code>sm4th_em_d2_128f_loose</code></td>
+<td>keygen</td>
+<td>0.0%</td>
+<td>88%</td>
+<td>drng 2.34</td>
+</tr>
+<tr>
+<td><code>sm4th_em_d2_128f_loose</code></td>
+<td>sign</td>
+<td>11%</td>
+<td>0.0%</td>
+<td>drng 1, pseudoXOF 303, sm3hash 19</td>
+</tr>
+<tr>
+<td><code>sm4th_em_d2_128f_loose</code></td>
+<td>verify</td>
+<td>8.4%</td>
+<td>0.0%</td>
+<td>pseudoXOF 4, sm3hash 18</td>
+</tr>
+<tr>
+<td><code>sm4th_em_d2_128f_tight</code></td>
+<td>keygen</td>
+<td>0.0%</td>
+<td>89%</td>
+<td>drng 2.34</td>
+</tr>
+<tr>
+<td><code>sm4th_em_d2_128f_tight</code></td>
+<td>sign</td>
+<td>31%</td>
+<td>0.0%</td>
+<td>drng 1, pseudoXOF 256, pseudohash 23, sm3hash 2</td>
+</tr>
+<tr>
+<td><code>sm4th_em_d2_128f_tight</code></td>
+<td>verify</td>
+<td>30%</td>
+<td>0.0%</td>
+<td>pseudoXOF 3, pseudohash 22, sm3hash 2</td>
+</tr>
+<tr>
+<td><code>sm4th_em_d2_128s_loose</code></td>
+<td>keygen</td>
+<td>0.0%</td>
+<td>89%</td>
+<td>drng 2.34</td>
+</tr>
+<tr>
+<td><code>sm4th_em_d2_128s_loose</code></td>
+<td>sign</td>
+<td>14%</td>
+<td>0.0%</td>
+<td>drng 1, pseudoXOF 4.26e+03, sm3hash 14</td>
+</tr>
+<tr>
+<td><code>sm4th_em_d2_128s_loose</code></td>
+<td>verify</td>
+<td>8.3%</td>
+<td>0.0%</td>
+<td>pseudoXOF 4, sm3hash 13</td>
+</tr>
+<tr>
+<td><code>sm4th_em_d2_128s_tight</code></td>
+<td>keygen</td>
+<td>0.0%</td>
+<td>88%</td>
+<td>drng 2.34</td>
+</tr>
+<tr>
+<td><code>sm4th_em_d2_128s_tight</code></td>
+<td>sign</td>
+<td>36%</td>
+<td>0.0%</td>
+<td>drng 1, pseudoXOF 2.95e+03, pseudohash 16, sm3hash 2</td>
+</tr>
+<tr>
+<td><code>sm4th_em_d2_128s_tight</code></td>
+<td>verify</td>
+<td>34%</td>
+<td>0.0%</td>
+<td>pseudoXOF 3, pseudohash 15, sm3hash 2</td>
+</tr>
+<tr>
+<td><code>ublockith_d3_256f</code></td>
+<td>keygen</td>
+<td>0.0%</td>
+<td>72%</td>
+<td>drng 2.34</td>
+</tr>
+<tr>
+<td><code>ublockith_d3_256f</code></td>
+<td>sign</td>
+<td>6.7%</td>
+<td>0.0%</td>
+<td>drng 1, pseudoXOF 2, pseudohash 35, sm3hash 109</td>
+</tr>
+<tr>
+<td><code>ublockith_d3_256f</code></td>
+<td>verify</td>
+<td>5.7%</td>
+<td>0.0%</td>
+<td>pseudoXOF 2, pseudohash 34, sm3hash 2</td>
+</tr>
+<tr>
+<td><code>ublockith_d3_256s</code></td>
+<td>keygen</td>
+<td>0.0%</td>
+<td>72%</td>
+<td>drng 2.34</td>
+</tr>
+<tr>
+<td><code>ublockith_d3_256s</code></td>
+<td>sign</td>
+<td>16%</td>
+<td>0.0%</td>
+<td>drng 1, pseudoXOF 2, pseudohash 25, sm3hash 50.3</td>
+</tr>
+<tr>
+<td><code>ublockith_d3_256s</code></td>
+<td>verify</td>
+<td>15%</td>
+<td>0.0%</td>
+<td>pseudoXOF 2, pseudohash 24, sm3hash 2</td>
+</tr>
+<tr>
+<td><code>ublockith_em_d3_256f</code></td>
+<td>keygen</td>
+<td>0.0%</td>
+<td>72%</td>
+<td>drng 2.34</td>
+</tr>
+<tr>
+<td><code>ublockith_em_d3_256f</code></td>
+<td>sign</td>
+<td>8.8%</td>
+<td>0.0%</td>
+<td>drng 1, pseudoXOF 2, pseudohash 35, sm3hash 251</td>
+</tr>
+<tr>
+<td><code>ublockith_em_d3_256f</code></td>
+<td>verify</td>
+<td>7.2%</td>
+<td>0.0%</td>
+<td>pseudoXOF 2, pseudohash 34, sm3hash 2</td>
+</tr>
+<tr>
+<td><code>ublockith_em_d3_256s</code></td>
+<td>keygen</td>
+<td>0.0%</td>
+<td>72%</td>
+<td>drng 2.34</td>
+</tr>
+<tr>
+<td><code>ublockith_em_d3_256s</code></td>
+<td>sign</td>
+<td>21%</td>
+<td>0.0%</td>
+<td>drng 1, pseudoXOF 2, pseudohash 25, sm3hash 3.75e+03</td>
+</tr>
+<tr>
+<td><code>ublockith_em_d3_256s</code></td>
+<td>verify</td>
+<td>18%</td>
+<td>0.0%</td>
+<td>pseudoXOF 2, pseudohash 24, sm3hash 2</td>
+</tr>
+<tr>
+<td><code>vistrutith_d3_512f</code></td>
+<td>keygen</td>
+<td>0.0%</td>
+<td>87%</td>
+<td>drng 2.34</td>
+</tr>
+<tr>
+<td><code>vistrutith_d3_512f</code></td>
+<td>sign</td>
+<td>1.7%</td>
+<td>0.0%</td>
+<td>drng 1, pseudoXOF 2, pseudohash 123, sm3hash 1</td>
+</tr>
+<tr>
+<td><code>vistrutith_d3_512f</code></td>
+<td>verify</td>
+<td>2.0%</td>
+<td>0.0%</td>
+<td>pseudoXOF 2, pseudohash 67, sm3hash 1</td>
+</tr>
+<tr>
+<td><code>vistrutith_d3_512s</code></td>
+<td>keygen</td>
+<td>0.0%</td>
+<td>87%</td>
+<td>drng 2.34</td>
+</tr>
+<tr>
+<td><code>vistrutith_d3_512s</code></td>
+<td>sign</td>
+<td>6.6%</td>
+<td>0.0%</td>
+<td>drng 1, pseudoXOF 2, pseudohash 69.7, sm3hash 1</td>
+</tr>
+<tr>
+<td><code>vistrutith_d3_512s</code></td>
+<td>verify</td>
+<td>7.2%</td>
+<td>0.0%</td>
+<td>pseudoXOF 2, pseudohash 47, sm3hash 1</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="7-raw-evidence-index">7. Raw evidence index</h2>
+<p>Paths are relative to <code>performance/data/x86_1/</code> in the <a href="https://github.com/ngcc-dev/ngcc-harness">harness</a>; each JSON file records its commands, environment and trials.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>item</th>
+<th>file</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>sm4th_d3_128f_loose</code></td>
+<td>KAT log (sha256 <code>6bc8eaf9d5f2fa41…</code>)</td>
+<td><code>kat/sign-05/sm4th_d3_128f_loose.log</code></td>
+</tr>
+<tr>
+<td><code>sm4th_d3_128f_loose</code></td>
+<td>timing keygen</td>
+<td><code>records/sign-05/sm4th_d3_128f_loose__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>sm4th_d3_128f_loose</code></td>
+<td>timing sign</td>
+<td><code>records/sign-05/sm4th_d3_128f_loose__sign.json</code></td>
+</tr>
+<tr>
+<td><code>sm4th_d3_128f_loose</code></td>
+<td>timing verify</td>
+<td><code>records/sign-05/sm4th_d3_128f_loose__verify.json</code></td>
+</tr>
+<tr>
+<td><code>sm4th_d3_128f_loose</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/sign-05/sm4th_d3_128f_loose__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>sm4th_d3_128f_loose</code></td>
+<td>hash profile sign</td>
+<td><code>profile/sign-05/sm4th_d3_128f_loose__sign.json</code></td>
+</tr>
+<tr>
+<td><code>sm4th_d3_128f_loose</code></td>
+<td>hash profile verify</td>
+<td><code>profile/sign-05/sm4th_d3_128f_loose__verify.json</code></td>
+</tr>
+<tr>
+<td><code>sm4th_d3_128f_tight</code></td>
+<td>KAT log (sha256 <code>d13a1f2ba0dedb3a…</code>)</td>
+<td><code>kat/sign-05/sm4th_d3_128f_tight.log</code></td>
+</tr>
+<tr>
+<td><code>sm4th_d3_128f_tight</code></td>
+<td>timing keygen</td>
+<td><code>records/sign-05/sm4th_d3_128f_tight__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>sm4th_d3_128f_tight</code></td>
+<td>timing sign</td>
+<td><code>records/sign-05/sm4th_d3_128f_tight__sign.json</code></td>
+</tr>
+<tr>
+<td><code>sm4th_d3_128f_tight</code></td>
+<td>timing verify</td>
+<td><code>records/sign-05/sm4th_d3_128f_tight__verify.json</code></td>
+</tr>
+<tr>
+<td><code>sm4th_d3_128f_tight</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/sign-05/sm4th_d3_128f_tight__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>sm4th_d3_128f_tight</code></td>
+<td>hash profile sign</td>
+<td><code>profile/sign-05/sm4th_d3_128f_tight__sign.json</code></td>
+</tr>
+<tr>
+<td><code>sm4th_d3_128f_tight</code></td>
+<td>hash profile verify</td>
+<td><code>profile/sign-05/sm4th_d3_128f_tight__verify.json</code></td>
+</tr>
+<tr>
+<td><code>sm4th_d3_128s_loose</code></td>
+<td>KAT log (sha256 <code>d1b8bbe31ff1e6a3…</code>)</td>
+<td><code>kat/sign-05/sm4th_d3_128s_loose.log</code></td>
+</tr>
+<tr>
+<td><code>sm4th_d3_128s_loose</code></td>
+<td>timing keygen</td>
+<td><code>records/sign-05/sm4th_d3_128s_loose__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>sm4th_d3_128s_loose</code></td>
+<td>timing sign</td>
+<td><code>records/sign-05/sm4th_d3_128s_loose__sign.json</code></td>
+</tr>
+<tr>
+<td><code>sm4th_d3_128s_loose</code></td>
+<td>timing verify</td>
+<td><code>records/sign-05/sm4th_d3_128s_loose__verify.json</code></td>
+</tr>
+<tr>
+<td><code>sm4th_d3_128s_loose</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/sign-05/sm4th_d3_128s_loose__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>sm4th_d3_128s_loose</code></td>
+<td>hash profile sign</td>
+<td><code>profile/sign-05/sm4th_d3_128s_loose__sign.json</code></td>
+</tr>
+<tr>
+<td><code>sm4th_d3_128s_loose</code></td>
+<td>hash profile verify</td>
+<td><code>profile/sign-05/sm4th_d3_128s_loose__verify.json</code></td>
+</tr>
+<tr>
+<td><code>sm4th_d3_128s_tight</code></td>
+<td>KAT log (sha256 <code>2be015f8463d0b1d…</code>)</td>
+<td><code>kat/sign-05/sm4th_d3_128s_tight.log</code></td>
+</tr>
+<tr>
+<td><code>sm4th_d3_128s_tight</code></td>
+<td>timing keygen</td>
+<td><code>records/sign-05/sm4th_d3_128s_tight__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>sm4th_d3_128s_tight</code></td>
+<td>timing sign</td>
+<td><code>records/sign-05/sm4th_d3_128s_tight__sign.json</code></td>
+</tr>
+<tr>
+<td><code>sm4th_d3_128s_tight</code></td>
+<td>timing verify</td>
+<td><code>records/sign-05/sm4th_d3_128s_tight__verify.json</code></td>
+</tr>
+<tr>
+<td><code>sm4th_d3_128s_tight</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/sign-05/sm4th_d3_128s_tight__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>sm4th_d3_128s_tight</code></td>
+<td>hash profile sign</td>
+<td><code>profile/sign-05/sm4th_d3_128s_tight__sign.json</code></td>
+</tr>
+<tr>
+<td><code>sm4th_d3_128s_tight</code></td>
+<td>hash profile verify</td>
+<td><code>profile/sign-05/sm4th_d3_128s_tight__verify.json</code></td>
+</tr>
+<tr>
+<td><code>sm4th_em_d2_128f_loose</code></td>
+<td>KAT log (sha256 <code>02be1ed91a125359…</code>)</td>
+<td><code>kat/sign-05/sm4th_em_d2_128f_loose.log</code></td>
+</tr>
+<tr>
+<td><code>sm4th_em_d2_128f_loose</code></td>
+<td>timing keygen</td>
+<td><code>records/sign-05/sm4th_em_d2_128f_loose__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>sm4th_em_d2_128f_loose</code></td>
+<td>timing sign</td>
+<td><code>records/sign-05/sm4th_em_d2_128f_loose__sign.json</code></td>
+</tr>
+<tr>
+<td><code>sm4th_em_d2_128f_loose</code></td>
+<td>timing verify</td>
+<td><code>records/sign-05/sm4th_em_d2_128f_loose__verify.json</code></td>
+</tr>
+<tr>
+<td><code>sm4th_em_d2_128f_loose</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/sign-05/sm4th_em_d2_128f_loose__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>sm4th_em_d2_128f_loose</code></td>
+<td>hash profile sign</td>
+<td><code>profile/sign-05/sm4th_em_d2_128f_loose__sign.json</code></td>
+</tr>
+<tr>
+<td><code>sm4th_em_d2_128f_loose</code></td>
+<td>hash profile verify</td>
+<td><code>profile/sign-05/sm4th_em_d2_128f_loose__verify.json</code></td>
+</tr>
+<tr>
+<td><code>sm4th_em_d2_128f_tight</code></td>
+<td>KAT log (sha256 <code>af19563528946915…</code>)</td>
+<td><code>kat/sign-05/sm4th_em_d2_128f_tight.log</code></td>
+</tr>
+<tr>
+<td><code>sm4th_em_d2_128f_tight</code></td>
+<td>timing keygen</td>
+<td><code>records/sign-05/sm4th_em_d2_128f_tight__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>sm4th_em_d2_128f_tight</code></td>
+<td>timing sign</td>
+<td><code>records/sign-05/sm4th_em_d2_128f_tight__sign.json</code></td>
+</tr>
+<tr>
+<td><code>sm4th_em_d2_128f_tight</code></td>
+<td>timing verify</td>
+<td><code>records/sign-05/sm4th_em_d2_128f_tight__verify.json</code></td>
+</tr>
+<tr>
+<td><code>sm4th_em_d2_128f_tight</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/sign-05/sm4th_em_d2_128f_tight__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>sm4th_em_d2_128f_tight</code></td>
+<td>hash profile sign</td>
+<td><code>profile/sign-05/sm4th_em_d2_128f_tight__sign.json</code></td>
+</tr>
+<tr>
+<td><code>sm4th_em_d2_128f_tight</code></td>
+<td>hash profile verify</td>
+<td><code>profile/sign-05/sm4th_em_d2_128f_tight__verify.json</code></td>
+</tr>
+<tr>
+<td><code>sm4th_em_d2_128s_loose</code></td>
+<td>KAT log (sha256 <code>dc60df899d079f90…</code>)</td>
+<td><code>kat/sign-05/sm4th_em_d2_128s_loose.log</code></td>
+</tr>
+<tr>
+<td><code>sm4th_em_d2_128s_loose</code></td>
+<td>timing keygen</td>
+<td><code>records/sign-05/sm4th_em_d2_128s_loose__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>sm4th_em_d2_128s_loose</code></td>
+<td>timing sign</td>
+<td><code>records/sign-05/sm4th_em_d2_128s_loose__sign.json</code></td>
+</tr>
+<tr>
+<td><code>sm4th_em_d2_128s_loose</code></td>
+<td>timing verify</td>
+<td><code>records/sign-05/sm4th_em_d2_128s_loose__verify.json</code></td>
+</tr>
+<tr>
+<td><code>sm4th_em_d2_128s_loose</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/sign-05/sm4th_em_d2_128s_loose__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>sm4th_em_d2_128s_loose</code></td>
+<td>hash profile sign</td>
+<td><code>profile/sign-05/sm4th_em_d2_128s_loose__sign.json</code></td>
+</tr>
+<tr>
+<td><code>sm4th_em_d2_128s_loose</code></td>
+<td>hash profile verify</td>
+<td><code>profile/sign-05/sm4th_em_d2_128s_loose__verify.json</code></td>
+</tr>
+<tr>
+<td><code>sm4th_em_d2_128s_tight</code></td>
+<td>KAT log (sha256 <code>828383a77f982618…</code>)</td>
+<td><code>kat/sign-05/sm4th_em_d2_128s_tight.log</code></td>
+</tr>
+<tr>
+<td><code>sm4th_em_d2_128s_tight</code></td>
+<td>timing keygen</td>
+<td><code>records/sign-05/sm4th_em_d2_128s_tight__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>sm4th_em_d2_128s_tight</code></td>
+<td>timing sign</td>
+<td><code>records/sign-05/sm4th_em_d2_128s_tight__sign.json</code></td>
+</tr>
+<tr>
+<td><code>sm4th_em_d2_128s_tight</code></td>
+<td>timing verify</td>
+<td><code>records/sign-05/sm4th_em_d2_128s_tight__verify.json</code></td>
+</tr>
+<tr>
+<td><code>sm4th_em_d2_128s_tight</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/sign-05/sm4th_em_d2_128s_tight__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>sm4th_em_d2_128s_tight</code></td>
+<td>hash profile sign</td>
+<td><code>profile/sign-05/sm4th_em_d2_128s_tight__sign.json</code></td>
+</tr>
+<tr>
+<td><code>sm4th_em_d2_128s_tight</code></td>
+<td>hash profile verify</td>
+<td><code>profile/sign-05/sm4th_em_d2_128s_tight__verify.json</code></td>
+</tr>
+<tr>
+<td><code>ublockith_d3_256f</code></td>
+<td>KAT log (sha256 <code>4e4cbfb8202155f3…</code>)</td>
+<td><code>kat/sign-05/ublockith_d3_256f.log</code></td>
+</tr>
+<tr>
+<td><code>ublockith_d3_256f</code></td>
+<td>timing keygen</td>
+<td><code>records/sign-05/ublockith_d3_256f__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>ublockith_d3_256f</code></td>
+<td>timing sign</td>
+<td><code>records/sign-05/ublockith_d3_256f__sign.json</code></td>
+</tr>
+<tr>
+<td><code>ublockith_d3_256f</code></td>
+<td>timing verify</td>
+<td><code>records/sign-05/ublockith_d3_256f__verify.json</code></td>
+</tr>
+<tr>
+<td><code>ublockith_d3_256f</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/sign-05/ublockith_d3_256f__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>ublockith_d3_256f</code></td>
+<td>hash profile sign</td>
+<td><code>profile/sign-05/ublockith_d3_256f__sign.json</code></td>
+</tr>
+<tr>
+<td><code>ublockith_d3_256f</code></td>
+<td>hash profile verify</td>
+<td><code>profile/sign-05/ublockith_d3_256f__verify.json</code></td>
+</tr>
+<tr>
+<td><code>ublockith_d3_256s</code></td>
+<td>KAT log (sha256 <code>cc48efc0b26a0cac…</code>)</td>
+<td><code>kat/sign-05/ublockith_d3_256s.log</code></td>
+</tr>
+<tr>
+<td><code>ublockith_d3_256s</code></td>
+<td>timing keygen</td>
+<td><code>records/sign-05/ublockith_d3_256s__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>ublockith_d3_256s</code></td>
+<td>timing sign</td>
+<td><code>records/sign-05/ublockith_d3_256s__sign.json</code></td>
+</tr>
+<tr>
+<td><code>ublockith_d3_256s</code></td>
+<td>timing verify</td>
+<td><code>records/sign-05/ublockith_d3_256s__verify.json</code></td>
+</tr>
+<tr>
+<td><code>ublockith_d3_256s</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/sign-05/ublockith_d3_256s__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>ublockith_d3_256s</code></td>
+<td>hash profile sign</td>
+<td><code>profile/sign-05/ublockith_d3_256s__sign.json</code></td>
+</tr>
+<tr>
+<td><code>ublockith_d3_256s</code></td>
+<td>hash profile verify</td>
+<td><code>profile/sign-05/ublockith_d3_256s__verify.json</code></td>
+</tr>
+<tr>
+<td><code>ublockith_em_d3_256f</code></td>
+<td>KAT log (sha256 <code>f36ddf98437a22cb…</code>)</td>
+<td><code>kat/sign-05/ublockith_em_d3_256f.log</code></td>
+</tr>
+<tr>
+<td><code>ublockith_em_d3_256f</code></td>
+<td>timing keygen</td>
+<td><code>records/sign-05/ublockith_em_d3_256f__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>ublockith_em_d3_256f</code></td>
+<td>timing sign</td>
+<td><code>records/sign-05/ublockith_em_d3_256f__sign.json</code></td>
+</tr>
+<tr>
+<td><code>ublockith_em_d3_256f</code></td>
+<td>timing verify</td>
+<td><code>records/sign-05/ublockith_em_d3_256f__verify.json</code></td>
+</tr>
+<tr>
+<td><code>ublockith_em_d3_256f</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/sign-05/ublockith_em_d3_256f__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>ublockith_em_d3_256f</code></td>
+<td>hash profile sign</td>
+<td><code>profile/sign-05/ublockith_em_d3_256f__sign.json</code></td>
+</tr>
+<tr>
+<td><code>ublockith_em_d3_256f</code></td>
+<td>hash profile verify</td>
+<td><code>profile/sign-05/ublockith_em_d3_256f__verify.json</code></td>
+</tr>
+<tr>
+<td><code>ublockith_em_d3_256s</code></td>
+<td>KAT log (sha256 <code>b89809c29b12b12b…</code>)</td>
+<td><code>kat/sign-05/ublockith_em_d3_256s.log</code></td>
+</tr>
+<tr>
+<td><code>ublockith_em_d3_256s</code></td>
+<td>timing keygen</td>
+<td><code>records/sign-05/ublockith_em_d3_256s__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>ublockith_em_d3_256s</code></td>
+<td>timing sign</td>
+<td><code>records/sign-05/ublockith_em_d3_256s__sign.json</code></td>
+</tr>
+<tr>
+<td><code>ublockith_em_d3_256s</code></td>
+<td>timing verify</td>
+<td><code>records/sign-05/ublockith_em_d3_256s__verify.json</code></td>
+</tr>
+<tr>
+<td><code>ublockith_em_d3_256s</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/sign-05/ublockith_em_d3_256s__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>ublockith_em_d3_256s</code></td>
+<td>hash profile sign</td>
+<td><code>profile/sign-05/ublockith_em_d3_256s__sign.json</code></td>
+</tr>
+<tr>
+<td><code>ublockith_em_d3_256s</code></td>
+<td>hash profile verify</td>
+<td><code>profile/sign-05/ublockith_em_d3_256s__verify.json</code></td>
+</tr>
+<tr>
+<td><code>vistrutith_d3_512f</code></td>
+<td>KAT log (sha256 <code>5f12dc08029b13e8…</code>)</td>
+<td><code>kat/sign-05/vistrutith_d3_512f.log</code></td>
+</tr>
+<tr>
+<td><code>vistrutith_d3_512f</code></td>
+<td>timing keygen</td>
+<td><code>records/sign-05/vistrutith_d3_512f__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>vistrutith_d3_512f</code></td>
+<td>timing sign</td>
+<td><code>records/sign-05/vistrutith_d3_512f__sign.json</code></td>
+</tr>
+<tr>
+<td><code>vistrutith_d3_512f</code></td>
+<td>timing verify</td>
+<td><code>records/sign-05/vistrutith_d3_512f__verify.json</code></td>
+</tr>
+<tr>
+<td><code>vistrutith_d3_512f</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/sign-05/vistrutith_d3_512f__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>vistrutith_d3_512f</code></td>
+<td>hash profile sign</td>
+<td><code>profile/sign-05/vistrutith_d3_512f__sign.json</code></td>
+</tr>
+<tr>
+<td><code>vistrutith_d3_512f</code></td>
+<td>hash profile verify</td>
+<td><code>profile/sign-05/vistrutith_d3_512f__verify.json</code></td>
+</tr>
+<tr>
+<td><code>vistrutith_d3_512s</code></td>
+<td>KAT log (sha256 <code>a108d377c300aec2…</code>)</td>
+<td><code>kat/sign-05/vistrutith_d3_512s.log</code></td>
+</tr>
+<tr>
+<td><code>vistrutith_d3_512s</code></td>
+<td>timing keygen</td>
+<td><code>records/sign-05/vistrutith_d3_512s__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>vistrutith_d3_512s</code></td>
+<td>timing sign</td>
+<td><code>records/sign-05/vistrutith_d3_512s__sign.json</code></td>
+</tr>
+<tr>
+<td><code>vistrutith_d3_512s</code></td>
+<td>timing verify</td>
+<td><code>records/sign-05/vistrutith_d3_512s__verify.json</code></td>
+</tr>
+<tr>
+<td><code>vistrutith_d3_512s</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/sign-05/vistrutith_d3_512s__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>vistrutith_d3_512s</code></td>
+<td>hash profile sign</td>
+<td><code>profile/sign-05/vistrutith_d3_512s__sign.json</code></td>
+</tr>
+<tr>
+<td><code>vistrutith_d3_512s</code></td>
+<td>hash profile verify</td>
+<td><code>profile/sign-05/vistrutith_d3_512s__verify.json</code></td>
+</tr>
+</tbody>
+</table></div>
+<p>Scripts: <code>performance/campaign.py</code>, <code>performance/ngcc_perf.c</code>, <code>performance/hashprof/</code> in the <a href="https://github.com/ngcc-dev/ngcc-harness">harness</a>.</p>
+</main>
+<footer class="site-footer">
+<p>Maintained by: <a href="mailto:markku-juhani.saarinen@tuni.fi">markku-juhani.saarinen@tuni.fi</a></p>
+<p>Submissions are welcome via <a href="https://github.com/ngcc-dev/ngcc-harness/issues">GitHub issues</a>.</p>
+</footer>
+</body>
+</html>

@@ -5,7 +5,7 @@ Archive: [Garnet.zip](https://www.niccs.org.cn/niccs/Proposal/Cryptographic%20Ha
 
 ## hash-11-1: Secret state indexes AES T-tables
 
-Severity: Medium
+Severity: Low
 Status: Confirmed
 Layer: Side-channel
 Affected: Reference Garnet variants
@@ -15,6 +15,8 @@ Credit: Markku-Juhani O. Saarinen <markku-juhani.saarinen@tuni.fi>, with AI assi
 Date: 2026-09-23
 
 Each AES-like round indexes four 1-KiB T-tables with bytes of the evolving hash state (`Garnet_1024.c:278-281`; `Garnet_512.c:322-325`). These indices depend on the message and select different cache lines, exposing state-dependent memory addresses in a shared-cache setting. A two-entry reduction table is also indexed by a state bit. No preimage-recovery exploit is claimed. See [constant_time.md](../constant-time/hash-11.md).
+
+Constant-time fix (easy, hence Low): the round is an AES round, so use the AES instruction (`aesenc`, or ARMv8 `aese`/`aesmc`) as the specification intends, and a `pshufb` vector-permute or bitsliced AES where it is unavailable. The two-entry reduction table becomes a mask.
 
 ### Reproducing
 

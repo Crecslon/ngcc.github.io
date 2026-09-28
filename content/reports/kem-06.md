@@ -3,31 +3,34 @@ Candidate: BRA
 Family: Code-based (rank metric)
 Archive: [BRA.zip](https://www.niccs.org.cn/niccs/Proposal/Public-Key%20Cryptographic%20Algorithms/Round%201%20candidates/BRA.zip) (SHA-256: `612a3fe69c7a28fae7ca87a226d29e67a9cffb6ce9e4cbe54ac9de37f7650d7a`)
 
-## kem-06-1: A malformed secret key drives the BRA decoder out of bounds
+## kem-06-1: Malformed inputs drive the BRA decoder out of bounds
 
 Severity: Low
 Status: Confirmed
 Layer: Implementation
-Affected: BRA-128 reference implementation; the same unchecked routine is present in BRA-256 and BRA-512
+Affected: BRA-128 and BRA-256 reference decapsulation from remote ciphertexts; the same unchecked routine is present in BRA-512
 Discovery: Moderate
-Exploitation: One-byte secret-key corruption followed by decapsulation; remote control of the secret key is not established
-Credit: Dariia Porechna ([@dariolina](https://github.com/dariolina))
+Exploitation: Random malformed ciphertexts reliably crash BRA-128 and BRA-256; attacker-controlled memory corruption beyond termination is not demonstrated
+Credit: Dariia Porechna ([@dariolina](https://github.com/dariolina)); remote-ciphertext extension independently reported by Zhenyu Xiong and Mingsheng Wang
 Date: 2026-09-22
 Original source: [ngcc-dev/ngcc-harness PR #6](https://github.com/ngcc-dev/ngcc-harness/pull/6)
 
 After an honest BRA-128 key generation, encapsulation, and decapsulation, changing secret-key byte 0 and decapsulating the otherwise honest ciphertext reaches an unchecked bound in the augmented-Gabidulin decoder. `rbc_qpoly_left_div2` initializes a signed counter to `k-1`, decrements it once per division iteration without checking for exhaustion, and passes it as the unsigned `p2_degree` argument to `rbc_qpoly_mul2`. The latter checks the polynomials' stored degrees, not the explicit iteration bounds it actually uses.
 
-AddressSanitizer consequently reports a heap-buffer-overflow when `rbc_qpoly_mul2` first reads `p2->values[j]` past the four-coefficient allocation at `qpoly.c:458`; its following output access at line 460 would likewise become out of bounds if execution continued. The same defective control flow exists in all three submitted parameter-set sources, although the deterministic runtime witness below confirms BRA-128 only.
+AddressSanitizer consequently reports a heap-buffer-overflow when `rbc_qpoly_mul2` reads `p2->values[j]` past the four-coefficient allocation at `qpoly.c:458`. The same defective control flow exists in all three submitted parameter-set sources.
 
-The standard KEM threat model gives a remote peer the ciphertext, not the recipient's secret key. This witness therefore does not establish a remote chosen-ciphertext attack, key recovery, or loss of confidentiality. It does establish unsafe handling of a corrupted, faulted, imported, or maliciously provisioned secret key, with process termination and memory corruption as possible consequences. The decoder should reject an exhausted/negative division bound and validate the explicit multiplication degrees against both input and output allocations.
+The original deterministic witness reaches the bug after one-byte secret-key corruption. [Xiong and Wang, ePrint 2026/2232, §6.5](https://eprint.iacr.org/2026/2232) further show that an ordinary remote adversary can reach the same decoder failure with ciphertext input alone: 30/30 random malformed ciphertexts crashed each of BRA-128 and BRA-256, while BRA-512 and all BRQC controls did not crash. We reproduced the quick ciphertext-only experiment. This upgrades the issue from a corrupted-key robustness defect to remotely reachable unsafe decapsulation. It demonstrates reliable denial of service and an attacker-influenced out-of-bounds read, but not memory disclosure, key recovery, confidentiality loss, or control-flow exploitation. Under the classification policy, that demonstrated termination-only impact is Low.
+
+The decoder must reject an exhausted or negative division bound and validate the explicit multiplication degrees against both input and output allocations.
 
 ### Reproducing
 
 ```sh
 make -C kem-06 exploit
+sh kem-06/reproduce_ciphertext_crash.sh
 ```
 
-The target first completes the honest round trip, then repeats decapsulation after changing only secret-key byte 0 and requires ASan to identify the unchecked q-polynomial access. Its narrow sanitizer ignore-list excludes a separate pre-decoder stack-redzone access in the submitted field multiplier so that the decoder witness can be reached; no decoder code is modified.
+The first target completes an honest round trip, then repeats decapsulation after changing only secret-key byte 0 and requires ASan to identify the unchecked q-polynomial access. Its narrow sanitizer ignore-list excludes a separate pre-decoder stack-redzone access in the submitted field multiplier so that the decoder witness can be reached; no decoder code is modified. The second command fetches the pinned public artifact and runs short random-ciphertext trials against all three unmodified BRA reference sets, with BRA-512 as the non-crashing control.
 
 ## kem-06-2: Reference field multiplication touches one limb past its output
 
@@ -57,7 +60,7 @@ The ordinary, unsanitized guard-page test confirms faults for GF(2^67) and GF(2^
 
 ## kem-06-3: Secret-derived decoder pivots select memory addresses
 
-Severity: Medium
+Severity: Low
 Status: Confirmed
 Layer: Side-channel
 Affected: Reference implementations, all three parameter sets
@@ -67,6 +70,8 @@ Credit: Markku-Juhani O. Saarinen <markku-juhani.saarinen@tuni.fi>, with AI assi
 Date: 2026-09-23
 
 BRA decryption computes `v-u*y` using private `y` and the public ciphertext (`src/bra.c:277-288`). The augmented-Gabidulin decoder derives pivot `next` from discrepancies in that word and uses `next` directly to load and store `u0` and `u1` (`src/augmented_gabidulin.c:184-205`). A cache observer can therefore learn a secret-key-dependent intermediate. The final KEM ciphertext comparison and fallback selection are masked, but occur after the decoder. No complete key recovery or remote timing channel is demonstrated.
+
+Constant-time fix (easy, hence Low): the decoder already follows the constant-time Gabidulin decoding of Bettaieb, Bidoux, Gaborit and Marcatel, PQCrypto 2019: the pivot `next` is computed with masks and the swap is masked. Only the accesses to `u0[next]` and `u1[next]` use the secret index. A masked swap over all n positions removes them; it adds at most n field-element copies per iteration, O(n^2) in total, which is below the decoder's existing q-polynomial work. The specification states that the provided implementations run in constant time (physical PDF page 17), which this access contradicts.
 
 ### Reproducing
 

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ngcc.dev: JuziHash (hash-13)</title>
+<link rel="icon" type="image/png" href="../assets/mag-glass.png">
+<link rel="stylesheet" href="../assets/style.css?v=1fdb792d">
+</head>
+<body>
+<header class="site-header">
+<a class="brand" href="../index.html"><img class="brand-icon" src="../assets/mag-glass.png" alt="" width="28" height="28">ngcc.dev</a>
+<nav><a href="../index.html">Home</a><a href="../reports/index.html">Reports</a><a href="../performance/x86_1/index.html">Performance</a><a href="../constant-time/index.html">Constant-Time</a></nav>
+</header>
+<main class="">
+<p class="crumb"><a href="../reports/index.html">Reports</a> › <code>hash-13</code> · <a href="../constant-time/hash-13.html">Constant-time review</a> · <a href="../performance/x86_1/hash-13.html">Performance</a></p>
+
+<h1 id="juzihash-hash-13">JuziHash (hash-13)</h1>
+<div class="table-wrap"><table class="meta">
+<tr><th>Candidate</th><td>JuziHash</td></tr>
+<tr><th>Family</th><td>Symmetric (sponge and capacity feed-forward)</td></tr>
+<tr><th>Archive</th><td><a href="https://www.niccs.org.cn/niccs/Proposal/Cryptographic%20Hash%20Algorithms/Round%201%20candidates/Juzi.zip">Juzi.zip</a> (SHA-256: <code>487f73e34dac7a06ae6718c4a38bcf757c1555676b107415f7b79b17d8c9cf92</code>)</td></tr>
+<tr><th>Specification</th><td><a href="https://github.com/ngcc-dev/ngcc-harness/raw/dc66c6cb3c06e75bdea0048e21fa4e13c63f00af/hash-13/hash-13-spec.pdf" title="Download hash-13-spec.pdf from GitHub">hash-13-spec.pdf</a>&nbsp;<a class="pdf-link" href="https://cdn.jsdelivr.net/gh/ngcc-dev/ngcc-harness@dc66c6cb3c06e75bdea0048e21fa4e13c63f00af/hash-13/hash-13-spec.pdf" title="Open the hash-13 specification PDF">PDF</a></td></tr>
+</table></div>
+
+<h2 class="issue-heading issue-heading-first" id="hash-13-1-long-messages-reduce-juzihash-1024-second-preimage-security-below-1024-bits">hash-13-1: Long messages reduce JuziHash-1024 second-preimage security below 1024 bits</h2>
+
+<div class="table-wrap"><table class="meta issue-meta">
+<tr><th>Severity</th><td><span class="sev sev-critical">Critical</span></td></tr>
+<tr><th>Scope</th><td>design</td></tr>
+<tr><th>Status</th><td><span class="issue-status status-confirmed">Confirmed</span></td></tr>
+<tr><th>Affected</th><td>JuziHash-1024 specification and implementations</td></tr>
+<tr><th>Discovery</th><td>Trivial</td></tr>
+<tr><th>Exploitation</th><td>About 2^970 work for a target of 2^54 blocks; no second preimage has been computed</td></tr>
+<tr><th>Credit</th><td>Markku-Juhani O. Saarinen <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#109;&#97;&#114;&#107;&#107;&#117;&#45;&#106;&#117;&#104;&#97;&#110;&#105;&#46;&#115;&#97;&#97;&#114;&#105;&#110;&#101;&#110;&#64;&#116;&#117;&#110;&#105;&#46;&#102;&#105;">&#109;&#97;&#114;&#107;&#107;&#117;&#45;&#106;&#117;&#104;&#97;&#110;&#105;&#46;&#115;&#97;&#97;&#114;&#105;&#110;&#101;&#110;&#64;&#116;&#117;&#110;&#105;&#46;&#102;&#105;</a>, with AI assistance</td></tr>
+<tr><th>Date</th><td>2026-09-27</td></tr>
+</table></div>
+
+<p>The <a href="https://www.niccs.org.cn/niccs/Notice/pc/content/content_1975892908773478400.html">NGCC hash call</a> requires second-preimage security of at least h bits for an h-bit digest (<a href="https://www.niccs.org.cn/niccs/Notice/crlRB1ZY.pdf">Evaluation Criteria</a> §1(2)) and message lengths of at least 2^64 − 1 bits, which JuziHash-1024 does not meet for long messages.</p>
+<p>JuziHash-1024 injects each 1024-bit block into the rate and feeds the previous 1024-bit capacity forward after the permutation; the digest is the capacity (§5.2; <code>CryptHash_AlgorithmInstance.c:227-289</code>). A long target offers many intermediate states. An expandable message built from full-state collisions, about k·2^513 work, followed by a link to one of the target's 2^k intermediate states, about 2^(1024−k), gives a second preimage. The specification concedes this: a target of 2^k blocks reduces second-preimage cost by about k bits, and valid inputs of up to 2^54 blocks give "a worst-case long-message scale around 2^970 for JuziHash-1024" (§5.5, physical PDF pages 19–20). Its Table 2 nevertheless lists 2^1024 (page 24), to be read only for "ordinary-message or fixed-length" inputs.</p>
+<h3 id="reproducing">Reproducing</h3>
+<p>Commands below run in a checkout of the <a href="https://github.com/ngcc-dev/ngcc-harness">ngcc-harness repository</a> with the candidate built (see its README).</p>
+<p>Compare the call requirement with §5.5 (physical PDF pages 19–20) and Table 2 (page 24) of the specification.</p>
+</main>
+<footer class="site-footer">
+<p>Maintained by: <a href="mailto:markku-juhani.saarinen@tuni.fi">markku-juhani.saarinen@tuni.fi</a></p>
+<p>Submissions are welcome via <a href="https://github.com/ngcc-dev/ngcc-harness/issues">GitHub issues</a>.</p>
+</footer>
+</body>
+</html>

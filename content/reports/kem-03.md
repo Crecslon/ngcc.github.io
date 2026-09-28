@@ -16,6 +16,8 @@ Date: 2026-09-23
 
 Decapsulation forms a rank-code word by multiplying the public ciphertext component by secret `x` and adding the second ciphertext component (`src/loong_pke.c:1003-1014`). The Gabidulin decoder then searches for a pivot with a discrepancy-dependent `while` loop, swaps at the chosen index, and branches into different polynomial-update paths (`src/gabidulin.c:213-279`). The executed path and addresses thus depend on the recipient secret, not just public ciphertext. A co-resident timing/cache observer can learn information about the intermediate. No inversion from observed pivot sequences to the private vector, full key-recovery attack, or remote channel is shown; a key-dependent pivot is not by itself a Critical break.
 
+Constant-time fix (moderate, hence Medium): the pivot search loop, data-dependent swaps and update branches must be replaced by a fixed-iteration decoder with masked pivot selection and swaps. That technique is published (Bettaieb, Bidoux, Gaborit and Marcatel, PQCrypto 2019) and has moderate cost, so this is a substantial rewrite without a significant performance loss.
+
 ### Reproducing
 
 The source-level witness is the decapsulation call in `src/loong_kem.c:217-218`, the secret-key product in `src/loong_pke.c:1003-1014`, and the value-dependent pivot loop in `src/gabidulin.c:213-279` under `Implementations/Reference_Implementation/Loong-Block-ms-128/`. The same files occur in the other reference parameter directories. See `constant_time.md` for the secret/public classification.

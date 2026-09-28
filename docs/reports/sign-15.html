@@ -5,22 +5,22 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>ngcc.dev: MORNING-ATLAS (sign-15)</title>
 <link rel="icon" type="image/png" href="../assets/mag-glass.png">
-<link rel="stylesheet" href="../assets/style.css?v=996d5cfd">
+<link rel="stylesheet" href="../assets/style.css?v=1fdb792d">
 </head>
 <body>
 <header class="site-header">
 <a class="brand" href="../index.html"><img class="brand-icon" src="../assets/mag-glass.png" alt="" width="28" height="28">ngcc.dev</a>
-<nav><a href="../index.html">Home</a><a href="../reports/index.html">Reports</a><a href="../constant-time/index.html">Constant-Time</a></nav>
+<nav><a href="../index.html">Home</a><a href="../reports/index.html">Reports</a><a href="../performance/x86_1/index.html">Performance</a><a href="../constant-time/index.html">Constant-Time</a></nav>
 </header>
-<main>
-<p class="crumb"><a href="../reports/index.html">Reports</a> › <code>sign-15</code> · <a href="../constant-time/sign-15.html">Constant-time review</a></p>
+<main class="">
+<p class="crumb"><a href="../reports/index.html">Reports</a> › <code>sign-15</code> · <a href="../constant-time/sign-15.html">Constant-time review</a> · <a href="../performance/x86_1/sign-15.html">Performance</a></p>
 
 <h1 id="morning-atlas-sign-15">MORNING-ATLAS (sign-15)</h1>
 <div class="table-wrap"><table class="meta">
 <tr><th>Candidate</th><td>MORNING-ATLAS</td></tr>
 <tr><th>Family</th><td>Lattice (Module-LWR, Fiat-Shamir)</td></tr>
 <tr><th>Archive</th><td><a href="https://www.niccs.org.cn/niccs/Proposal/Public-Key%20Cryptographic%20Algorithms/Round%201%20candidates/MORNING-ATLAS.zip">MORNING-ATLAS.zip</a> (SHA-256: <code>c796b106a7d43b2b3d6110ec2be426aa321cc7336f39a2cc027b2d6e8b4cc8c1</code>)</td></tr>
-<tr><th>Specification</th><td><a href="https://github.com/ngcc-dev/ngcc-harness/raw/refs/heads/main/sign-15/sign-15-spec.pdf" title="Download sign-15-spec.pdf from GitHub">sign-15-spec.pdf</a>&nbsp;<a class="pdf-link" href="https://cdn.jsdelivr.net/gh/ngcc-dev/ngcc-harness@main/sign-15/sign-15-spec.pdf" title="Open the sign-15 specification PDF">PDF</a></td></tr>
+<tr><th>Specification</th><td><a href="https://github.com/ngcc-dev/ngcc-harness/raw/dc66c6cb3c06e75bdea0048e21fa4e13c63f00af/sign-15/sign-15-spec.pdf" title="Download sign-15-spec.pdf from GitHub">sign-15-spec.pdf</a>&nbsp;<a class="pdf-link" href="https://cdn.jsdelivr.net/gh/ngcc-dev/ngcc-harness@dc66c6cb3c06e75bdea0048e21fa4e13c63f00af/sign-15/sign-15-spec.pdf" title="Open the sign-15 specification PDF">PDF</a></td></tr>
 </table></div>
 
 <h2 class="issue-heading issue-heading-first" id="sign-15-1-returned-length-error-causes-an-out-of-bounds-heap-disclosure">sign-15-1: Returned-length error causes an out-of-bounds heap disclosure</h2>
@@ -82,7 +82,7 @@ overwrites, and requires the byte-distinct signature to verify.</p>
 <h2 class="issue-heading" id="sign-15-3-the-atlas-192-challenge-space-is-below-192-bits">sign-15-3: The ATLAS-192 challenge space is below 192 bits</h2>
 
 <div class="table-wrap"><table class="meta issue-meta">
-<tr><th>Severity</th><td><span class="sev sev-high">High</span></td></tr>
+<tr><th>Severity</th><td><span class="sev sev-critical">Critical</span></td></tr>
 <tr><th>Scope</th><td>implementation</td></tr>
 <tr><th>Status</th><td><span class="issue-status status-confirmed">Confirmed</span></td></tr>
 <tr><th>Affected</th><td>ATLAS-192 reference implementation and specification</td></tr>

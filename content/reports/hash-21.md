@@ -56,7 +56,7 @@ make -C hash-21 reproduce
 
 ## hash-21-3: Secret state indexes a 256-byte S-box
 
-Severity: Medium
+Severity: Low
 Status: Confirmed
 Layer: Side-channel
 Affected: Reference Neulaser-512/768/1024
@@ -66,6 +66,8 @@ Credit: Markku-Juhani O. Saarinen <markku-juhani.saarinen@tuni.fi>, with AI assi
 Date: 2026-09-23
 
 `nl_sbox_word` reads `NL_SBOX` at four indices derived from an evolving 32-bit state word (`CryptHash_AlgorithmInstance.c:85-90`). The 256-byte table spans cache lines, so the lookup address depends on secret message content. The source also computes state-derived `x % (2^32-5)` (`:60-63`), whose timing requires target-specific code inspection; the report does not rely on it. No preimage-recovery exploit is claimed. See [constant_time.md](../constant-time/hash-21.md).
+
+Constant-time fix (easy, hence Low): the S-box is field inversion followed by an affine map, hence affine-equivalent to the AES S-box. It can be computed with `aesenclast` between two `pshufb` bit-matrix transforms (the technique used for SM4 on AES-NI), with GFNI `gf2p8affineinvqb`, or with a bitsliced inversion circuit. The modular reduction also needs a branch-free form.
 
 ### Reproducing
 

@@ -5,7 +5,7 @@ Archive: [NIIKE.zip](https://www.niccs.org.cn/niccs/Proposal/Public-Key%20Crypto
 
 ## kex-08-1: The raw shared j-invariant is distinguishable from a uniform key
 
-Severity: High
+Severity: Critical
 Status: Confirmed
 Layer: Design
 Affected: NIIKE-lv128, -lv256, and -lv512 specification and reference API
@@ -16,7 +16,7 @@ Date: 2026-09-23
 
 The specified `NIIKE.KeyAgr` (Algorithm 5, §4.3) returns the *unhashed* j-invariant of the shared supersingular curve. The submitted `kex_derive_ss_a/b` API likewise calls `niike_SecretAgreement` and serializes that field element directly with `fp2_encode`. An adversary given a candidate shared-key byte string can decode it as an element of Fp², construct a curve with that j-invariant, and test supersingularity. Every honest output passes. Only O(p) of the p² field elements are supersingular j-invariants, so a uniformly random canonical Fp² control passes with negligible probability. Uniform random API-length bytes are also distinguishable, even before the supersingularity test, because many are not canonical field encodings.
 
-This is a real-or-random *key-distribution* break, not a method to compute the honest shared value from the public keys. It is a design error in the specified output, not an isogeny-path shortcut. The specification's §9.1.6 experiment samples its random branch from an abstract shared-key space `SK` without defining that space concretely. If `SK` were stipulated to be exactly the supersingular j-invariants with the honest distribution, this particular test would not distinguish that formal experiment. However, the proof of Theorem 9.1.7 explicitly analyzes a different construction that returns `H(K)` and compares it with a uniform hash output; Algorithm 5 and the shipped byte-key API perform no such hash. Therefore that proof does not establish uniform-byte key indistinguishability for the submitted construction.
+This is a polynomial-time real-or-random *key-distribution* break, not a method to compute the honest shared value from the public keys. It is a design error in the specified output, not an isogeny-path shortcut. The specification's §9.1.6 experiment samples its random branch from an abstract shared-key space `SK` without defining that space concretely. If `SK` were stipulated to be exactly the supersingular j-invariants with the honest distribution, this particular test would not distinguish that formal experiment. However, the proof of Theorem 9.1.7 explicitly analyzes a different construction that returns `H(K)` and compares it with a uniform hash output; Algorithm 5 and the shipped byte-key API perform no such hash. The submitted construction therefore fails the ordinary uniform-key indistinguishability target that its proof claims to establish. A primary key-exchange distinguishing break is Critical even without shared-key recovery.
 
 The lv128 witness runs the official reference key generation and agreement for two honest parties, checks matching shared keys, then applies Sage's supersingularity test to the result and to 16 independently sampled *canonical* Fp² controls. It confirms an algebraic distinguisher independent of byte-encoding slack. The same raw-output data flow appears in all three levels; lv256/lv512 were not rerun in this witness because their reference group actions are much slower.
 
@@ -67,7 +67,7 @@ The witness prints `ATTACK kex-08-2 NIIKE-lv512 CONFIRMED: two-key cycle`.
 
 ## kex-08-3: A crafted peer key forces the honest party's shared secret
 
-Severity: Low
+Severity: Medium
 Status: Confirmed
 Layer: Design
 Affected: NIIKE-lv128 and NIIKE-lv256 reference implementations (shared source); demonstrated on lv128
@@ -76,7 +76,7 @@ Exploitation: The peer chooses its public key; no secret or computation beyond a
 Credit: Markku-Juhani O. Saarinen <markku-juhani.saarinen@tuni.fi>, with AI assistance
 Date: 2026-09-25
 
-The group-action design permits a peer to send a public relabelling of the honest party's own key (cycle reversed, `P` and `Q` swapped), producing a repeatable, non-contributory shared secret. Algorithms 5 and 9 do not require peer-key validation, while the specified HKR-CKS-1 model covers only honestly registered keys. A malicious NIKE peer already knows the shared secret, so this witness does not violate that model; it shows a low-severity contributiveness gap for unvalidated keys. Separately, `kex_derive_ss_a`/`_b` accept all-zero or all-`0xFF` peer-key bytes and return an all-zero secret with success (`ngccapi/KEX_AlgorithmInstance.c:142,157`), an implementation input-validation defect.
+The group-action design permits a peer to send a public relabelling of the honest party's own key (cycle reversed, `P` and `Q` swapped), producing a repeatable, non-contributory shared secret. Algorithms 5 and 9 do not require peer-key validation, while the specified HKR-CKS-1 model covers only honestly registered keys. A malicious NIKE peer already knows the shared secret, so this witness does not violate that model; it is a security-relevant contributiveness and key-derivation gap for unvalidated keys and is rated Medium, consistently with malicious-key override findings in KEMs. Separately, `kex_derive_ss_a`/`_b` accept all-zero or all-`0xFF` peer-key bytes and return an all-zero secret with success (`ngccapi/KEX_AlgorithmInstance.c:142,157`), an implementation input-validation defect.
 
 ### Reproducing
 
@@ -86,7 +86,7 @@ python3 kex-08/reproduce_malicious_peer_key.py
 
 ## kex-08-4: Malformed peer keys terminate the honest party's process
 
-Severity: Medium
+Severity: Low
 Status: Confirmed
 Layer: Implementation
 Affected: NIIKE-lv128 and NIIKE-lv256 reference implementations (shared source); demonstrated on lv128

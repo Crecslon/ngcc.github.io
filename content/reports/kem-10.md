@@ -14,6 +14,8 @@ Exploitation: Unauthenticated decapsulation request causes process termination; 
 Credit: Markku-Juhani O. Saarinen <markku-juhani.saarinen@tuni.fi>, with AI assistance
 Date: 2026-09-23
 
+Additional reference: [Xiong and Wang, ePrint 2026/2232, §17](https://eprint.iacr.org/2026/2232)
+
 The shipped C-Multi-UR-AG decapsulator does not safely reject malformed ciphertexts. With an honestly generated key, an all-zero ciphertext triggers stack-smash detection in CMultiURAG-128 and a segmentation fault in CMultiURAG-512. A sampled single-bit change to an honest ciphertext segfaults in CMultiURAG-256. All three unmodified reference libraries pass their honest KATs. These are attacker-controlled, fixed-length ciphertexts, not truncated buffers or corrupted secret keys.
 
 For the 128-bit instance, a debugger places the stack-smash in `rbc_elt_mul`, called from `rbc_qpoly_mul2` through `rbc_qpoly_left_div2` and the augmented-Gabidulin decoder. In `src/qpoly.c`, `rbc_qpoly_left_div2` decrements its signed iteration bound without checking exhaustion and passes that value as an unsigned degree to `rbc_qpoly_mul2`, whose loop uses it to index polynomial coefficients. This is a concrete unsafe decoder path; the observed effect is process termination. No secret disclosure, shared-secret recovery, or arbitrary-code execution is established.
@@ -34,7 +36,7 @@ Each command runs in its own process because the attack input terminates that pr
 
 ## kem-10-2: Secret-derived decoder pivots select memory addresses
 
-Severity: Medium
+Severity: Low
 Status: Confirmed
 Layer: Side-channel
 Affected: Reference implementations, all three parameter sets
@@ -44,6 +46,8 @@ Credit: Markku-Juhani O. Saarinen <markku-juhani.saarinen@tuni.fi>, with AI assi
 Date: 2026-09-23
 
 C-Multi-UR-AG decryption computes a rank-code word using the private matrix `Y` and the public ciphertext (`src/cmultiurag.c:248-257`). The augmented-Gabidulin decoder derives pivot `next` from discrepancies in that word and uses it directly to load and store `u0` and `u1` (`src/augmented_gabidulin.c:185-201`). This exposes a secret-key-dependent memory-access pattern even though final KEM fallback selection is masked. No complete key recovery or remote timing channel is demonstrated.
+
+Constant-time fix (easy, hence Low): the decoder already follows the constant-time Gabidulin decoding of Bettaieb, Bidoux, Gaborit and Marcatel, PQCrypto 2019: the pivot `next` is computed with masks and the swap is masked. Only the accesses to `u0[next]` and `u1[next]` use the secret index. A masked swap over all n positions removes them; it adds at most n field-element copies per iteration, O(n^2) in total, which is below the decoder's existing q-polynomial work. The specification states that the provided implementations run in constant time (physical PDF page 15), which this access contradicts.
 
 ### Reproducing
 

@@ -5,22 +5,22 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>ngcc.dev: Polar-KEM (kem-29)</title>
 <link rel="icon" type="image/png" href="../assets/mag-glass.png">
-<link rel="stylesheet" href="../assets/style.css?v=996d5cfd">
+<link rel="stylesheet" href="../assets/style.css?v=1fdb792d">
 </head>
 <body>
 <header class="site-header">
 <a class="brand" href="../index.html"><img class="brand-icon" src="../assets/mag-glass.png" alt="" width="28" height="28">ngcc.dev</a>
-<nav><a href="../index.html">Home</a><a href="../reports/index.html">Reports</a><a href="../constant-time/index.html">Constant-Time</a></nav>
+<nav><a href="../index.html">Home</a><a href="../reports/index.html">Reports</a><a href="../performance/x86_1/index.html">Performance</a><a href="../constant-time/index.html">Constant-Time</a></nav>
 </header>
-<main>
-<p class="crumb"><a href="../reports/index.html">Reports</a> › <code>kem-29</code> · <a href="../constant-time/kem-29.html">Constant-time review</a></p>
+<main class="">
+<p class="crumb"><a href="../reports/index.html">Reports</a> › <code>kem-29</code> · <a href="../constant-time/kem-29.html">Constant-time review</a> · <a href="../performance/x86_1/kem-29.html">Performance</a></p>
 
 <h1 id="polar-kem-kem-29">Polar-KEM (kem-29)</h1>
 <div class="table-wrap"><table class="meta">
 <tr><th>Candidate</th><td>Polar-KEM</td></tr>
 <tr><th>Family</th><td>Lattice (polar-code-defined)</td></tr>
 <tr><th>Archive</th><td><a href="https://www.niccs.org.cn/niccs/Proposal/Public-Key%20Cryptographic%20Algorithms/Round%201%20candidates/Polar-KEM.zip">Polar-KEM.zip</a> (SHA-256: <code>3ae9d4f1a717fb473e76447014d585cd5d14fe38728f02b1a044cc6a2d03e16d</code>)</td></tr>
-<tr><th>Specification</th><td><a href="https://github.com/ngcc-dev/ngcc-harness/raw/refs/heads/main/kem-29/kem-29-spec.pdf" title="Download kem-29-spec.pdf from GitHub">kem-29-spec.pdf</a>&nbsp;<a class="pdf-link" href="https://cdn.jsdelivr.net/gh/ngcc-dev/ngcc-harness@main/kem-29/kem-29-spec.pdf" title="Open the kem-29 specification PDF">PDF</a></td></tr>
+<tr><th>Specification</th><td><a href="https://github.com/ngcc-dev/ngcc-harness/raw/dc66c6cb3c06e75bdea0048e21fa4e13c63f00af/kem-29/kem-29-spec.pdf" title="Download kem-29-spec.pdf from GitHub">kem-29-spec.pdf</a>&nbsp;<a class="pdf-link" href="https://cdn.jsdelivr.net/gh/ngcc-dev/ngcc-harness@dc66c6cb3c06e75bdea0048e21fa4e13c63f00af/kem-29/kem-29-spec.pdf" title="Open the kem-29 specification PDF">PDF</a></td></tr>
 </table></div>
 
 <h2 class="issue-heading issue-heading-first" id="kem-29-1-the-submission-ships-a-complete-public-key-only-break">kem-29-1: The submission ships a complete public-key-only break</h2>
@@ -73,6 +73,52 @@ witnesses and their controls. See <code>tools/README.md</code>.</p>
 <pre><code class="language-sh">python3 kem-29/reproduce_spec_alignment.py
 </code></pre>
 <p>The script extracts text from the archived PDF and checks that Algorithm 1 contains the four relevant assignments. It does not run full-size basis recovery; those experiments and timings are reported in the cited ePrint.</p>
+<h2 class="issue-heading" id="kem-29-3-decoding-radii-contradict-the-specified-error-and-lattice-geometry">kem-29-3: Decoding radii contradict the specified error and lattice geometry</h2>
+
+<div class="table-wrap"><table class="meta issue-meta">
+<tr><th>Severity</th><td><span class="sev sev-high">High</span></td></tr>
+<tr><th>Scope</th><td>design</td></tr>
+<tr><th>Status</th><td><span class="issue-status status-confirmed">Confirmed</span></td></tr>
+<tr><th>Affected</th><td>Polar-KEM specification, all three parameter sets; PolarKEM-128 has the direct near-certain honest-failure result</td></tr>
+<tr><th>Discovery</th><td>Moderate</td></tr>
+<tr><th>Exploitation</th><td>The specified PolarKEM-128 radius rejects an honest error with probability 0.9965184962; no confidentiality attack is claimed here</td></tr>
+<tr><th>Credit</th><td>Zhenyu Xiong and Mingsheng Wang</td></tr>
+<tr><th>Date</th><td>2026-09-27</td></tr>
+</table></div>
+<p>Reference: <a href="https://eprint.iacr.org/2026/2232">Xiong and Wang, “Cryptanalysis of the ICCS NGCC Round-1 Public-Key Candidates,” ePrint 2026/2232, §13.5</a></p>
+<p>Table 1 specifies <code>(N,rho)=(512,15),(1024,31),(2048,63)</code> and claims decryption-failure probabilities below <code>2^-128</code>, <code>2^-256</code>, and <code>2^-512</code>. The specified ternary error has <code>Pr[e_i != 0]=1/2</code>, so <code>||e||^2</code> has the distribution <code>Bin(N,1/2)</code>. For PolarKEM-128 the radius test therefore rejects with</p>
+<p><code>Pr[||e|| &gt; 15] = Pr[Bin(512,1/2) &gt; 225] = 0.996518496182011</code>,</p>
+<p>rather than with probability below <code>2^-128</code>.</p>
+<p>The minimum-distance justification is independently inconsistent. Definition 2.9 includes the unscaled code <code>C_0</code> in the polar lattice, and Lemma 2.10 includes <code>d(C_0)</code> in the minimum-distance expression. The specified rate progression gives <code>R_0=1</code>, hence <code>C_0=F_2^N</code>; its unit vectors are lattice vectors and the lattice has <code>lambda_1=1</code>. Section 4.5.3 instead drops every code term and asserts <code>d(Lambda)^2 &gt;= 4^L</code>. Appendix D also prints the false inequalities <code>4^5=1024 &gt; 3844</code> and <code>4^6=4096 &gt; 15876</code> for the 256- and 512-bit sets. The submitted failure bounds and unique-decoding premise therefore cannot hold simultaneously. The rectified C implementation instantiates a materially different, level-0-only object and does not repair the normative analysis.</p>
+<p>Define one coherent nested code chain, compute its actual minimum distance and decoding region, then choose the error distribution and radius from an exact tail bound and re-establish correctness before making a CCA claim.</p>
+<h3 id="reproducing_2">Reproducing</h3>
+<p>Commands below run in a checkout of the <a href="https://github.com/ngcc-dev/ngcc-harness">ngcc-harness repository</a> with the candidate built (see its README).</p>
+<pre><code class="language-sh">python3 kem-29/reproduce_spec_defects.py
+</code></pre>
+<p>The standard-library-only script checks the normative constants and statements, evaluates the exact binomial tail, and verifies the two printed arithmetic inequalities.</p>
+<h2 class="issue-heading" id="kem-29-4-norm-only-validation-gives-one-query-ciphertext-aliases">kem-29-4: Norm-only validation gives one-query ciphertext aliases</h2>
+
+<div class="table-wrap"><table class="meta issue-meta">
+<tr><th>Severity</th><td><span class="sev sev-critical">Critical</span></td></tr>
+<tr><th>Scope</th><td>design</td></tr>
+<tr><th>Status</th><td><span class="issue-status status-confirmed">Confirmed</span></td></tr>
+<tr><th>Affected</th><td>Polar-KEM specification, all three parameter sets</td></tr>
+<tr><th>Discovery</th><td>Trivial</td></tr>
+<tr><th>Exploitation</th><td>One decapsulation query on a byte-distinct unit perturbation of the challenge ciphertext</td></tr>
+<tr><th>Credit</th><td>Zhenyu Xiong and Mingsheng Wang</td></tr>
+<tr><th>Date</th><td>2026-09-27</td></tr>
+</table></div>
+<p>Reference: <a href="https://eprint.iacr.org/2026/2232">Xiong and Wang, “Cryptanalysis of the ICCS NGCC Round-1 Public-Key Candidates,” ePrint 2026/2232, §13.5</a></p>
+<p>Algorithms 6 and 7 derive the valid key only as <code>K=Extract(m)</code>. Decapsulation recovers <code>m_hat</code>, forms <code>e_hat=c-Embed(m_hat,pk)</code>, and accepts whenever <code>||e_hat||&lt;=rho</code>; it neither reconstructs the coins from <code>mu</code> nor compares a re-encryption, and the valid key does not bind the ciphertext.</p>
+<p>Given a challenge <code>c=Embed(m,pk)+e</code>, perturb one coordinate by a uniformly random sign to obtain the distinct ciphertext <code>c'=c+/-u_i</code>. Whenever the decoder returns the same <code>m</code> and the perturbed residual remains inside the decoding ball, Algorithm 7 returns the challenge key <code>Extract(m)</code>.</p>
+<p>This conclusion does not rely on the specification's inconsistent minimum-distance argument. A signed unit perturbation leaves the changed error coefficient in the specified alphabet <code>{-1,0,1}</code> with probability <code>3/4</code>; on those outcomes, the perturbed-error distribution has point probability at most twice that of an honest error. Consequently, if the claimed honest decoding-failure probability is <code>delta</code>, decoding the perturbation to a different message costs at most <code>2*delta</code>. Including the public norm test gives alias probabilities of at least <code>0.0024956-2^-127</code>, <code>0.75-2^-255</code>, and <code>0.75-2^-511</code> for PolarKEM-128, -256, and -512. Thus either these aliases occur with the stated non-negligible probability, or the claimed correctness bound is already false.</p>
+<p>One legal CCA query and comparison with the challenge key distinguishes real from random, directly violating the claimed IND-CCA2 security. The attack is unchanged when placeholder hash/XOF functions are replaced by ideal primitives.</p>
+<p>Reconstruct the complete encapsulation randomness and compare the received ciphertext byte-for-byte with a canonical re-encryption; derive the valid key from the seed or message together with hashes of the public key and ciphertext.</p>
+<h3 id="reproducing_3">Reproducing</h3>
+<p>Commands below run in a checkout of the <a href="https://github.com/ngcc-dev/ngcc-harness">ngcc-harness repository</a> with the candidate built (see its README).</p>
+<pre><code class="language-sh">python3 kem-29/reproduce_spec_defects.py
+</code></pre>
+<p>The script computes the exact safe-alias probabilities and verifies Algorithm 7's norm-only acceptance and valid-key derivation. This is a mathematical certificate against the specification, not a run against its materially different rectified implementation.</p>
 </main>
 <footer class="site-footer">
 <p>Maintained by: <a href="mailto:markku-juhani.saarinen@tuni.fi">markku-juhani.saarinen@tuni.fi</a></p>

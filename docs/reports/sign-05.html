@@ -5,22 +5,22 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>ngcc.dev: Chinith (sign-05)</title>
 <link rel="icon" type="image/png" href="../assets/mag-glass.png">
-<link rel="stylesheet" href="../assets/style.css?v=996d5cfd">
+<link rel="stylesheet" href="../assets/style.css?v=1fdb792d">
 </head>
 <body>
 <header class="site-header">
 <a class="brand" href="../index.html"><img class="brand-icon" src="../assets/mag-glass.png" alt="" width="28" height="28">ngcc.dev</a>
-<nav><a href="../index.html">Home</a><a href="../reports/index.html">Reports</a><a href="../constant-time/index.html">Constant-Time</a></nav>
+<nav><a href="../index.html">Home</a><a href="../reports/index.html">Reports</a><a href="../performance/x86_1/index.html">Performance</a><a href="../constant-time/index.html">Constant-Time</a></nav>
 </header>
-<main>
-<p class="crumb"><a href="../reports/index.html">Reports</a> › <code>sign-05</code> · <a href="../constant-time/sign-05.html">Constant-time review</a></p>
+<main class="">
+<p class="crumb"><a href="../reports/index.html">Reports</a> › <code>sign-05</code> · <a href="../constant-time/sign-05.html">Constant-time review</a> · <a href="../performance/x86_1/sign-05.html">Performance</a></p>
 
 <h1 id="chinith-sign-05">Chinith (sign-05)</h1>
 <div class="table-wrap"><table class="meta">
 <tr><th>Candidate</th><td>Chinith</td></tr>
 <tr><th>Family</th><td>Symmetric-key (VOLE-in-the-head) signature</td></tr>
 <tr><th>Archive</th><td><a href="https://www.niccs.org.cn/niccs/Proposal/Public-Key%20Cryptographic%20Algorithms/Round%201%20candidates/Chinith.zip">Chinith.zip</a> (SHA-256: <code>4d31ba3fe8718f59901b7efdf01b4179912ef8e04f58b4b6dbba84186f002283</code>)</td></tr>
-<tr><th>Specification</th><td><a href="https://github.com/ngcc-dev/ngcc-harness/raw/refs/heads/main/sign-05/sign-05-spec.pdf" title="Download sign-05-spec.pdf from GitHub">sign-05-spec.pdf</a>&nbsp;<a class="pdf-link" href="https://cdn.jsdelivr.net/gh/ngcc-dev/ngcc-harness@main/sign-05/sign-05-spec.pdf" title="Open the sign-05 specification PDF">PDF</a></td></tr>
+<tr><th>Specification</th><td><a href="https://github.com/ngcc-dev/ngcc-harness/raw/dc66c6cb3c06e75bdea0048e21fa4e13c63f00af/sign-05/sign-05-spec.pdf" title="Download sign-05-spec.pdf from GitHub">sign-05-spec.pdf</a>&nbsp;<a class="pdf-link" href="https://cdn.jsdelivr.net/gh/ngcc-dev/ngcc-harness@dc66c6cb3c06e75bdea0048e21fa4e13c63f00af/sign-05/sign-05-spec.pdf" title="Open the sign-05 specification PDF">PDF</a></td></tr>
 </table></div>
 
 <h2 class="issue-heading issue-heading-first" id="sign-05-1-the-final-fiatshamir-challenge-omits-a0-allowing-public-key-only-universal-forgery">sign-05-1: The final Fiat–Shamir challenge omits ã0, allowing public-key-only universal forgery</h2>
@@ -35,7 +35,7 @@
 <tr><th>Credit</th><td>Martin Feussner, with OpenAI Codex (Daybreak Blue) assistance</td></tr>
 <tr><th>Date</th><td>2026-09-25</td></tr>
 </table></div>
-<p>Original source: <a href="https://groups.google.com/a/list.nist.gov/g/pqc-forum/c/_WrUbtphjHw/m/fHXYK5hJBAAJ">Feussner's pqc-forum post</a> and attached analysis</p>
+<p>Original source: <a href="https://groups.google.com/a/list.nist.gov/g/pqc-forum/c/_WrUbtphjHw/m/fHXYK5hJBAAJ">Feussner's pqc-forum post and attached analysis</a></p>
 <p>The submission claims EUF-CMA security (§9.1.5–9.1.6), which is trivially violated: anyone can sign any message under any public key.</p>
 <p>The specification binds the QuickSilver constant term into the final challenge, <code>chall3 ← H32(chall2 ∥ ã0 ∥ ã1 ∥ … ∥ ãd−1 ∥ ctr)</code> (SM4th.Sign line 24, physical PDF page 60; uBlockith line 23, page 71; Vistrutith line 19, page 92). The verifier reconstructs ã0 from the public key and the committed witness and recomputes that hash (SM4th.Verify lines 19–21, page 63). ã0 is the only value that depends on whether the committed witness satisfies the public one-way-function relation.</p>
 <p>The implementations never hash ã0. <code>hash_challenge_3_init</code> absorbs <code>chall_2</code> and then <code>deg − 1</code> field elements starting at the signature's ã1 (<code>sm4th_d3_128f_loose/sig_impl.c:104-113</code>). The signer computes <code>a0_tilde</code> and frees it unused (<code>:440-458,516</code>). The verifier also computes it (<code>:652-658</code>), hashes only ã1…ãd−1 (<code>:670-671</code>), compares <code>chall_3</code> (<code>:675</code>), and frees <code>a0_tilde</code> (<code>:679</code>). uBlockith (<code>utils_ublock/sig_impl_ublock.c:203</code>) and Vistrutith (<code>utils_vistrutah/sig_impl_vistrutith.c:205</code>) do the same, as do all optimized copies. A forger therefore runs the ordinary signer with the victim's public key and a false witness, for example the extended witness of an all-zero key. All remaining commitment, consistency and grinding checks are honestly satisfied. Signer and verifier share the defect, so self-generated KATs pass.</p>
@@ -45,6 +45,24 @@
 for b in sign-05/bin/reproduce_forgery_*; do &quot;$b&quot;; done
 </code></pre>
 <p>For each parameter set, the witness generates a victim key pair with <code>sig_keygen</code> and wipes the secret key. It checks that the all-zero OWF key is not a preimage of the public key, then signs with that key's witness while claiming the victim's OWF output. The public <code>sig_verify</code> accepts the forged signature, and a one-bit message change is rejected. Each set prints <code>ATTACK sign-05-1 &lt;set&gt; CONFIRMED</code>; all 14 were confirmed.</p>
+<h2 class="issue-heading" id="sign-05-2-signing-indexes-lookup-tables-with-the-secret-key">sign-05-2: Signing indexes lookup tables with the secret key</h2>
+
+<div class="table-wrap"><table class="meta issue-meta">
+<tr><th>Severity</th><td><span class="sev sev-low">Low</span></td></tr>
+<tr><th>Scope</th><td>side-channel</td></tr>
+<tr><th>Status</th><td><span class="issue-status status-confirmed">Confirmed</span></td></tr>
+<tr><th>Affected</th><td>All 14 SM4th, uBlockith and Vistrutith parameter sets, reference and optimized implementations as built by default</td></tr>
+<tr><th>Discovery</th><td>Trivial</td></tr>
+<tr><th>Exploitation</th><td>Local cache observer; key recovery not demonstrated</td></tr>
+<tr><th>Credit</th><td>Markku-Juhani O. Saarinen <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#109;&#97;&#114;&#107;&#107;&#117;&#45;&#106;&#117;&#104;&#97;&#110;&#105;&#46;&#115;&#97;&#97;&#114;&#105;&#110;&#101;&#110;&#64;&#116;&#117;&#110;&#105;&#46;&#102;&#105;">&#109;&#97;&#114;&#107;&#107;&#117;&#45;&#106;&#117;&#104;&#97;&#110;&#105;&#46;&#115;&#97;&#97;&#114;&#105;&#110;&#101;&#110;&#64;&#116;&#117;&#110;&#105;&#46;&#102;&#105;</a>, with AI assistance</td></tr>
+<tr><th>Date</th><td>2026-09-27</td></tr>
+</table></div>
+
+<p>Key generation evaluates the one-way function on the secret key (<code>sm4th_d3_128f_loose/sm4th_d3_128f_loose.c:43</code>). Every signature re-derives its output and the extended witness from the secret key again (<code>:64,72</code>). The submitted Makefiles select table S-boxes (<code>sm4th_d3_128f_loose/Makefile:4</code>, <code>vistrutith_d3_512f/Makefile:4</code>, and <code>USE_SBOX_TABLE ?= 1</code> in the optimized trees). SM4th therefore reads the 256-byte <code>SM4_S</code> table at key-dependent round words (<code>utils_sm4/sm4_sbox.c:42-45</code>, <code>utils_sm4/sm4_core.c:208-216</code>). uBlockith reads eight 2-KiB T-tables in its middle rounds (<code>utils_ublock/ublock_core.c:61-62,137</code>); its comments acknowledge the Flush+Reload risk and harden only the first and last rounds. Vistrutith reads AES T-tables (<code>utils_vistrutah/vistrutah.c:37,105-134</code>). A co-resident cache observer can therefore see secret-key-dependent addresses on each signature. No key recovery is demonstrated.</p>
+<p>Constant-time fix (easy, hence Low): the submission already contains table-free code. Building without <code>SM4_SBOX_TABLE</code> computes the SM4 S-box as an affine map, inversion by fixed exponentiation with masked multiplication, and another affine map (<code>utils_sm4/sm4_sbox.c:47-126</code>, <code>fields.c:253-286</code>). Vistrutith has a computed S-box path when <code>SBOX_TABLE</code> is undefined (<code>vistrutah.c:187</code>). Faster constant-time options are AES instructions between two <code>pshufb</code> affine transforms for SM4, AES instructions for Vistrutah, and a 16-entry in-register <code>pshufb</code> lookup for uBlock's 4-bit S-box.</p>
+<h3 id="reproducing_1">Reproducing</h3>
+<p>Commands below run in a checkout of the <a href="https://github.com/ngcc-dev/ngcc-harness">ngcc-harness repository</a> with the candidate built (see its README).</p>
+<p>Inspect the cited build flags and table reads in any reference variant; the lookup indices are round words derived from the secret one-way-function key.</p>
 </main>
 <footer class="site-footer">
 <p>Maintained by: <a href="mailto:markku-juhani.saarinen@tuni.fi">markku-juhani.saarinen@tuni.fi</a></p>

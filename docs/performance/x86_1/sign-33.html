@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ngcc.dev: sign-33 VDOO: Vinegar-Diagonal-Oil-Oil — performance on x86-64 (system x861)</title>
+<link rel="icon" type="image/png" href="../../assets/mag-glass.png">
+<link rel="stylesheet" href="../../assets/style.css?v=1fdb792d">
+</head>
+<body>
+<header class="site-header">
+<a class="brand" href="../../index.html"><img class="brand-icon" src="../../assets/mag-glass.png" alt="" width="28" height="28">ngcc.dev</a>
+<nav><a href="../../index.html">Home</a><a href="../../reports/index.html">Reports</a><a href="../../performance/x86_1/index.html">Performance</a><a href="../../constant-time/index.html">Constant-Time</a></nav>
+</header>
+<main class="">
+<!-- synchronized from harness: sign-33/perf_x86_1.md -->
+<h1 id="sign-33-vdoo-vinegar-diagonal-oil-oil-performance-on-x86-64-system-x86_1">sign-33 VDOO: Vinegar-Diagonal-Oil-Oil — performance on x86-64 (system x86_1)</h1>
+<p><a href="index.html">Performance x86_1</a> › <code>sign-33</code> · <a href="method.html">method</a> · <a href="https://www.niccs.org.cn/niccs/Round1Additional/pc/content/content_2101561114325766144.html">NICCS page</a></p>
+<p>Independent measurement following the structure of the NICCS x86 self-assessment guide, §3.5 (1)–(7). Not a submitter self-assessment.</p>
+<h2 id="1-basic-information">1. Basic information</h2>
+<ul>
+<li>Category: public-key algorithm; function: digital signature</li>
+<li>Algorithm: VDOO: Vinegar-Diagonal-Oil-Oil</li>
+<li>Implementation versions measured: reference</li>
+<li>Parameter sets: <code>vdoo_128</code>, <code>vdoo_256</code>, <code>vdoo_512</code></li>
+</ul>
+<h2 id="2-assessment-environment">2. Assessment environment</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>item</th>
+<th>value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>processor</td>
+<td>12th Gen Intel(R) Core(TM) i7-12700 (CPU 2, one core)</td>
+</tr>
+<tr>
+<td>clock</td>
+<td>max 2.10 GHz, governor performance, turbo off, SMT off</td>
+</tr>
+<tr>
+<td>memory</td>
+<td>31788 MiB</td>
+</tr>
+<tr>
+<td>OS / kernel</td>
+<td>Debian GNU/Linux 13 (trixie) / 6.12.107+deb13-amd64</td>
+</tr>
+<tr>
+<td>compiler / build tool</td>
+<td>gcc (Debian 14.2.0-19) 14.2.0 / cmake version 3.31.6</td>
+</tr>
+<tr>
+<td>campaign start / end (UTC)</td>
+<td>2026-09-25T10:02:21 / 2026-09-28T04:35:59</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="3-functional-testing-kat">3. Functional testing (KAT)</h2>
+<p>Each library was checked against the submitted KAT vectors (SHA-256 manifest <code>sign-33/kat.sha256</code> in the harness) before timing.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>build flags</th>
+<th>KAT</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>vdoo_128</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>vdoo_256</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>vdoo_512</code></td>
+<td>harness-default</td>
+<td class="st warn">TIMEOUT [1]</td>
+</tr>
+</tbody>
+</table></div>
+<p>[1] KAT TIMEOUT only: with a 20 MB public key, ten KAT records exceed the harness's 900 s limit (VDOO-128/256 pass). A separate one-record run with a 4-hour limit reproduced the first official KAT record byte for byte (81,408,662 bytes, compared against the verified archive) These instances are timed anyway; their output is not validated.</p>
+<h2 id="4-performance">4. Performance</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>operation</th>
+<th>mean cycles</th>
+<th>mean time</th>
+<th>ops/s</th>
+<th>median trial</th>
+<th>n (trials × iters)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>vdoo_128</code></td>
+<td>keygen</td>
+<td>1.20 G</td>
+<td>574 ms</td>
+<td>1.74</td>
+<td>572 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>vdoo_128</code></td>
+<td>sign</td>
+<td>219.78 M</td>
+<td>105 ms</td>
+<td>9.49</td>
+<td>105 ms</td>
+<td>190 (5 × 38)</td>
+</tr>
+<tr>
+<td><code>vdoo_128</code></td>
+<td>verify</td>
+<td>2.36 M</td>
+<td>1.13 ms</td>
+<td>886</td>
+<td>1.13 ms</td>
+<td>4390 (5 × 878)</td>
+</tr>
+<tr>
+<td><code>vdoo_256</code></td>
+<td>keygen</td>
+<td>39.28 G</td>
+<td>18.9 s</td>
+<td>0.053</td>
+<td>18.8 s</td>
+<td>45 (5 × 9)</td>
+</tr>
+<tr>
+<td><code>vdoo_256</code></td>
+<td>sign</td>
+<td>271.44 M</td>
+<td>130 ms</td>
+<td>7.7</td>
+<td>130 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>vdoo_256</code></td>
+<td>verify</td>
+<td>7.77 M</td>
+<td>3.74 ms</td>
+<td>267</td>
+<td>3.74 ms</td>
+<td>1335 (5 × 267)</td>
+</tr>
+<tr>
+<td><code>vdoo_512</code></td>
+<td>keygen</td>
+<td>308.01 G</td>
+<td>148 s</td>
+<td>0.00677</td>
+<td>148 s</td>
+<td>5 (5 × 1)</td>
+</tr>
+<tr>
+<td><code>vdoo_512</code></td>
+<td>sign</td>
+<td>1.69 G</td>
+<td>813 ms</td>
+<td>1.23</td>
+<td>787 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>vdoo_512</code></td>
+<td>verify</td>
+<td>28.78 M</td>
+<td>13.8 ms</td>
+<td>72.5</td>
+<td>13.8 ms</td>
+<td>365 (5 × 73)</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="5-resource-consumption">5. Resource consumption</h2>
+<p>Static memory is approximated by the library's loadable ELF segments; peak memory is the process high-water mark (VmHWM) including the benchmark driver and libc, so both are upper-bound proxies rather than isolated algorithm memory.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>operation</th>
+<th>static: ELF image (bytes)</th>
+<th>baseline RSS</th>
+<th>peak RSS</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>vdoo_128</code></td>
+<td>keygen</td>
+<td>2024705</td>
+<td>1736 KiB</td>
+<td>4460 KiB</td>
+</tr>
+<tr>
+<td><code>vdoo_128</code></td>
+<td>sign</td>
+<td>2024705</td>
+<td>4352 KiB</td>
+<td>4416 KiB</td>
+</tr>
+<tr>
+<td><code>vdoo_128</code></td>
+<td>verify</td>
+<td>2024705</td>
+<td>4368 KiB</td>
+<td>4452 KiB</td>
+</tr>
+<tr>
+<td><code>vdoo_256</code></td>
+<td>keygen</td>
+<td>25742425</td>
+<td>1720 KiB</td>
+<td>35756 KiB</td>
+</tr>
+<tr>
+<td><code>vdoo_256</code></td>
+<td>sign</td>
+<td>25742425</td>
+<td>35664 KiB</td>
+<td>35728 KiB</td>
+</tr>
+<tr>
+<td><code>vdoo_256</code></td>
+<td>verify</td>
+<td>25742425</td>
+<td>35640 KiB</td>
+<td>35752 KiB</td>
+</tr>
+<tr>
+<td><code>vdoo_512</code></td>
+<td>keygen</td>
+<td>–</td>
+<td>1736 KiB</td>
+<td>160780 KiB</td>
+</tr>
+<tr>
+<td><code>vdoo_512</code></td>
+<td>sign</td>
+<td>–</td>
+<td>160700 KiB</td>
+<td>160824 KiB</td>
+</tr>
+<tr>
+<td><code>vdoo_512</code></td>
+<td>verify</td>
+<td>–</td>
+<td>160704 KiB</td>
+<td>160768 KiB</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="6-transmission-and-storage-overhead">6. Transmission and storage overhead</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>public key</th>
+<th>secret key</th>
+<th>signature</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>vdoo_128</code></td>
+<td>330855</td>
+<td>342790</td>
+<td>85</td>
+</tr>
+<tr>
+<td><code>vdoo_256</code></td>
+<td>4289250</td>
+<td>4388307</td>
+<td>316</td>
+</tr>
+<tr>
+<td><code>vdoo_512</code></td>
+<td>20229300</td>
+<td>20474382</td>
+<td>471</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="symmetric-primitives">Symmetric primitives</h2>
+<p><a href="../symmetric-survey.html">Survey</a> verdict: <strong>ICCS-only</strong></p>
+<p>Share of each operation spent in the ICCS placeholder hash functions and in the ICCS DRNG (reference build, measured in the same run with link-time wrappers):</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>operation</th>
+<th>pseudohash/XOF/sm3</th>
+<th>DRNG</th>
+<th>calls per operation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>vdoo_128</code></td>
+<td>keygen</td>
+<td>0.0%</td>
+<td>10%</td>
+<td>drng 2.39e+04</td>
+</tr>
+<tr>
+<td><code>vdoo_128</code></td>
+<td>sign</td>
+<td>0.0%</td>
+<td>10%</td>
+<td>drng 4.92e+03, pseudoXOF 2.37</td>
+</tr>
+<tr>
+<td><code>vdoo_128</code></td>
+<td>verify</td>
+<td>0.3%</td>
+<td>0.0%</td>
+<td>pseudoXOF 2</td>
+</tr>
+<tr>
+<td><code>vdoo_256</code></td>
+<td>keygen</td>
+<td>0.0%</td>
+<td>1.7%</td>
+<td>drng 9.94e+04</td>
+</tr>
+<tr>
+<td><code>vdoo_256</code></td>
+<td>sign</td>
+<td>0.0%</td>
+<td>0.5%</td>
+<td>drng 247, pseudoXOF 2</td>
+</tr>
+<tr>
+<td><code>vdoo_256</code></td>
+<td>verify</td>
+<td>0.1%</td>
+<td>0.0%</td>
+<td>pseudoXOF 2</td>
+</tr>
+<tr>
+<td><code>vdoo_512</code></td>
+<td>keygen</td>
+<td>0.0%</td>
+<td>0.7%</td>
+<td>drng 2.46e+05</td>
+</tr>
+<tr>
+<td><code>vdoo_512</code></td>
+<td>sign</td>
+<td>0.0%</td>
+<td>0.2%</td>
+<td>drng 434, pseudoXOF 2</td>
+</tr>
+<tr>
+<td><code>vdoo_512</code></td>
+<td>verify</td>
+<td>0.1%</td>
+<td>0.0%</td>
+<td>pseudoXOF 2</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="7-raw-evidence-index">7. Raw evidence index</h2>
+<p>Paths are relative to <code>performance/data/x86_1/</code> in the <a href="https://github.com/ngcc-dev/ngcc-harness">harness</a>; each JSON file records its commands, environment and trials.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>item</th>
+<th>file</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>vdoo_128</code></td>
+<td>KAT log (sha256 <code>444ccd23bec52d2d…</code>)</td>
+<td><code>kat/sign-33/vdoo_128.log</code></td>
+</tr>
+<tr>
+<td><code>vdoo_128</code></td>
+<td>timing keygen</td>
+<td><code>records/sign-33/vdoo_128__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>vdoo_128</code></td>
+<td>timing sign</td>
+<td><code>records/sign-33/vdoo_128__sign.json</code></td>
+</tr>
+<tr>
+<td><code>vdoo_128</code></td>
+<td>timing verify</td>
+<td><code>records/sign-33/vdoo_128__verify.json</code></td>
+</tr>
+<tr>
+<td><code>vdoo_128</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/sign-33/vdoo_128__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>vdoo_128</code></td>
+<td>hash profile sign</td>
+<td><code>profile/sign-33/vdoo_128__sign.json</code></td>
+</tr>
+<tr>
+<td><code>vdoo_128</code></td>
+<td>hash profile verify</td>
+<td><code>profile/sign-33/vdoo_128__verify.json</code></td>
+</tr>
+<tr>
+<td><code>vdoo_256</code></td>
+<td>KAT log (sha256 <code>8d2c14b2ffacd1ec…</code>)</td>
+<td><code>kat/sign-33/vdoo_256.log</code></td>
+</tr>
+<tr>
+<td><code>vdoo_256</code></td>
+<td>timing keygen</td>
+<td><code>records/sign-33/vdoo_256__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>vdoo_256</code></td>
+<td>timing sign</td>
+<td><code>records/sign-33/vdoo_256__sign.json</code></td>
+</tr>
+<tr>
+<td><code>vdoo_256</code></td>
+<td>timing verify</td>
+<td><code>records/sign-33/vdoo_256__verify.json</code></td>
+</tr>
+<tr>
+<td><code>vdoo_256</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/sign-33/vdoo_256__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>vdoo_256</code></td>
+<td>hash profile sign</td>
+<td><code>profile/sign-33/vdoo_256__sign.json</code></td>
+</tr>
+<tr>
+<td><code>vdoo_256</code></td>
+<td>hash profile verify</td>
+<td><code>profile/sign-33/vdoo_256__verify.json</code></td>
+</tr>
+<tr>
+<td><code>vdoo_512</code></td>
+<td>KAT log (sha256 <code>0984f1d1cb098f94…</code>)</td>
+<td><code>kat/sign-33/vdoo_512.log</code></td>
+</tr>
+<tr>
+<td><code>vdoo_512</code></td>
+<td>timing keygen</td>
+<td><code>records/sign-33/vdoo_512__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>vdoo_512</code></td>
+<td>timing sign</td>
+<td><code>records/sign-33/vdoo_512__sign.json</code></td>
+</tr>
+<tr>
+<td><code>vdoo_512</code></td>
+<td>timing verify</td>
+<td><code>records/sign-33/vdoo_512__verify.json</code></td>
+</tr>
+<tr>
+<td><code>vdoo_512</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/sign-33/vdoo_512__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>vdoo_512</code></td>
+<td>hash profile sign</td>
+<td><code>profile/sign-33/vdoo_512__sign.json</code></td>
+</tr>
+<tr>
+<td><code>vdoo_512</code></td>
+<td>hash profile verify</td>
+<td><code>profile/sign-33/vdoo_512__verify.json</code></td>
+</tr>
+</tbody>
+</table></div>
+<p>Scripts: <code>performance/campaign.py</code>, <code>performance/ngcc_perf.c</code>, <code>performance/hashprof/</code> in the <a href="https://github.com/ngcc-dev/ngcc-harness">harness</a>.</p>
+</main>
+<footer class="site-footer">
+<p>Maintained by: <a href="mailto:markku-juhani.saarinen@tuni.fi">markku-juhani.saarinen@tuni.fi</a></p>
+<p>Submissions are welcome via <a href="https://github.com/ngcc-dev/ngcc-harness/issues">GitHub issues</a>.</p>
+</footer>
+</body>
+</html>

@@ -13,6 +13,7 @@ Discovery: Trivial
 Exploitation: Trivial
 Credit: Markku-Juhani O. Saarinen <markku-juhani.saarinen@tuni.fi>, with AI assistance
 Date: 2026-09-21
+Follow-up source: [MasterCube team's confirmation and erratum](https://list.niccs.org.cn/archives/list/crypthashforum@list.niccs.org.cn/message/IG2TAQNA7YHL4JLOOWBTJGKBVVVESWZK/)
 
 The following collision was verified against MasterCube-512:
 
@@ -26,6 +27,8 @@ Both produce:
 The implementation attempts to apply `pad10*1` in a single rate block. When the message length is `r-1 mod r`, only one bit remains. The opening and closing delimiter bits are ORed into the same position instead of emitting the additional block required by the specification.
 
 Consequently, for any prefix `P` of length `r-2 mod r`, the implementation gives `H(P) = H(P || 1)`. The same defect was reproduced at 702/703 bits for MasterCube-768 and 446/447 bits for MasterCube-1024. It directly violates the claimed 256-, 384-, and 512-bit collision strengths and is an implementation error rather than an attack on the specified permutation.
+
+The MasterCube team subsequently confirmed the one-bit padding error and published a corrected implementation and clarified specification. The archived Round 1 implementation assessed here remains affected.
 
 ### Reproducing
 
@@ -50,10 +53,13 @@ Exploitation: Construction and conformance failure; no collision demonstrated
 Credit: ISCAS (archive sender `Cryptanalysts001`)
 Date: 2026-09-22
 Original source: [CryptHashForum report](https://list.niccs.org.cn/archives/list/crypthashforum@list.niccs.org.cn/message/2XVZUBVVMVXYKMSOBJOKY2IFHFMQUNEK/)
+Follow-up source: [MasterCube team's confirmation and erratum](https://list.niccs.org.cn/archives/list/crypthashforum@list.niccs.org.cn/message/IG2TAQNA7YHL4JLOOWBTJGKBVVVESWZK/)
 
 As [reported on the CryptHash mailing list](https://list.niccs.org.cn/archives/list/crypthashforum@list.niccs.org.cn/message/2XVZUBVVMVXYKMSOBJOKY2IFHFMQUNEK/), the inverse in Algorithm 2 does not invert the published forward round, and the implementation differs from Algorithm 2 but still fails the inverse identity. In the code, the nonlinear calls are already reversed correctly, yet an extra exchange of the two slices remains; additionally, the forward `MixColumns` is reused although its inverse is `J MixColumns J`, where `J` exchanges the slices.
 
-This matters to the complete hash: MasterCube's `Cube-f` transformation XORs the forward branch with a branch explicitly designed and analyzed as its inverse, while the reference and optimized hashing paths execute the defective branch. Correcting the two operations changes the transformation and resulting digests. The finding invalidates conformance and the submitted security rationale, but it does not establish noninjectivity of the forward permutation or by itself give a hash collision or preimage attack.
+This matters to the complete hash: MasterCube's `Cube-f` transformation XORs the forward branch with a branch explicitly designed as its inverse, while the reference and optimized hashing paths execute the defective branch. Correcting the two operations changes the transformation and resulting digests. The finding invalidates conformance and the archived inverse-branch description, but it does not establish noninjectivity of the forward permutation or by itself give a hash collision or preimage attack.
+
+The MasterCube team confirmed that the old Algorithm 2 was not a genuine inverse because its pseudocode omitted the slice swap. Its revision corrects Algorithm 2 and explains how to reuse `MixColumns` for the inverse; the team states that the change does not affect its proofs or underlying design rationale.
 
 ### Reproducing
 

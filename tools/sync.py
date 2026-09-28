@@ -7,8 +7,8 @@ Only the files listed in TOP, PER_CANDIDATE and DATA are written; hand-written
 pages (content/index.md, content/candidates/index.md, ...) are never touched.
 Relative Markdown links are rewritten so that they resolve inside the site:
 links to other synced documents become site-relative, links to a candidate's
-specification PDF go to its NICCS page, and links to anything else that is
-not published (Makefiles, source files, libraries) are reduced to plain text.
+specification PDF go to its NICCS page, and links to unpublished files are
+rejected so that publication cannot silently drop supporting evidence.
 """
 import csv
 import posixpath
@@ -89,7 +89,7 @@ def main():
             m_id = re.search(r"((?:sign|kem|kex|hash)-\d\d)", path)
             if path.lower().endswith(".pdf") and m_id and page_url.get(m_id.group(1)):
                 return f"[{label}]({page_url[m_id.group(1)]})"
-            return label
+            die(f"{src_rel}: relative link {target!r} is not published")
 
         return LINK_RE.sub(repl, text)
 

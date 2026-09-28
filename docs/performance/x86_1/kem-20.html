@@ -1,0 +1,1316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ngcc.dev: kem-20 MAMBA-Frost — performance on x86-64 (system x861)</title>
+<link rel="icon" type="image/png" href="../../assets/mag-glass.png">
+<link rel="stylesheet" href="../../assets/style.css?v=1fdb792d">
+</head>
+<body>
+<header class="site-header">
+<a class="brand" href="../../index.html"><img class="brand-icon" src="../../assets/mag-glass.png" alt="" width="28" height="28">ngcc.dev</a>
+<nav><a href="../../index.html">Home</a><a href="../../reports/index.html">Reports</a><a href="../../performance/x86_1/index.html">Performance</a><a href="../../constant-time/index.html">Constant-Time</a></nav>
+</header>
+<main class="">
+<!-- synchronized from harness: kem-20/perf_x86_1.md -->
+<h1 id="kem-20-mamba-frost-performance-on-x86-64-system-x86_1">kem-20 MAMBA-Frost — performance on x86-64 (system x86_1)</h1>
+<p><a href="index.html">Performance x86_1</a> › <code>kem-20</code> · <a href="method.html">method</a> · <a href="https://www.niccs.org.cn/niccs/Round1Additional/pc/content/content_2101560853918208000.html">NICCS page</a></p>
+<p>Independent measurement following the structure of the NICCS x86 self-assessment guide, §3.5 (1)–(7). Not a submitter self-assessment.</p>
+<h2 id="1-basic-information">1. Basic information</h2>
+<ul>
+<li>Category: public-key algorithm; function: key encapsulation</li>
+<li>Algorithm: MAMBA-Frost</li>
+<li>Implementation versions measured: reference</li>
+<li>Parameter sets: <code>MAMBA-Frost-128</code>, <code>MAMBA-Frost-192</code>, <code>MAMBA-Frost-256</code>, <code>MAMBA-Frost-384</code>, <code>MAMBA-Frost-512</code>, <code>MAMBA-Frost-CC-128</code>, <code>MAMBA-Frost-CC-192</code>, <code>MAMBA-Frost-CC-256</code>, <code>MAMBA-Frost-CC-384</code>, <code>MAMBA-Frost-CC-512</code></li>
+</ul>
+<h2 id="2-assessment-environment">2. Assessment environment</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>item</th>
+<th>value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>processor</td>
+<td>12th Gen Intel(R) Core(TM) i7-12700 (CPU 2, one core)</td>
+</tr>
+<tr>
+<td>clock</td>
+<td>max 2.10 GHz, governor performance, turbo off, SMT off</td>
+</tr>
+<tr>
+<td>memory</td>
+<td>31788 MiB</td>
+</tr>
+<tr>
+<td>OS / kernel</td>
+<td>Debian GNU/Linux 13 (trixie) / 6.12.107+deb13-amd64</td>
+</tr>
+<tr>
+<td>compiler / build tool</td>
+<td>gcc (Debian 14.2.0-19) 14.2.0 / cmake version 3.31.6</td>
+</tr>
+<tr>
+<td>campaign start / end (UTC)</td>
+<td>2026-09-25T10:02:21 / 2026-09-28T04:35:59</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="3-functional-testing-kat">3. Functional testing (KAT)</h2>
+<p>Each library was checked against the submitted KAT vectors (SHA-256 manifest <code>kem-20/kat.sha256</code> in the harness) before timing.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>build flags</th>
+<th>KAT</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>MAMBA-Frost-128</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-192</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-256</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-384</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-512</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-CC-128</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-CC-192</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-CC-256</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-CC-384</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-CC-512</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="4-performance">4. Performance</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>operation</th>
+<th>mean cycles</th>
+<th>mean time</th>
+<th>ops/s</th>
+<th>median trial</th>
+<th>n (trials × iters)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>MAMBA-Frost-128</code></td>
+<td>keygen</td>
+<td>38.49 M</td>
+<td>18.4 ms</td>
+<td>54.4</td>
+<td>18.4 ms</td>
+<td>275 (5 × 55)</td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-128</code></td>
+<td>enc</td>
+<td>43.04 M</td>
+<td>20.6 ms</td>
+<td>48.6</td>
+<td>20.5 ms</td>
+<td>245 (5 × 49)</td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-128</code></td>
+<td>dec</td>
+<td>43.47 M</td>
+<td>20.8 ms</td>
+<td>48.1</td>
+<td>20.8 ms</td>
+<td>240 (5 × 48)</td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-192</code></td>
+<td>keygen</td>
+<td>112.69 M</td>
+<td>53.8 ms</td>
+<td>18.6</td>
+<td>53.8 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-192</code></td>
+<td>enc</td>
+<td>119.72 M</td>
+<td>57.2 ms</td>
+<td>17.5</td>
+<td>57.3 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-192</code></td>
+<td>dec</td>
+<td>120.24 M</td>
+<td>57.4 ms</td>
+<td>17.4</td>
+<td>57.4 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-256</code></td>
+<td>keygen</td>
+<td>241.73 M</td>
+<td>116 ms</td>
+<td>8.66</td>
+<td>116 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-256</code></td>
+<td>enc</td>
+<td>257.78 M</td>
+<td>123 ms</td>
+<td>8.12</td>
+<td>123 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-256</code></td>
+<td>dec</td>
+<td>258.75 M</td>
+<td>124 ms</td>
+<td>8.09</td>
+<td>124 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-384</code></td>
+<td>keygen</td>
+<td>538.40 M</td>
+<td>259 ms</td>
+<td>3.87</td>
+<td>258 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-384</code></td>
+<td>enc</td>
+<td>593.01 M</td>
+<td>283 ms</td>
+<td>3.53</td>
+<td>282 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-384</code></td>
+<td>dec</td>
+<td>595.55 M</td>
+<td>286 ms</td>
+<td>3.5</td>
+<td>285 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-512</code></td>
+<td>keygen</td>
+<td>972.04 M</td>
+<td>467 ms</td>
+<td>2.14</td>
+<td>469 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-512</code></td>
+<td>enc</td>
+<td>990.48 M</td>
+<td>476 ms</td>
+<td>2.1</td>
+<td>477 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-512</code></td>
+<td>dec</td>
+<td>992.50 M</td>
+<td>477 ms</td>
+<td>2.1</td>
+<td>474 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-CC-128</code></td>
+<td>keygen</td>
+<td>38.45 M</td>
+<td>18.4 ms</td>
+<td>54.4</td>
+<td>18.4 ms</td>
+<td>270 (5 × 54)</td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-CC-128</code></td>
+<td>enc</td>
+<td>43.00 M</td>
+<td>20.6 ms</td>
+<td>48.7</td>
+<td>20.6 ms</td>
+<td>245 (5 × 49)</td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-CC-128</code></td>
+<td>dec</td>
+<td>43.36 M</td>
+<td>20.7 ms</td>
+<td>48.3</td>
+<td>20.7 ms</td>
+<td>245 (5 × 49)</td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-CC-192</code></td>
+<td>keygen</td>
+<td>111.68 M</td>
+<td>53.4 ms</td>
+<td>18.7</td>
+<td>53.5 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-CC-192</code></td>
+<td>enc</td>
+<td>118.93 M</td>
+<td>56.8 ms</td>
+<td>17.6</td>
+<td>56.8 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-CC-192</code></td>
+<td>dec</td>
+<td>120.02 M</td>
+<td>57.3 ms</td>
+<td>17.4</td>
+<td>57.4 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-CC-256</code></td>
+<td>keygen</td>
+<td>241.47 M</td>
+<td>115 ms</td>
+<td>8.67</td>
+<td>115 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-CC-256</code></td>
+<td>enc</td>
+<td>255.32 M</td>
+<td>122 ms</td>
+<td>8.2</td>
+<td>122 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-CC-256</code></td>
+<td>dec</td>
+<td>258.07 M</td>
+<td>123 ms</td>
+<td>8.11</td>
+<td>123 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-CC-384</code></td>
+<td>keygen</td>
+<td>541.61 M</td>
+<td>260 ms</td>
+<td>3.84</td>
+<td>259 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-CC-384</code></td>
+<td>enc</td>
+<td>571.29 M</td>
+<td>274 ms</td>
+<td>3.64</td>
+<td>275 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-CC-384</code></td>
+<td>dec</td>
+<td>572.50 M</td>
+<td>275 ms</td>
+<td>3.64</td>
+<td>274 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-CC-512</code></td>
+<td>keygen</td>
+<td>998.62 M</td>
+<td>477 ms</td>
+<td>2.1</td>
+<td>477 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-CC-512</code></td>
+<td>enc</td>
+<td>972.28 M</td>
+<td>464 ms</td>
+<td>2.15</td>
+<td>465 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-CC-512</code></td>
+<td>dec</td>
+<td>973.29 M</td>
+<td>465 ms</td>
+<td>2.15</td>
+<td>466 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="5-resource-consumption">5. Resource consumption</h2>
+<p>Static memory is approximated by the library's loadable ELF segments; peak memory is the process high-water mark (VmHWM) including the benchmark driver and libc, so both are upper-bound proxies rather than isolated algorithm memory.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>operation</th>
+<th>static: ELF image (bytes)</th>
+<th>baseline RSS</th>
+<th>peak RSS</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>MAMBA-Frost-128</code></td>
+<td>keygen</td>
+<td>33973</td>
+<td>1668 KiB</td>
+<td>2336 KiB</td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-128</code></td>
+<td>enc</td>
+<td>33973</td>
+<td>2288 KiB</td>
+<td>2392 KiB</td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-128</code></td>
+<td>dec</td>
+<td>33973</td>
+<td>2328 KiB</td>
+<td>2400 KiB</td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-192</code></td>
+<td>keygen</td>
+<td>34101</td>
+<td>1736 KiB</td>
+<td>3400 KiB</td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-192</code></td>
+<td>enc</td>
+<td>34101</td>
+<td>3368 KiB</td>
+<td>3452 KiB</td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-192</code></td>
+<td>dec</td>
+<td>34101</td>
+<td>3384 KiB</td>
+<td>3456 KiB</td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-256</code></td>
+<td>keygen</td>
+<td>34101</td>
+<td>1768 KiB</td>
+<td>5148 KiB</td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-256</code></td>
+<td>enc</td>
+<td>34101</td>
+<td>5152 KiB</td>
+<td>5220 KiB</td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-256</code></td>
+<td>dec</td>
+<td>34101</td>
+<td>5216 KiB</td>
+<td>5328 KiB</td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-384</code></td>
+<td>keygen</td>
+<td>34349</td>
+<td>1796 KiB</td>
+<td>9264 KiB</td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-384</code></td>
+<td>enc</td>
+<td>34349</td>
+<td>9412 KiB</td>
+<td>9516 KiB</td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-384</code></td>
+<td>dec</td>
+<td>34349</td>
+<td>9576 KiB</td>
+<td>9652 KiB</td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-512</code></td>
+<td>keygen</td>
+<td>34285</td>
+<td>1784 KiB</td>
+<td>15276 KiB</td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-512</code></td>
+<td>enc</td>
+<td>34285</td>
+<td>2488 KiB</td>
+<td>15028 KiB</td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-512</code></td>
+<td>dec</td>
+<td>34285</td>
+<td>2764 KiB</td>
+<td>14964 KiB</td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-CC-128</code></td>
+<td>keygen</td>
+<td>34109</td>
+<td>1708 KiB</td>
+<td>2360 KiB</td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-CC-128</code></td>
+<td>enc</td>
+<td>34109</td>
+<td>2300 KiB</td>
+<td>2388 KiB</td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-CC-128</code></td>
+<td>dec</td>
+<td>34109</td>
+<td>2328 KiB</td>
+<td>2412 KiB</td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-CC-192</code></td>
+<td>keygen</td>
+<td>34237</td>
+<td>1720 KiB</td>
+<td>3376 KiB</td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-CC-192</code></td>
+<td>enc</td>
+<td>34237</td>
+<td>3352 KiB</td>
+<td>3424 KiB</td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-CC-192</code></td>
+<td>dec</td>
+<td>34237</td>
+<td>3400 KiB</td>
+<td>3484 KiB</td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-CC-256</code></td>
+<td>keygen</td>
+<td>34237</td>
+<td>1756 KiB</td>
+<td>5256 KiB</td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-CC-256</code></td>
+<td>enc</td>
+<td>34237</td>
+<td>5176 KiB</td>
+<td>5264 KiB</td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-CC-256</code></td>
+<td>dec</td>
+<td>34237</td>
+<td>5200 KiB</td>
+<td>5328 KiB</td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-CC-384</code></td>
+<td>keygen</td>
+<td>34677</td>
+<td>1800 KiB</td>
+<td>9344 KiB</td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-CC-384</code></td>
+<td>enc</td>
+<td>34677</td>
+<td>9392 KiB</td>
+<td>9480 KiB</td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-CC-384</code></td>
+<td>dec</td>
+<td>34677</td>
+<td>9524 KiB</td>
+<td>9588 KiB</td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-CC-512</code></td>
+<td>keygen</td>
+<td>34677</td>
+<td>1872 KiB</td>
+<td>15524 KiB</td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-CC-512</code></td>
+<td>enc</td>
+<td>34677</td>
+<td>2400 KiB</td>
+<td>15172 KiB</td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-CC-512</code></td>
+<td>dec</td>
+<td>34677</td>
+<td>2616 KiB</td>
+<td>15204 KiB</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="6-transmission-and-storage-overhead">6. Transmission and storage overhead</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>public key</th>
+<th>secret key</th>
+<th>ciphertext</th>
+<th>shared secret</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>MAMBA-Frost-128</code></td>
+<td>5152</td>
+<td>6736</td>
+<td>5192</td>
+<td>16</td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-192</code></td>
+<td>9712</td>
+<td>11528</td>
+<td>9760</td>
+<td>24</td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-256</code></td>
+<td>16776</td>
+<td>19416</td>
+<td>15552</td>
+<td>32</td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-384</code></td>
+<td>25096</td>
+<td>29032</td>
+<td>37736</td>
+<td>48</td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-512</code></td>
+<td>36432</td>
+<td>41728</td>
+<td>72944</td>
+<td>64</td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-CC-128</code></td>
+<td>5152</td>
+<td>6736</td>
+<td>5192</td>
+<td>16</td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-CC-192</code></td>
+<td>9712</td>
+<td>11528</td>
+<td>9760</td>
+<td>24</td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-CC-256</code></td>
+<td>16776</td>
+<td>19416</td>
+<td>15552</td>
+<td>32</td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-CC-384</code></td>
+<td>37628</td>
+<td>43492</td>
+<td>25204</td>
+<td>48</td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-CC-512</code></td>
+<td>72832</td>
+<td>83328</td>
+<td>36544</td>
+<td>64</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="symmetric-primitives">Symmetric primitives</h2>
+<p><a href="../symmetric-survey.html">Survey</a> verdict: <strong>mixed</strong> — all SHAKE calls are pseudoXOF shims; matrix A via own AES-128 with -D_AES128_FOR_A_</p>
+<p>Share of each operation spent in the ICCS placeholder hash functions and in the ICCS DRNG (reference build, measured in the same run with link-time wrappers):</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>operation</th>
+<th>pseudohash/XOF/sm3</th>
+<th>DRNG</th>
+<th>calls per operation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>MAMBA-Frost-128</code></td>
+<td>keygen</td>
+<td>2.2%</td>
+<td>0.0%</td>
+<td>drng 1, pseudoXOF 4</td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-128</code></td>
+<td>enc</td>
+<td>3.2%</td>
+<td>0.0%</td>
+<td>drng 1, pseudoXOF 7</td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-128</code></td>
+<td>dec</td>
+<td>3.8%</td>
+<td>0.0%</td>
+<td>pseudoXOF 8</td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-192</code></td>
+<td>keygen</td>
+<td>1.3%</td>
+<td>0.0%</td>
+<td>drng 1, pseudoXOF 4</td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-192</code></td>
+<td>enc</td>
+<td>2.0%</td>
+<td>0.0%</td>
+<td>drng 1, pseudoXOF 7</td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-192</code></td>
+<td>dec</td>
+<td>2.4%</td>
+<td>0.0%</td>
+<td>pseudoXOF 8</td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-256</code></td>
+<td>keygen</td>
+<td>1.3%</td>
+<td>0.0%</td>
+<td>drng 1, pseudoXOF 4</td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-256</code></td>
+<td>enc</td>
+<td>1.7%</td>
+<td>0.0%</td>
+<td>drng 1, pseudoXOF 7</td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-256</code></td>
+<td>dec</td>
+<td>2.0%</td>
+<td>0.0%</td>
+<td>pseudoXOF 8</td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-384</code></td>
+<td>keygen</td>
+<td>0.9%</td>
+<td>0.0%</td>
+<td>drng 1, pseudoXOF 4</td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-384</code></td>
+<td>enc</td>
+<td>1.6%</td>
+<td>0.0%</td>
+<td>drng 1, pseudoXOF 7</td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-384</code></td>
+<td>dec</td>
+<td>1.9%</td>
+<td>0.0%</td>
+<td>pseudoXOF 8</td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-512</code></td>
+<td>keygen</td>
+<td>0.9%</td>
+<td>0.0%</td>
+<td>drng 1, pseudoXOF 4</td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-512</code></td>
+<td>enc</td>
+<td>2.1%</td>
+<td>0.0%</td>
+<td>drng 1, pseudoXOF 7</td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-512</code></td>
+<td>dec</td>
+<td>2.4%</td>
+<td>0.0%</td>
+<td>pseudoXOF 8</td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-CC-128</code></td>
+<td>keygen</td>
+<td>2.2%</td>
+<td>0.0%</td>
+<td>drng 1, pseudoXOF 4</td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-CC-128</code></td>
+<td>enc</td>
+<td>3.2%</td>
+<td>0.0%</td>
+<td>drng 1, pseudoXOF 7</td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-CC-128</code></td>
+<td>dec</td>
+<td>3.8%</td>
+<td>0.0%</td>
+<td>pseudoXOF 8</td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-CC-192</code></td>
+<td>keygen</td>
+<td>1.3%</td>
+<td>0.0%</td>
+<td>drng 1, pseudoXOF 4</td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-CC-192</code></td>
+<td>enc</td>
+<td>2.0%</td>
+<td>0.0%</td>
+<td>drng 1, pseudoXOF 7</td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-CC-192</code></td>
+<td>dec</td>
+<td>2.4%</td>
+<td>0.0%</td>
+<td>pseudoXOF 8</td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-CC-256</code></td>
+<td>keygen</td>
+<td>1.3%</td>
+<td>0.0%</td>
+<td>drng 1, pseudoXOF 4</td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-CC-256</code></td>
+<td>enc</td>
+<td>1.7%</td>
+<td>0.0%</td>
+<td>drng 1, pseudoXOF 7</td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-CC-256</code></td>
+<td>dec</td>
+<td>2.0%</td>
+<td>0.0%</td>
+<td>pseudoXOF 8</td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-CC-384</code></td>
+<td>keygen</td>
+<td>1.3%</td>
+<td>0.0%</td>
+<td>drng 1, pseudoXOF 4</td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-CC-384</code></td>
+<td>enc</td>
+<td>1.4%</td>
+<td>0.0%</td>
+<td>drng 1, pseudoXOF 7</td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-CC-384</code></td>
+<td>dec</td>
+<td>1.5%</td>
+<td>0.0%</td>
+<td>pseudoXOF 8</td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-CC-512</code></td>
+<td>keygen</td>
+<td>1.6%</td>
+<td>0.0%</td>
+<td>drng 1, pseudoXOF 4</td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-CC-512</code></td>
+<td>enc</td>
+<td>1.5%</td>
+<td>0.0%</td>
+<td>drng 1, pseudoXOF 7</td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-CC-512</code></td>
+<td>dec</td>
+<td>1.5%</td>
+<td>0.0%</td>
+<td>pseudoXOF 8</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="7-raw-evidence-index">7. Raw evidence index</h2>
+<p>Paths are relative to <code>performance/data/x86_1/</code> in the <a href="https://github.com/ngcc-dev/ngcc-harness">harness</a>; each JSON file records its commands, environment and trials.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>item</th>
+<th>file</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>MAMBA-Frost-128</code></td>
+<td>KAT log (sha256 <code>8090bcff3acb2f59…</code>)</td>
+<td><code>kat/kem-20/MAMBA-Frost-128.log</code></td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-128</code></td>
+<td>timing dec</td>
+<td><code>records/kem-20/MAMBA-Frost-128__dec.json</code></td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-128</code></td>
+<td>timing enc</td>
+<td><code>records/kem-20/MAMBA-Frost-128__enc.json</code></td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-128</code></td>
+<td>timing keygen</td>
+<td><code>records/kem-20/MAMBA-Frost-128__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-128</code></td>
+<td>hash profile dec</td>
+<td><code>profile/kem-20/MAMBA-Frost-128__dec.json</code></td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-128</code></td>
+<td>hash profile enc</td>
+<td><code>profile/kem-20/MAMBA-Frost-128__enc.json</code></td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-128</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/kem-20/MAMBA-Frost-128__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-192</code></td>
+<td>KAT log (sha256 <code>b2f9fb067a588cd9…</code>)</td>
+<td><code>kat/kem-20/MAMBA-Frost-192.log</code></td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-192</code></td>
+<td>timing dec</td>
+<td><code>records/kem-20/MAMBA-Frost-192__dec.json</code></td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-192</code></td>
+<td>timing enc</td>
+<td><code>records/kem-20/MAMBA-Frost-192__enc.json</code></td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-192</code></td>
+<td>timing keygen</td>
+<td><code>records/kem-20/MAMBA-Frost-192__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-192</code></td>
+<td>hash profile dec</td>
+<td><code>profile/kem-20/MAMBA-Frost-192__dec.json</code></td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-192</code></td>
+<td>hash profile enc</td>
+<td><code>profile/kem-20/MAMBA-Frost-192__enc.json</code></td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-192</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/kem-20/MAMBA-Frost-192__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-256</code></td>
+<td>KAT log (sha256 <code>f390adac33d822c8…</code>)</td>
+<td><code>kat/kem-20/MAMBA-Frost-256.log</code></td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-256</code></td>
+<td>timing dec</td>
+<td><code>records/kem-20/MAMBA-Frost-256__dec.json</code></td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-256</code></td>
+<td>timing enc</td>
+<td><code>records/kem-20/MAMBA-Frost-256__enc.json</code></td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-256</code></td>
+<td>timing keygen</td>
+<td><code>records/kem-20/MAMBA-Frost-256__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-256</code></td>
+<td>hash profile dec</td>
+<td><code>profile/kem-20/MAMBA-Frost-256__dec.json</code></td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-256</code></td>
+<td>hash profile enc</td>
+<td><code>profile/kem-20/MAMBA-Frost-256__enc.json</code></td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-256</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/kem-20/MAMBA-Frost-256__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-384</code></td>
+<td>KAT log (sha256 <code>39a1ff58781834b2…</code>)</td>
+<td><code>kat/kem-20/MAMBA-Frost-384.log</code></td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-384</code></td>
+<td>timing dec</td>
+<td><code>records/kem-20/MAMBA-Frost-384__dec.json</code></td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-384</code></td>
+<td>timing enc</td>
+<td><code>records/kem-20/MAMBA-Frost-384__enc.json</code></td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-384</code></td>
+<td>timing keygen</td>
+<td><code>records/kem-20/MAMBA-Frost-384__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-384</code></td>
+<td>hash profile dec</td>
+<td><code>profile/kem-20/MAMBA-Frost-384__dec.json</code></td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-384</code></td>
+<td>hash profile enc</td>
+<td><code>profile/kem-20/MAMBA-Frost-384__enc.json</code></td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-384</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/kem-20/MAMBA-Frost-384__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-512</code></td>
+<td>KAT log (sha256 <code>8c24563da71c0fcf…</code>)</td>
+<td><code>kat/kem-20/MAMBA-Frost-512.log</code></td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-512</code></td>
+<td>timing dec</td>
+<td><code>records/kem-20/MAMBA-Frost-512__dec.json</code></td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-512</code></td>
+<td>timing enc</td>
+<td><code>records/kem-20/MAMBA-Frost-512__enc.json</code></td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-512</code></td>
+<td>timing keygen</td>
+<td><code>records/kem-20/MAMBA-Frost-512__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-512</code></td>
+<td>hash profile dec</td>
+<td><code>profile/kem-20/MAMBA-Frost-512__dec.json</code></td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-512</code></td>
+<td>hash profile enc</td>
+<td><code>profile/kem-20/MAMBA-Frost-512__enc.json</code></td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-512</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/kem-20/MAMBA-Frost-512__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-CC-128</code></td>
+<td>KAT log (sha256 <code>76270eca0e7383ee…</code>)</td>
+<td><code>kat/kem-20/MAMBA-Frost-CC-128.log</code></td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-CC-128</code></td>
+<td>timing dec</td>
+<td><code>records/kem-20/MAMBA-Frost-CC-128__dec.json</code></td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-CC-128</code></td>
+<td>timing enc</td>
+<td><code>records/kem-20/MAMBA-Frost-CC-128__enc.json</code></td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-CC-128</code></td>
+<td>timing keygen</td>
+<td><code>records/kem-20/MAMBA-Frost-CC-128__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-CC-128</code></td>
+<td>hash profile dec</td>
+<td><code>profile/kem-20/MAMBA-Frost-CC-128__dec.json</code></td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-CC-128</code></td>
+<td>hash profile enc</td>
+<td><code>profile/kem-20/MAMBA-Frost-CC-128__enc.json</code></td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-CC-128</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/kem-20/MAMBA-Frost-CC-128__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-CC-192</code></td>
+<td>KAT log (sha256 <code>fb9fd18fb53a9e95…</code>)</td>
+<td><code>kat/kem-20/MAMBA-Frost-CC-192.log</code></td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-CC-192</code></td>
+<td>timing dec</td>
+<td><code>records/kem-20/MAMBA-Frost-CC-192__dec.json</code></td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-CC-192</code></td>
+<td>timing enc</td>
+<td><code>records/kem-20/MAMBA-Frost-CC-192__enc.json</code></td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-CC-192</code></td>
+<td>timing keygen</td>
+<td><code>records/kem-20/MAMBA-Frost-CC-192__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-CC-192</code></td>
+<td>hash profile dec</td>
+<td><code>profile/kem-20/MAMBA-Frost-CC-192__dec.json</code></td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-CC-192</code></td>
+<td>hash profile enc</td>
+<td><code>profile/kem-20/MAMBA-Frost-CC-192__enc.json</code></td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-CC-192</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/kem-20/MAMBA-Frost-CC-192__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-CC-256</code></td>
+<td>KAT log (sha256 <code>e8028e5741692f04…</code>)</td>
+<td><code>kat/kem-20/MAMBA-Frost-CC-256.log</code></td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-CC-256</code></td>
+<td>timing dec</td>
+<td><code>records/kem-20/MAMBA-Frost-CC-256__dec.json</code></td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-CC-256</code></td>
+<td>timing enc</td>
+<td><code>records/kem-20/MAMBA-Frost-CC-256__enc.json</code></td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-CC-256</code></td>
+<td>timing keygen</td>
+<td><code>records/kem-20/MAMBA-Frost-CC-256__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-CC-256</code></td>
+<td>hash profile dec</td>
+<td><code>profile/kem-20/MAMBA-Frost-CC-256__dec.json</code></td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-CC-256</code></td>
+<td>hash profile enc</td>
+<td><code>profile/kem-20/MAMBA-Frost-CC-256__enc.json</code></td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-CC-256</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/kem-20/MAMBA-Frost-CC-256__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-CC-384</code></td>
+<td>KAT log (sha256 <code>5536f26fe0a5df5e…</code>)</td>
+<td><code>kat/kem-20/MAMBA-Frost-CC-384.log</code></td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-CC-384</code></td>
+<td>timing dec</td>
+<td><code>records/kem-20/MAMBA-Frost-CC-384__dec.json</code></td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-CC-384</code></td>
+<td>timing enc</td>
+<td><code>records/kem-20/MAMBA-Frost-CC-384__enc.json</code></td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-CC-384</code></td>
+<td>timing keygen</td>
+<td><code>records/kem-20/MAMBA-Frost-CC-384__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-CC-384</code></td>
+<td>hash profile dec</td>
+<td><code>profile/kem-20/MAMBA-Frost-CC-384__dec.json</code></td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-CC-384</code></td>
+<td>hash profile enc</td>
+<td><code>profile/kem-20/MAMBA-Frost-CC-384__enc.json</code></td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-CC-384</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/kem-20/MAMBA-Frost-CC-384__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-CC-512</code></td>
+<td>KAT log (sha256 <code>e35e49091c3beb5f…</code>)</td>
+<td><code>kat/kem-20/MAMBA-Frost-CC-512.log</code></td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-CC-512</code></td>
+<td>timing dec</td>
+<td><code>records/kem-20/MAMBA-Frost-CC-512__dec.json</code></td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-CC-512</code></td>
+<td>timing enc</td>
+<td><code>records/kem-20/MAMBA-Frost-CC-512__enc.json</code></td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-CC-512</code></td>
+<td>timing keygen</td>
+<td><code>records/kem-20/MAMBA-Frost-CC-512__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-CC-512</code></td>
+<td>hash profile dec</td>
+<td><code>profile/kem-20/MAMBA-Frost-CC-512__dec.json</code></td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-CC-512</code></td>
+<td>hash profile enc</td>
+<td><code>profile/kem-20/MAMBA-Frost-CC-512__enc.json</code></td>
+</tr>
+<tr>
+<td><code>MAMBA-Frost-CC-512</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/kem-20/MAMBA-Frost-CC-512__keygen.json</code></td>
+</tr>
+</tbody>
+</table></div>
+<p>Scripts: <code>performance/campaign.py</code>, <code>performance/ngcc_perf.c</code>, <code>performance/hashprof/</code> in the <a href="https://github.com/ngcc-dev/ngcc-harness">harness</a>.</p>
+</main>
+<footer class="site-footer">
+<p>Maintained by: <a href="mailto:markku-juhani.saarinen@tuni.fi">markku-juhani.saarinen@tuni.fi</a></p>
+<p>Submissions are welcome via <a href="https://github.com/ngcc-dev/ngcc-harness/issues">GitHub issues</a>.</p>
+</footer>
+</body>
+</html>

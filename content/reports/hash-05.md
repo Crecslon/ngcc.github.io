@@ -5,7 +5,7 @@ Archive: [uHash.zip](https://www.niccs.org.cn/niccs/Proposal/Cryptographic%20Has
 
 ## hash-05-1: Secret state indexes a 256-byte substitution table
 
-Severity: Medium
+Severity: Low
 Status: Confirmed
 Layer: Side-channel
 Affected: Reference uHash-512/768/1024
@@ -16,13 +16,15 @@ Date: 2026-09-23
 
 The reference `RoundFunction` xors the evolving state with a round key, then reads `S[X[i]]` and `S[Y[i]]` (`CryptHash_AlgorithmInstance.c:163-174`). `S` contains 256 bytes (`:36`), spanning cache lines. Equal-length messages can therefore select different lookup addresses during hashing. No complete message-recovery experiment is claimed. See [constant_time.md](../constant-time/hash-05.md).
 
+Constant-time fix (easy, hence Low): the specified uBlock S-box is 4-bit, so the merged 256-byte table can be replaced by a 16-entry in-register `pshufb` lookup or a bitsliced circuit, the implementation style uBlock was designed for.
+
 ### Reproducing
 
 Inspect the cited table accesses in any reference variant. The lookup indices are the evolving `P[i] ^ RK[i]` bytes, not public counters.
 
 ## hash-05-2: Narrow-pipe iteration limits uHash second-preimage security for long messages
 
-Severity: Medium
+Severity: Critical
 Status: Confirmed
 Layer: Design
 Affected: uHash-512, uHash-768 and uHash-1024 specifications and implementations
@@ -41,7 +43,7 @@ Compare the claim on physical PDF pages 1 and 11 with the padding and iteration 
 
 ## hash-05-3: Unused partial-byte bits cancel padding and give trivial collisions
 
-Severity: High
+Severity: Critical
 Status: Confirmed
 Layer: Implementation
 Affected: Reference and optimized uHash-512/768/1024 bitstring-input paths
@@ -54,7 +56,7 @@ The API accepts a message pointer and its length in bits, using the most-signifi
 
 This gives deterministic collisions between distinct bitstrings. The one-bit message `0`, supplied as byte `00` with length 1, is padded to byte `40`. The two-bit message `00`, supplied as byte `20` with length 2, is also padded to `40`: the `20` bit is outside the declared two-bit message and the implementation adds the two-bit padding marker `20`. The complete padded inputs are identical, so all subsequent full-round computation is identical. The submitted uHash-512, uHash-768 and uHash-1024 libraries all return equal digests for this pair; canonical encoding of the two-bit message and a changed meaningful bit are non-colliding controls.
 
-The collision requires nonzero unused bits in the caller's final byte. Canonically encoded inputs do not collide under this witness, which limits its severity to High; `hash-09-1` does not have that input-encoding precondition.
+The collision requires nonzero unused bits in the caller's final byte, but the API assigns no meaning to those bits and imposes no requirement that callers clear them. The two declared bitstrings are therefore distinct valid inputs. This immediate collision violates the NGCC requirement of at least `h/2`-bit collision security ([Evaluation Criteria](https://www.niccs.org.cn/niccs/Notice/crlRB1ZY.pdf) §1(2)) and is Critical. Canonically zeroed backing bytes avoid this particular witness but do not repair the API implementation.
 
 The implementation must mask the unused low bits before setting the padding bit, for example `M[k] = (msg[k] & (0xff << (8-r))) | (1 << (7-r))` for `r = msg_len_bits mod 8`.
 

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ngcc.dev: Performance</title>
+<link rel="icon" type="image/png" href="../assets/mag-glass.png">
+<link rel="stylesheet" href="../assets/style.css?v=1fdb792d">
+</head>
+<body>
+<header class="site-header">
+<a class="brand" href="../index.html"><img class="brand-icon" src="../assets/mag-glass.png" alt="" width="28" height="28">ngcc.dev</a>
+<nav><a href="../index.html">Home</a><a href="../reports/index.html">Reports</a><a href="../performance/x86_1/index.html">Performance</a><a href="../constant-time/index.html">Constant-Time</a></nav>
+</header>
+<main class="">
+<h1 id="performance">Performance</h1>
+<p>Independent cycle-count measurements of the NGCC Round 1 candidates. Each system summary reports ICCS-facing parameter sets, primitive operations, and the public-key schemes' share spent in ICCS placeholder hash functions, and hash timings relative to an exact-shape placeholder measurement. Per-candidate pages retain every measured implementation, including non-ICCS variants omitted from the aggregate table.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>system</th>
+<th>architecture</th>
+<th>machine</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="x86_1/index.html">x86_1</a></td>
+<td>x86_64</td>
+<td>Intel Core i7-12700 (Alder Lake), one performance core, turbo off, fixed 2.1 GHz, SMT off</td>
+</tr>
+</tbody>
+</table></div>
+<p>The <a href="symmetric-survey.html">symmetric cryptography survey</a> records how each public-key submission implements hashing and randomness. Per-candidate pages include the measurement method, KAT status, sizes, memory proxies and raw-evidence index.</p>
+</main>
+<footer class="site-footer">
+<p>Updated 2026-09-28 10:29:09 UTC · Maintained by: <a href="mailto:markku-juhani.saarinen@tuni.fi">markku-juhani.saarinen@tuni.fi</a></p>
+<p>Submissions are welcome via <a href="https://github.com/ngcc-dev/ngcc-harness/issues">GitHub issues</a>.</p>
+</footer>
+</body>
+</html>

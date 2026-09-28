@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ngcc.dev: sign-34 YuanYang.DSA — performance on x86-64 (system x861)</title>
+<link rel="icon" type="image/png" href="../../assets/mag-glass.png">
+<link rel="stylesheet" href="../../assets/style.css?v=1fdb792d">
+</head>
+<body>
+<header class="site-header">
+<a class="brand" href="../../index.html"><img class="brand-icon" src="../../assets/mag-glass.png" alt="" width="28" height="28">ngcc.dev</a>
+<nav><a href="../../index.html">Home</a><a href="../../reports/index.html">Reports</a><a href="../../performance/x86_1/index.html">Performance</a><a href="../../constant-time/index.html">Constant-Time</a></nav>
+</header>
+<main class="">
+<!-- synchronized from harness: sign-34/perf_x86_1.md -->
+<h1 id="sign-34-yuanyangdsa-performance-on-x86-64-system-x86_1">sign-34 YuanYang.DSA — performance on x86-64 (system x86_1)</h1>
+<p><a href="index.html">Performance x86_1</a> › <code>sign-34</code> · <a href="method.html">method</a> · <a href="https://www.niccs.org.cn/niccs/Round1Additional/pc/content/content_2101561114459983872.html">NICCS page</a></p>
+<p>Independent measurement following the structure of the NICCS x86 self-assessment guide, §3.5 (1)–(7). Not a submitter self-assessment.</p>
+<h2 id="1-basic-information">1. Basic information</h2>
+<ul>
+<li>Category: public-key algorithm; function: digital signature</li>
+<li>Algorithm: YuanYang.DSA</li>
+<li>Implementation versions measured: reference</li>
+<li>Parameter sets: <code>yuanyang-512</code>, <code>yuanyang-1024</code>, <code>yuanyang-2048</code></li>
+</ul>
+<h2 id="2-assessment-environment">2. Assessment environment</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>item</th>
+<th>value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>processor</td>
+<td>12th Gen Intel(R) Core(TM) i7-12700 (CPU 2, one core)</td>
+</tr>
+<tr>
+<td>clock</td>
+<td>max 2.10 GHz, governor performance, turbo off, SMT off</td>
+</tr>
+<tr>
+<td>memory</td>
+<td>31788 MiB</td>
+</tr>
+<tr>
+<td>OS / kernel</td>
+<td>Debian GNU/Linux 13 (trixie) / 6.12.107+deb13-amd64</td>
+</tr>
+<tr>
+<td>compiler / build tool</td>
+<td>gcc (Debian 14.2.0-19) 14.2.0 / cmake version 3.31.6</td>
+</tr>
+<tr>
+<td>campaign start / end (UTC)</td>
+<td>2026-09-25T10:02:21 / 2026-09-28T04:35:59</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="3-functional-testing-kat">3. Functional testing (KAT)</h2>
+<p>Each library was checked against the submitted KAT vectors (SHA-256 manifest <code>sign-34/kat.sha256</code> in the harness) before timing.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>build flags</th>
+<th>KAT</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>yuanyang-512</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>yuanyang-1024</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>yuanyang-2048</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="4-performance">4. Performance</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>operation</th>
+<th>mean cycles</th>
+<th>mean time</th>
+<th>ops/s</th>
+<th>median trial</th>
+<th>n (trials × iters)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>yuanyang-512</code></td>
+<td>keygen</td>
+<td>17.05 M</td>
+<td>8.16 ms</td>
+<td>122</td>
+<td>8.16 ms</td>
+<td>890 (5 × 178)</td>
+</tr>
+<tr>
+<td><code>yuanyang-512</code></td>
+<td>sign</td>
+<td>9.00 M</td>
+<td>4.3 ms</td>
+<td>233</td>
+<td>4.3 ms</td>
+<td>880 (5 × 176)</td>
+</tr>
+<tr>
+<td><code>yuanyang-512</code></td>
+<td>verify</td>
+<td>210.7 k</td>
+<td>101 µs</td>
+<td>9.93e+03</td>
+<td>101 µs</td>
+<td>41315 (5 × 8263)</td>
+</tr>
+<tr>
+<td><code>yuanyang-1024</code></td>
+<td>keygen</td>
+<td>19.76 M</td>
+<td>9.46 ms</td>
+<td>106</td>
+<td>9.46 ms</td>
+<td>530 (5 × 106)</td>
+</tr>
+<tr>
+<td><code>yuanyang-1024</code></td>
+<td>sign</td>
+<td>14.65 M</td>
+<td>7 ms</td>
+<td>143</td>
+<td>7 ms</td>
+<td>755 (5 × 151)</td>
+</tr>
+<tr>
+<td><code>yuanyang-1024</code></td>
+<td>verify</td>
+<td>461.1 k</td>
+<td>220 µs</td>
+<td>4.54e+03</td>
+<td>220 µs</td>
+<td>19735 (5 × 3947)</td>
+</tr>
+<tr>
+<td><code>yuanyang-2048</code></td>
+<td>keygen</td>
+<td>88.03 M</td>
+<td>42.6 ms</td>
+<td>23.5</td>
+<td>42.6 ms</td>
+<td>130 (5 × 26)</td>
+</tr>
+<tr>
+<td><code>yuanyang-2048</code></td>
+<td>sign</td>
+<td>46.36 M</td>
+<td>22.2 ms</td>
+<td>45.1</td>
+<td>22.2 ms</td>
+<td>145 (5 × 29)</td>
+</tr>
+<tr>
+<td><code>yuanyang-2048</code></td>
+<td>verify</td>
+<td>1.02 M</td>
+<td>487 µs</td>
+<td>2.05e+03</td>
+<td>487 µs</td>
+<td>9460 (5 × 1892)</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="5-resource-consumption">5. Resource consumption</h2>
+<p>Static memory is approximated by the library's loadable ELF segments; peak memory is the process high-water mark (VmHWM) including the benchmark driver and libc, so both are upper-bound proxies rather than isolated algorithm memory.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>operation</th>
+<th>static: ELF image (bytes)</th>
+<th>baseline RSS</th>
+<th>peak RSS</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>yuanyang-512</code></td>
+<td>keygen</td>
+<td>170949</td>
+<td>2128 KiB</td>
+<td>3744 KiB</td>
+</tr>
+<tr>
+<td><code>yuanyang-512</code></td>
+<td>sign</td>
+<td>170949</td>
+<td>2804 KiB</td>
+<td>2828 KiB</td>
+</tr>
+<tr>
+<td><code>yuanyang-512</code></td>
+<td>verify</td>
+<td>170949</td>
+<td>2752 KiB</td>
+<td>2752 KiB</td>
+</tr>
+<tr>
+<td><code>yuanyang-1024</code></td>
+<td>keygen</td>
+<td>225029</td>
+<td>2224 KiB</td>
+<td>3996 KiB</td>
+</tr>
+<tr>
+<td><code>yuanyang-1024</code></td>
+<td>sign</td>
+<td>225029</td>
+<td>3060 KiB</td>
+<td>3156 KiB</td>
+</tr>
+<tr>
+<td><code>yuanyang-1024</code></td>
+<td>verify</td>
+<td>225029</td>
+<td>3164 KiB</td>
+<td>3164 KiB</td>
+</tr>
+<tr>
+<td><code>yuanyang-2048</code></td>
+<td>keygen</td>
+<td>346213</td>
+<td>2252 KiB</td>
+<td>6496 KiB</td>
+</tr>
+<tr>
+<td><code>yuanyang-2048</code></td>
+<td>sign</td>
+<td>346213</td>
+<td>3500 KiB</td>
+<td>5796 KiB</td>
+</tr>
+<tr>
+<td><code>yuanyang-2048</code></td>
+<td>verify</td>
+<td>346213</td>
+<td>3824 KiB</td>
+<td>5632 KiB</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="6-transmission-and-storage-overhead">6. Transmission and storage overhead</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>public key</th>
+<th>secret key</th>
+<th>signature</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>yuanyang-512</code></td>
+<td>738</td>
+<td>15584</td>
+<td>561</td>
+</tr>
+<tr>
+<td><code>yuanyang-1024</code></td>
+<td>1570</td>
+<td>31264</td>
+<td>1150</td>
+</tr>
+<tr>
+<td><code>yuanyang-2048</code></td>
+<td>3330</td>
+<td>62720</td>
+<td>2364</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="symmetric-primitives">Symmetric primitives</h2>
+<p><a href="../symmetric-survey.html">Survey</a> verdict: <strong>ICCS-only</strong></p>
+<p>Share of each operation spent in the ICCS placeholder hash functions and in the ICCS DRNG (reference build, measured in the same run with link-time wrappers):</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>operation</th>
+<th>pseudohash/XOF/sm3</th>
+<th>DRNG</th>
+<th>calls per operation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>yuanyang-512</code></td>
+<td>keygen</td>
+<td>0.0%</td>
+<td>24%</td>
+<td>drng 83.4</td>
+</tr>
+<tr>
+<td><code>yuanyang-512</code></td>
+<td>sign</td>
+<td>1.9%</td>
+<td>38%</td>
+<td>drng 67.9, pseudoXOF 1.44, sm3hash 1</td>
+</tr>
+<tr>
+<td><code>yuanyang-512</code></td>
+<td>verify</td>
+<td>59%</td>
+<td>0.0%</td>
+<td>pseudoXOF 1, sm3hash 1</td>
+</tr>
+<tr>
+<td><code>yuanyang-1024</code></td>
+<td>keygen</td>
+<td>0.0%</td>
+<td>4.2%</td>
+<td>drng 16.5</td>
+</tr>
+<tr>
+<td><code>yuanyang-1024</code></td>
+<td>sign</td>
+<td>1.8%</td>
+<td>36%</td>
+<td>drng 105, pseudoXOF 1.05, sm3hash 1</td>
+</tr>
+<tr>
+<td><code>yuanyang-1024</code></td>
+<td>verify</td>
+<td>54%</td>
+<td>0.0%</td>
+<td>pseudoXOF 1, sm3hash 1</td>
+</tr>
+<tr>
+<td><code>yuanyang-2048</code></td>
+<td>keygen</td>
+<td>0.0%</td>
+<td>19%</td>
+<td>drng 347</td>
+</tr>
+<tr>
+<td><code>yuanyang-2048</code></td>
+<td>sign</td>
+<td>1.7%</td>
+<td>38%</td>
+<td>drng 359, pseudoXOF 1.79, sm3hash 1</td>
+</tr>
+<tr>
+<td><code>yuanyang-2048</code></td>
+<td>verify</td>
+<td>49%</td>
+<td>0.0%</td>
+<td>pseudoXOF 1, sm3hash 1</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="7-raw-evidence-index">7. Raw evidence index</h2>
+<p>Paths are relative to <code>performance/data/x86_1/</code> in the <a href="https://github.com/ngcc-dev/ngcc-harness">harness</a>; each JSON file records its commands, environment and trials.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>item</th>
+<th>file</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>yuanyang-512</code></td>
+<td>KAT log (sha256 <code>15822bfdeb307ec0…</code>)</td>
+<td><code>kat/sign-34/yuanyang-512.log</code></td>
+</tr>
+<tr>
+<td><code>yuanyang-512</code></td>
+<td>timing keygen</td>
+<td><code>records/sign-34/yuanyang-512__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>yuanyang-512</code></td>
+<td>timing sign</td>
+<td><code>records/sign-34/yuanyang-512__sign.json</code></td>
+</tr>
+<tr>
+<td><code>yuanyang-512</code></td>
+<td>timing verify</td>
+<td><code>records/sign-34/yuanyang-512__verify.json</code></td>
+</tr>
+<tr>
+<td><code>yuanyang-512</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/sign-34/yuanyang-512__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>yuanyang-512</code></td>
+<td>hash profile sign</td>
+<td><code>profile/sign-34/yuanyang-512__sign.json</code></td>
+</tr>
+<tr>
+<td><code>yuanyang-512</code></td>
+<td>hash profile verify</td>
+<td><code>profile/sign-34/yuanyang-512__verify.json</code></td>
+</tr>
+<tr>
+<td><code>yuanyang-1024</code></td>
+<td>KAT log (sha256 <code>ea6fde6f2d953858…</code>)</td>
+<td><code>kat/sign-34/yuanyang-1024.log</code></td>
+</tr>
+<tr>
+<td><code>yuanyang-1024</code></td>
+<td>timing keygen</td>
+<td><code>records/sign-34/yuanyang-1024__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>yuanyang-1024</code></td>
+<td>timing sign</td>
+<td><code>records/sign-34/yuanyang-1024__sign.json</code></td>
+</tr>
+<tr>
+<td><code>yuanyang-1024</code></td>
+<td>timing verify</td>
+<td><code>records/sign-34/yuanyang-1024__verify.json</code></td>
+</tr>
+<tr>
+<td><code>yuanyang-1024</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/sign-34/yuanyang-1024__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>yuanyang-1024</code></td>
+<td>hash profile sign</td>
+<td><code>profile/sign-34/yuanyang-1024__sign.json</code></td>
+</tr>
+<tr>
+<td><code>yuanyang-1024</code></td>
+<td>hash profile verify</td>
+<td><code>profile/sign-34/yuanyang-1024__verify.json</code></td>
+</tr>
+<tr>
+<td><code>yuanyang-2048</code></td>
+<td>KAT log (sha256 <code>ca6fec2b6085bb9f…</code>)</td>
+<td><code>kat/sign-34/yuanyang-2048.log</code></td>
+</tr>
+<tr>
+<td><code>yuanyang-2048</code></td>
+<td>timing keygen</td>
+<td><code>records/sign-34/yuanyang-2048__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>yuanyang-2048</code></td>
+<td>timing sign</td>
+<td><code>records/sign-34/yuanyang-2048__sign.json</code></td>
+</tr>
+<tr>
+<td><code>yuanyang-2048</code></td>
+<td>timing verify</td>
+<td><code>records/sign-34/yuanyang-2048__verify.json</code></td>
+</tr>
+<tr>
+<td><code>yuanyang-2048</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/sign-34/yuanyang-2048__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>yuanyang-2048</code></td>
+<td>hash profile sign</td>
+<td><code>profile/sign-34/yuanyang-2048__sign.json</code></td>
+</tr>
+<tr>
+<td><code>yuanyang-2048</code></td>
+<td>hash profile verify</td>
+<td><code>profile/sign-34/yuanyang-2048__verify.json</code></td>
+</tr>
+</tbody>
+</table></div>
+<p>Scripts: <code>performance/campaign.py</code>, <code>performance/ngcc_perf.c</code>, <code>performance/hashprof/</code> in the <a href="https://github.com/ngcc-dev/ngcc-harness">harness</a>.</p>
+</main>
+<footer class="site-footer">
+<p>Maintained by: <a href="mailto:markku-juhani.saarinen@tuni.fi">markku-juhani.saarinen@tuni.fi</a></p>
+<p>Submissions are welcome via <a href="https://github.com/ngcc-dev/ngcc-harness/issues">GitHub issues</a>.</p>
+</footer>
+</body>
+</html>

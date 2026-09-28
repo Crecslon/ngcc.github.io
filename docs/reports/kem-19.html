@@ -5,22 +5,22 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>ngcc.dev: Lore (kem-19)</title>
 <link rel="icon" type="image/png" href="../assets/mag-glass.png">
-<link rel="stylesheet" href="../assets/style.css?v=996d5cfd">
+<link rel="stylesheet" href="../assets/style.css?v=1fdb792d">
 </head>
 <body>
 <header class="site-header">
 <a class="brand" href="../index.html"><img class="brand-icon" src="../assets/mag-glass.png" alt="" width="28" height="28">ngcc.dev</a>
-<nav><a href="../index.html">Home</a><a href="../reports/index.html">Reports</a><a href="../constant-time/index.html">Constant-Time</a></nav>
+<nav><a href="../index.html">Home</a><a href="../reports/index.html">Reports</a><a href="../performance/x86_1/index.html">Performance</a><a href="../constant-time/index.html">Constant-Time</a></nav>
 </header>
-<main>
-<p class="crumb"><a href="../reports/index.html">Reports</a> › <code>kem-19</code> · <a href="../constant-time/kem-19.html">Constant-time review</a></p>
+<main class="">
+<p class="crumb"><a href="../reports/index.html">Reports</a> › <code>kem-19</code> · <a href="../constant-time/kem-19.html">Constant-time review</a> · <a href="../performance/x86_1/kem-19.html">Performance</a></p>
 
 <h1 id="lore-kem-19">Lore (kem-19)</h1>
 <div class="table-wrap"><table class="meta">
 <tr><th>Candidate</th><td>Lore</td></tr>
 <tr><th>Family</th><td>Lattice (module-LWR)</td></tr>
 <tr><th>Archive</th><td><a href="https://www.niccs.org.cn/niccs/Proposal/Public-Key%20Cryptographic%20Algorithms/Round%201%20candidates/Lore.zip">Lore.zip</a> (SHA-256: <code>e33130fb45a3b1e220f8043739d1396a884c0043cb4336104e67e5404c7cc725</code>)</td></tr>
-<tr><th>Specification</th><td><a href="https://github.com/ngcc-dev/ngcc-harness/raw/refs/heads/main/kem-19/kem-19-spec.pdf" title="Download kem-19-spec.pdf from GitHub">kem-19-spec.pdf</a>&nbsp;<a class="pdf-link" href="https://cdn.jsdelivr.net/gh/ngcc-dev/ngcc-harness@main/kem-19/kem-19-spec.pdf" title="Open the kem-19 specification PDF">PDF</a></td></tr>
+<tr><th>Specification</th><td><a href="https://github.com/ngcc-dev/ngcc-harness/raw/dc66c6cb3c06e75bdea0048e21fa4e13c63f00af/kem-19/kem-19-spec.pdf" title="Download kem-19-spec.pdf from GitHub">kem-19-spec.pdf</a>&nbsp;<a class="pdf-link" href="https://cdn.jsdelivr.net/gh/ngcc-dev/ngcc-harness@dc66c6cb3c06e75bdea0048e21fa4e13c63f00af/kem-19/kem-19-spec.pdf" title="Open the kem-19 specification PDF">PDF</a></td></tr>
 </table></div>
 
 <h2 class="issue-heading issue-heading-first" id="kem-19-1-lore-512s-reducible-ring-admits-smaller-quotient-attacks">kem-19-1: Lore-512&#x27;s reducible ring admits smaller quotient attacks</h2>
@@ -38,6 +38,8 @@
 <p>Original source: <a href="https://list.niccs.org.cn/archives/list/pkcforum@list.niccs.org.cn/message/US6X74OOCAN377LPXHUOJBHR7BSOQ3EB/">NGCC PKC Forum post</a></p>
 <p>Lore-512 uses <code>Z_1028[x]/(x^768+1)</code>, where <code>1028 = t·q</code> with the specification's headline modulus <code>q = 257</code> and <code>t = 4</code>. Here <code>x^768+1 = (x^256+1)(x^512-x^256+1)</code>. The factors are coprime modulo 1028: writing <code>y=x^256</code>, their Bézout difference is <code>3</code>, which is invertible modulo 1028. Public ring equations therefore project into degree-256 and degree-512 quotient rings, and the two recovered secret projections would reconstruct the full secret by CRT. A secret with coefficients in <code>{-2,-1,0,1,2}</code> projects to coefficients bounded by 6 and 4 respectively, so the smaller instances do not lose the small-secret structure.</p>
 <p>The forum estimates approximately 451 classical and 391 quantum bits for full recovery, below the claimed 512-bit classical level. Those figures depend on an independent-coefficient/GSA lattice model that has <strong>not</strong> been reproduced here and does not fully model Lore's fixed-composition secret, rounding correlations, or concrete reduction costs. This is a structurally verified parameter-selection lead, not a demonstrated full-size key recovery or a confirmed 451-bit attack.</p>
+<h3 id="follow-up-analysis">Follow-up Analysis</h3>
+<p>The Lore team's <a href="https://list.niccs.org.cn/archives/list/pkcforum@list.niccs.org.cn/message/KGBWR5YQU6ASUKNVUQEBNNJZ7TWZIOY4/">first response</a> and <a href="https://list.niccs.org.cn/archives/list/pkcforum@list.niccs.org.cn/message/W6XIOQDXGIUZPVKR3MZW4HZCDJEVYRMR/">revised-parameter post</a> change Lore-512 to <code>n=1024</code>, <code>k=2</code>, and the ring <code>Z_1028[x]/(x^1024+1)</code>, together with updated fixed-composition and BCH parameters. That removes the particular degree-256/512 quotient projection reported here. This report continues to describe the archived Round 1 submission identified above; it does not apply the same factorization claim to the revised set.</p>
 <h3 id="reproducing">Reproducing</h3>
 <p>Commands below run in a checkout of the <a href="https://github.com/ngcc-dev/ngcc-harness">ngcc-harness repository</a> with the candidate built (see its README).</p>
 <pre><code class="language-sh">python3 kem-19/reproduce_ring_projection.py

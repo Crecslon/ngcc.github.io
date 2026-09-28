@@ -5,22 +5,22 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>ngcc.dev: HEP-QC (kem-17)</title>
 <link rel="icon" type="image/png" href="../assets/mag-glass.png">
-<link rel="stylesheet" href="../assets/style.css?v=996d5cfd">
+<link rel="stylesheet" href="../assets/style.css?v=1fdb792d">
 </head>
 <body>
 <header class="site-header">
 <a class="brand" href="../index.html"><img class="brand-icon" src="../assets/mag-glass.png" alt="" width="28" height="28">ngcc.dev</a>
-<nav><a href="../index.html">Home</a><a href="../reports/index.html">Reports</a><a href="../constant-time/index.html">Constant-Time</a></nav>
+<nav><a href="../index.html">Home</a><a href="../reports/index.html">Reports</a><a href="../performance/x86_1/index.html">Performance</a><a href="../constant-time/index.html">Constant-Time</a></nav>
 </header>
-<main>
-<p class="crumb"><a href="../reports/index.html">Reports</a> › <code>kem-17</code> · <a href="../constant-time/kem-17.html">Constant-time review</a></p>
+<main class="">
+<p class="crumb"><a href="../reports/index.html">Reports</a> › <code>kem-17</code> · <a href="../constant-time/kem-17.html">Constant-time review</a> · <a href="../performance/x86_1/kem-17.html">Performance</a></p>
 
 <h1 id="hep-qc-kem-17">HEP-QC (kem-17)</h1>
 <div class="table-wrap"><table class="meta">
 <tr><th>Candidate</th><td>HEP-QC</td></tr>
 <tr><th>Family</th><td>Code-based (quasi-cyclic)</td></tr>
 <tr><th>Archive</th><td><a href="https://www.niccs.org.cn/niccs/Proposal/Public-Key%20Cryptographic%20Algorithms/Round%201%20candidates/HEP-QC.zip">HEP-QC.zip</a> (SHA-256: <code>3780991127f49b6397b4182d32b35ab7a6359bf825a707e90df0f809beeb3790</code>)</td></tr>
-<tr><th>Specification</th><td><a href="https://github.com/ngcc-dev/ngcc-harness/raw/refs/heads/main/kem-17/kem-17-spec.pdf" title="Download kem-17-spec.pdf from GitHub">kem-17-spec.pdf</a>&nbsp;<a class="pdf-link" href="https://cdn.jsdelivr.net/gh/ngcc-dev/ngcc-harness@main/kem-17/kem-17-spec.pdf" title="Open the kem-17 specification PDF">PDF</a></td></tr>
+<tr><th>Specification</th><td><a href="https://github.com/ngcc-dev/ngcc-harness/raw/dc66c6cb3c06e75bdea0048e21fa4e13c63f00af/kem-17/kem-17-spec.pdf" title="Download kem-17-spec.pdf from GitHub">kem-17-spec.pdf</a>&nbsp;<a class="pdf-link" href="https://cdn.jsdelivr.net/gh/ngcc-dev/ngcc-harness@dc66c6cb3c06e75bdea0048e21fa4e13c63f00af/kem-17/kem-17-spec.pdf" title="Open the kem-17 specification PDF">PDF</a></td></tr>
 </table></div>
 
 <h2 class="issue-heading issue-heading-first" id="kem-17-1-publicly-reproducible-secret-keys">kem-17-1: Publicly reproducible secret keys</h2>
@@ -128,6 +128,7 @@ python3 kem-17/reproduce_epcp_fingerprint.py
 
 <p>HEP-QC decapsulation regenerates private <code>y</code>, mixing matrix <code>t</code>, and column permutation <code>p</code> from the secret seed (<code>ref/PKE_HEP_QC.c:185-220</code>). The permutation indexes output memory by <code>P[old_col]</code> (<code>common/vector.c:498-503,477-485</code>). The code then inverts private <code>t</code> using a value-dependent pivot search and conditional row operations (<code>common/vector.c:369-408</code>). These addresses and branches disclose information about secret key material to a sufficiently close observer. No remote channel, complete key recovery, or shared-secret extraction is demonstrated.</p>
 <p>The same decapsulation key expansion also runs secret-seed rejection sampling, retry-until-invertible matrix generation, and a Fisher–Yates <code>x % bound</code> with hardware division in the reviewed GCC <code>-O2</code> build (<code>common/parsing.c:23-31</code>, <code>common/vector.c:64-76,343-357,416-423</code>). These are additional paths within this finding, not separate demonstrated key-recovery attacks.</p>
+<p>Constant-time fix (moderate, hence Medium): apply the secret permutation obliviously with a Beneš network, as Classic McEliece does, invert the mixing matrix with masked-pivot constant-time elimination, and replace the rejection sampling, the retry-until-invertible loop and the division-based Fisher–Yates shuffle with fixed-work constant-time equivalents. These are well-known techniques with moderate cost, although several components change.</p>
 <h3 id="reproducing_4">Reproducing</h3>
 <p>Commands below run in a checkout of the <a href="https://github.com/ngcc-dev/ngcc-harness">ngcc-harness repository</a> with the candidate built (see its README).</p>
 <p>The source-level witness is <code>ref/KEM_HEP_QC.c:165-212</code> → <code>ref/PKE_HEP_QC.c:185-220</code> → <code>common/vector.c:369-408,477-503</code> under <code>Implementations/Implementations/</code>; the x86_64 PKE source calls the same shared routines. See <code>constant_time.md</code> for the secret/public mapping. This is not a measured timing benchmark.</p>

@@ -1,0 +1,1075 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ngcc.dev: sign-22 Rhyme — performance on x86-64 (system x861)</title>
+<link rel="icon" type="image/png" href="../../assets/mag-glass.png">
+<link rel="stylesheet" href="../../assets/style.css?v=1fdb792d">
+</head>
+<body>
+<header class="site-header">
+<a class="brand" href="../../index.html"><img class="brand-icon" src="../../assets/mag-glass.png" alt="" width="28" height="28">ngcc.dev</a>
+<nav><a href="../../index.html">Home</a><a href="../../reports/index.html">Reports</a><a href="../../performance/x86_1/index.html">Performance</a><a href="../../constant-time/index.html">Constant-Time</a></nav>
+</header>
+<main class="">
+<!-- synchronized from harness: sign-22/perf_x86_1.md -->
+<h1 id="sign-22-rhyme-performance-on-x86-64-system-x86_1">sign-22 Rhyme — performance on x86-64 (system x86_1)</h1>
+<p><a href="index.html">Performance x86_1</a> › <code>sign-22</code> · <a href="method.html">method</a> · <a href="https://www.niccs.org.cn/niccs/Round1Additional/pc/content/content_2101561095950520320.html">NICCS page</a></p>
+<p>Independent measurement following the structure of the NICCS x86 self-assessment guide, §3.5 (1)–(7). Not a submitter self-assessment.</p>
+<h2 id="1-basic-information">1. Basic information</h2>
+<ul>
+<li>Category: public-key algorithm; function: digital signature</li>
+<li>Algorithm: Rhyme</li>
+<li>Implementation versions measured: reference</li>
+<li>Parameter sets: <code>Rhyme-SHAKE-128</code>, <code>Rhyme-SHAKE-256</code>, <code>Rhyme-SHAKE-384</code>, <code>Rhyme-SHAKE-512</code>, <code>Rhyme-SM3-128</code>, <code>Rhyme-SM3-256</code>, <code>Rhyme-SM3-384</code>, <code>Rhyme-SM3-512</code></li>
+</ul>
+<h2 id="2-assessment-environment">2. Assessment environment</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>item</th>
+<th>value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>processor</td>
+<td>12th Gen Intel(R) Core(TM) i7-12700 (CPU 2, one core)</td>
+</tr>
+<tr>
+<td>clock</td>
+<td>max 2.10 GHz, governor performance, turbo off, SMT off</td>
+</tr>
+<tr>
+<td>memory</td>
+<td>31788 MiB</td>
+</tr>
+<tr>
+<td>OS / kernel</td>
+<td>Debian GNU/Linux 13 (trixie) / 6.12.107+deb13-amd64</td>
+</tr>
+<tr>
+<td>compiler / build tool</td>
+<td>gcc (Debian 14.2.0-19) 14.2.0 / cmake version 3.31.6</td>
+</tr>
+<tr>
+<td>campaign start / end (UTC)</td>
+<td>2026-09-25T10:02:21 / 2026-09-28T04:35:59</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="3-functional-testing-kat">3. Functional testing (KAT)</h2>
+<p>Each library was checked against the submitted KAT vectors (SHA-256 manifest <code>sign-22/kat.sha256</code> in the harness) before timing.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>build flags</th>
+<th>KAT</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Rhyme-SHAKE-128</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>Rhyme-SHAKE-256</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>Rhyme-SHAKE-384</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>Rhyme-SHAKE-512</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>Rhyme-SM3-128</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>Rhyme-SM3-256</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>Rhyme-SM3-384</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>Rhyme-SM3-512</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="4-performance">4. Performance</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>operation</th>
+<th>mean cycles</th>
+<th>mean time</th>
+<th>ops/s</th>
+<th>median trial</th>
+<th>n (trials × iters)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Rhyme-SHAKE-128</code></td>
+<td>keygen</td>
+<td>813.50 M</td>
+<td>390 ms</td>
+<td>2.56</td>
+<td>389 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>Rhyme-SHAKE-128</code></td>
+<td>sign</td>
+<td>2.18 M</td>
+<td>1.04 ms</td>
+<td>961</td>
+<td>1.04 ms</td>
+<td>4290 (5 × 858)</td>
+</tr>
+<tr>
+<td><code>Rhyme-SHAKE-128</code></td>
+<td>verify</td>
+<td>191.2 k</td>
+<td>91.3 µs</td>
+<td>1.1e+04</td>
+<td>91.3 µs</td>
+<td>35535 (5 × 7107)</td>
+</tr>
+<tr>
+<td><code>Rhyme-SHAKE-256</code></td>
+<td>keygen</td>
+<td>1.86 G</td>
+<td>892 ms</td>
+<td>1.12</td>
+<td>890 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>Rhyme-SHAKE-256</code></td>
+<td>sign</td>
+<td>9.75 M</td>
+<td>4.66 ms</td>
+<td>215</td>
+<td>4.66 ms</td>
+<td>1070 (5 × 214)</td>
+</tr>
+<tr>
+<td><code>Rhyme-SHAKE-256</code></td>
+<td>verify</td>
+<td>433.3 k</td>
+<td>207 µs</td>
+<td>4.83e+03</td>
+<td>207 µs</td>
+<td>15310 (5 × 3062)</td>
+</tr>
+<tr>
+<td><code>Rhyme-SHAKE-384</code></td>
+<td>keygen</td>
+<td>7.40 G</td>
+<td>3.55 s</td>
+<td>0.281</td>
+<td>3.55 s</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>Rhyme-SHAKE-384</code></td>
+<td>sign</td>
+<td>4.97 M</td>
+<td>2.37 ms</td>
+<td>421</td>
+<td>2.37 ms</td>
+<td>2025 (5 × 405)</td>
+</tr>
+<tr>
+<td><code>Rhyme-SHAKE-384</code></td>
+<td>verify</td>
+<td>788.2 k</td>
+<td>376 µs</td>
+<td>2.66e+03</td>
+<td>376 µs</td>
+<td>8815 (5 × 1763)</td>
+</tr>
+<tr>
+<td><code>Rhyme-SHAKE-512</code></td>
+<td>keygen</td>
+<td>10.49 G</td>
+<td>5.04 s</td>
+<td>0.199</td>
+<td>5.04 s</td>
+<td>75 (5 × 15)</td>
+</tr>
+<tr>
+<td><code>Rhyme-SHAKE-512</code></td>
+<td>sign</td>
+<td>9.88 M</td>
+<td>4.72 ms</td>
+<td>212</td>
+<td>4.72 ms</td>
+<td>1040 (5 × 208)</td>
+</tr>
+<tr>
+<td><code>Rhyme-SHAKE-512</code></td>
+<td>verify</td>
+<td>1.18 M</td>
+<td>565 µs</td>
+<td>1.77e+03</td>
+<td>565 µs</td>
+<td>6885 (5 × 1377)</td>
+</tr>
+<tr>
+<td><code>Rhyme-SM3-128</code></td>
+<td>keygen</td>
+<td>867.63 M</td>
+<td>416 ms</td>
+<td>2.4</td>
+<td>415 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>Rhyme-SM3-128</code></td>
+<td>sign</td>
+<td>4.27 M</td>
+<td>2.05 ms</td>
+<td>487</td>
+<td>2.05 ms</td>
+<td>2325 (5 × 465)</td>
+</tr>
+<tr>
+<td><code>Rhyme-SM3-128</code></td>
+<td>verify</td>
+<td>338.8 k</td>
+<td>163 µs</td>
+<td>6.14e+03</td>
+<td>163 µs</td>
+<td>24045 (5 × 4809)</td>
+</tr>
+<tr>
+<td><code>Rhyme-SM3-256</code></td>
+<td>keygen</td>
+<td>2.32 G</td>
+<td>1.11 s</td>
+<td>0.898</td>
+<td>1.12 s</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>Rhyme-SM3-256</code></td>
+<td>sign</td>
+<td>15.55 M</td>
+<td>7.48 ms</td>
+<td>134</td>
+<td>7.48 ms</td>
+<td>660 (5 × 132)</td>
+</tr>
+<tr>
+<td><code>Rhyme-SM3-256</code></td>
+<td>verify</td>
+<td>870.9 k</td>
+<td>419 µs</td>
+<td>2.39e+03</td>
+<td>419 µs</td>
+<td>8475 (5 × 1695)</td>
+</tr>
+<tr>
+<td><code>Rhyme-SM3-384</code></td>
+<td>keygen</td>
+<td>6.54 G</td>
+<td>3.14 s</td>
+<td>0.319</td>
+<td>3.14 s</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>Rhyme-SM3-384</code></td>
+<td>sign</td>
+<td>23.32 M</td>
+<td>11.2 ms</td>
+<td>89.2</td>
+<td>11.2 ms</td>
+<td>440 (5 × 88)</td>
+</tr>
+<tr>
+<td><code>Rhyme-SM3-384</code></td>
+<td>verify</td>
+<td>1.60 M</td>
+<td>770 µs</td>
+<td>1.3e+03</td>
+<td>770 µs</td>
+<td>5270 (5 × 1054)</td>
+</tr>
+<tr>
+<td><code>Rhyme-SM3-512</code></td>
+<td>keygen</td>
+<td>6.87 G</td>
+<td>3.3 s</td>
+<td>0.303</td>
+<td>3.3 s</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>Rhyme-SM3-512</code></td>
+<td>sign</td>
+<td>32.58 M</td>
+<td>15.7 ms</td>
+<td>63.8</td>
+<td>15.7 ms</td>
+<td>320 (5 × 64)</td>
+</tr>
+<tr>
+<td><code>Rhyme-SM3-512</code></td>
+<td>verify</td>
+<td>2.22 M</td>
+<td>1.07 ms</td>
+<td>936</td>
+<td>1.07 ms</td>
+<td>4100 (5 × 820)</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="5-resource-consumption">5. Resource consumption</h2>
+<p>Static memory is approximated by the library's loadable ELF segments; peak memory is the process high-water mark (VmHWM) including the benchmark driver and libc, so both are upper-bound proxies rather than isolated algorithm memory.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>operation</th>
+<th>static: ELF image (bytes)</th>
+<th>baseline RSS</th>
+<th>peak RSS</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Rhyme-SHAKE-128</code></td>
+<td>keygen</td>
+<td>166137</td>
+<td>2132 KiB</td>
+<td>3160 KiB</td>
+</tr>
+<tr>
+<td><code>Rhyme-SHAKE-128</code></td>
+<td>sign</td>
+<td>166137</td>
+<td>3008 KiB</td>
+<td>3152 KiB</td>
+</tr>
+<tr>
+<td><code>Rhyme-SHAKE-128</code></td>
+<td>verify</td>
+<td>166137</td>
+<td>3072 KiB</td>
+<td>3136 KiB</td>
+</tr>
+<tr>
+<td><code>Rhyme-SHAKE-256</code></td>
+<td>keygen</td>
+<td>213849</td>
+<td>2148 KiB</td>
+<td>3584 KiB</td>
+</tr>
+<tr>
+<td><code>Rhyme-SHAKE-256</code></td>
+<td>sign</td>
+<td>213849</td>
+<td>3136 KiB</td>
+<td>3368 KiB</td>
+</tr>
+<tr>
+<td><code>Rhyme-SHAKE-256</code></td>
+<td>verify</td>
+<td>213849</td>
+<td>3312 KiB</td>
+<td>3376 KiB</td>
+</tr>
+<tr>
+<td><code>Rhyme-SHAKE-384</code></td>
+<td>keygen</td>
+<td>305521</td>
+<td>2172 KiB</td>
+<td>4564 KiB</td>
+</tr>
+<tr>
+<td><code>Rhyme-SHAKE-384</code></td>
+<td>sign</td>
+<td>305521</td>
+<td>3664 KiB</td>
+<td>4016 KiB</td>
+</tr>
+<tr>
+<td><code>Rhyme-SHAKE-384</code></td>
+<td>verify</td>
+<td>305521</td>
+<td>3960 KiB</td>
+<td>4032 KiB</td>
+</tr>
+<tr>
+<td><code>Rhyme-SHAKE-512</code></td>
+<td>keygen</td>
+<td>303657</td>
+<td>2168 KiB</td>
+<td>4548 KiB</td>
+</tr>
+<tr>
+<td><code>Rhyme-SHAKE-512</code></td>
+<td>sign</td>
+<td>303657</td>
+<td>3996 KiB</td>
+<td>4404 KiB</td>
+</tr>
+<tr>
+<td><code>Rhyme-SHAKE-512</code></td>
+<td>verify</td>
+<td>303657</td>
+<td>4328 KiB</td>
+<td>4392 KiB</td>
+</tr>
+<tr>
+<td><code>Rhyme-SM3-128</code></td>
+<td>keygen</td>
+<td>161729</td>
+<td>2100 KiB</td>
+<td>3812 KiB</td>
+</tr>
+<tr>
+<td><code>Rhyme-SM3-128</code></td>
+<td>sign</td>
+<td>161729</td>
+<td>3028 KiB</td>
+<td>20364 KiB</td>
+</tr>
+<tr>
+<td><code>Rhyme-SM3-128</code></td>
+<td>verify</td>
+<td>161729</td>
+<td>3036 KiB</td>
+<td>17196 KiB</td>
+</tr>
+<tr>
+<td><code>Rhyme-SM3-256</code></td>
+<td>keygen</td>
+<td>209089</td>
+<td>2140 KiB</td>
+<td>5520 KiB</td>
+</tr>
+<tr>
+<td><code>Rhyme-SM3-256</code></td>
+<td>sign</td>
+<td>209089</td>
+<td>3404 KiB</td>
+<td>21552 KiB</td>
+</tr>
+<tr>
+<td><code>Rhyme-SM3-256</code></td>
+<td>verify</td>
+<td>209089</td>
+<td>3588 KiB</td>
+<td>16232 KiB</td>
+</tr>
+<tr>
+<td><code>Rhyme-SM3-384</code></td>
+<td>keygen</td>
+<td>300953</td>
+<td>2152 KiB</td>
+<td>9288 KiB</td>
+</tr>
+<tr>
+<td><code>Rhyme-SM3-384</code></td>
+<td>sign</td>
+<td>300953</td>
+<td>3812 KiB</td>
+<td>21336 KiB</td>
+</tr>
+<tr>
+<td><code>Rhyme-SM3-384</code></td>
+<td>verify</td>
+<td>300953</td>
+<td>4076 KiB</td>
+<td>18568 KiB</td>
+</tr>
+<tr>
+<td><code>Rhyme-SM3-512</code></td>
+<td>keygen</td>
+<td>299057</td>
+<td>2180 KiB</td>
+<td>9004 KiB</td>
+</tr>
+<tr>
+<td><code>Rhyme-SM3-512</code></td>
+<td>sign</td>
+<td>299057</td>
+<td>3836 KiB</td>
+<td>22096 KiB</td>
+</tr>
+<tr>
+<td><code>Rhyme-SM3-512</code></td>
+<td>verify</td>
+<td>299057</td>
+<td>4236 KiB</td>
+<td>16032 KiB</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="6-transmission-and-storage-overhead">6. Transmission and storage overhead</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>public key</th>
+<th>secret key</th>
+<th>signature</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Rhyme-SHAKE-128</code></td>
+<td>800</td>
+<td>11072</td>
+<td>5156</td>
+</tr>
+<tr>
+<td><code>Rhyme-SHAKE-256</code></td>
+<td>1824</td>
+<td>22336</td>
+<td>10308</td>
+</tr>
+<tr>
+<td><code>Rhyme-SHAKE-384</code></td>
+<td>2720</td>
+<td>45760</td>
+<td>14436</td>
+</tr>
+<tr>
+<td><code>Rhyme-SHAKE-512</code></td>
+<td>3872</td>
+<td>44864</td>
+<td>20612</td>
+</tr>
+<tr>
+<td><code>Rhyme-SM3-128</code></td>
+<td>800</td>
+<td>11072</td>
+<td>5156</td>
+</tr>
+<tr>
+<td><code>Rhyme-SM3-256</code></td>
+<td>1824</td>
+<td>22336</td>
+<td>10308</td>
+</tr>
+<tr>
+<td><code>Rhyme-SM3-384</code></td>
+<td>2720</td>
+<td>45760</td>
+<td>14436</td>
+</tr>
+<tr>
+<td><code>Rhyme-SM3-512</code></td>
+<td>3872</td>
+<td>44864</td>
+<td>20612</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="symmetric-primitives">Symmetric primitives</h2>
+<p><a href="../symmetric-survey.html">Survey</a> verdict: <strong>instance-dependent</strong> — SM3 sets: counter XOF on sm3hash; SHAKE sets: own FIPS 202 (bypass)</p>
+<p>Share of each operation spent in the ICCS placeholder hash functions and in the ICCS DRNG (reference build, measured in the same run with link-time wrappers):</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>operation</th>
+<th>pseudohash/XOF/sm3</th>
+<th>DRNG</th>
+<th>calls per operation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Rhyme-SHAKE-128</code></td>
+<td>keygen</td>
+<td>0.0%</td>
+<td>0.0%</td>
+<td>drng 1</td>
+</tr>
+<tr>
+<td><code>Rhyme-SHAKE-128</code></td>
+<td>sign</td>
+<td>0.0%</td>
+<td>0.0%</td>
+<td>–</td>
+</tr>
+<tr>
+<td><code>Rhyme-SHAKE-128</code></td>
+<td>verify</td>
+<td>0.0%</td>
+<td>0.0%</td>
+<td>–</td>
+</tr>
+<tr>
+<td><code>Rhyme-SHAKE-256</code></td>
+<td>keygen</td>
+<td>0.0%</td>
+<td>0.0%</td>
+<td>drng 1</td>
+</tr>
+<tr>
+<td><code>Rhyme-SHAKE-256</code></td>
+<td>sign</td>
+<td>0.0%</td>
+<td>0.0%</td>
+<td>–</td>
+</tr>
+<tr>
+<td><code>Rhyme-SHAKE-256</code></td>
+<td>verify</td>
+<td>0.0%</td>
+<td>0.0%</td>
+<td>–</td>
+</tr>
+<tr>
+<td><code>Rhyme-SHAKE-384</code></td>
+<td>keygen</td>
+<td>0.0%</td>
+<td>0.0%</td>
+<td>drng 1</td>
+</tr>
+<tr>
+<td><code>Rhyme-SHAKE-384</code></td>
+<td>sign</td>
+<td>0.0%</td>
+<td>0.0%</td>
+<td>–</td>
+</tr>
+<tr>
+<td><code>Rhyme-SHAKE-384</code></td>
+<td>verify</td>
+<td>0.0%</td>
+<td>0.0%</td>
+<td>–</td>
+</tr>
+<tr>
+<td><code>Rhyme-SHAKE-512</code></td>
+<td>keygen</td>
+<td>0.0%</td>
+<td>0.0%</td>
+<td>drng 1</td>
+</tr>
+<tr>
+<td><code>Rhyme-SHAKE-512</code></td>
+<td>sign</td>
+<td>0.0%</td>
+<td>0.0%</td>
+<td>–</td>
+</tr>
+<tr>
+<td><code>Rhyme-SHAKE-512</code></td>
+<td>verify</td>
+<td>0.0%</td>
+<td>0.0%</td>
+<td>–</td>
+</tr>
+<tr>
+<td><code>Rhyme-SM3-128</code></td>
+<td>keygen</td>
+<td>0.3%</td>
+<td>0.0%</td>
+<td>drng 1, sm3hash 796</td>
+</tr>
+<tr>
+<td><code>Rhyme-SM3-128</code></td>
+<td>sign</td>
+<td>75%</td>
+<td>0.0%</td>
+<td>sm3hash 1.18e+03</td>
+</tr>
+<tr>
+<td><code>Rhyme-SM3-128</code></td>
+<td>verify</td>
+<td>55%</td>
+<td>0.0%</td>
+<td>sm3hash 92</td>
+</tr>
+<tr>
+<td><code>Rhyme-SM3-256</code></td>
+<td>keygen</td>
+<td>0.4%</td>
+<td>0.0%</td>
+<td>drng 1, sm3hash 1.77e+03</td>
+</tr>
+<tr>
+<td><code>Rhyme-SM3-256</code></td>
+<td>sign</td>
+<td>77%</td>
+<td>0.0%</td>
+<td>sm3hash 4.35e+03</td>
+</tr>
+<tr>
+<td><code>Rhyme-SM3-256</code></td>
+<td>verify</td>
+<td>59%</td>
+<td>0.0%</td>
+<td>sm3hash 241</td>
+</tr>
+<tr>
+<td><code>Rhyme-SM3-384</code></td>
+<td>keygen</td>
+<td>0.2%</td>
+<td>0.0%</td>
+<td>drng 1, sm3hash 1.38e+04</td>
+</tr>
+<tr>
+<td><code>Rhyme-SM3-384</code></td>
+<td>sign</td>
+<td>74%</td>
+<td>0.0%</td>
+<td>sm3hash 6.26e+03</td>
+</tr>
+<tr>
+<td><code>Rhyme-SM3-384</code></td>
+<td>verify</td>
+<td>59%</td>
+<td>0.0%</td>
+<td>sm3hash 446</td>
+</tr>
+<tr>
+<td><code>Rhyme-SM3-512</code></td>
+<td>keygen</td>
+<td>0.3%</td>
+<td>0.0%</td>
+<td>drng 1, sm3hash 6.59e+03</td>
+</tr>
+<tr>
+<td><code>Rhyme-SM3-512</code></td>
+<td>sign</td>
+<td>76%</td>
+<td>0.0%</td>
+<td>sm3hash 8.85e+03</td>
+</tr>
+<tr>
+<td><code>Rhyme-SM3-512</code></td>
+<td>verify</td>
+<td>55%</td>
+<td>0.0%</td>
+<td>sm3hash 474</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="7-raw-evidence-index">7. Raw evidence index</h2>
+<p>Paths are relative to <code>performance/data/x86_1/</code> in the <a href="https://github.com/ngcc-dev/ngcc-harness">harness</a>; each JSON file records its commands, environment and trials.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>item</th>
+<th>file</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Rhyme-SHAKE-128</code></td>
+<td>KAT log (sha256 <code>3559fce51665e4e4…</code>)</td>
+<td><code>kat/sign-22/Rhyme-SHAKE-128.log</code></td>
+</tr>
+<tr>
+<td><code>Rhyme-SHAKE-128</code></td>
+<td>timing keygen</td>
+<td><code>records/sign-22/Rhyme-SHAKE-128__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>Rhyme-SHAKE-128</code></td>
+<td>timing sign</td>
+<td><code>records/sign-22/Rhyme-SHAKE-128__sign.json</code></td>
+</tr>
+<tr>
+<td><code>Rhyme-SHAKE-128</code></td>
+<td>timing verify</td>
+<td><code>records/sign-22/Rhyme-SHAKE-128__verify.json</code></td>
+</tr>
+<tr>
+<td><code>Rhyme-SHAKE-128</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/sign-22/Rhyme-SHAKE-128__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>Rhyme-SHAKE-128</code></td>
+<td>hash profile sign</td>
+<td><code>profile/sign-22/Rhyme-SHAKE-128__sign.json</code></td>
+</tr>
+<tr>
+<td><code>Rhyme-SHAKE-128</code></td>
+<td>hash profile verify</td>
+<td><code>profile/sign-22/Rhyme-SHAKE-128__verify.json</code></td>
+</tr>
+<tr>
+<td><code>Rhyme-SHAKE-256</code></td>
+<td>KAT log (sha256 <code>1b3f5916ff3c9d6e…</code>)</td>
+<td><code>kat/sign-22/Rhyme-SHAKE-256.log</code></td>
+</tr>
+<tr>
+<td><code>Rhyme-SHAKE-256</code></td>
+<td>timing keygen</td>
+<td><code>records/sign-22/Rhyme-SHAKE-256__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>Rhyme-SHAKE-256</code></td>
+<td>timing sign</td>
+<td><code>records/sign-22/Rhyme-SHAKE-256__sign.json</code></td>
+</tr>
+<tr>
+<td><code>Rhyme-SHAKE-256</code></td>
+<td>timing verify</td>
+<td><code>records/sign-22/Rhyme-SHAKE-256__verify.json</code></td>
+</tr>
+<tr>
+<td><code>Rhyme-SHAKE-256</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/sign-22/Rhyme-SHAKE-256__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>Rhyme-SHAKE-256</code></td>
+<td>hash profile sign</td>
+<td><code>profile/sign-22/Rhyme-SHAKE-256__sign.json</code></td>
+</tr>
+<tr>
+<td><code>Rhyme-SHAKE-256</code></td>
+<td>hash profile verify</td>
+<td><code>profile/sign-22/Rhyme-SHAKE-256__verify.json</code></td>
+</tr>
+<tr>
+<td><code>Rhyme-SHAKE-384</code></td>
+<td>KAT log (sha256 <code>2f14c775c51e2634…</code>)</td>
+<td><code>kat/sign-22/Rhyme-SHAKE-384.log</code></td>
+</tr>
+<tr>
+<td><code>Rhyme-SHAKE-384</code></td>
+<td>timing keygen</td>
+<td><code>records/sign-22/Rhyme-SHAKE-384__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>Rhyme-SHAKE-384</code></td>
+<td>timing sign</td>
+<td><code>records/sign-22/Rhyme-SHAKE-384__sign.json</code></td>
+</tr>
+<tr>
+<td><code>Rhyme-SHAKE-384</code></td>
+<td>timing verify</td>
+<td><code>records/sign-22/Rhyme-SHAKE-384__verify.json</code></td>
+</tr>
+<tr>
+<td><code>Rhyme-SHAKE-384</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/sign-22/Rhyme-SHAKE-384__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>Rhyme-SHAKE-384</code></td>
+<td>hash profile sign</td>
+<td><code>profile/sign-22/Rhyme-SHAKE-384__sign.json</code></td>
+</tr>
+<tr>
+<td><code>Rhyme-SHAKE-384</code></td>
+<td>hash profile verify</td>
+<td><code>profile/sign-22/Rhyme-SHAKE-384__verify.json</code></td>
+</tr>
+<tr>
+<td><code>Rhyme-SHAKE-512</code></td>
+<td>KAT log (sha256 <code>a8fb3bfafed8377f…</code>)</td>
+<td><code>kat/sign-22/Rhyme-SHAKE-512.log</code></td>
+</tr>
+<tr>
+<td><code>Rhyme-SHAKE-512</code></td>
+<td>timing keygen</td>
+<td><code>records/sign-22/Rhyme-SHAKE-512__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>Rhyme-SHAKE-512</code></td>
+<td>timing sign</td>
+<td><code>records/sign-22/Rhyme-SHAKE-512__sign.json</code></td>
+</tr>
+<tr>
+<td><code>Rhyme-SHAKE-512</code></td>
+<td>timing verify</td>
+<td><code>records/sign-22/Rhyme-SHAKE-512__verify.json</code></td>
+</tr>
+<tr>
+<td><code>Rhyme-SHAKE-512</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/sign-22/Rhyme-SHAKE-512__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>Rhyme-SHAKE-512</code></td>
+<td>hash profile sign</td>
+<td><code>profile/sign-22/Rhyme-SHAKE-512__sign.json</code></td>
+</tr>
+<tr>
+<td><code>Rhyme-SHAKE-512</code></td>
+<td>hash profile verify</td>
+<td><code>profile/sign-22/Rhyme-SHAKE-512__verify.json</code></td>
+</tr>
+<tr>
+<td><code>Rhyme-SM3-128</code></td>
+<td>KAT log (sha256 <code>790ffcbf37411ca1…</code>)</td>
+<td><code>kat/sign-22/Rhyme-SM3-128.log</code></td>
+</tr>
+<tr>
+<td><code>Rhyme-SM3-128</code></td>
+<td>timing keygen</td>
+<td><code>records/sign-22/Rhyme-SM3-128__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>Rhyme-SM3-128</code></td>
+<td>timing sign</td>
+<td><code>records/sign-22/Rhyme-SM3-128__sign.json</code></td>
+</tr>
+<tr>
+<td><code>Rhyme-SM3-128</code></td>
+<td>timing verify</td>
+<td><code>records/sign-22/Rhyme-SM3-128__verify.json</code></td>
+</tr>
+<tr>
+<td><code>Rhyme-SM3-128</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/sign-22/Rhyme-SM3-128__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>Rhyme-SM3-128</code></td>
+<td>hash profile sign</td>
+<td><code>profile/sign-22/Rhyme-SM3-128__sign.json</code></td>
+</tr>
+<tr>
+<td><code>Rhyme-SM3-128</code></td>
+<td>hash profile verify</td>
+<td><code>profile/sign-22/Rhyme-SM3-128__verify.json</code></td>
+</tr>
+<tr>
+<td><code>Rhyme-SM3-256</code></td>
+<td>KAT log (sha256 <code>ffdcf5cf85f00df6…</code>)</td>
+<td><code>kat/sign-22/Rhyme-SM3-256.log</code></td>
+</tr>
+<tr>
+<td><code>Rhyme-SM3-256</code></td>
+<td>timing keygen</td>
+<td><code>records/sign-22/Rhyme-SM3-256__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>Rhyme-SM3-256</code></td>
+<td>timing sign</td>
+<td><code>records/sign-22/Rhyme-SM3-256__sign.json</code></td>
+</tr>
+<tr>
+<td><code>Rhyme-SM3-256</code></td>
+<td>timing verify</td>
+<td><code>records/sign-22/Rhyme-SM3-256__verify.json</code></td>
+</tr>
+<tr>
+<td><code>Rhyme-SM3-256</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/sign-22/Rhyme-SM3-256__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>Rhyme-SM3-256</code></td>
+<td>hash profile sign</td>
+<td><code>profile/sign-22/Rhyme-SM3-256__sign.json</code></td>
+</tr>
+<tr>
+<td><code>Rhyme-SM3-256</code></td>
+<td>hash profile verify</td>
+<td><code>profile/sign-22/Rhyme-SM3-256__verify.json</code></td>
+</tr>
+<tr>
+<td><code>Rhyme-SM3-384</code></td>
+<td>KAT log (sha256 <code>6aedb8a92abbbf48…</code>)</td>
+<td><code>kat/sign-22/Rhyme-SM3-384.log</code></td>
+</tr>
+<tr>
+<td><code>Rhyme-SM3-384</code></td>
+<td>timing keygen</td>
+<td><code>records/sign-22/Rhyme-SM3-384__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>Rhyme-SM3-384</code></td>
+<td>timing sign</td>
+<td><code>records/sign-22/Rhyme-SM3-384__sign.json</code></td>
+</tr>
+<tr>
+<td><code>Rhyme-SM3-384</code></td>
+<td>timing verify</td>
+<td><code>records/sign-22/Rhyme-SM3-384__verify.json</code></td>
+</tr>
+<tr>
+<td><code>Rhyme-SM3-384</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/sign-22/Rhyme-SM3-384__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>Rhyme-SM3-384</code></td>
+<td>hash profile sign</td>
+<td><code>profile/sign-22/Rhyme-SM3-384__sign.json</code></td>
+</tr>
+<tr>
+<td><code>Rhyme-SM3-384</code></td>
+<td>hash profile verify</td>
+<td><code>profile/sign-22/Rhyme-SM3-384__verify.json</code></td>
+</tr>
+<tr>
+<td><code>Rhyme-SM3-512</code></td>
+<td>KAT log (sha256 <code>76fa3baf6bf63f87…</code>)</td>
+<td><code>kat/sign-22/Rhyme-SM3-512.log</code></td>
+</tr>
+<tr>
+<td><code>Rhyme-SM3-512</code></td>
+<td>timing keygen</td>
+<td><code>records/sign-22/Rhyme-SM3-512__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>Rhyme-SM3-512</code></td>
+<td>timing sign</td>
+<td><code>records/sign-22/Rhyme-SM3-512__sign.json</code></td>
+</tr>
+<tr>
+<td><code>Rhyme-SM3-512</code></td>
+<td>timing verify</td>
+<td><code>records/sign-22/Rhyme-SM3-512__verify.json</code></td>
+</tr>
+<tr>
+<td><code>Rhyme-SM3-512</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/sign-22/Rhyme-SM3-512__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>Rhyme-SM3-512</code></td>
+<td>hash profile sign</td>
+<td><code>profile/sign-22/Rhyme-SM3-512__sign.json</code></td>
+</tr>
+<tr>
+<td><code>Rhyme-SM3-512</code></td>
+<td>hash profile verify</td>
+<td><code>profile/sign-22/Rhyme-SM3-512__verify.json</code></td>
+</tr>
+</tbody>
+</table></div>
+<p>Scripts: <code>performance/campaign.py</code>, <code>performance/ngcc_perf.c</code>, <code>performance/hashprof/</code> in the <a href="https://github.com/ngcc-dev/ngcc-harness">harness</a>.</p>
+</main>
+<footer class="site-footer">
+<p>Maintained by: <a href="mailto:markku-juhani.saarinen@tuni.fi">markku-juhani.saarinen@tuni.fi</a></p>
+<p>Submissions are welcome via <a href="https://github.com/ngcc-dev/ngcc-harness/issues">GitHub issues</a>.</p>
+</footer>
+</body>
+</html>

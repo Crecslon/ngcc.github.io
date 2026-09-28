@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ngcc.dev: PolarLAC (kem-30)</title>
+<link rel="icon" type="image/png" href="../assets/mag-glass.png">
+<link rel="stylesheet" href="../assets/style.css?v=1fdb792d">
+</head>
+<body>
+<header class="site-header">
+<a class="brand" href="../index.html"><img class="brand-icon" src="../assets/mag-glass.png" alt="" width="28" height="28">ngcc.dev</a>
+<nav><a href="../index.html">Home</a><a href="../reports/index.html">Reports</a><a href="../performance/x86_1/index.html">Performance</a><a href="../constant-time/index.html">Constant-Time</a></nav>
+</header>
+<main class="">
+<p class="crumb"><a href="../reports/index.html">Reports</a> › <code>kem-30</code> · <a href="../constant-time/kem-30.html">Constant-time review</a> · <a href="../performance/x86_1/kem-30.html">Performance</a></p>
+
+<h1 id="polarlac-kem-30">PolarLAC (kem-30)</h1>
+<div class="table-wrap"><table class="meta">
+<tr><th>Candidate</th><td>PolarLAC</td></tr>
+<tr><th>Family</th><td>Lattice-based (module-LWE with polar-code decoding)</td></tr>
+<tr><th>Archive</th><td><a href="https://www.niccs.org.cn/niccs/Proposal/Public-Key%20Cryptographic%20Algorithms/Round%201%20candidates/PolarLAC.zip">PolarLAC.zip</a> (SHA-256: <code>906be26ce8d27de335b691ff8490b2344b46d7519d88c799cba0242324e4882c</code>)</td></tr>
+<tr><th>Specification</th><td><a href="https://github.com/ngcc-dev/ngcc-harness/raw/dc66c6cb3c06e75bdea0048e21fa4e13c63f00af/kem-30/kem-30-spec.pdf" title="Download kem-30-spec.pdf from GitHub">kem-30-spec.pdf</a>&nbsp;<a class="pdf-link" href="https://cdn.jsdelivr.net/gh/ngcc-dev/ngcc-harness@dc66c6cb3c06e75bdea0048e21fa4e13c63f00af/kem-30/kem-30-spec.pdf" title="Open the kem-30 specification PDF">PDF</a></td></tr>
+</table></div>
+
+<h2 class="issue-heading issue-heading-first" id="kem-30-1-re-encryption-rejection-sampling-leaks-the-decrypted-message-class">kem-30-1: Re-encryption rejection sampling leaks the decrypted-message class</h2>
+
+<div class="table-wrap"><table class="meta issue-meta">
+<tr><th>Severity</th><td><span class="sev sev-medium">Medium</span></td></tr>
+<tr><th>Scope</th><td>side-channel</td></tr>
+<tr><th>Status</th><td><span class="issue-status status-confirmed">Confirmed</span></td></tr>
+<tr><th>Affected</th><td>PolarLAC-Light reference implementation; shared sampler pattern appears in the other reference sets</td></tr>
+<tr><th>Discovery</th><td>Hard</td></tr>
+<tr><th>Exploitation</th><td>Measured timing classification of a decrypted-message-dependent rejection count; key recovery and IND-CCA break explicitly not demonstrated</td></tr>
+<tr><th>Credit</th><td>Zhenyu Xiong and Mingsheng Wang</td></tr>
+<tr><th>Date</th><td>2026-09-27</td></tr>
+</table></div>
+<p>Reference: <a href="https://eprint.iacr.org/2026/2232">Xiong and Wang, “Cryptanalysis of the ICCS NGCC Round-1 Public-Key Candidates,” ePrint 2026/2232, §§3.3 and 3.7–3.8</a></p>
+<p>Decapsulation re-encrypts the decrypted message for its Fujisaki--Okamoto check. The derived seed enters <code>sample_screened_poly</code>, whose spectral rejection loop repeats until a bound is met (<code>pke.c:30–42</code>). Its total rejection count <code>R</code> is therefore a deterministic public function of the secret-derived decrypted message, and execution time reveals that count. This contradicts the specification's claims that the polar-code implementation has constant-time control flow and intrinsically supports constant-time implementation.</p>
+<p>On PolarLAC-Light, the artifact measures adjacent <code>R</code> classes about 9,000–10,600 cycles apart and classifies them with low error after repeated measurements. The timing channel is real. The paper also carefully reports the negative result: the chosen-ciphertext message-flip predicate needed by its algebraic recovery has 68–99% error through this timing channel, and a genuine-timing run recovers 0/512 coefficients. This report therefore claims secret-dependent timing leakage, not key recovery or an IND-CCA break.</p>
+<p>Use fixed-work, message-independent sampling in the re-encryption path. The complete decapsulation, including reconstruction of its coins, must have a trace independent of the decrypted message and long-term key.</p>
+<h3 id="reproducing">Reproducing</h3>
+<p>Commands below run in a checkout of the <a href="https://github.com/ngcc-dev/ngcc-harness">ngcc-harness repository</a> with the candidate built (see its README).</p>
+<pre><code class="language-sh">sh kem-30/reproduce_timing_leak.sh
+</code></pre>
+<p>The wrapper fetches the <a href="https://github.com/acprk/ngcc-round1-cryptanalysis/tree/e724a12a834bfc063dc0d2959d864842f269eb1e/polarlac-timing-leak">pinned artifact</a>, builds its timing harnesses against the unmodified PolarLAC-Light sources here, and runs both the measured-channel experiment and the negative exploitability controls. Results depend on host scheduling; use <code>CORE=&lt;idle CPU&gt;</code> to select a pinned core.</p>
+</main>
+<footer class="site-footer">
+<p>Maintained by: <a href="mailto:markku-juhani.saarinen@tuni.fi">markku-juhani.saarinen@tuni.fi</a></p>
+<p>Submissions are welcome via <a href="https://github.com/ngcc-dev/ngcc-harness/issues">GitHub issues</a>.</p>
+</footer>
+</body>
+</html>

@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ngcc.dev: kem-40 YuanYang.KEM — performance on x86-64 (system x861)</title>
+<link rel="icon" type="image/png" href="../../assets/mag-glass.png">
+<link rel="stylesheet" href="../../assets/style.css?v=1fdb792d">
+</head>
+<body>
+<header class="site-header">
+<a class="brand" href="../../index.html"><img class="brand-icon" src="../../assets/mag-glass.png" alt="" width="28" height="28">ngcc.dev</a>
+<nav><a href="../../index.html">Home</a><a href="../../reports/index.html">Reports</a><a href="../../performance/x86_1/index.html">Performance</a><a href="../../constant-time/index.html">Constant-Time</a></nav>
+</header>
+<main class="">
+<!-- synchronized from harness: kem-40/perf_x86_1.md -->
+<h1 id="kem-40-yuanyangkem-performance-on-x86-64-system-x86_1">kem-40 YuanYang.KEM — performance on x86-64 (system x86_1)</h1>
+<p><a href="index.html">Performance x86_1</a> › <code>kem-40</code> · <a href="method.html">method</a> · <a href="https://www.niccs.org.cn/niccs/Round1Additional/pc/content/content_2101560890442207232.html">NICCS page</a></p>
+<p>Independent measurement following the structure of the NICCS x86 self-assessment guide, §3.5 (1)–(7). Not a submitter self-assessment.</p>
+<h2 id="1-basic-information">1. Basic information</h2>
+<ul>
+<li>Category: public-key algorithm; function: key encapsulation</li>
+<li>Algorithm: YuanYang.KEM</li>
+<li>Implementation versions measured: reference</li>
+<li>Parameter sets: <code>yuanyang-512</code>, <code>yuanyang-1024</code>, <code>yuanyang-2048</code></li>
+</ul>
+<h2 id="2-assessment-environment">2. Assessment environment</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>item</th>
+<th>value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>processor</td>
+<td>12th Gen Intel(R) Core(TM) i7-12700 (CPU 2, one core)</td>
+</tr>
+<tr>
+<td>clock</td>
+<td>max 2.10 GHz, governor performance, turbo off, SMT off</td>
+</tr>
+<tr>
+<td>memory</td>
+<td>31788 MiB</td>
+</tr>
+<tr>
+<td>OS / kernel</td>
+<td>Debian GNU/Linux 13 (trixie) / 6.12.107+deb13-amd64</td>
+</tr>
+<tr>
+<td>compiler / build tool</td>
+<td>gcc (Debian 14.2.0-19) 14.2.0 / cmake version 3.31.6</td>
+</tr>
+<tr>
+<td>campaign start / end (UTC)</td>
+<td>2026-09-25T10:02:21 / 2026-09-28T04:35:59</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="3-functional-testing-kat">3. Functional testing (KAT)</h2>
+<p>Each library was checked against the submitted KAT vectors (SHA-256 manifest <code>kem-40/kat.sha256</code> in the harness) before timing.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>build flags</th>
+<th>KAT</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>yuanyang-512</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>yuanyang-1024</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>yuanyang-2048</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="4-performance">4. Performance</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>operation</th>
+<th>mean cycles</th>
+<th>mean time</th>
+<th>ops/s</th>
+<th>median trial</th>
+<th>n (trials × iters)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>yuanyang-512</code></td>
+<td>keygen</td>
+<td>505.6 k</td>
+<td>242 µs</td>
+<td>4.14e+03</td>
+<td>242 µs</td>
+<td>16905 (5 × 3381)</td>
+</tr>
+<tr>
+<td><code>yuanyang-512</code></td>
+<td>enc</td>
+<td>288.3 k</td>
+<td>138 µs</td>
+<td>7.26e+03</td>
+<td>138 µs</td>
+<td>34725 (5 × 6945)</td>
+</tr>
+<tr>
+<td><code>yuanyang-512</code></td>
+<td>dec</td>
+<td>433.4 k</td>
+<td>207 µs</td>
+<td>4.83e+03</td>
+<td>207 µs</td>
+<td>23490 (5 × 4698)</td>
+</tr>
+<tr>
+<td><code>yuanyang-1024</code></td>
+<td>keygen</td>
+<td>1.07 M</td>
+<td>509 µs</td>
+<td>1.96e+03</td>
+<td>509 µs</td>
+<td>8990 (5 × 1798)</td>
+</tr>
+<tr>
+<td><code>yuanyang-1024</code></td>
+<td>enc</td>
+<td>495.2 k</td>
+<td>237 µs</td>
+<td>4.23e+03</td>
+<td>235 µs</td>
+<td>20480 (5 × 4096)</td>
+</tr>
+<tr>
+<td><code>yuanyang-1024</code></td>
+<td>dec</td>
+<td>808.6 k</td>
+<td>386 µs</td>
+<td>2.59e+03</td>
+<td>386 µs</td>
+<td>12740 (5 × 2548)</td>
+</tr>
+<tr>
+<td><code>yuanyang-2048</code></td>
+<td>keygen</td>
+<td>2.06 M</td>
+<td>984 µs</td>
+<td>1.02e+03</td>
+<td>984 µs</td>
+<td>4375 (5 × 875)</td>
+</tr>
+<tr>
+<td><code>yuanyang-2048</code></td>
+<td>enc</td>
+<td>991.5 k</td>
+<td>474 µs</td>
+<td>2.11e+03</td>
+<td>474 µs</td>
+<td>10450 (5 × 2090)</td>
+</tr>
+<tr>
+<td><code>yuanyang-2048</code></td>
+<td>dec</td>
+<td>1.68 M</td>
+<td>801 µs</td>
+<td>1.25e+03</td>
+<td>801 µs</td>
+<td>6135 (5 × 1227)</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="5-resource-consumption">5. Resource consumption</h2>
+<p>Static memory is approximated by the library's loadable ELF segments; peak memory is the process high-water mark (VmHWM) including the benchmark driver and libc, so both are upper-bound proxies rather than isolated algorithm memory.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>operation</th>
+<th>static: ELF image (bytes)</th>
+<th>baseline RSS</th>
+<th>peak RSS</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>yuanyang-512</code></td>
+<td>keygen</td>
+<td>48461</td>
+<td>2040 KiB</td>
+<td>2296 KiB</td>
+</tr>
+<tr>
+<td><code>yuanyang-512</code></td>
+<td>enc</td>
+<td>48461</td>
+<td>2244 KiB</td>
+<td>2308 KiB</td>
+</tr>
+<tr>
+<td><code>yuanyang-512</code></td>
+<td>dec</td>
+<td>48461</td>
+<td>2228 KiB</td>
+<td>2348 KiB</td>
+</tr>
+<tr>
+<td><code>yuanyang-1024</code></td>
+<td>keygen</td>
+<td>53077</td>
+<td>2036 KiB</td>
+<td>2320 KiB</td>
+</tr>
+<tr>
+<td><code>yuanyang-1024</code></td>
+<td>enc</td>
+<td>53077</td>
+<td>2260 KiB</td>
+<td>2324 KiB</td>
+</tr>
+<tr>
+<td><code>yuanyang-1024</code></td>
+<td>dec</td>
+<td>53077</td>
+<td>2248 KiB</td>
+<td>2360 KiB</td>
+</tr>
+<tr>
+<td><code>yuanyang-2048</code></td>
+<td>keygen</td>
+<td>61945</td>
+<td>2052 KiB</td>
+<td>2380 KiB</td>
+</tr>
+<tr>
+<td><code>yuanyang-2048</code></td>
+<td>enc</td>
+<td>61945</td>
+<td>2288 KiB</td>
+<td>2356 KiB</td>
+</tr>
+<tr>
+<td><code>yuanyang-2048</code></td>
+<td>dec</td>
+<td>61945</td>
+<td>2320 KiB</td>
+<td>2388 KiB</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="6-transmission-and-storage-overhead">6. Transmission and storage overhead</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>public key</th>
+<th>secret key</th>
+<th>ciphertext</th>
+<th>shared secret</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>yuanyang-512</code></td>
+<td>736</td>
+<td>1536</td>
+<td>656</td>
+<td>16</td>
+</tr>
+<tr>
+<td><code>yuanyang-1024</code></td>
+<td>1568</td>
+<td>3168</td>
+<td>1344</td>
+<td>32</td>
+</tr>
+<tr>
+<td><code>yuanyang-2048</code></td>
+<td>3328</td>
+<td>6528</td>
+<td>2880</td>
+<td>64</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="symmetric-primitives">Symmetric primitives</h2>
+<p><a href="../symmetric-survey.html">Survey</a> verdict: <strong>ICCS-only</strong></p>
+<p>Share of each operation spent in the ICCS placeholder hash functions and in the ICCS DRNG (reference build, measured in the same run with link-time wrappers):</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>operation</th>
+<th>pseudohash/XOF/sm3</th>
+<th>DRNG</th>
+<th>calls per operation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>yuanyang-512</code></td>
+<td>keygen</td>
+<td>8.1%</td>
+<td>23%</td>
+<td>drng 2.35, pseudohash 1</td>
+</tr>
+<tr>
+<td><code>yuanyang-512</code></td>
+<td>enc</td>
+<td>42%</td>
+<td>21%</td>
+<td>drng 3, pseudohash 4</td>
+</tr>
+<tr>
+<td><code>yuanyang-512</code></td>
+<td>dec</td>
+<td>21%</td>
+<td>13%</td>
+<td>drng 2, pseudohash 4</td>
+</tr>
+<tr>
+<td><code>yuanyang-1024</code></td>
+<td>keygen</td>
+<td>7.2%</td>
+<td>19%</td>
+<td>drng 4, pseudohash 1</td>
+</tr>
+<tr>
+<td><code>yuanyang-1024</code></td>
+<td>enc</td>
+<td>38%</td>
+<td>22%</td>
+<td>drng 4, pseudohash 4</td>
+</tr>
+<tr>
+<td><code>yuanyang-1024</code></td>
+<td>dec</td>
+<td>15%</td>
+<td>13%</td>
+<td>drng 3, pseudohash 4</td>
+</tr>
+<tr>
+<td><code>yuanyang-2048</code></td>
+<td>keygen</td>
+<td>7.5%</td>
+<td>17%</td>
+<td>drng 6.79, pseudohash 1</td>
+</tr>
+<tr>
+<td><code>yuanyang-2048</code></td>
+<td>enc</td>
+<td>34%</td>
+<td>21%</td>
+<td>drng 6, pseudohash 4</td>
+</tr>
+<tr>
+<td><code>yuanyang-2048</code></td>
+<td>dec</td>
+<td>12%</td>
+<td>12%</td>
+<td>drng 5, pseudohash 4</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="7-raw-evidence-index">7. Raw evidence index</h2>
+<p>Paths are relative to <code>performance/data/x86_1/</code> in the <a href="https://github.com/ngcc-dev/ngcc-harness">harness</a>; each JSON file records its commands, environment and trials.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>item</th>
+<th>file</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>yuanyang-512</code></td>
+<td>KAT log (sha256 <code>57521d656ee2765d…</code>)</td>
+<td><code>kat/kem-40/yuanyang-512.log</code></td>
+</tr>
+<tr>
+<td><code>yuanyang-512</code></td>
+<td>timing dec</td>
+<td><code>records/kem-40/yuanyang-512__dec.json</code></td>
+</tr>
+<tr>
+<td><code>yuanyang-512</code></td>
+<td>timing enc</td>
+<td><code>records/kem-40/yuanyang-512__enc.json</code></td>
+</tr>
+<tr>
+<td><code>yuanyang-512</code></td>
+<td>timing keygen</td>
+<td><code>records/kem-40/yuanyang-512__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>yuanyang-512</code></td>
+<td>hash profile dec</td>
+<td><code>profile/kem-40/yuanyang-512__dec.json</code></td>
+</tr>
+<tr>
+<td><code>yuanyang-512</code></td>
+<td>hash profile enc</td>
+<td><code>profile/kem-40/yuanyang-512__enc.json</code></td>
+</tr>
+<tr>
+<td><code>yuanyang-512</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/kem-40/yuanyang-512__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>yuanyang-1024</code></td>
+<td>KAT log (sha256 <code>c2901c070c99f13e…</code>)</td>
+<td><code>kat/kem-40/yuanyang-1024.log</code></td>
+</tr>
+<tr>
+<td><code>yuanyang-1024</code></td>
+<td>timing dec</td>
+<td><code>records/kem-40/yuanyang-1024__dec.json</code></td>
+</tr>
+<tr>
+<td><code>yuanyang-1024</code></td>
+<td>timing enc</td>
+<td><code>records/kem-40/yuanyang-1024__enc.json</code></td>
+</tr>
+<tr>
+<td><code>yuanyang-1024</code></td>
+<td>timing keygen</td>
+<td><code>records/kem-40/yuanyang-1024__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>yuanyang-1024</code></td>
+<td>hash profile dec</td>
+<td><code>profile/kem-40/yuanyang-1024__dec.json</code></td>
+</tr>
+<tr>
+<td><code>yuanyang-1024</code></td>
+<td>hash profile enc</td>
+<td><code>profile/kem-40/yuanyang-1024__enc.json</code></td>
+</tr>
+<tr>
+<td><code>yuanyang-1024</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/kem-40/yuanyang-1024__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>yuanyang-2048</code></td>
+<td>KAT log (sha256 <code>a6f936079f75c299…</code>)</td>
+<td><code>kat/kem-40/yuanyang-2048.log</code></td>
+</tr>
+<tr>
+<td><code>yuanyang-2048</code></td>
+<td>timing dec</td>
+<td><code>records/kem-40/yuanyang-2048__dec.json</code></td>
+</tr>
+<tr>
+<td><code>yuanyang-2048</code></td>
+<td>timing enc</td>
+<td><code>records/kem-40/yuanyang-2048__enc.json</code></td>
+</tr>
+<tr>
+<td><code>yuanyang-2048</code></td>
+<td>timing keygen</td>
+<td><code>records/kem-40/yuanyang-2048__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>yuanyang-2048</code></td>
+<td>hash profile dec</td>
+<td><code>profile/kem-40/yuanyang-2048__dec.json</code></td>
+</tr>
+<tr>
+<td><code>yuanyang-2048</code></td>
+<td>hash profile enc</td>
+<td><code>profile/kem-40/yuanyang-2048__enc.json</code></td>
+</tr>
+<tr>
+<td><code>yuanyang-2048</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/kem-40/yuanyang-2048__keygen.json</code></td>
+</tr>
+</tbody>
+</table></div>
+<p>Scripts: <code>performance/campaign.py</code>, <code>performance/ngcc_perf.c</code>, <code>performance/hashprof/</code> in the <a href="https://github.com/ngcc-dev/ngcc-harness">harness</a>.</p>
+</main>
+<footer class="site-footer">
+<p>Maintained by: <a href="mailto:markku-juhani.saarinen@tuni.fi">markku-juhani.saarinen@tuni.fi</a></p>
+<p>Submissions are welcome via <a href="https://github.com/ngcc-dev/ngcc-harness/issues">GitHub issues</a>.</p>
+</footer>
+</body>
+</html>

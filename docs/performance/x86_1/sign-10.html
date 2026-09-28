@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ngcc.dev: sign-10 Facto-DSA — performance on x86-64 (system x861)</title>
+<link rel="icon" type="image/png" href="../../assets/mag-glass.png">
+<link rel="stylesheet" href="../../assets/style.css?v=1fdb792d">
+</head>
+<body>
+<header class="site-header">
+<a class="brand" href="../../index.html"><img class="brand-icon" src="../../assets/mag-glass.png" alt="" width="28" height="28">ngcc.dev</a>
+<nav><a href="../../index.html">Home</a><a href="../../reports/index.html">Reports</a><a href="../../performance/x86_1/index.html">Performance</a><a href="../../constant-time/index.html">Constant-Time</a></nav>
+</header>
+<main class="">
+<!-- synchronized from harness: sign-10/perf_x86_1.md -->
+<h1 id="sign-10-facto-dsa-performance-on-x86-64-system-x86_1">sign-10 Facto-DSA — performance on x86-64 (system x86_1)</h1>
+<p><a href="index.html">Performance x86_1</a> › <code>sign-10</code> · <a href="method.html">method</a> · <a href="https://www.niccs.org.cn/niccs/Round1Additional/pc/content/content_2101561077457833984.html">NICCS page</a></p>
+<p>Independent measurement following the structure of the NICCS x86 self-assessment guide, §3.5 (1)–(7). Not a submitter self-assessment.</p>
+<h2 id="1-basic-information">1. Basic information</h2>
+<ul>
+<li>Category: public-key algorithm; function: digital signature</li>
+<li>Algorithm: Facto-DSA</li>
+<li>Implementation versions measured: reference</li>
+<li>Parameter sets: <code>Facto-DSA-128</code>, <code>Facto-DSA-256</code>, <code>Facto-DSA-512</code></li>
+</ul>
+<h2 id="2-assessment-environment">2. Assessment environment</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>item</th>
+<th>value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>processor</td>
+<td>12th Gen Intel(R) Core(TM) i7-12700 (CPU 2, one core)</td>
+</tr>
+<tr>
+<td>clock</td>
+<td>max 2.10 GHz, governor performance, turbo off, SMT off</td>
+</tr>
+<tr>
+<td>memory</td>
+<td>31788 MiB</td>
+</tr>
+<tr>
+<td>OS / kernel</td>
+<td>Debian GNU/Linux 13 (trixie) / 6.12.107+deb13-amd64</td>
+</tr>
+<tr>
+<td>compiler / build tool</td>
+<td>gcc (Debian 14.2.0-19) 14.2.0 / cmake version 3.31.6</td>
+</tr>
+<tr>
+<td>campaign start / end (UTC)</td>
+<td>2026-09-25T10:02:21 / 2026-09-28T04:35:59</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="3-functional-testing-kat">3. Functional testing (KAT)</h2>
+<p>Each library was checked against the submitted KAT vectors (SHA-256 manifest <code>sign-10/kat.sha256</code> in the harness) before timing.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>build flags</th>
+<th>KAT</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Facto-DSA-128</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>Facto-DSA-256</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>Facto-DSA-512</code></td>
+<td>harness-default</td>
+<td class="st warn">NOKAT [1]</td>
+</tr>
+</tbody>
+</table></div>
+<p>[1] NOKAT: the submission contains no KAT file for Facto-DSA-512, so its output cannot be checked against submitted vectors These instances are timed anyway; their output is not validated.</p>
+<h2 id="4-performance">4. Performance</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>operation</th>
+<th>mean cycles</th>
+<th>mean time</th>
+<th>ops/s</th>
+<th>median trial</th>
+<th>n (trials × iters)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Facto-DSA-128</code></td>
+<td>keygen</td>
+<td>7.34 M</td>
+<td>3.52 ms</td>
+<td>284</td>
+<td>3.52 ms</td>
+<td>1355 (5 × 271)</td>
+</tr>
+<tr>
+<td><code>Facto-DSA-128</code></td>
+<td>sign</td>
+<td>2.10 M</td>
+<td>1 ms</td>
+<td>996</td>
+<td>1 ms</td>
+<td>2595 (5 × 519)</td>
+</tr>
+<tr>
+<td><code>Facto-DSA-128</code></td>
+<td>verify</td>
+<td>983.9 k</td>
+<td>470 µs</td>
+<td>2.13e+03</td>
+<td>470 µs</td>
+<td>10495 (5 × 2099)</td>
+</tr>
+<tr>
+<td><code>Facto-DSA-256</code></td>
+<td>keygen</td>
+<td>107.58 M</td>
+<td>51.4 ms</td>
+<td>19.4</td>
+<td>51.3 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>Facto-DSA-256</code></td>
+<td>sign</td>
+<td>11.72 M</td>
+<td>5.6 ms</td>
+<td>179</td>
+<td>5.6 ms</td>
+<td>1260 (5 × 252)</td>
+</tr>
+<tr>
+<td><code>Facto-DSA-256</code></td>
+<td>verify</td>
+<td>11.19 M</td>
+<td>5.34 ms</td>
+<td>187</td>
+<td>5.34 ms</td>
+<td>935 (5 × 187)</td>
+</tr>
+<tr>
+<td><code>Facto-DSA-512</code></td>
+<td>keygen</td>
+<td>2.24 G</td>
+<td>1.08 s</td>
+<td>0.928</td>
+<td>1.08 s</td>
+<td>100 (5 × 20)</td>
+</tr>
+<tr>
+<td><code>Facto-DSA-512</code></td>
+<td>sign</td>
+<td>124.35 M</td>
+<td>59.5 ms</td>
+<td>16.8</td>
+<td>59.4 ms</td>
+<td>900 (5 × 180)</td>
+</tr>
+<tr>
+<td><code>Facto-DSA-512</code></td>
+<td>verify</td>
+<td>140.34 M</td>
+<td>67.1 ms</td>
+<td>14.9</td>
+<td>67.1 ms</td>
+<td>100 (5 × 20)</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="5-resource-consumption">5. Resource consumption</h2>
+<p>Static memory is approximated by the library's loadable ELF segments; peak memory is the process high-water mark (VmHWM) including the benchmark driver and libc, so both are upper-bound proxies rather than isolated algorithm memory.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>operation</th>
+<th>static: ELF image (bytes)</th>
+<th>baseline RSS</th>
+<th>peak RSS</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Facto-DSA-128</code></td>
+<td>keygen</td>
+<td>43449</td>
+<td>1764 KiB</td>
+<td>1916 KiB</td>
+</tr>
+<tr>
+<td><code>Facto-DSA-128</code></td>
+<td>sign</td>
+<td>43449</td>
+<td>1844 KiB</td>
+<td>1912 KiB</td>
+</tr>
+<tr>
+<td><code>Facto-DSA-128</code></td>
+<td>verify</td>
+<td>43449</td>
+<td>1844 KiB</td>
+<td>1908 KiB</td>
+</tr>
+<tr>
+<td><code>Facto-DSA-256</code></td>
+<td>keygen</td>
+<td>44533</td>
+<td>1712 KiB</td>
+<td>2860 KiB</td>
+</tr>
+<tr>
+<td><code>Facto-DSA-256</code></td>
+<td>sign</td>
+<td>44533</td>
+<td>2304 KiB</td>
+<td>2564 KiB</td>
+</tr>
+<tr>
+<td><code>Facto-DSA-256</code></td>
+<td>verify</td>
+<td>44533</td>
+<td>2328 KiB</td>
+<td>2572 KiB</td>
+</tr>
+<tr>
+<td><code>Facto-DSA-512</code></td>
+<td>keygen</td>
+<td>–</td>
+<td>1772 KiB</td>
+<td>13848 KiB</td>
+</tr>
+<tr>
+<td><code>Facto-DSA-512</code></td>
+<td>sign</td>
+<td>–</td>
+<td>7488 KiB</td>
+<td>13540 KiB</td>
+</tr>
+<tr>
+<td><code>Facto-DSA-512</code></td>
+<td>verify</td>
+<td>–</td>
+<td>7576 KiB</td>
+<td>13476 KiB</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="6-transmission-and-storage-overhead">6. Transmission and storage overhead</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>public key</th>
+<th>secret key</th>
+<th>signature</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Facto-DSA-128</code></td>
+<td>40040</td>
+<td>3094</td>
+<td>40</td>
+</tr>
+<tr>
+<td><code>Facto-DSA-256</code></td>
+<td>456960</td>
+<td>11662</td>
+<td>68</td>
+</tr>
+<tr>
+<td><code>Facto-DSA-512</code></td>
+<td>5674240</td>
+<td>61922</td>
+<td>128</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="symmetric-primitives">Symmetric primitives</h2>
+<p><a href="../symmetric-survey.html">Survey</a> verdict: <strong>ICCS-only</strong></p>
+<p>Share of each operation spent in the ICCS placeholder hash functions and in the ICCS DRNG (reference build, measured in the same run with link-time wrappers):</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>operation</th>
+<th>pseudohash/XOF/sm3</th>
+<th>DRNG</th>
+<th>calls per operation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Facto-DSA-128</code></td>
+<td>keygen</td>
+<td>11%</td>
+<td>2.6%</td>
+<td>drng 1, sm3hash 1</td>
+</tr>
+<tr>
+<td><code>Facto-DSA-128</code></td>
+<td>sign</td>
+<td>0.5%</td>
+<td>9.0%</td>
+<td>drng 1, pseudoXOF 1</td>
+</tr>
+<tr>
+<td><code>Facto-DSA-128</code></td>
+<td>verify</td>
+<td>87%</td>
+<td>0.0%</td>
+<td>pseudoXOF 1, sm3hash 1</td>
+</tr>
+<tr>
+<td><code>Facto-DSA-256</code></td>
+<td>keygen</td>
+<td>9.2%</td>
+<td>0.5%</td>
+<td>drng 3, sm3hash 1</td>
+</tr>
+<tr>
+<td><code>Facto-DSA-256</code></td>
+<td>sign</td>
+<td>0.1%</td>
+<td>1.6%</td>
+<td>drng 1, pseudoXOF 1</td>
+</tr>
+<tr>
+<td><code>Facto-DSA-256</code></td>
+<td>verify</td>
+<td>87%</td>
+<td>0.0%</td>
+<td>pseudoXOF 1, sm3hash 1</td>
+</tr>
+<tr>
+<td><code>Facto-DSA-512</code></td>
+<td>keygen</td>
+<td>5.5%</td>
+<td>0.1%</td>
+<td>drng 16, sm3hash 1</td>
+</tr>
+<tr>
+<td><code>Facto-DSA-512</code></td>
+<td>sign</td>
+<td>0.0%</td>
+<td>0.2%</td>
+<td>drng 1, pseudoXOF 1</td>
+</tr>
+<tr>
+<td><code>Facto-DSA-512</code></td>
+<td>verify</td>
+<td>88%</td>
+<td>0.0%</td>
+<td>pseudoXOF 1, sm3hash 1</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="7-raw-evidence-index">7. Raw evidence index</h2>
+<p>Paths are relative to <code>performance/data/x86_1/</code> in the <a href="https://github.com/ngcc-dev/ngcc-harness">harness</a>; each JSON file records its commands, environment and trials.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>item</th>
+<th>file</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Facto-DSA-128</code></td>
+<td>KAT log (sha256 <code>8885ba74036818dd…</code>)</td>
+<td><code>kat/sign-10/Facto-DSA-128.log</code></td>
+</tr>
+<tr>
+<td><code>Facto-DSA-128</code></td>
+<td>timing keygen</td>
+<td><code>records/sign-10/Facto-DSA-128__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>Facto-DSA-128</code></td>
+<td>timing sign</td>
+<td><code>records/sign-10/Facto-DSA-128__sign.json</code></td>
+</tr>
+<tr>
+<td><code>Facto-DSA-128</code></td>
+<td>timing verify</td>
+<td><code>records/sign-10/Facto-DSA-128__verify.json</code></td>
+</tr>
+<tr>
+<td><code>Facto-DSA-128</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/sign-10/Facto-DSA-128__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>Facto-DSA-128</code></td>
+<td>hash profile sign</td>
+<td><code>profile/sign-10/Facto-DSA-128__sign.json</code></td>
+</tr>
+<tr>
+<td><code>Facto-DSA-128</code></td>
+<td>hash profile verify</td>
+<td><code>profile/sign-10/Facto-DSA-128__verify.json</code></td>
+</tr>
+<tr>
+<td><code>Facto-DSA-256</code></td>
+<td>KAT log (sha256 <code>b26cf631cc16129a…</code>)</td>
+<td><code>kat/sign-10/Facto-DSA-256.log</code></td>
+</tr>
+<tr>
+<td><code>Facto-DSA-256</code></td>
+<td>timing keygen</td>
+<td><code>records/sign-10/Facto-DSA-256__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>Facto-DSA-256</code></td>
+<td>timing sign</td>
+<td><code>records/sign-10/Facto-DSA-256__sign.json</code></td>
+</tr>
+<tr>
+<td><code>Facto-DSA-256</code></td>
+<td>timing verify</td>
+<td><code>records/sign-10/Facto-DSA-256__verify.json</code></td>
+</tr>
+<tr>
+<td><code>Facto-DSA-256</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/sign-10/Facto-DSA-256__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>Facto-DSA-256</code></td>
+<td>hash profile sign</td>
+<td><code>profile/sign-10/Facto-DSA-256__sign.json</code></td>
+</tr>
+<tr>
+<td><code>Facto-DSA-256</code></td>
+<td>hash profile verify</td>
+<td><code>profile/sign-10/Facto-DSA-256__verify.json</code></td>
+</tr>
+<tr>
+<td><code>Facto-DSA-512</code></td>
+<td>KAT log (sha256 <code>46d8a75c2710998c…</code>)</td>
+<td><code>kat/sign-10/Facto-DSA-512.log</code></td>
+</tr>
+<tr>
+<td><code>Facto-DSA-512</code></td>
+<td>timing keygen</td>
+<td><code>records/sign-10/Facto-DSA-512__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>Facto-DSA-512</code></td>
+<td>timing sign</td>
+<td><code>records/sign-10/Facto-DSA-512__sign.json</code></td>
+</tr>
+<tr>
+<td><code>Facto-DSA-512</code></td>
+<td>timing verify</td>
+<td><code>records/sign-10/Facto-DSA-512__verify.json</code></td>
+</tr>
+<tr>
+<td><code>Facto-DSA-512</code></td>
+<td>hash profile keygen</td>
+<td><code>profile/sign-10/Facto-DSA-512__keygen.json</code></td>
+</tr>
+<tr>
+<td><code>Facto-DSA-512</code></td>
+<td>hash profile sign</td>
+<td><code>profile/sign-10/Facto-DSA-512__sign.json</code></td>
+</tr>
+<tr>
+<td><code>Facto-DSA-512</code></td>
+<td>hash profile verify</td>
+<td><code>profile/sign-10/Facto-DSA-512__verify.json</code></td>
+</tr>
+</tbody>
+</table></div>
+<p>Scripts: <code>performance/campaign.py</code>, <code>performance/ngcc_perf.c</code>, <code>performance/hashprof/</code> in the <a href="https://github.com/ngcc-dev/ngcc-harness">harness</a>.</p>
+</main>
+<footer class="site-footer">
+<p>Maintained by: <a href="mailto:markku-juhani.saarinen@tuni.fi">markku-juhani.saarinen@tuni.fi</a></p>
+<p>Submissions are welcome via <a href="https://github.com/ngcc-dev/ngcc-harness/issues">GitHub issues</a>.</p>
+</footer>
+</body>
+</html>

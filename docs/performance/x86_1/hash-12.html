@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ngcc.dev: hash-12 Iphe — performance on x86-64 (system x861)</title>
+<link rel="icon" type="image/png" href="../../assets/mag-glass.png">
+<link rel="stylesheet" href="../../assets/style.css?v=1fdb792d">
+</head>
+<body>
+<header class="site-header">
+<a class="brand" href="../../index.html"><img class="brand-icon" src="../../assets/mag-glass.png" alt="" width="28" height="28">ngcc.dev</a>
+<nav><a href="../../index.html">Home</a><a href="../../reports/index.html">Reports</a><a href="../../performance/x86_1/index.html">Performance</a><a href="../../constant-time/index.html">Constant-Time</a></nav>
+</header>
+<main class="">
+<!-- synchronized from harness: hash-12/perf_x86_1.md -->
+<h1 id="hash-12-iphe-performance-on-x86-64-system-x86_1">hash-12 Iphe — performance on x86-64 (system x86_1)</h1>
+<p><a href="index.html">Performance x86_1</a> › <code>hash-12</code> · <a href="method.html">method</a> · <a href="https://www.niccs.org.cn/niccs/Round1Submissions4/pc/content/content_2101538722543128576.html">NICCS page</a></p>
+<p>Independent measurement following the structure of the NICCS x86 self-assessment guide, §3.5 (1)–(7). Not a submitter self-assessment.</p>
+<h2 id="1-basic-information">1. Basic information</h2>
+<ul>
+<li>Category: cryptographic hash algorithm; function: hash</li>
+<li>Algorithm: Iphe</li>
+<li>Implementation versions measured: reference</li>
+<li>Parameter sets: <code>Iphe-512</code>, <code>Iphe-768</code>, <code>Iphe-1024</code></li>
+</ul>
+<h2 id="2-assessment-environment">2. Assessment environment</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>item</th>
+<th>value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>processor</td>
+<td>12th Gen Intel(R) Core(TM) i7-12700 (CPU 2, one core)</td>
+</tr>
+<tr>
+<td>clock</td>
+<td>max 2.10 GHz, governor performance, turbo off, SMT off</td>
+</tr>
+<tr>
+<td>memory</td>
+<td>31788 MiB</td>
+</tr>
+<tr>
+<td>OS / kernel</td>
+<td>Debian GNU/Linux 13 (trixie) / 6.12.107+deb13-amd64</td>
+</tr>
+<tr>
+<td>compiler / build tool</td>
+<td>gcc (Debian 14.2.0-19) 14.2.0 / cmake version 3.31.6</td>
+</tr>
+<tr>
+<td>campaign start / end (UTC)</td>
+<td>2026-09-25T10:02:21 / 2026-09-28T04:35:59</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="3-functional-testing-kat">3. Functional testing (KAT)</h2>
+<p>Each library was checked against the submitted KAT vectors (SHA-256 manifest <code>hash-12/kat.sha256</code> in the harness) before timing.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>build flags</th>
+<th>KAT</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Iphe-512</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>Iphe-768</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+<tr>
+<td><code>Iphe-1024</code></td>
+<td>guide</td>
+<td class="st ok">PASS</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="4-performance">4. Performance</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>message</th>
+<th>mean cycles</th>
+<th>cycles/byte</th>
+<th>mean time</th>
+<th>MB/s</th>
+<th>n</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Iphe-512</code></td>
+<td>32 B</td>
+<td>18.5 k</td>
+<td>576.8</td>
+<td>8.82 µs</td>
+<td>3.6</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>Iphe-512</code></td>
+<td>128 B</td>
+<td>19.0 k</td>
+<td>148.7</td>
+<td>9.1 µs</td>
+<td>14.1</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>Iphe-512</code></td>
+<td>512 B</td>
+<td>49.4 k</td>
+<td>96.5</td>
+<td>23.6 µs</td>
+<td>21.7</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>Iphe-512</code></td>
+<td>1024 B</td>
+<td>94.1 k</td>
+<td>91.9</td>
+<td>45 µs</td>
+<td>22.8</td>
+<td>82845 (5 × 16569)</td>
+</tr>
+<tr>
+<td><code>Iphe-512</code></td>
+<td>4096 B</td>
+<td>351.6 k</td>
+<td>85.8</td>
+<td>168 µs</td>
+<td>24.4</td>
+<td>27570 (5 × 5514)</td>
+</tr>
+<tr>
+<td><code>Iphe-512</code></td>
+<td>8192 B</td>
+<td>682.9 k</td>
+<td>83.4</td>
+<td>326 µs</td>
+<td>25.1</td>
+<td>14545 (5 × 2909)</td>
+</tr>
+<tr>
+<td><code>Iphe-512</code></td>
+<td>16384 B</td>
+<td>1.37 M</td>
+<td>83.3</td>
+<td>652 µs</td>
+<td>25.1</td>
+<td>7500 (5 × 1500)</td>
+</tr>
+<tr>
+<td><code>Iphe-512</code></td>
+<td>65536 B</td>
+<td>5.40 M</td>
+<td>82.4</td>
+<td>2.61 ms</td>
+<td>25.1</td>
+<td>1910 (5 × 382)</td>
+</tr>
+<tr>
+<td><code>Iphe-768</code></td>
+<td>32 B</td>
+<td>17.7 k</td>
+<td>554.3</td>
+<td>8.47 µs</td>
+<td>3.8</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>Iphe-768</code></td>
+<td>128 B</td>
+<td>18.6 k</td>
+<td>145.5</td>
+<td>8.9 µs</td>
+<td>14.4</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>Iphe-768</code></td>
+<td>512 B</td>
+<td>62.8 k</td>
+<td>122.6</td>
+<td>30 µs</td>
+<td>17.1</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>Iphe-768</code></td>
+<td>1024 B</td>
+<td>108.0 k</td>
+<td>105.5</td>
+<td>51.6 µs</td>
+<td>19.8</td>
+<td>73845 (5 × 14769)</td>
+</tr>
+<tr>
+<td><code>Iphe-768</code></td>
+<td>4096 B</td>
+<td>407.4 k</td>
+<td>99.5</td>
+<td>195 µs</td>
+<td>21.0</td>
+<td>23390 (5 × 4678)</td>
+</tr>
+<tr>
+<td><code>Iphe-768</code></td>
+<td>8192 B</td>
+<td>808.9 k</td>
+<td>98.7</td>
+<td>386 µs</td>
+<td>21.2</td>
+<td>12230 (5 × 2446)</td>
+</tr>
+<tr>
+<td><code>Iphe-768</code></td>
+<td>16384 B</td>
+<td>1.62 M</td>
+<td>98.8</td>
+<td>773 µs</td>
+<td>21.2</td>
+<td>6240 (5 × 1248)</td>
+</tr>
+<tr>
+<td><code>Iphe-768</code></td>
+<td>65536 B</td>
+<td>6.48 M</td>
+<td>98.9</td>
+<td>3.13 ms</td>
+<td>20.9</td>
+<td>1595 (5 × 319)</td>
+</tr>
+<tr>
+<td><code>Iphe-1024</code></td>
+<td>32 B</td>
+<td>17.1 k</td>
+<td>535.7</td>
+<td>8.19 µs</td>
+<td>3.9</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>Iphe-1024</code></td>
+<td>128 B</td>
+<td>31.4 k</td>
+<td>245.4</td>
+<td>15 µs</td>
+<td>8.5</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>Iphe-1024</code></td>
+<td>512 B</td>
+<td>76.2 k</td>
+<td>148.7</td>
+<td>36.4 µs</td>
+<td>14.1</td>
+<td>100000 (5 × 20000)</td>
+</tr>
+<tr>
+<td><code>Iphe-1024</code></td>
+<td>1024 B</td>
+<td>135.7 k</td>
+<td>132.5</td>
+<td>64.8 µs</td>
+<td>15.8</td>
+<td>63760 (5 × 12752)</td>
+</tr>
+<tr>
+<td><code>Iphe-1024</code></td>
+<td>4096 B</td>
+<td>520.7 k</td>
+<td>127.1</td>
+<td>249 µs</td>
+<td>16.5</td>
+<td>19085 (5 × 3817)</td>
+</tr>
+<tr>
+<td><code>Iphe-1024</code></td>
+<td>8192 B</td>
+<td>1.02 M</td>
+<td>124.9</td>
+<td>489 µs</td>
+<td>16.8</td>
+<td>9880 (5 × 1976)</td>
+</tr>
+<tr>
+<td><code>Iphe-1024</code></td>
+<td>16384 B</td>
+<td>2.03 M</td>
+<td>123.8</td>
+<td>969 µs</td>
+<td>16.9</td>
+<td>5035 (5 × 1007)</td>
+</tr>
+<tr>
+<td><code>Iphe-1024</code></td>
+<td>65536 B</td>
+<td>8.11 M</td>
+<td>123.8</td>
+<td>3.9 ms</td>
+<td>16.8</td>
+<td>1245 (5 × 249)</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="5-resource-consumption">5. Resource consumption</h2>
+<p>Static memory is approximated by the library's loadable ELF segments; peak memory is the process high-water mark (VmHWM) including the benchmark driver and libc, so both are upper-bound proxies rather than isolated algorithm memory.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>operation</th>
+<th>static: ELF image (bytes)</th>
+<th>baseline RSS</th>
+<th>peak RSS</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Iphe-512</code></td>
+<td>hash_32</td>
+<td>12097</td>
+<td>1692 KiB</td>
+<td>1760 KiB</td>
+</tr>
+<tr>
+<td><code>Iphe-512</code></td>
+<td>hash_128</td>
+<td>12097</td>
+<td>1688 KiB</td>
+<td>1776 KiB</td>
+</tr>
+<tr>
+<td><code>Iphe-512</code></td>
+<td>hash_512</td>
+<td>12097</td>
+<td>1672 KiB</td>
+<td>1772 KiB</td>
+</tr>
+<tr>
+<td><code>Iphe-512</code></td>
+<td>hash_1024</td>
+<td>12097</td>
+<td>1672 KiB</td>
+<td>1772 KiB</td>
+</tr>
+<tr>
+<td><code>Iphe-512</code></td>
+<td>hash_4096</td>
+<td>12097</td>
+<td>1684 KiB</td>
+<td>1760 KiB</td>
+</tr>
+<tr>
+<td><code>Iphe-512</code></td>
+<td>hash_8192</td>
+<td>12097</td>
+<td>1672 KiB</td>
+<td>1780 KiB</td>
+</tr>
+<tr>
+<td><code>Iphe-512</code></td>
+<td>hash_16384</td>
+<td>12097</td>
+<td>1700 KiB</td>
+<td>1792 KiB</td>
+</tr>
+<tr>
+<td><code>Iphe-512</code></td>
+<td>hash_65536</td>
+<td>12097</td>
+<td>1752 KiB</td>
+<td>1820 KiB</td>
+</tr>
+<tr>
+<td><code>Iphe-768</code></td>
+<td>hash_32</td>
+<td>12161</td>
+<td>1680 KiB</td>
+<td>1744 KiB</td>
+</tr>
+<tr>
+<td><code>Iphe-768</code></td>
+<td>hash_128</td>
+<td>12161</td>
+<td>1680 KiB</td>
+<td>1768 KiB</td>
+</tr>
+<tr>
+<td><code>Iphe-768</code></td>
+<td>hash_512</td>
+<td>12161</td>
+<td>1692 KiB</td>
+<td>1756 KiB</td>
+</tr>
+<tr>
+<td><code>Iphe-768</code></td>
+<td>hash_1024</td>
+<td>12161</td>
+<td>1688 KiB</td>
+<td>1760 KiB</td>
+</tr>
+<tr>
+<td><code>Iphe-768</code></td>
+<td>hash_4096</td>
+<td>12161</td>
+<td>1676 KiB</td>
+<td>1764 KiB</td>
+</tr>
+<tr>
+<td><code>Iphe-768</code></td>
+<td>hash_8192</td>
+<td>12161</td>
+<td>1676 KiB</td>
+<td>1740 KiB</td>
+</tr>
+<tr>
+<td><code>Iphe-768</code></td>
+<td>hash_16384</td>
+<td>12161</td>
+<td>1680 KiB</td>
+<td>1788 KiB</td>
+</tr>
+<tr>
+<td><code>Iphe-768</code></td>
+<td>hash_65536</td>
+<td>12161</td>
+<td>1752 KiB</td>
+<td>1816 KiB</td>
+</tr>
+<tr>
+<td><code>Iphe-1024</code></td>
+<td>hash_32</td>
+<td>12289</td>
+<td>1684 KiB</td>
+<td>1748 KiB</td>
+</tr>
+<tr>
+<td><code>Iphe-1024</code></td>
+<td>hash_128</td>
+<td>12289</td>
+<td>1644 KiB</td>
+<td>1772 KiB</td>
+</tr>
+<tr>
+<td><code>Iphe-1024</code></td>
+<td>hash_512</td>
+<td>12289</td>
+<td>1668 KiB</td>
+<td>1780 KiB</td>
+</tr>
+<tr>
+<td><code>Iphe-1024</code></td>
+<td>hash_1024</td>
+<td>12289</td>
+<td>1684 KiB</td>
+<td>1748 KiB</td>
+</tr>
+<tr>
+<td><code>Iphe-1024</code></td>
+<td>hash_4096</td>
+<td>12289</td>
+<td>1660 KiB</td>
+<td>1784 KiB</td>
+</tr>
+<tr>
+<td><code>Iphe-1024</code></td>
+<td>hash_8192</td>
+<td>12289</td>
+<td>1676 KiB</td>
+<td>1764 KiB</td>
+</tr>
+<tr>
+<td><code>Iphe-1024</code></td>
+<td>hash_16384</td>
+<td>12289</td>
+<td>1708 KiB</td>
+<td>1792 KiB</td>
+</tr>
+<tr>
+<td><code>Iphe-1024</code></td>
+<td>hash_65536</td>
+<td>12289</td>
+<td>1736 KiB</td>
+<td>1800 KiB</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="7-raw-evidence-index">7. Raw evidence index</h2>
+<p>Paths are relative to <code>performance/data/x86_1/</code> in the <a href="https://github.com/ngcc-dev/ngcc-harness">harness</a>; each JSON file records its commands, environment and trials.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>instance</th>
+<th>item</th>
+<th>file</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Iphe-512</code></td>
+<td>KAT log (sha256 <code>f7847fcb832f9f40…</code>)</td>
+<td><code>kat/hash-12/Iphe-512.log</code></td>
+</tr>
+<tr>
+<td><code>Iphe-512</code></td>
+<td>timing hash_1024</td>
+<td><code>records/hash-12/Iphe-512__hash_1024.json</code></td>
+</tr>
+<tr>
+<td><code>Iphe-512</code></td>
+<td>timing hash_128</td>
+<td><code>records/hash-12/Iphe-512__hash_128.json</code></td>
+</tr>
+<tr>
+<td><code>Iphe-512</code></td>
+<td>timing hash_16384</td>
+<td><code>records/hash-12/Iphe-512__hash_16384.json</code></td>
+</tr>
+<tr>
+<td><code>Iphe-512</code></td>
+<td>timing hash_32</td>
+<td><code>records/hash-12/Iphe-512__hash_32.json</code></td>
+</tr>
+<tr>
+<td><code>Iphe-512</code></td>
+<td>timing hash_4096</td>
+<td><code>records/hash-12/Iphe-512__hash_4096.json</code></td>
+</tr>
+<tr>
+<td><code>Iphe-512</code></td>
+<td>timing hash_512</td>
+<td><code>records/hash-12/Iphe-512__hash_512.json</code></td>
+</tr>
+<tr>
+<td><code>Iphe-512</code></td>
+<td>timing hash_65536</td>
+<td><code>records/hash-12/Iphe-512__hash_65536.json</code></td>
+</tr>
+<tr>
+<td><code>Iphe-512</code></td>
+<td>timing hash_8192</td>
+<td><code>records/hash-12/Iphe-512__hash_8192.json</code></td>
+</tr>
+<tr>
+<td><code>Iphe-768</code></td>
+<td>KAT log (sha256 <code>bc720d53190324b6…</code>)</td>
+<td><code>kat/hash-12/Iphe-768.log</code></td>
+</tr>
+<tr>
+<td><code>Iphe-768</code></td>
+<td>timing hash_1024</td>
+<td><code>records/hash-12/Iphe-768__hash_1024.json</code></td>
+</tr>
+<tr>
+<td><code>Iphe-768</code></td>
+<td>timing hash_128</td>
+<td><code>records/hash-12/Iphe-768__hash_128.json</code></td>
+</tr>
+<tr>
+<td><code>Iphe-768</code></td>
+<td>timing hash_16384</td>
+<td><code>records/hash-12/Iphe-768__hash_16384.json</code></td>
+</tr>
+<tr>
+<td><code>Iphe-768</code></td>
+<td>timing hash_32</td>
+<td><code>records/hash-12/Iphe-768__hash_32.json</code></td>
+</tr>
+<tr>
+<td><code>Iphe-768</code></td>
+<td>timing hash_4096</td>
+<td><code>records/hash-12/Iphe-768__hash_4096.json</code></td>
+</tr>
+<tr>
+<td><code>Iphe-768</code></td>
+<td>timing hash_512</td>
+<td><code>records/hash-12/Iphe-768__hash_512.json</code></td>
+</tr>
+<tr>
+<td><code>Iphe-768</code></td>
+<td>timing hash_65536</td>
+<td><code>records/hash-12/Iphe-768__hash_65536.json</code></td>
+</tr>
+<tr>
+<td><code>Iphe-768</code></td>
+<td>timing hash_8192</td>
+<td><code>records/hash-12/Iphe-768__hash_8192.json</code></td>
+</tr>
+<tr>
+<td><code>Iphe-1024</code></td>
+<td>KAT log (sha256 <code>58a1e04f5511b5a4…</code>)</td>
+<td><code>kat/hash-12/Iphe-1024.log</code></td>
+</tr>
+<tr>
+<td><code>Iphe-1024</code></td>
+<td>timing hash_1024</td>
+<td><code>records/hash-12/Iphe-1024__hash_1024.json</code></td>
+</tr>
+<tr>
+<td><code>Iphe-1024</code></td>
+<td>timing hash_128</td>
+<td><code>records/hash-12/Iphe-1024__hash_128.json</code></td>
+</tr>
+<tr>
+<td><code>Iphe-1024</code></td>
+<td>timing hash_16384</td>
+<td><code>records/hash-12/Iphe-1024__hash_16384.json</code></td>
+</tr>
+<tr>
+<td><code>Iphe-1024</code></td>
+<td>timing hash_32</td>
+<td><code>records/hash-12/Iphe-1024__hash_32.json</code></td>
+</tr>
+<tr>
+<td><code>Iphe-1024</code></td>
+<td>timing hash_4096</td>
+<td><code>records/hash-12/Iphe-1024__hash_4096.json</code></td>
+</tr>
+<tr>
+<td><code>Iphe-1024</code></td>
+<td>timing hash_512</td>
+<td><code>records/hash-12/Iphe-1024__hash_512.json</code></td>
+</tr>
+<tr>
+<td><code>Iphe-1024</code></td>
+<td>timing hash_65536</td>
+<td><code>records/hash-12/Iphe-1024__hash_65536.json</code></td>
+</tr>
+<tr>
+<td><code>Iphe-1024</code></td>
+<td>timing hash_8192</td>
+<td><code>records/hash-12/Iphe-1024__hash_8192.json</code></td>
+</tr>
+</tbody>
+</table></div>
+<p>Scripts: <code>performance/campaign.py</code>, <code>performance/ngcc_perf.c</code>, <code>performance/hashprof/</code> in the <a href="https://github.com/ngcc-dev/ngcc-harness">harness</a>.</p>
+</main>
+<footer class="site-footer">
+<p>Maintained by: <a href="mailto:markku-juhani.saarinen@tuni.fi">markku-juhani.saarinen@tuni.fi</a></p>
+<p>Submissions are welcome via <a href="https://github.com/ngcc-dev/ngcc-harness/issues">GitHub issues</a>.</p>
+</footer>
+</body>
+</html>
