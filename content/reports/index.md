@@ -1,4 +1,4 @@
-# ngcc.dev: Reports
+# ngcc.dev: Security
 
 Candidates follow the official type and candidate-number order. Each finding
 has a stable `xxx-yy-z` identifier and its own row. Click it for the full report

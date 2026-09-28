@@ -108,8 +108,8 @@ def main():
     index = ["# Performance", "",
              "Independent cycle-count measurements of the NGCC Round 1 candidates. "
              "Each system summary reports ICCS-facing parameter sets, primitive operations, and the public-key schemes' share spent in "
-             "ICCS placeholder hash functions, and hash timings relative to an exact-shape placeholder "
-             "measurement. Per-candidate pages retain every measured implementation, including non-ICCS variants omitted from the aggregate table.", "",
+             "ICCS placeholder hash functions, and hash timings relative to the ICCS placeholder `pseudoXOF` "
+             "with the same message length and output width, itself timed alongside the ICCS helpers. Per-candidate pages retain every measured implementation, including non-ICCS variants omitted from the aggregate table.", "",
              "| system | architecture | machine |", "|---|---|---|"]
     for row in systems:
         index.append(f"| [{row['ID']}]({row['ID']}/index.md) | {row['Arch']} | {row['Description']} |")

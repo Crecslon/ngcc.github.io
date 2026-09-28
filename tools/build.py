@@ -39,8 +39,8 @@ UPDATED_UTC = datetime.datetime.now(datetime.UTC).replace(microsecond=0).strftim
 TODAY = datetime.datetime.now(datetime.UTC).date().isoformat()   # <!-- date --> (prefilled access date)
 CATS = [("sign", "Signatures"), ("kem", "KEMs"), ("kex", "Key exchange"), ("hash", "Hash functions")]
 
-NAV = [("Home", "index.html"), ("Reports", "reports/index.html"),
-       ("Performance", "performance/x86_1/index.html"), ("Constant-Time", "constant-time/index.html"),
+NAV = [("Home", "index.html"), ("Security", "reports/index.html"),
+       ("Performance", "performance/x86_1/index.html"), ("Side-Channel", "constant-time/index.html"),
        ("Candidates", "candidates/index.html"),
        ("KAT results", "results.html"), ("Security survey", "security-survey.html"),
        ("Attack matrix", "attack-matrix.html"), ("Audit", "audit.html")]
@@ -394,7 +394,7 @@ def report_page(r, prefix):
     rows.append(f'<tr><th>Specification</th><td>{pdf_download_link(cid)}&nbsp;{pdf_link({"id": cid})}</td></tr>')
     meta_table = '<table class="meta">\n' + "\n".join(rows) + "\n</table>"
     title = f"{m.get('Candidate', r['cid'])} ({r['cid']})"
-    crumb = f'<p class="crumb"><a href="{prefix}reports/index.html">Reports</a> › <code>{r["cid"]}</code>'
+    crumb = f'<p class="crumb"><a href="{prefix}reports/index.html">Security</a> › <code>{r["cid"]}</code>'
     if (CONTENT / "constant-time" / f'{r["cid"]}.md').is_file():
         crumb += f' · <a href="{prefix}constant-time/{r["cid"]}.html">Constant-time review</a>'
     crumb += f' · <a href="{prefix}performance/x86_1/{r["cid"]}.html">Performance</a>'
@@ -524,7 +524,7 @@ def render(rel, cands, reports):
         text, title = report_page(reports[rel.stem], prefix)
     if rel.parts[0] == "constant-time" and rel.stem in cands:
         cid = rel.stem
-        crumb = f'<p class="crumb"><a href="{prefix}constant-time/index.html">Constant-time review</a> › <code>{cid}</code>'
+        crumb = f'<p class="crumb"><a href="{prefix}constant-time/index.html">Side-Channel</a> › <code>{cid}</code>'
         if cid in reports:
             crumb += f' · <a href="{prefix}reports/{cid}.html">Report</a>'
         text = crumb + '</p>\n\n' + text
